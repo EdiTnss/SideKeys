@@ -4,6 +4,8 @@ Antrenor de voicings și reharmonizare pentru pianiști de jazz. Conectezi clapa
 
 Numele e **Voicing Lab**, final din Faza 0: repo `voicing-lab`, GitHub Pages pe `editnss.github.io/voicing-lab`. Repo-ul nu se mai redenumește, pentru că URL-ul intră în verificarea `Origin` din Worker și în link-ul de demo, iar GitHub Pages nu face redirect după redenumire. Numele rămâne consecvent în README, `<title>` și `package.json`.
 
+Repo-ul e **privat până la Faza 4**: portofoliul are valoare abia când e prezentabil (README, demo, teste). Atunci trece pe public, pentru că GitHub Pages pe cont gratuit funcționează doar pe repo-uri publice (alternativa e GitHub Pro). La trecere devine vizibil **tot istoricul**, deci regula „niciun secret în repo" se aplică de la primul commit. Licență: **niciuna deocamdată** (toate drepturile rezervate; codul se poate citi, nu refolosi); se decide la publicare, `package.json` are `"license": "UNLICENSED"` până atunci.
+
 ## Scop dublu
 
 1. **Studiu**: Edi are 2+ ore/zi de studiu; aplicația e unealta lui de comping/voicings, deci trebuie să fie utilă din prima săptămână, nu la final.
@@ -63,8 +65,7 @@ test/                      *.test.js, rulate cu node --test
 .github/workflows/test.yml CI: npm test pe Node 22 și 24, la fiecare push (Faza 1)
 package.json               fără dependențe: "type": "module" + npm test
 README.md                  engleză, cu GIF/video demo
-LICENSE                    MIT
-CLAUDE.md                  acest fișier, public în repo
+CLAUDE.md                  acest fișier, în repo (public odată cu repo-ul, la Faza 4)
 ```
 
 Regula de dependență: `theory/` nu importă nimic din `midi/`, `ui/` sau `ai/`. `midi/` nu știe de UI. `ai/` importă din `theory/` (pentru analiză și candidați) dar nu invers. UI-ul e singurul care le leagă. Worker-ul nu conține logică muzicală și nu conține prompturi — doar adaugă cheia și limitează cererile; prompturile stau în `ai/prompts.js`, vizibile în repo.
@@ -318,7 +319,7 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 - `midi-test.html` deschis în Chrome: Genos apare la inputs și la outputs; notele cântate apar cu nume și număr MIDI; butonul „Send test chord" sună pe Genos.
 - Dacă Genos nu apare: verifică cablul USB TO HOST, driverul Yamaha USB-MIDI pe Windows, apoi setările MIDI din Genos (transmisia pe partea de keyboard trebuie să fie activă).
 - Numele proiectului decis înainte de primul commit (vezi sus).
-- Repo inițializat pe GitHub, `.gitignore` (`node_modules/`, `worker/.dev.vars`, `*.local.json`), `README.md` cu 5 rânduri (ce este + status: work in progress), primul commit.
+- Repo privat inițializat pe GitHub, `.gitignore` (`node_modules/`, `worker/.dev.vars`, `*.local.json`), `README.md` cu 5 rânduri (ce este + status: work in progress), primul commit.
 
 **DoD**: ambele direcții MIDI confirmate, repo online.
 
@@ -367,7 +368,7 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 ### Faza 4 — Portofoliu (câteva zile)
 
 - **Demo mode**: claviatură pe ecran (click/touch) + sintetizator Web Audio simplu, pentru cine nu are clapă MIDI. Fără asta, jumătate din recrutori nu pot încerca nimic. Demo-ul include o piesă din domeniul public preîncărcată, ca reharm-ul să poată fi încercat în 10 secunde.
-- Deploy pe GitHub Pages, Worker publicat, cu limită de cereri pe IP suficient de mică încât cheia să nu poată fi golită de un vizitator.
+- Repo-ul trece pe public (verificat înainte că istoricul nu conține secrete) și se alege licența (MIT sau niciuna); deploy pe GitHub Pages, Worker publicat, cu limită de cereri pe IP suficient de mică încât cheia să nu poată fi golită de un vizitator.
 - README în engleză: ce e, GIF de 15 secunde cu fluxul, diagrama arhitecturii hibride (piece → analysis → candidates → Claude plan/execute/review → scoring → realize → MIDI out), secțiunea „Why not just ask the LLM" cu 3 propoziții, „How the analyzer works" cu 2–3 exemple, cum rulezi local, cum rulezi testele.
 - Video demo de 60–90 s cu Genos (filmat de Edi), link în README.
 
@@ -407,3 +408,4 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 - **2026-09-17 (seara)** — Reharmonizarea ridicată la arhitectură hibridă: codul face analiza armonică și generează candidații compatibili cu melodia, etichetați pe tehnică; Claude alege doar dintre candidați (`execute`), cu `plan` pe fraze și un `review` separat; scoruri deterministe; `realize.js` transformă grila în aranjament cântabil pe Genos. Faza 3 împărțită în 3a (hibrid minim) și 3b (pipeline complet + voicings). Faza 5 nouă: interactivitate, stiluri ca JSON, few-shot cu reharm-urile proprii, set de evaluare cu metrici și rating-uri. Următorul pas neschimbat: Faza 0.
 - **2026-09-17 (noaptea)** — **Faza 0**: `midi-test.html` confirmat pe Genos în ambele direcții. Nume final Voicing Lab (`voicing-lab`), licență MIT, CLAUDE.md public. Repo local inițializat (README, `.gitignore`, `package.json` fără dependențe, LICENSE, primul commit); push după ce Edi creează repo-ul gol pe GitHub. **Decizii**: snapshot armat doar la note-on, nota de „next" interceptată; 60 = C4 peste tot (comentariul din `midi-test.html` corectat); m7 implicit funcție ii; caution ⊆ tensiuni disponibile; listele din tabel sunt complete (restul = wrong), regula generică doar pentru calități fără rând; sus = terța înlocuită cu 2/4, 11 = extensie cu terța prezentă; forma `C6/9`; `C13` = `C7` + 13; `b9` explicit = obligatoriu și 9 wrong; `alt` = 5/9/13 naturale wrong; câmp `required` per calitate; quartal cu 3M tolerată doar de la 4 note. Design aprobat pentru `notes.js` / `chords.js` (semnături + 10 teste); stub-uri și cele 10 teste scrise, roșii, necommise. **Deschise**: rândurile pentru `m6`, `6/9`, `sus4`; b5 obligatoriu pe m7b5 / dim7; ce e obligatoriu pe `alt`; regula b9 extinsă la #9 / b13 / 9 / 13; low interval limits (ce notă se compară, praguri vs tabel pe interval). **Următorul pas**: push, apoi implementarea `notes.js` și `chords.js` până trec cele 10 teste.
 - **2026-09-17 (revizie înainte de push)** — Recitit tot planul. **Corectat**: regula de detecție drop 2/3/2&4 (se ridică nota cea mai de jos, nu „a doua de sus"); regula generică de avoid scoasă (tabelul e singura sursă; era moartă după decizia (a)). **Adăugat, aprobat de Edi**: snapshot pentru acorduri staccato (copia setului de dinaintea primului note-off); rootless A/B acceptă alterațiile pe dominante; „bas separat" (root/5 jos + tipul restului); 7 mare e tensiune disponibilă pe `6`; aliasuri Unicode și Real Book (`∆`, `º`, `Ø`, `MA7`, `MI7`), `Calt`, `b5`/`#5` pe dominante, `mMaj7`/triade/`+`/`7#5` în gramatică (rânduri încă deschise); `minorFunction` rămâne enum extensibil (iii, vi mai târziu); recorder-ul folosește `event.timeStamp` aliniat la `AudioContext`. Shell rămâne {3, 7} ± root deocamdată (Bud Powell R–7 / R–3 respins pentru moment). **Repo**: `.gitattributes` (LF), `.gitignore` extins (`.wrangler/`, fișiere de OS), Node ≥ 22, CI planificat în Faza 1. **Deschise, în plus**: rândurile pentru `mMaj7`, triade, `+`, `7#5`.
+- **2026-09-17 (înainte de push)** — Edi a ridicat problema vizibilității („nu vreau să-mi fure cineva munca"). Decis: repo **privat până la Faza 4**, apoi public (Pages cere public pe cont gratuit); **fără licență** deocamdată (LICENSE șters, `"license": "UNLICENSED"`), decizia se ia la publicare. Regula „niciun secret în repo" e valabilă și cât e privat, pentru că istoricul devine public integral.
