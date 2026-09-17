@@ -7,7 +7,8 @@ import { generateCandidates, TECHNIQUES } from '../src/theory/candidates.js';
 
 const raw = (name, bar, beat, durationBeats) => ({ midi: nameToMidi(name), bar, beat, durationBeats, velocity: 80 });
 const analyzed = (grid, melody = [], options = {}) => analyzePiece(addMelody(createPiece({ key: 'C', grid, ...options }), melody));
-const candidates = (grid, melody, options, slotIndex = 0) => generateCandidates(analyzed(grid, melody), options).slots[slotIndex].candidates;
+// Labeling tests look at the full list; the 12-per-slot limit has its own test.
+const candidates = (grid, melody, options, slotIndex = 0) => generateCandidates(analyzed(grid, melody), { maxPerSlot: 60, ...options }).slots[slotIndex].candidates;
 const symbolsOf = candidate => candidate.chords.map(c => c.symbol).join(' ');
 const find = (list, technique, symbols) => list.find(c => c.technique === technique && (symbols === undefined || symbolsOf(c) === symbols));
 
@@ -84,7 +85,8 @@ test('modal interchange: iv, bVI, bIII, iiø from the parallel minor; diatonic c
   assert.ok(find(list, 'modal-interchange', 'Fm7'));
   assert.ok(find(list, 'modal-interchange', 'Abmaj7'));
   assert.equal(find(list, 'modal-interchange', 'Dm7'), undefined);
-  assert.equal(list.find(c => symbolsOf(c) === 'Dm7')?.technique, 'other');
+  const everything = candidates('| Cmaj7 | Fmaj7 | Cmaj7 |', [], { intensity: 'heavy', style: 'free', maxPerSlot: 1000 }, 1);
+  assert.equal(everything.find(c => symbolsOf(c) === 'Dm7')?.technique, 'other');   // diatonic, no label
 });
 
 test('sus color: 7sus4 for a dominant only', () => {
