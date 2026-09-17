@@ -10,6 +10,10 @@
 
 <header>
   <h1>Voicing Lab</h1>
+  <nav class="tabs" role="tablist">
+    <button id="tab-drill" type="button" role="tab" aria-selected="true">Drill</button>
+    <button id="tab-progression" type="button" role="tab" aria-selected="false">Progression</button>
+  </nav>
   <p id="status">Requesting MIDI access…</p>
 </header>
 
@@ -17,6 +21,38 @@
   <section class="drill">
     <div id="chord" class="chord">—</div>
     <button id="next" type="button">Next <kbd>Space</kbd></button>
+  </section>
+
+  <section id="progression-panel" class="progression" hidden>
+    <div class="row">
+      <label>Progression
+        <select id="prog-library"></select>
+      </label>
+      <label>Key
+        <select id="prog-key"></select>
+      </label>
+      <label>Time
+        <select id="prog-time">
+          <option value="4/4">4/4</option>
+          <option value="3/4">3/4</option>
+        </select>
+      </label>
+      <label>Tempo
+        <input id="prog-tempo" type="number" min="40" max="300" step="2" value="120">
+      </label>
+      <label class="check"><input id="prog-loop" type="checkbox" checked> loop</label>
+    </div>
+    <textarea id="prog-grid" rows="2" spellcheck="false" placeholder="| Dm7 G7 | Cmaj7 | % |"></textarea>
+    <div class="row">
+      <span class="modes">
+        <label class="check"><input type="radio" name="prog-mode" value="free" checked> free (Space / E1 moves on)</label>
+        <label class="check"><input type="radio" name="prog-mode" value="timed"> timed (metronome)</label>
+      </span>
+      <button id="prog-start" type="button">Start</button>
+      <button id="prog-stop" type="button" disabled>Stop</button>
+    </div>
+    <div id="grid-view" class="grid-view"></div>
+    <div id="summary" class="summary"></div>
   </section>
 
   <svg id="keyboard" class="keyboard" role="img" aria-label="Keyboard"></svg>

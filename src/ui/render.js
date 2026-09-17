@@ -55,6 +55,64 @@ export function heldClasses(notes) {
   return Object.fromEntries(notes.map(midi => [midi, 'held']));
 }
 
+/** One line under the analysis: how the played chord moved from the previous one. */
+export function renderComparison(el, comparison) {
+  if (!comparison) return;
+  const line = h('p', { class: `comparison ${comparison.rating}` },
+    `From the previous chord: ${comparison.movement} semitone${comparison.movement === 1 ? '' : 's'} of movement, `
+    + `${comparison.commonTones} common tone${comparison.commonTones === 1 ? '' : 's'} — ${comparison.rating}`);
+  el.insertBefore(line, el.children[1] ?? null);
+}
+
+/** The grid as bars and slots; the current slot is outlined, played slots show ✓ or !. */
+export function renderGrid(container, session, current) {
+  const bars = new Map();
+  session.slots.forEach((slot, index) => {
+    if (!bars.has(slot.bar)) bars.set(slot.bar, []);
+    const result = session.results.get(index);
+    const classes = ['slot'];
+    if (index === current) classes.push('current');
+    let badge = '';
+    if (result) {
+      const warned = result.analysis.messages.some(m => m.level === 'warning');
+      classes.push(warned ? 'warn' : 'ok');
+      badge = warned ? '!' : '✓';
+    }
+    bars.get(slot.bar).push(h('span', { class: classes.join(' '), 'data-index': index }, slot.symbol, h('span', { class: 'badge' }, badge)));
+  });
+  container.replaceChildren(...[...bars.values()].map(slots => h('div', { class: 'bar' }, ...slots)));
+}
+
+/** Voice-leading summary of a chorus. */
+export function renderSummary(container, summary, session, { title = 'Chorus' } = {}) {
+  if (summary.played === 0) {
+    container.replaceChildren(h('p', {}, `${title}: nothing played yet.`));
+    return;
+  }
+  const { score } = summary;
+  const parts = [`${title}: ${summary.played}/${summary.total} chords played`];
+  if (summary.steps.length) {
+    parts.push(`${score.movement} semitone${score.movement === 1 ? '' : 's'} of movement over ${summary.steps.length} change${summary.steps.length === 1 ? '' : 's'}`);
+    parts.push(`${score.commonTones} common tone${score.commonTones === 1 ? '' : 's'}`);
+  }
+  const line = h('p', {}, parts.join(' · '), ' — ', h('strong', {}, score.rating ?? 'n/a'));
+  const jumpy = score.jumpy.map(i => {
+    const step = summary.steps[i];
+    return h('li', { class: 'jumpy' }, `${session.slots[step.from].symbol} → ${session.slots[step.to].symbol}: ${step.comparison.movement} semitones`);
+  });
+  container.replaceChildren(line, ...(jumpy.length ? [h('ul', {}, ...jumpy)] : []));
+}
+
+export function renderError(container, message) {
+  container.replaceChildren(h('p', { class: 'headline warn' }, message));
+}
+
+/** Fills a <select> with { value: label } pairs. */
+export function fillSelect(select, options, selected) {
+  select.replaceChildren(...Object.entries(options).map(([value, label]) =>
+    h('option', { value, ...(value === selected ? { selected: '' } : {}) }, label)));
+}
+
 /** Checkboxes for qualities and roots, debounce and next-note inputs. Calls onChange(settings) on every edit. */
 export function renderSettings(container, settings, { symbols, roots, onChange }) {
   const form = h('form', { class: 'settings-form', onsubmit: e => e.preventDefault() });

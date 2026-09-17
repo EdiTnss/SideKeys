@@ -85,3 +85,28 @@ input[type="number"] { width: 5.5rem; font: inherit; padding: .2rem .4rem; borde
 
 footer { margin-top: 2rem; color: var(--muted); }
 footer a { color: inherit; }
+
+/* Tabs and progression mode */
+.tabs { display: flex; gap: .25rem; }
+.tabs button[aria-selected="true"] { background: color-mix(in srgb, currentColor 14%, transparent); font-weight: 600; }
+.progression { display: grid; gap: .75rem; margin-bottom: 1rem; }
+.progression .row { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+.progression label { display: inline-flex; align-items: center; gap: .35rem; }
+.progression select, .progression textarea {
+  font: inherit; padding: .3rem .5rem; border-radius: 6px;
+  border: 1px solid var(--line); background: transparent; color: inherit;
+}
+.progression textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, Consolas, monospace; resize: vertical; }
+.modes { display: flex; gap: 1rem; flex-wrap: wrap; margin-right: auto; }
+.grid-view { display: flex; flex-wrap: wrap; gap: .4rem; }
+.bar { display: flex; gap: .4rem; padding: .3rem .5rem; border: 1px solid var(--line); border-radius: 6px; min-width: 4.5rem; }
+.slot { position: relative; padding: .1rem .35rem; border-radius: 4px; font-weight: 600; }
+.slot.current { background: color-mix(in srgb, var(--tension) 30%, transparent); outline: 2px solid var(--tension); }
+.slot.ok { color: var(--ok); }
+.slot.warn { color: var(--warn); }
+.slot .badge { font-size: .7rem; margin-left: .2rem; }
+.summary { color: var(--muted); }
+.summary strong { color: inherit; }
+.summary .jumpy { color: var(--warn); }
+.comparison { color: var(--muted); margin: 0 0 .5rem; }
+.comparison.jumpy { color: var(--warn); }
