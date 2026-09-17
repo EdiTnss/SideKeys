@@ -1,8 +1,10 @@
 # Dependencies (only worker/ ever has any)
 node_modules/
 
-# Secrets and local state
-worker/.dev.vars
+# Secrets and local state (Wrangler reads .dev.vars or .env, with per-environment variants)
+worker/.dev.vars*
+!worker/.dev.vars.example
+worker/.env*
 .wrangler/
 *.local.json
 

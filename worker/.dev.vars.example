@@ -1,0 +1,4 @@
+# Local secrets for `npx wrangler dev`. Copy this file to `.dev.vars` (git-ignored) and paste
+# your key after the `=`. Never commit the real file and never put the key anywhere else in
+# the repo. For the deployed Worker, run `npx wrangler secret put ANTHROPIC_API_KEY` instead.
+ANTHROPIC_API_KEY=

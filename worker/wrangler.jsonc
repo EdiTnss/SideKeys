@@ -1,0 +1,25 @@
+// Cloudflare Worker config for the Voicing Lab AI proxy. Non-secret values only: the Anthropic
+// key is a Wrangler secret (`npx wrangler secret put ANTHROPIC_API_KEY`) and, locally, a line in
+// `.dev.vars` (git-ignored; see `.dev.vars.example`).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "voicing-lab-proxy",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-17",
+  "vars": {
+    // Browsers send only the origin (scheme + host), never the path, so the GitHub Pages
+    // entry does not depend on the repo name.
+    "ALLOWED_ORIGINS": "https://editnss.github.io,http://localhost:3000,http://127.0.0.1:3000",
+    "MODEL": "claude-opus-5",
+    "MAX_TOKENS_CAP": 8192
+  },
+  // Requests per client IP per minute. Counted per Cloudflare location and eventually
+  // consistent, which is fine here: it exists to stop a visitor from draining the key.
+  "ratelimits": [
+    { "name": "RATE_LIMITER", "namespace_id": "1001", "simple": { "limit": 20, "period": 60 } }
+  ],
+  "observability": {
+    "enabled": true,
+    "logs": { "enabled": true, "head_sampling_rate": 1 }
+  }
+}
