@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createPiece, addMelody, structuralMelody, toJSON, fromJSON, savePiece, loadPiece, listPieces, deletePiece } from '../src/theory/piece.js';
+import { createPiece, addMelody, structuralMelody, toJSON, fromJSON, savePiece, loadPiece, listPieces, deletePiece, checkMelody, validateReharm } from '../src/theory/piece.js';
+import { nameToMidi } from '../src/theory/notes.js';
 
 const fakeStorage = () => {
   const map = new Map();
@@ -96,4 +97,68 @@ test('pieces are saved by title in storage and survive a missing or broken store
   assert.deepEqual(listPieces(storage), []);
   assert.equal(savePiece(piece, undefined), false);
   assert.deepEqual(listPieces(undefined), []);
+});
+
+// ---- The reharmonization safety net -------------------------------------------------------
+
+const withMelody = () => addMelody(createPiece({ grid: '| Dm7 | G7 | Cmaj7 |' }), [
+  raw(nameToMidi('B4'), 2, 1, 4),          // structural on bar 2
+  raw(nameToMidi('F4'), 3, 1, 4),          // structural on bar 3: the avoid 11 of Cmaj7
+]);
+// A resolved slot, as scoring.js hands it over.
+const slotOf = (bar, symbols, { changed = true, coveredBy = null, id = `b${bar}s1-x` } = {}) => ({
+  bar, slot: 1, beat: 1, original: ['Dm7', 'G7', 'Cmaj7'][bar - 1],
+  candidate: changed && !coveredBy ? { id, technique: 'other', spans: 1 } : null,
+  technique: changed ? 'other' : 'original', changed, coveredBy,
+  chords: symbols.map(symbol => ({ symbol, bar, beat: 1 })),
+});
+const original = piece => piece.bars.map((bar, i) => slotOf(i + 1, bar.chords.map(c => c.symbol), { changed: false }));
+
+test('checkMelody: every structural note against the chord sounding under it, passing notes ignored', () => {
+  const piece = addMelody(createPiece({ grid: '| Dm7 | Cmaj7 |' }), [
+    raw(nameToMidi('F4'), 2, 1, 4),
+    raw(nameToMidi('C#4'), 2, 4.5, 0.25),  // short: passing, never checked
+  ]);
+  const sequence = [{ symbol: 'Dm7', bar: 1, beat: 1 }, { symbol: 'Cmaj7', bar: 2, beat: 1 }];
+  const issues = checkMelody(piece, sequence);
+  assert.equal(issues.length, 1);
+  assert.deepEqual(issues[0].note, { bar: 2, beat: 1, midi: nameToMidi('F4') });
+  assert.equal(issues[0].symbol, 'Cmaj7');
+  assert.equal(issues[0].degree, '11');
+  assert.equal(issues[0].relation, 'avoid');
+  assert.equal(issues[0].chord, sequence[1]);                          // the caller's own object comes back
+  assert.deepEqual(checkMelody(piece, [{ symbol: 'Dm7', bar: 1, beat: 1 }, { symbol: 'Fmaj7', bar: 2, beat: 1 }]), []);
+  assert.deepEqual(checkMelody(piece, []), []);
+});
+
+test('validateReharm: avoid notes warn, outside notes reject the slot that put the chord there', () => {
+  const piece = withMelody();
+  const kept = validateReharm(piece, original(piece));
+  assert.equal(kept.ok, true);
+  assert.equal(kept.warnings, 1);                                      // F on Cmaj7
+  assert.deepEqual(kept.rejects, []);
+  assert.deepEqual(kept.issues.map(i => i.relation), ['avoid']);
+  assert.deepEqual(kept.issues[0].slot, { bar: 3, slot: 1 });
+
+  const slots = original(piece);
+  slots[2] = slotOf(3, ['Emaj7']);                                     // F is the b9 of Emaj7
+  const bad = validateReharm(piece, slots);
+  assert.equal(bad.ok, false);
+  assert.deepEqual(bad.rejects.map(r => [r.bar, r.slot]), [[3, 1]]);
+  assert.match(bad.rejects[0].reason, /F4.*Emaj7/);
+  assert.equal(bad.issues.find(i => i.relation === 'outside').symbol, 'Emaj7');
+});
+
+test('validateReharm: a rejected multi-slot candidate takes the slots it covers with it', () => {
+  const piece = withMelody();
+  const slots = original(piece);
+  slots[0] = { ...slotOf(1, ['Abmaj7'], { id: 'b1s1-coltrane' }), chords: [
+    { symbol: 'Abmaj7', bar: 1, beat: 1 },
+    { symbol: 'Ebmaj7', bar: 2, beat: 1 },                             // B is outside Ebmaj7
+  ] };
+  slots[1] = { ...slotOf(2, [], { coveredBy: 'b1s1-coltrane' }), chords: [] };
+  const result = validateReharm(piece, slots);
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.rejects.map(r => [r.bar, r.slot]), [[1, 1], [2, 1]]);
+  assert.deepEqual(result.issues.find(i => i.relation === 'outside').slot, { bar: 1, slot: 1 });
 });
