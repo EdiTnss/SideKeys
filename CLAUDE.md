@@ -40,7 +40,9 @@ Ambele scopuri sunt egale. Dacă o decizie tehnică ajută portofoliul dar stric
 index.html                 pagina aplicației
 midi-test.html             Faza 0 — diagnostic MIDI in/out (rămâne în repo ca tool)
 src/
-  midi/input.js            requestMIDIAccess, note-on/off, snapshot de voicing
+  app.js                   singurul loc care leagă theory, midi și ui
+  midi/capture.js          regulile de snapshot (debounce, staccato, „next"), logică pură, testată
+  midi/input.js            requestMIDIAccess, toate intrările/canalele, parseMidiMessage
   midi/recorder.js         înregistrează melodia cântată, cu poziția pe măsuri (Faza 2)
   midi/output.js           trimite voicings spre Genos (Faza 2)
   theory/notes.js          MIDI number ↔ nume, pitch class, intervale
@@ -52,7 +54,10 @@ src/
   theory/candidates.js     generează acordurile compatibile cu melodia, etichetate pe tehnică (Faza 3a)
   theory/scoring.js        scoruri pentru un reharm: clash, bas, densitate, coerență (Faza 3a)
   theory/realize.js        simboluri → voicings cu voice leading, bas și melodie (Faza 3b)
-  ui/                      randare, fără logică de teorie aici
+  ui/drill.js              starea drill-ului: setări, acordul următor, localStorage
+  ui/keyboard.js           claviatura SVG, colorată pe rol
+  ui/render.js             randare DOM, fără logică de teorie aici
+styles.css                 stilurile paginii (folderul styles/ e pentru profilurile JSON, Faza 5)
   ai/client.js             apel spre proxy (Faza 3a)
   ai/prompts.js            toate prompturile, versionate (Faza 3a)
   ai/pipeline.js           orchestrare plan → execute → review (Faza 3b)
@@ -440,3 +445,4 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 - **2026-09-17 (chords.js)** — **Decise**: etichete Berklee peste tot (opțiune de afișare europeană posibilă mai târziu); `7+` / `+7` respinse, `-7` = m7; tensiuni pe `sus4` (9, 13, b7; avoid 3), `maj` (7, 9, #11, 13; avoid 11), `m` (b7, 7, 9, 11, 13). **`chords.js` implementat, 10/10 teste verzi**: tabelul ca date, cea mai lungă potrivire pe aliasuri, prescurtări (`C9`, `Cm11`, `Cmaj13`, `C9sus4`, `Calt`), extensii explicite cu regula de excludere, `b5`/`#5`/`alt` doar pe dominantă, `classifyPc` ca unic loc de decizie. **Deschis**: `alt` — Edi a scris de două ori „C7alt = C E G# Bb"; de clarificat dacă b9/#9/#11 rămân disponibile (standard, implementat acum) sau devin wrong (alt = 7#5). Întrebare mică: `C°` / `Cdim` fără 7 ca alias pentru dim7? **Următorul pas**: testele parserului până la ≥ 20 de simboluri (prescurtări, extensii explicite, ii/i, `classifyPc`, erori), apoi `analyzer.js` test-first.
 - **2026-09-17 (parser complet)** — **Decise**: `alt` = dominanta alterată standard cu 3, b7, b13 obligatorii (b9/#9/#11 rămân disponibile); `C°`/`Cdim` = dim7; repo confirmat Private. Parserul are **20/20 teste, 40+ simboluri** (DoD-ul Fazei 1 pentru parser e acoperit). Capcană JS găsită de un test: `Object.keys` pune cheile numerice (`'6'`, `'7'`) primele, deci ordinea tabelului e ținută explicit în `QUALITY_IDS`, verificată la încărcare față de `QUALITIES`. **Următorul pas**: `analyzer.js` — propunere de semnătură, formă a ieșirii și primele teste, apoi implementare după confirmarea lui Edi.
 - **2026-09-17 (analyzer)** — Design aprobat de Edi; **`analyzer.js` implementat, 34/34 teste** (14 noi: fiecare tip de voicing cu caz pozitiv și negativ, cum cere DoD-ul). Schimbare de spec descoperită la scrierea testelor: quartal se verifică înaintea drop-urilor (4 cvarte suprapuse sunt și un drop 2). Poziție strânsă = întindere ≤ 12 semitonuri. Din DoD-ul Fazei 1 rămân: `midi/input.js` (snapshot), UI-ul de drill cu claviatură SVG, `index.html`, tasta „next", sesiunea de 20 de minute. **Următorul pas**: propunere pentru `input.js` + UI minimal, apoi implementare.
+- **2026-09-17 (drill-ul rulează)** — Aprobat de Edi: captura ca `midi/capture.js` (logică pură, 9 teste pe ceas fals) + `midi/input.js` (cablaj Web MIDI, `parseMidiMessage` testat), „next" = Space sau E1 (MIDI 28, configurabil). Implementat: `ui/drill.js` (setări persistate, teste), `ui/keyboard.js` (SVG E1–G7, 76 de clape ca Genos, colorate pe rol), `ui/render.js`, `app.js`, `index.html`, `styles.css`; CI pe GitHub Actions (Node 22/24) cu badge; hook de debug `window.voicingLab.play(...)` pentru consolă fără clapă. Verificat în browser: rootless A recunoscut, avertismentele în ordine, Space și E1 avansează. **48/48 teste.** Structura din plan s-a schimbat: `midi/capture.js` nou, `src/app.js` e cablajul, `styles.css` la rădăcină (folderul `styles/` rămâne pentru profilurile JSON din Faza 5). **Următorul pas**: sesiunea de 20 de minute a lui Edi pe Genos (DoD Faza 1); bug-urile și observațiile lui intră ca teste.
