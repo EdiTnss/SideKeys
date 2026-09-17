@@ -136,3 +136,16 @@ footer a { color: inherit; }
 /* Dropdowns: Chrome on Windows paints the popup with the select's background, so a transparent
    select in dark mode gave white text on white. System colors follow color-scheme. */
 select, option { background-color: Canvas; color: CanvasText; }
+
+/* Ask Claude */
+.ai { margin: .75rem 0 0; padding-top: .5rem; border-top: 1px dashed var(--line); }
+.ai-status.hint { color: var(--muted); }
+.ai-status.warn { color: var(--bad); }
+.ai-title { margin: 0 0 .35rem; font-size: .9rem; color: var(--muted); }
+.ai-list { margin: 0; padding-left: 1.25rem; }
+.ai-list li { margin: .3rem 0; }
+.ai-list .play { padding: .1rem .5rem; font-size: .85rem; }
+.ai-notes { font-family: ui-monospace, Consolas, monospace; }
+.ai-rejected { margin: .4rem 0 0; font-size: .85rem; color: var(--muted); }
+.settings-form label.wide { flex-basis: 100%; }
+.settings-form label.wide input[type="url"] { flex: 1; min-width: 12rem; font: inherit; padding: .2rem .4rem; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: inherit; }

@@ -15,10 +15,12 @@ import { DRILL_SYMBOLS, ROOTS, nextChord, loadSettings, saveSettings } from './u
 import { createSession } from './ui/session.js';
 import { createKeyboard } from './ui/keyboard.js';
 import { emptyStats, recordAttempt, weakSpots, summaryLine, loadStats, saveStats } from './ui/stats.js';
+import { createClient, AiError } from './ai/client.js';
+import { explainVoicing } from './ai/explain.js';
 import {
   renderChord, renderStatus, renderAnalysis, renderComparison, clearFeedback, renderSettings,
   roleClasses, heldClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
-  renderStats, useStatsSummary,
+  renderStats, useStatsSummary, renderAiStatus, renderAiSuggestions,
 } from './ui/render.js';
 
 const $ = id => document.getElementById(id);
@@ -36,6 +38,10 @@ let outputs = [];                   // known output ports
 let lastVoicing = null;             // notes of the last chord played or suggested, for voice leading
 let currentClasses = {};            // keyboard colors of the last analysis
 let suggestions = null;             // { symbol, previous, list, index }: cached candidates for the chord on screen
+let lastAnalysis = null;            // drill: the analysis of the last chord played, sent to Claude with Ask
+let ai = createClient({ baseUrl: settings.proxyUrl });
+let aiResult = null;                // { symbol, suggestions, rejected, model }: Claude's last answer, for keys 1/2
+let asking = false;
 let piece = null;                   // the piece on screen (grid + recorded melody)
 let recorder = null;                // active while a melody pass is being recorded
 const heldWhileRecording = new Set();
@@ -64,6 +70,8 @@ function newChordOnScreen() {
   capture.cancel();
   currentClasses = {};
   suggestions = null;
+  lastAnalysis = null;
+  aiResult = null;
   renderChord($('chord'), symbol);
   clearFeedback($('feedback'));
   keyboard.highlight(heldClasses(capture.snapshot()));
@@ -74,6 +82,9 @@ function analyse(notes) {
   const analysis = analyzeVoicing(notes, chord);
   renderAnalysis($('feedback'), analysis, chord);
   showAnalysis(analysis, notes);
+  lastAnalysis = analysis;
+  // Claude's answer stays on screen for the same chord, so a played suggestion can be compared with its label.
+  if (aiResult?.symbol === symbol) renderAiSuggestions($('feedback'), aiResult, chord, { onPlay: playAiSuggestion });
 }
 
 function showAnalysis(analysis, notes) {
@@ -123,6 +134,43 @@ function playSuggestion() {
   keyboard.highlight(withSuggestion(currentClasses, candidate.notes));
   renderSuggestion($('feedback'), candidate, chord, { sent, index: suggestions.index % list.length, total: list.length });
   suggestions.index += 1;
+}
+
+// ---- Ask Claude --------------------------------------------------------------------------
+
+async function askClaude() {
+  if (!chord || asking) return;
+  if (!settings.proxyUrl) {
+    renderAiStatus($('feedback'), 'Set the AI proxy URL in Settings first (the Worker from worker/).', 'warn');
+    return;
+  }
+  const asked = symbol;
+  asking = true;
+  $('ask').disabled = true;
+  renderAiStatus($('feedback'), 'Asking Claude…');
+  try {
+    const result = await explainVoicing(ai, chord, lastAnalysis);
+    if (symbol !== asked) return;                     // the chord changed while waiting
+    aiResult = { symbol, ...result };
+    renderAiSuggestions($('feedback'), aiResult, chord, { onPlay: playAiSuggestion });
+  } catch (error) {
+    if (symbol !== asked) return;
+    renderAiStatus($('feedback'), `Claude: ${error instanceof AiError ? error.message : error?.message ?? error}`, 'warn');
+    console.error(error);
+  } finally {
+    asking = false;
+    $('ask').disabled = false;
+  }
+}
+
+function playAiSuggestion(suggestion) {
+  output?.playVoicing(suggestion.notes);
+  keyboard.highlight(withSuggestion(currentClasses, suggestion.notes));
+}
+
+function playAiByIndex(index) {
+  const suggestion = aiResult?.symbol === symbol ? aiResult.suggestions[index] : null;
+  if (suggestion) playAiSuggestion(suggestion);
 }
 
 // ---- Progression -------------------------------------------------------------------------
@@ -382,6 +430,7 @@ function setMode(next) {
   $('tab-progression').setAttribute('aria-selected', String(mode === 'progression'));
   $('progression-panel').hidden = mode !== 'progression';
   $('next').hidden = mode !== 'drill';
+  $('ask').hidden = mode !== 'drill';
   if (mode === 'drill') advance();
   else buildSession();
 }
@@ -398,6 +447,7 @@ function applySettings(next) {
   capture.debounceMs = settings.debounceMs;
   capture.nextNote = settings.nextNote;
   selectOutput();
+  if (ai.baseUrl !== settings.proxyUrl) ai = createClient({ baseUrl: settings.proxyUrl });
   if (mode !== 'drill') return;
   const stillValid = chord && settings.roots.includes(chord.root) && settings.qualities.includes(symbol.slice(chord.root.length));
   if (!stillValid) advance();
@@ -416,6 +466,10 @@ document.addEventListener('keydown', event => {
     onNext();
   } else if (event.code === 'KeyP' && !recorder) {
     playSuggestion();
+  } else if (event.code === 'KeyA' && mode === 'drill' && !recorder) {
+    askClaude();
+  } else if ((event.code === 'Digit1' || event.code === 'Digit2') && mode === 'drill') {
+    playAiByIndex(event.code === 'Digit1' ? 0 : 1);
   }
 });
 $('rec-start').addEventListener('click', startRecording);
@@ -427,6 +481,7 @@ $('piece-export').addEventListener('click', exportPiece);
 $('piece-import').addEventListener('change', event => { importPiece(event.target.files[0]); event.target.value = ''; });
 $('next').addEventListener('click', advance);
 $('suggest').addEventListener('click', () => { playSuggestion(); $('suggest').blur(); });
+$('ask').addEventListener('click', () => { askClaude(); $('ask').blur(); });
 $('tab-drill').addEventListener('click', () => setMode('drill'));
 $('tab-progression').addEventListener('click', () => setMode('progression'));
 $('prog-library').addEventListener('change', () => { fillGridFromLibrary(); buildSession(); });
@@ -474,4 +529,5 @@ window.voicingLab = {
   play: (...notes) => notes.forEach(note => onMidiNoteOn(note, 80)),
   release: () => [...capture.held, ...heldWhileRecording].forEach(note => onMidiNoteOff(note)),
   suggest: playSuggestion,
+  ask: askClaude,
 };

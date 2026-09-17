@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   nextNote: 28,          // E1, the lowest key on a 76-key Genos; null = keyboard/button only
   outputId: null,        // MIDI output port id; null = the first one available
   channel: 1,            // MIDI channel for suggestions
+  proxyUrl: '',          // the AI proxy (Cloudflare Worker) URL; '' = Ask Claude is off
 });
 
 const STORAGE_KEY = 'voicing-lab.settings';
@@ -60,6 +61,7 @@ function sanitize(saved) {
     : Number.isInteger(saved.nextNote) && saved.nextNote >= 0 && saved.nextNote <= 127 ? saved.nextNote
       : DEFAULT_SETTINGS.nextNote;
   const channel = Number.isInteger(saved.channel) && saved.channel >= 1 && saved.channel <= 16 ? saved.channel : DEFAULT_SETTINGS.channel;
+  const proxyUrl = typeof saved.proxyUrl === 'string' && /^https?:\/\//.test(saved.proxyUrl.trim()) ? saved.proxyUrl.trim() : '';
   return {
     qualities: qualities.length ? qualities : [...DEFAULT_SETTINGS.qualities],
     roots: roots.length ? roots : [...DEFAULT_SETTINGS.roots],
@@ -67,5 +69,6 @@ function sanitize(saved) {
     nextNote,
     outputId: typeof saved.outputId === 'string' && saved.outputId ? saved.outputId : null,
     channel,
+    proxyUrl,
   };
 }

@@ -182,7 +182,14 @@ export function renderSettings(container, settings, { symbols, roots, onChange, 
     h('span', { class: 'bulk' }, h('button', { type: 'button', onclick: () => onResetStats?.() }, 'reset')),
   );
 
-  form.append(checks('qualities', symbols, settings.qualities), checks('roots', roots, settings.roots), numbers, midiOut, statistics);
+  const ai = h('fieldset', {},
+    h('legend', {}, 'AI (Ask Claude)'),
+    h('label', { class: 'wide' }, 'Proxy URL ',
+      h('input', { type: 'url', name: 'proxyUrl', value: settings.proxyUrl ?? '', placeholder: 'https://voicing-lab-proxy.<account>.workers.dev/', spellcheck: 'false' })),
+    h('span', { class: 'note-name' }, 'The Cloudflare Worker from worker/; empty = off. The key never leaves the Worker.'),
+  );
+
+  form.append(checks('qualities', symbols, settings.qualities), checks('roots', roots, settings.roots), numbers, midiOut, ai, statistics);
   form.addEventListener('change', () => onChange(read()));
   container.replaceChildren(form);
 
@@ -217,6 +224,7 @@ export function renderSettings(container, settings, { symbols, roots, onChange, 
       nextNote: next,
       outputId: form.elements.outputId.value || null,
       channel: Math.min(16, Math.max(1, Number(form.elements.channel.value) || 1)),
+      proxyUrl: form.elements.proxyUrl.value.trim(),
     };
   }
 
@@ -226,10 +234,46 @@ export function renderSettings(container, settings, { symbols, roots, onChange, 
 /** A line under the analysis: which voicing was suggested and whether it was sent. */
 export function renderSuggestion(el, candidate, chord, { sent, index, total }) {
   el.querySelector('.suggestion')?.remove();
-  const notes = candidate.notes.map(midi => noteLabel({ midi, degree: chord.degrees[midi % 12] }, chord).replace(/ \(.*\)$/, '')).join(' ');
-  const type = candidate.type.replace(/-/g, ' ').replace(/^\w/, c => c.toUpperCase());
   const where = sent ? 'sent to MIDI out' : 'no MIDI output selected';
-  el.append(h('p', { class: 'suggestion' }, `Suggestion ${index + 1}/${total}: ${type} — ${notes} (${where}; P for the next one)`));
+  el.append(h('p', { class: 'suggestion' }, `Suggestion ${index + 1}/${total}: ${typeName(candidate.type)} — ${noteNames(candidate.notes, chord)} (${where}; P for the next one)`));
+}
+
+/** 'rootless-A' → 'Rootless A'. */
+function typeName(type) {
+  return type.replace(/-/g, ' ').replace(/^\w/, c => c.toUpperCase());
+}
+
+/** 'E3 G3 B3 D4', spelled from the chord. */
+function noteNames(notes, chord) {
+  return notes.map(midi => noteLabel({ midi, degree: chord.degrees[midi % 12] }, chord).replace(/ \(.*\)$/, '')).join(' ');
+}
+
+/** One line for the Ask Claude flow: waiting, or an error. Replaces any earlier Claude block. */
+export function renderAiStatus(el, text, level = 'hint') {
+  el.querySelector('.ai')?.remove();
+  el.append(h('p', { class: `ai ai-status ${level}` }, text));
+}
+
+/**
+ * Claude's alternatives under the analysis: each with its promised type, notes, reason and a Play
+ * button; the ones the analyzer rejected as one muted line with the reasons.
+ */
+export function renderAiSuggestions(el, result, chord, { onPlay }) {
+  el.querySelector('.ai')?.remove();
+  const { suggestions, rejected } = result;
+  const items = suggestions.map((suggestion, index) => h('li', {},
+    h('button', { type: 'button', class: 'play', onclick: () => onPlay(suggestion, index) }, `Play ${index + 1}`),
+    h('strong', {}, ` ${typeName(suggestion.label)}: `),
+    h('span', { class: 'ai-notes' }, noteNames(suggestion.notes, chord)),
+    h('span', { class: 'why' }, ` — ${suggestion.why}`)));
+  const block = h('div', { class: 'ai' },
+    h('p', { class: 'ai-title' }, `Claude${result.model ? ` (${result.model})` : ''}: ${suggestions.length ? 'press 1 or 2 to hear one' : 'nothing passed the analyzer'}`),
+    h('ol', { class: 'ai-list' }, ...items));
+  if (rejected.length) {
+    block.append(h('p', { class: 'ai-rejected' },
+      `${rejected.length} suggestion${rejected.length > 1 ? 's' : ''} rejected by the analyzer: ${rejected.map(r => r.reason).join('; ')}`));
+  }
+  el.append(block);
 }
 
 /** midi → 'suggested' outline for the keyboard, merged over the current classes. */
