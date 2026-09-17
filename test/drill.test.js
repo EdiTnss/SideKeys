@@ -15,12 +15,12 @@ test('every drill symbol parses with every root', () => {
   }
 });
 
-test('diminished chords use their bare symbols in the drill; old saved names are migrated', () => {
-  assert.ok(DRILL_SYMBOLS.includes('ø') && DRILL_SYMBOLS.includes('°'));
-  for (const old of ['m7b5', 'dim7', 'ø7', '°7']) assert.ok(!DRILL_SYMBOLS.includes(old), old);
+test('diminished chords use their symbols in the drill (ø7, bare °); old saved names are migrated', () => {
+  assert.ok(DRILL_SYMBOLS.includes('ø7') && DRILL_SYMBOLS.includes('°'));
+  for (const old of ['m7b5', 'dim7', 'ø', '°7']) assert.ok(!DRILL_SYMBOLS.includes(old), old);
   const storage = fakeStorage();
-  storage.setItem('voicing-lab.settings', JSON.stringify({ qualities: ['m7b5', 'dim7', 'ø7', '°7', 'm7'] }));
-  assert.deepEqual(loadSettings(storage).qualities, ['ø', '°', 'm7']);
+  storage.setItem('voicing-lab.settings', JSON.stringify({ qualities: ['m7b5', 'dim7', 'ø', '°7', 'm7'] }));
+  assert.deepEqual(loadSettings(storage).qualities, ['ø7', '°', 'm7']);
 });
 
 test('nextChord draws only from the selected roots and qualities', () => {

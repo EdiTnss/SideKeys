@@ -1,9 +1,9 @@
 // Drill state: what to practise, which chord comes next, settings persistence. No DOM, no theory.
 
-// Half-diminished and diminished are shown as bare symbols (ø, °): the symbol already implies
-// the seventh. The parser accepts every alias.
-export const DRILL_SYMBOLS = ['maj7', '6', '6/9', 'm7', 'm6', 'mMaj7', '7', '7b9', '7#11', '7alt', '7sus4', 'ø', '°'];
-const LEGACY_SYMBOLS = { m7b5: 'ø', 'ø7': 'ø', dim7: '°', '°7': '°' };
+// Half-diminished is shown as ø7, diminished as a bare ° (the symbol already implies the
+// diminished seventh). The parser accepts every alias.
+export const DRILL_SYMBOLS = ['maj7', '6', '6/9', 'm7', 'm6', 'mMaj7', '7', '7b9', '7#11', '7alt', '7sus4', 'ø7', '°'];
+const LEGACY_SYMBOLS = { m7b5: 'ø7', 'ø': 'ø7', dim7: '°', '°7': '°' };
 export const ROOTS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 
 export const DEFAULT_SETTINGS = Object.freeze({
