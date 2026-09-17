@@ -28,6 +28,12 @@ import {
 const $ = id => document.getElementById(id);
 
 let settings = loadSettings();
+// Running locally, the proxy is the Worker from worker/ on its usual port, so fill it in once
+// instead of making every browser profile paste it. On the published site the field stays empty.
+if (!settings.proxyUrl && ['localhost', '127.0.0.1'].includes(location.hostname)) {
+  settings = { ...settings, proxyUrl: 'http://127.0.0.1:8787/' };
+  saveSettings(settings);
+}
 let mode = 'drill';                 // 'drill' | 'progression'
 let symbol = null;                  // drill: the current chord symbol
 let chord = null;                   // the chord the next snapshot is analysed against

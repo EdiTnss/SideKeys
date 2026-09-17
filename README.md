@@ -8,11 +8,16 @@ A voicing and reharmonization trainer for jazz pianists. Connect a MIDI keyboard
 
 ## Run it
 
+On Windows, double-click `start.cmd`: it starts the page server and the AI proxy, then opens the
+app in Chrome. Closing the two console windows stops them. Anywhere else, or by hand:
+
 ```bash
 npx serve .
 ```
 
-Open http://localhost:3000 in Chrome or Edge (Web MIDI) with your keyboard connected. `midi-test.html` is a diagnostic page for MIDI in and out.
+Open http://localhost:3000 in Chrome or Edge (Web MIDI) with your keyboard connected.
+`midi-test.html` is a diagnostic page for MIDI in and out. The Claude features also need the
+proxy running, see [worker/README.md](worker/README.md).
 
 ## Tests
 
