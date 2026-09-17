@@ -125,6 +125,18 @@ export function renderMelody(container, piece) {
   );
 }
 
+/** 'Session: 12 chords, 9 clean (75%) · weak spots: 7alt b13 missing 2×' */
+export function renderStats(el, stats, { label = 'Session', spots = [] } = {}) {
+  const weak = spots.map(s => `${s.key} ${s.problem} ${s.count}×`).join(', ');
+  el.replaceChildren(`${label}: ${summaryText(stats)}`, ...(weak ? [' · weak spots: ', h('span', { class: 'weak' }, weak)] : []));
+}
+
+let summaryText = () => '';
+/** Lets app.js hand over stats.summaryLine without ui/render importing ui/stats. */
+export function useStatsSummary(fn) {
+  summaryText = fn;
+}
+
 export function renderError(container, message) {
   container.replaceChildren(h('p', { class: 'headline warn' }, message));
 }
@@ -136,7 +148,7 @@ export function fillSelect(select, options, selected) {
 }
 
 /** Checkboxes for qualities and roots, debounce and next-note inputs. Calls onChange(settings) on every edit. */
-export function renderSettings(container, settings, { symbols, roots, onChange }) {
+export function renderSettings(container, settings, { symbols, roots, onChange, onResetStats }) {
   const form = h('form', { class: 'settings-form', onsubmit: e => e.preventDefault() });
 
   const checks = (name, values, selected) => h('fieldset', {},
@@ -163,9 +175,20 @@ export function renderSettings(container, settings, { symbols, roots, onChange }
     h('label', {}, 'Channel ', h('input', { type: 'number', name: 'channel', min: 1, max: 16, value: settings.channel })),
   );
 
-  form.append(checks('qualities', symbols, settings.qualities), checks('roots', roots, settings.roots), numbers, midiOut);
+  const statsLine = h('span', { class: 'stats-cumulative' }, '');
+  const statistics = h('fieldset', {},
+    h('legend', {}, 'Statistics (all sessions)'),
+    statsLine,
+    h('span', { class: 'bulk' }, h('button', { type: 'button', onclick: () => onResetStats?.() }, 'reset')),
+  );
+
+  form.append(checks('qualities', symbols, settings.qualities), checks('roots', roots, settings.roots), numbers, midiOut, statistics);
   form.addEventListener('change', () => onChange(read()));
   container.replaceChildren(form);
+
+  function setCumulative(stats, spots) {
+    renderStats(statsLine, stats, { label: 'All sessions', spots });
+  }
 
   /** Refills the output port list when devices come and go; keeps the chosen port when it still exists. */
   function setOutputs(outputs, selectedId) {
@@ -197,7 +220,7 @@ export function renderSettings(container, settings, { symbols, roots, onChange }
     };
   }
 
-  return { setOutputs };
+  return { setOutputs, setCumulative };
 }
 
 /** A line under the analysis: which voicing was suggested and whether it was sent. */

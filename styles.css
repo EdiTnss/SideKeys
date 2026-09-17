@@ -129,3 +129,5 @@ footer a { color: inherit; }
 .melody-view .passing { color: var(--muted); }
 .melody-view .rest { color: var(--muted); }
 .recording #status { color: var(--bad); }
+.stats { margin: 0; font-size: .9rem; color: var(--muted); flex-basis: 100%; }
+.stats .weak { color: var(--warn); }

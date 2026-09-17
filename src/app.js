@@ -14,9 +14,11 @@ import { createMetronome } from './audio/metronome.js';
 import { DRILL_SYMBOLS, ROOTS, nextChord, loadSettings, saveSettings } from './ui/drill.js';
 import { createSession } from './ui/session.js';
 import { createKeyboard } from './ui/keyboard.js';
+import { emptyStats, recordAttempt, weakSpots, summaryLine, loadStats, saveStats } from './ui/stats.js';
 import {
   renderChord, renderStatus, renderAnalysis, renderComparison, clearFeedback, renderSettings,
   roleClasses, heldClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
+  renderStats, useStatsSummary,
 } from './ui/render.js';
 
 const $ = id => document.getElementById(id);
@@ -37,6 +39,9 @@ let suggestions = null;             // { symbol, previous, list, index }: cached
 let piece = null;                   // the piece on screen (grid + recorded melody)
 let recorder = null;                // active while a melody pass is being recorded
 const heldWhileRecording = new Set();
+let sessionStats = emptyStats();    // this session only
+let allStats = loadStats();         // every session, persisted
+useStatsSummary(summaryLine);
 
 const keyboard = createKeyboard($('keyboard'));
 const capture = new VoicingCapture({
@@ -76,6 +81,29 @@ function showAnalysis(analysis, notes) {
   keyboard.highlight(currentClasses);
   lastVoicing = notes;
   suggestions = null;                 // the next suggestion starts from what was just played
+  trackAttempt(analysis);
+}
+
+// ---- Statistics --------------------------------------------------------------------------
+
+function trackAttempt(analysis) {
+  const attempt = { key: symbol.slice(chord.root.length), chord, analysis };
+  sessionStats = recordAttempt(sessionStats, attempt);
+  allStats = recordAttempt(allStats, attempt);
+  saveStats(allStats);
+  showStats();
+}
+
+function showStats() {
+  renderStats($('stats'), sessionStats, { spots: weakSpots(sessionStats) });
+  settingsUi?.setCumulative(allStats, weakSpots(allStats));
+}
+
+function resetStats() {
+  allStats = emptyStats();
+  sessionStats = emptyStats();
+  saveStats(allStats);
+  showStats();
 }
 
 // ---- Suggestions -------------------------------------------------------------------------
@@ -413,7 +441,8 @@ fillSelect($('prog-library'), { ...Object.fromEntries(Object.entries(PROGRESSION
 fillSelect($('prog-key'), Object.fromEntries(ROOTS.map(r => [r, r])), 'C');
 fillGridFromLibrary();
 refreshPieceList();
-const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL_SYMBOLS, roots: ROOTS, onChange: applySettings });
+const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL_SYMBOLS, roots: ROOTS, onChange: applySettings, onResetStats: resetStats });
+showStats();
 
 connectMidi({
   onNoteOn: onMidiNoteOn,
