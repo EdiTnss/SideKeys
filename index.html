@@ -13,19 +13,34 @@
   <nav class="tabs" role="tablist">
     <button id="tab-drill" type="button" role="tab" aria-selected="true">Drill</button>
     <button id="tab-progression" type="button" role="tab" aria-selected="false">Progression</button>
+    <button id="tab-reharm" type="button" role="tab" aria-selected="false">Reharm</button>
   </nav>
   <p id="status">Requesting MIDI access…</p>
   <p id="stats" class="stats">Session: no chords yet</p>
 </header>
 
 <main>
-  <section class="drill">
+  <section id="drill-panel" class="drill">
     <div id="chord" class="chord">—</div>
     <span class="actions">
       <button id="ask" type="button">Ask Claude <kbd>A</kbd></button>
       <button id="suggest" type="button">Play suggestion <kbd>P</kbd></button>
       <button id="next" type="button">Next <kbd>Space</kbd></button>
     </span>
+  </section>
+
+  <section id="reharm-panel" class="reharm" hidden>
+    <div class="row">
+      <label>Style
+        <select id="reharm-style"></select>
+      </label>
+      <label>Intensity
+        <select id="reharm-intensity"></select>
+      </label>
+      <button id="reharm-run" type="button">Reharmonize</button>
+    </div>
+    <p id="reharm-source" class="hint"></p>
+    <div id="reharm-view"></div>
   </section>
 
   <section id="progression-panel" class="progression" hidden>

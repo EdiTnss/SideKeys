@@ -12,7 +12,7 @@ const CANDIDATE_QUALITIES = ['maj7', '6/9', 'm7', 'm6', 'mMaj7', '7', '7alt', '7
 const DOMINANT_QUALITIES = new Set(['7', '7alt', '7b9']);
 const FLAT_KEYS = new Set(['C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'Cb']);
 const LIGHT = new Set(['original', 'tritone-sub', 'related-ii', 'quality-change']);
-const STYLES = {
+export const STYLES = {
   tritone: ['tritone-sub', 'related-ii', 'quality-change', 'chromatic-approach', 'secondary-dominant', 'backdoor', 'sus-color', 'modal-interchange', 'diminished-passing', 'coltrane'],
   'chromatic-approach': ['chromatic-approach', 'diminished-passing', 'tritone-sub', 'related-ii', 'secondary-dominant', 'quality-change', 'backdoor', 'sus-color', 'modal-interchange', 'coltrane'],
   coltrane: ['coltrane', 'secondary-dominant', 'tritone-sub', 'related-ii', 'quality-change', 'chromatic-approach', 'backdoor', 'sus-color', 'modal-interchange', 'diminished-passing'],

@@ -5,7 +5,7 @@ import { parseChord } from './theory/chords.js';
 import { analyzeVoicing } from './theory/analyzer.js';
 import { PROGRESSIONS, getProgression, parseGrid, formatGrid, GridParseError } from './theory/progressions.js';
 import { suggestVoicings } from './theory/voicings.js';
-import { createPiece, addMelody, toJSON, fromJSON, savePiece, loadPiece, listPieces, deletePiece } from './theory/piece.js';
+import { createPiece, addMelody, structuralMelody, toJSON, fromJSON, savePiece, loadPiece, listPieces, deletePiece } from './theory/piece.js';
 import { VoicingCapture } from './midi/capture.js';
 import { connectMidi } from './midi/input.js';
 import { createOutput } from './midi/output.js';
@@ -17,10 +17,12 @@ import { createKeyboard } from './ui/keyboard.js';
 import { emptyStats, recordAttempt, weakSpots, summaryLine, loadStats, saveStats } from './ui/stats.js';
 import { createClient, AiError } from './ai/client.js';
 import { explainVoicing } from './ai/explain.js';
+import { reharmonize } from './ai/pipeline.js';
+import { STYLES } from './theory/candidates.js';
 import {
   renderChord, renderStatus, renderAnalysis, renderComparison, clearFeedback, renderSettings,
   roleClasses, heldClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
-  renderStats, useStatsSummary, renderAiStatus, renderAiSuggestions,
+  renderStats, useStatsSummary, renderAiStatus, renderAiSuggestions, renderReharm,
 } from './ui/render.js';
 
 const $ = id => document.getElementById(id);
@@ -43,6 +45,7 @@ let ai = createClient({ baseUrl: settings.proxyUrl });
 let aiResult = null;                // { symbol, suggestions, rejected, model }: Claude's last answer, for keys 1/2
 let asking = false;
 let piece = null;                   // the piece on screen (grid + recorded melody)
+let reharmResult = null;            // the last reharmonization, for the A/B buttons
 let recorder = null;                // active while a melody pass is being recorded
 const heldWhileRecording = new Set();
 let sessionStats = emptyStats();    // this session only
@@ -171,6 +174,59 @@ function playAiSuggestion(suggestion) {
 function playAiByIndex(index) {
   const suggestion = aiResult?.symbol === symbol ? aiResult.suggestions[index] : null;
   if (suggestion) playAiSuggestion(suggestion);
+}
+
+// ---- Reharmonize a piece ------------------------------------------------------------------
+
+// The piece with the recorded melody when there is one, otherwise the bare grid on screen.
+function reharmPiece() {
+  if (piece) return piece;
+  try {
+    return createPiece({ title: pieceTitle(), key: $('prog-key').value, timeSignature: timeSignature(), tempo: Number($('prog-tempo').value) || 120, grid: $('prog-grid').value });
+  } catch {
+    return null;
+  }
+}
+
+function showReharmSource() {
+  const target = reharmPiece();
+  if (!target) {
+    $('reharm-source').textContent = 'The grid in the Progression tab does not parse yet.';
+    return;
+  }
+  const targets = structuralMelody(target).length;
+  $('reharm-source').textContent = targets
+    ? `${target.title}: ${target.bars.length} bars, ${targets} target notes. The melody stays, the chords change.`
+    : `${target.title}: ${target.bars.length} bars, no melody recorded. Every chord fits an empty bar, so record a melody in the Progression tab for a result worth playing.`;
+}
+
+async function runReharm() {
+  const target = reharmPiece();
+  if (!target) return;
+  if (!settings.proxyUrl) {
+    renderError($('reharm-view'), 'Set the AI proxy URL in Settings first (the Worker from worker/).');
+    return;
+  }
+  $('reharm-run').disabled = true;
+  $('reharm-view').replaceChildren();
+  renderAiStatus($('reharm-view'), 'Asking Claude…');
+  try {
+    reharmResult = await reharmonize(ai, target, { style: $('reharm-style').value, intensity: $('reharm-intensity').value });
+    renderReharm($('reharm-view'), reharmResult, { onUse: useGrid });
+  } catch (error) {
+    reharmResult = null;
+    renderError($('reharm-view'), `Claude: ${error instanceof AiError ? error.message : error?.message ?? error}`);
+    console.error(error);
+  } finally {
+    $('reharm-run').disabled = false;
+  }
+}
+
+function useGrid(which) {
+  if (!reharmResult) return;
+  $('prog-library').value = 'custom';
+  $('prog-grid').value = which === 'reharm' ? reharmResult.grid : reharmResult.originalGrid;
+  setMode('progression');
 }
 
 // ---- Progression -------------------------------------------------------------------------
@@ -328,6 +384,7 @@ function showPiece(next) {
   renderMelody($('melody-view'), piece);
   $('piece-save').disabled = !piece;
   $('piece-export').disabled = !piece;
+  showReharmSource();
 }
 
 function refreshPieceList() {
@@ -380,7 +437,7 @@ async function importPiece(file) {
 
 function onVoicing(notes, { startedAt }) {
   if (mode === 'drill') return analyse(notes);
-  if (!session) return;
+  if (mode !== 'progression' || !session) return;
   if (timedRunning()) {
     const position = metronome.positionOf(startedAt);
     const location = session.locate(position.bar, position.beat);
@@ -426,13 +483,15 @@ function setMode(next) {
   if (recorder) stopRecording();
   if (mode === 'progression' && $('prog-start').disabled) stopProgression();
   mode = next;
-  $('tab-drill').setAttribute('aria-selected', String(mode === 'drill'));
-  $('tab-progression').setAttribute('aria-selected', String(mode === 'progression'));
+  for (const tab of ['drill', 'progression', 'reharm']) $(`tab-${tab}`).setAttribute('aria-selected', String(mode === tab));
   $('progression-panel').hidden = mode !== 'progression';
+  $('reharm-panel').hidden = mode !== 'reharm';
+  $('drill-panel').hidden = mode === 'reharm';
   $('next').hidden = mode !== 'drill';
   $('ask').hidden = mode !== 'drill';
   if (mode === 'drill') advance();
-  else buildSession();
+  else if (mode === 'progression') buildSession();
+  else showReharmSource();
 }
 
 function selectOutput() {
@@ -484,6 +543,8 @@ $('suggest').addEventListener('click', () => { playSuggestion(); $('suggest').bl
 $('ask').addEventListener('click', () => { askClaude(); $('ask').blur(); });
 $('tab-drill').addEventListener('click', () => setMode('drill'));
 $('tab-progression').addEventListener('click', () => setMode('progression'));
+$('tab-reharm').addEventListener('click', () => setMode('reharm'));
+$('reharm-run').addEventListener('click', () => { runReharm(); $('reharm-run').blur(); });
 $('prog-library').addEventListener('change', () => { fillGridFromLibrary(); buildSession(); });
 $('prog-key').addEventListener('change', () => { fillGridFromLibrary(); buildSession(); });
 $('prog-time').addEventListener('change', buildSession);
@@ -494,6 +555,8 @@ $('prog-stop').addEventListener('click', stopProgression);
 
 fillSelect($('prog-library'), { ...Object.fromEntries(Object.entries(PROGRESSIONS).map(([id, p]) => [id, p.name])), custom: 'Custom grid' }, 'ii-V-I');
 fillSelect($('prog-key'), Object.fromEntries(ROOTS.map(r => [r, r])), 'C');
+fillSelect($('reharm-style'), Object.fromEntries(Object.keys(STYLES).map(id => [id, id.replace(/-/g, ' ')])), 'tritone');
+fillSelect($('reharm-intensity'), { light: 'light', medium: 'medium', heavy: 'heavy' }, 'medium');
 fillGridFromLibrary();
 refreshPieceList();
 const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL_SYMBOLS, roots: ROOTS, onChange: applySettings, onResetStats: resetStats });
@@ -530,4 +593,5 @@ window.voicingLab = {
   release: () => [...capture.held, ...heldWhileRecording].forEach(note => onMidiNoteOff(note)),
   suggest: playSuggestion,
   ask: askClaude,
+  reharm: runReharm,
 };

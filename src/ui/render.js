@@ -248,6 +248,96 @@ function noteNames(notes, chord) {
   return notes.map(midi => noteLabel({ midi, degree: chord.degrees[midi % 12] }, chord).replace(/ \(.*\)$/, '')).join(' ');
 }
 
+// ---- Reharmonization ----------------------------------------------------------------------
+
+const PERCENT = value => `${Math.round(value * 100)}%`;
+
+/** The original grid and the reharmonized one, bar under bar, with the scores and the whys. */
+export function renderReharm(el, result, { onUse } = {}) {
+  const bars = reharmBars(result);
+  const why = h('p', { class: 'reharm-why' }, 'Click a changed bar for the reason.');
+
+  const row = (label, pick, changeable) => h('div', { class: 'grid-view' },
+    h('span', { class: 'row-label' }, label),
+    ...bars.map(bar => h('span', {
+      class: `bar${changeable && bar.changed ? ` changed ${bar.status}` : ''}`,
+      ...(changeable && bar.why ? { title: bar.why } : {}),
+      onclick: () => { why.textContent = barReason(bar); },
+    }, pick(bar).join(' ') || '—')),
+  );
+
+  el.replaceChildren(
+    h('p', { class: 'reharm-scores' }, scoreLine(result.scores)),
+    row('Original', bar => bar.from, false),
+    row('Reharm', bar => bar.to, true),
+    why,
+  );
+  if (result.problems.length) {
+    el.append(h('ul', { class: 'reharm-problems' }, ...result.problems.map(problem =>
+      h('li', {}, problem.bar ? `Bar ${problem.bar}: ${problem.reason}` : problem.reason))));
+  }
+  if (!result.gridParses) {
+    el.append(h('p', { class: 'reharm-problems' }, 'This grid cannot be written as text (a chord starts off the beat), so it cannot be sent to the Progression tab.'));
+  }
+  if (onUse) {
+    const useReharm = h('button', { type: 'button', onclick: () => onUse('reharm') }, 'Practise the reharm');
+    useReharm.disabled = !result.gridParses;
+    el.append(h('p', { class: 'reharm-use' },
+      h('button', { type: 'button', onclick: () => onUse('original') }, 'Practise the original'),
+      useReharm));
+  }
+}
+
+function barReason(bar) {
+  if (!bar.changed) return `Bar ${bar.bar}: unchanged.`;
+  const technique = bar.techniques.join(', ');
+  const reason = bar.why || 'no reason given';
+  return `Bar ${bar.bar} (${technique}): ${reason}`;
+}
+
+function scoreLine(scores) {
+  const target = `${Math.round(scores.densityTarget.min * 100)}–${PERCENT(scores.densityTarget.max)}`;
+  const techniques = Object.entries(scores.techniques).map(([name, count]) => `${name} ×${count}`).join(', ');
+  return [
+    `Clashes ${scores.clashes}`,
+    `avoid notes ${scores.warnings}`,
+    `density ${PERCENT(scores.density)} (target ${target}) ${scores.densityOk ? '✓' : '✗'}`,
+    `longest run ${scores.maxRun} ${scores.maxRunOk ? '✓' : '✗'}`,
+    `bass ${scores.bassSmoothness.toFixed(2)}`,
+    `techniques ${scores.techniqueMix}${techniques ? ` (${techniques})` : ''}`,
+  ].join(' · ');
+}
+
+/** One entry per bar: the original symbols, the new ones, and what happened there. */
+function reharmBars(result) {
+  const bars = result.analyzed.bars.map((bar, i) => ({
+    bar: i + 1,
+    from: bar.chords.map(chord => chord.symbol),
+    to: [],
+    changed: false,
+    status: 'ok',
+    techniques: [],
+    why: '',
+    beats: [],
+  }));
+  for (const slot of result.slots) {
+    for (const chord of slot.chords) {
+      const entry = bars[chord.bar - 1];
+      if (!entry) continue;
+      entry.beats.push({ beat: chord.beat, symbol: chord.symbol });
+      if (slot.changed && !entry.techniques.includes(slot.technique)) entry.techniques.push(slot.technique);
+      if (slot.changed && slot.why && !entry.why) entry.why = slot.why;
+      if (slot.status === 'rejected') entry.status = 'rejected';
+      else if (slot.status === 'warning' && entry.status === 'ok') entry.status = 'warning';
+    }
+  }
+  for (const entry of bars) {
+    entry.to = entry.beats.sort((a, b) => a.beat - b.beat).map(chord => chord.symbol);
+    entry.changed = entry.to.join(' ') !== entry.from.join(' ');
+  }
+  return bars;
+}
+
 /** One line for the Ask Claude flow: waiting, or an error. Replaces any earlier Claude block. */
 export function renderAiStatus(el, text, level = 'hint') {
   el.querySelector('.ai')?.remove();

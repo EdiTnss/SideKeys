@@ -137,6 +137,22 @@ footer a { color: inherit; }
    select in dark mode gave white text on white. System colors follow color-scheme. */
 select, option { background-color: Canvas; color: CanvasText; }
 
+/* Reharm */
+.reharm { display: grid; gap: .75rem; margin-bottom: 1rem; }
+.reharm .row { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+.reharm label { display: inline-flex; align-items: center; gap: .35rem; }
+.reharm select { font: inherit; padding: .3rem .5rem; border-radius: 6px; border: 1px solid var(--line); }
+.reharm-scores { margin: 0; font-size: .9rem; color: var(--muted); }
+.reharm .grid-view { align-items: center; }
+.reharm .row-label { width: 5rem; font-size: .85rem; color: var(--muted); }
+.reharm .bar { cursor: default; }
+.reharm .bar.changed { cursor: pointer; border-color: var(--tension); background: color-mix(in srgb, var(--tension) 14%, transparent); font-weight: 600; }
+.reharm .bar.changed.warning { border-color: var(--warn); background: color-mix(in srgb, var(--warn) 16%, transparent); }
+.reharm .bar.changed.rejected { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 16%, transparent); }
+.reharm-why { margin: 0; min-height: 1.5rem; color: var(--muted); }
+.reharm-problems { margin: 0; padding-left: 1.25rem; color: var(--warn); font-size: .9rem; }
+.reharm-use { display: flex; gap: .5rem; margin: .25rem 0 0; }
+
 /* Ask Claude */
 .ai { margin: .75rem 0 0; padding-top: .5rem; border-top: 1px dashed var(--line); }
 .ai-status.hint { color: var(--muted); }
