@@ -18,6 +18,7 @@ export class VoicingCapture {
     onChange = () => {},
     setTimer = (fn, ms) => setTimeout(fn, ms),
     clearTimer = id => clearTimeout(id),
+    now = () => performance.now(),
   } = {}) {
     this.debounceMs = debounceMs;
     this.nextNote = nextNote;
@@ -26,14 +27,17 @@ export class VoicingCapture {
     this.onChange = onChange;
     this.setTimer = setTimer;
     this.clearTimer = clearTimer;
+    this.now = now;
     this.held = new Set();
     this.timer = null;
     this.beforeRelease = null;
+    this.startedAt = null;         // time of the first note-on of the snapshot being built
   }
 
   noteOn(midi, velocity = 1) {
     if (velocity === 0) return this.noteOff(midi);
     if (midi === this.nextNote) return this.onNext();
+    if (this.startedAt === null) this.startedAt = this.now();
     this.held.add(midi);
     this.beforeRelease = null;
     this.restartTimer();
@@ -52,6 +56,7 @@ export class VoicingCapture {
     if (this.timer !== null) this.clearTimer(this.timer);
     this.timer = null;
     this.beforeRelease = null;
+    this.startedAt = null;
   }
 
   /** Currently held notes, sorted ascending. */
@@ -68,7 +73,9 @@ export class VoicingCapture {
     this.timer = null;
     const current = this.snapshot();
     const notes = current.length >= 2 ? current : this.beforeRelease ?? [];
+    const startedAt = this.startedAt;
     this.beforeRelease = null;
-    if (notes.length >= 2) this.onVoicing(notes);
+    this.startedAt = null;
+    if (notes.length >= 2) this.onVoicing(notes, { startedAt });
   }
 }

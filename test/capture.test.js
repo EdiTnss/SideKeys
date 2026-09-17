@@ -134,6 +134,26 @@ test('cancel() drops a pending snapshot, e.g. when the chord changes on "next"',
   assert.deepEqual(voicings, []);
 });
 
+test('each snapshot carries the time of its first note-on, so it can be placed on the grid', () => {
+  let time = 100;
+  const voicings = [];
+  const { clock, capture } = setup({ now: () => time, onVoicing: (notes, info) => voicings.push({ notes, ...info }) });
+  capture.noteOn(60, 80);
+  time = 150;
+  capture.noteOn(64, 80);
+  clock.advance(300);
+  assert.deepEqual(voicings, [{ notes: [60, 64], startedAt: 100 }]);
+  time = 1000;
+  capture.noteOn(67, 80);            // a note added to the held chord starts a new snapshot
+  clock.advance(300);
+  assert.deepEqual(voicings[1], { notes: [60, 64, 67], startedAt: 1000 });
+  capture.cancel();
+  time = 2000;
+  capture.noteOn(71, 80);
+  clock.advance(300);
+  assert.equal(voicings[2].startedAt, 2000);
+});
+
 test('onChange reports the held notes on every change, for the on-screen keyboard', () => {
   const changes = [];
   const { capture } = setup({ onChange: notes => changes.push(notes) });
