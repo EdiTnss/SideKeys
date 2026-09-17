@@ -5,16 +5,18 @@ import { parseChord } from './theory/chords.js';
 import { analyzeVoicing } from './theory/analyzer.js';
 import { PROGRESSIONS, getProgression, parseGrid, formatGrid, GridParseError } from './theory/progressions.js';
 import { suggestVoicings } from './theory/voicings.js';
+import { createPiece, addMelody, toJSON, fromJSON, savePiece, loadPiece, listPieces, deletePiece } from './theory/piece.js';
 import { VoicingCapture } from './midi/capture.js';
 import { connectMidi } from './midi/input.js';
 import { createOutput } from './midi/output.js';
+import { createRecorder } from './midi/recorder.js';
 import { createMetronome } from './audio/metronome.js';
 import { DRILL_SYMBOLS, ROOTS, nextChord, loadSettings, saveSettings } from './ui/drill.js';
 import { createSession } from './ui/session.js';
 import { createKeyboard } from './ui/keyboard.js';
 import {
   renderChord, renderStatus, renderAnalysis, renderComparison, clearFeedback, renderSettings,
-  roleClasses, heldClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion,
+  roleClasses, heldClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
 } from './ui/render.js';
 
 const $ = id => document.getElementById(id);
@@ -32,6 +34,9 @@ let outputs = [];                   // known output ports
 let lastVoicing = null;             // notes of the last chord played or suggested, for voice leading
 let currentClasses = {};            // keyboard colors of the last analysis
 let suggestions = null;             // { symbol, previous, list, index }: cached candidates for the chord on screen
+let piece = null;                   // the piece on screen (grid + recorded melody)
+let recorder = null;                // active while a melody pass is being recorded
+const heldWhileRecording = new Set();
 
 const keyboard = createKeyboard($('keyboard'));
 const capture = new VoicingCapture({
@@ -104,10 +109,10 @@ function fillGridFromLibrary() {
   $('prog-grid').value = formatGrid(getProgression(id, $('prog-key').value).bars);
 }
 
-function buildSession() {
+function buildSession({ loop = $('prog-loop').checked } = {}) {
   try {
     const grid = parseGrid($('prog-grid').value, { timeSignature: timeSignature() });
-    session = createSession(grid, { loop: $('prog-loop').checked });
+    session = createSession(grid, { loop });
   } catch (error) {
     session = null;
     $('grid-view').replaceChildren();
@@ -185,6 +190,114 @@ function setProgressionControls(running) {
   $('prog-stop').disabled = !running;
   for (const id of ['prog-library', 'prog-key', 'prog-time', 'prog-tempo', 'prog-loop', 'prog-grid']) $(id).disabled = running;
   for (const radio of document.querySelectorAll('input[name="prog-mode"]')) radio.disabled = running;
+  $('rec-start').disabled = running;
+}
+
+// ---- Recording a melody, saving and loading pieces --------------------------------------
+
+function pieceTitle() {
+  const id = $('prog-library').value;
+  return id === 'custom' ? 'Custom grid' : `${PROGRESSIONS[id].name} in ${$('prog-key').value}`;
+}
+
+function startRecording() {
+  buildSession({ loop: false });
+  if (!session) return;
+  session.reset();
+  chorus = 1;
+  showSlot(0);
+  metronome = createMetronome({ tempo: Number($('prog-tempo').value) || 120, timeSignature: timeSignature(), onBeat: onRecordingBeat });
+  recorder = createRecorder({ positionOf: metronome.positionOf, timeSignature: timeSignature() });
+  heldWhileRecording.clear();
+  recorder.start();
+  metronome.start();
+  setProgressionControls(true);
+  $('rec-start').disabled = true;
+  $('rec-stop').disabled = false;
+  document.body.classList.add('recording');
+}
+
+function onRecordingBeat({ bar, beat, countIn }) {
+  if (!recorder) return;
+  if (countIn) {
+    renderStatus($('status'), `Recording: count-in… ${beat}`, 'warn');
+    return;
+  }
+  const location = session.locate(bar, beat);
+  if (!location) {
+    stopRecording();
+    return;
+  }
+  renderStatus($('status'), `Recording: bar ${bar} · beat ${beat}`, 'warn');
+  if (location.index !== shownIndex) showSlot(location.index);
+}
+
+function stopRecording() {
+  if (!recorder) return;
+  const raw = recorder.stop(performance.now());
+  recorder = null;
+  metronome?.stop();
+  metronome = null;
+  document.body.classList.remove('recording');
+  setProgressionControls(false);
+  $('rec-stop').disabled = true;
+  showMidiStatus();
+  const base = createPiece({ title: pieceTitle(), key: $('prog-key').value, timeSignature: timeSignature(), tempo: Number($('prog-tempo').value) || 120, grid: $('prog-grid').value });
+  showPiece(addMelody(base, raw));
+  buildSession();
+}
+
+function showPiece(next) {
+  piece = next;
+  renderMelody($('melody-view'), piece);
+  $('piece-save').disabled = !piece;
+  $('piece-export').disabled = !piece;
+}
+
+function refreshPieceList() {
+  const titles = listPieces();
+  fillSelect($('piece-list'), titles.length ? Object.fromEntries(titles.map(t => [t, t])) : { '': 'no saved pieces' });
+  $('piece-load').disabled = titles.length === 0;
+  $('piece-delete').disabled = titles.length === 0;
+}
+
+function loadIntoControls(loaded) {
+  $('prog-library').value = 'custom';
+  $('prog-key').value = loaded.key;
+  $('prog-time').value = loaded.timeSignature.join('/');
+  $('prog-tempo').value = loaded.tempo;
+  $('prog-grid').value = formatGrid(loaded.bars);
+  buildSession();
+  showPiece(loaded);
+}
+
+function savePieceAs() {
+  if (!piece) return;
+  const title = window.prompt('Piece title', piece.title);
+  if (!title) return;
+  piece = { ...piece, title };
+  if (!savePiece(piece)) renderError($('summary'), 'Could not save: local storage is unavailable.');
+  refreshPieceList();
+  $('piece-list').value = title;
+  renderMelody($('melody-view'), piece);
+}
+
+function exportPiece() {
+  if (!piece) return;
+  const blob = new Blob([toJSON(piece)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = Object.assign(document.createElement('a'), { href: url, download: `${piece.title.replace(/[^\w-]+/g, '_')}.json` });
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function importPiece(file) {
+  if (!file) return;
+  try {
+    loadIntoControls(fromJSON(await file.text()));
+  } catch (error) {
+    renderError($('summary'), `Import failed: ${error.message}`);
+  }
 }
 
 // ---- Events from the keyboard -----------------------------------------------------------
@@ -202,9 +315,29 @@ function onVoicing(notes, { startedAt }) {
   recordAndRender(session.current, notes);
 }
 
+function onMidiNoteOn(note, velocity) {
+  if (recorder) {
+    recorder.noteOn(note, velocity, performance.now());
+    heldWhileRecording.add(note);
+    keyboard.highlight(heldClasses([...heldWhileRecording]));
+    return;
+  }
+  capture.noteOn(note, velocity);
+}
+
+function onMidiNoteOff(note) {
+  if (recorder) {
+    recorder.noteOff(note, performance.now());
+    heldWhileRecording.delete(note);
+    keyboard.highlight(heldClasses([...heldWhileRecording]));
+    return;
+  }
+  capture.noteOff(note);
+}
+
 function onNext() {
   if (mode === 'drill') return advance();
-  if (!session || timedRunning() || !$('prog-start').disabled) return;
+  if (!session || recorder || timedRunning() || !$('prog-start').disabled) return;
   const next = session.advance();
   if (next === null) return stopProgression();
   if (next === 0) chorusDone('Pass');
@@ -214,6 +347,7 @@ function onNext() {
 // ---- Mode switch, settings, wiring ------------------------------------------------------
 
 function setMode(next) {
+  if (recorder) stopRecording();
   if (mode === 'progression' && $('prog-start').disabled) stopProgression();
   mode = next;
   $('tab-drill').setAttribute('aria-selected', String(mode === 'drill'));
@@ -252,10 +386,17 @@ document.addEventListener('keydown', event => {
   if (event.code === 'Space') {
     event.preventDefault();
     onNext();
-  } else if (event.code === 'KeyP') {
+  } else if (event.code === 'KeyP' && !recorder) {
     playSuggestion();
   }
 });
+$('rec-start').addEventListener('click', startRecording);
+$('rec-stop').addEventListener('click', stopRecording);
+$('piece-save').addEventListener('click', savePieceAs);
+$('piece-load').addEventListener('click', () => { const loaded = loadPiece($('piece-list').value); if (loaded) loadIntoControls(loaded); });
+$('piece-delete').addEventListener('click', () => { deletePiece($('piece-list').value); refreshPieceList(); });
+$('piece-export').addEventListener('click', exportPiece);
+$('piece-import').addEventListener('change', event => { importPiece(event.target.files[0]); event.target.value = ''; });
 $('next').addEventListener('click', advance);
 $('suggest').addEventListener('click', () => { playSuggestion(); $('suggest').blur(); });
 $('tab-drill').addEventListener('click', () => setMode('drill'));
@@ -271,11 +412,12 @@ $('prog-stop').addEventListener('click', stopProgression);
 fillSelect($('prog-library'), { ...Object.fromEntries(Object.entries(PROGRESSIONS).map(([id, p]) => [id, p.name])), custom: 'Custom grid' }, 'ii-V-I');
 fillSelect($('prog-key'), Object.fromEntries(ROOTS.map(r => [r, r])), 'C');
 fillGridFromLibrary();
+refreshPieceList();
 const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL_SYMBOLS, roots: ROOTS, onChange: applySettings });
 
 connectMidi({
-  onNoteOn: (note, velocity) => capture.noteOn(note, velocity),
-  onNoteOff: note => capture.noteOff(note),
+  onNoteOn: onMidiNoteOn,
+  onNoteOff: onMidiNoteOff,
   onDevices: devices => {
     outputs = devices.outputs;
     settingsUi.setOutputs(outputs, settings.outputId);
@@ -300,7 +442,7 @@ setMode('drill');
 // voicingLab.play(60, 64, 67, 71) then voicingLab.release().
 window.voicingLab = {
   capture,
-  play: (...notes) => notes.forEach(note => capture.noteOn(note, 80)),
-  release: () => [...capture.held].forEach(note => capture.noteOff(note)),
+  play: (...notes) => notes.forEach(note => onMidiNoteOn(note, 80)),
+  release: () => [...capture.held, ...heldWhileRecording].forEach(note => onMidiNoteOff(note)),
   suggest: playSuggestion,
 };

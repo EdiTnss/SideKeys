@@ -56,6 +56,18 @@
     </div>
     <div id="grid-view" class="grid-view"></div>
     <div id="summary" class="summary"></div>
+    <div class="row piece-row">
+      <button id="rec-start" type="button">Record melody</button>
+      <button id="rec-stop" type="button" disabled>Stop recording</button>
+      <span class="spacer"></span>
+      <button id="piece-save" type="button" disabled>Save</button>
+      <select id="piece-list" aria-label="Saved pieces"></select>
+      <button id="piece-load" type="button">Load</button>
+      <button id="piece-delete" type="button">Delete</button>
+      <button id="piece-export" type="button" disabled>Export JSON</button>
+      <label class="file-button">Import JSON <input id="piece-import" type="file" accept=".json,application/json"></label>
+    </div>
+    <div id="melody-view" class="melody-view"></div>
   </section>
 
   <svg id="keyboard" class="keyboard" role="img" aria-label="Keyboard"></svg>

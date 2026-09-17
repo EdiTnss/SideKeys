@@ -116,3 +116,16 @@ footer a { color: inherit; }
 .suggestion { color: var(--tension); margin: .5rem 0 0; }
 .actions { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; }
 [hidden] { display: none !important; }
+
+/* Recording and pieces */
+.piece-row .spacer { flex: 1; }
+.file-button { cursor: pointer; padding: .5rem 1rem; border-radius: 8px; border: 1px solid color-mix(in srgb, currentColor 35%, transparent); }
+.file-button:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
+.file-button input { display: none; }
+.melody-view { display: flex; flex-wrap: wrap; gap: .4rem; }
+.melody-view .bar { flex-direction: column; align-items: flex-start; gap: .1rem; }
+.melody-view .bar-chords { font-size: .8rem; color: var(--muted); }
+.melody-view .structural { font-weight: 700; }
+.melody-view .passing { color: var(--muted); }
+.melody-view .rest { color: var(--muted); }
+.recording #status { color: var(--bad); }

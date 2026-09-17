@@ -103,6 +103,28 @@ export function renderSummary(container, summary, session, { title = 'Chorus' } 
   container.replaceChildren(line, ...(jumpy.length ? [h('ul', {}, ...jumpy)] : []));
 }
 
+/** The recorded melody under the grid: one box per bar, structural notes bold, passing notes muted. */
+export function renderMelody(container, piece) {
+  if (!piece) {
+    container.replaceChildren();
+    return;
+  }
+  const accidentals = ['G', 'D', 'A', 'E', 'B', 'F#', 'C#'].includes(piece.key) ? 'sharp' : 'flat';
+  const boxes = piece.bars.map(bar => {
+    const chords = h('span', { class: 'bar-chords' }, bar.chords.map(c => c.symbol).join(' '));
+    const notes = bar.melody.length
+      ? h('span', {}, ...bar.melody.map(note => h('span', { class: note.structural ? 'structural' : 'passing', title: `beat ${note.beat}, ${note.duration} beat${note.duration === 1 ? '' : 's'}` }, `${midiToName(note.midi, { accidentals })} `)))
+      : h('span', { class: 'rest' }, '—');
+    return h('div', { class: 'bar' }, chords, notes);
+  });
+  const count = piece.bars.reduce((n, bar) => n + bar.melody.length, 0);
+  const structural = piece.bars.reduce((n, bar) => n + bar.melody.filter(note => note.structural).length, 0);
+  container.replaceChildren(
+    h('p', { class: 'hint' }, `${piece.title}: ${count} notes, ${structural} structural (bold).`),
+    ...boxes,
+  );
+}
+
 export function renderError(container, message) {
   container.replaceChildren(h('p', { class: 'headline warn' }, message));
 }
