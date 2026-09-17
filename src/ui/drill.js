@@ -1,6 +1,8 @@
 // Drill state: what to practise, which chord comes next, settings persistence. No DOM, no theory.
 
-export const DRILL_SYMBOLS = ['maj7', '6', '6/9', 'm7', 'm6', 'mMaj7', '7', '7b9', '7#11', '7alt', '7sus4', 'm7b5', 'dim7'];
+// Half-diminished and diminished are shown with their symbols (ø7, °7); the parser accepts every alias.
+export const DRILL_SYMBOLS = ['maj7', '6', '6/9', 'm7', 'm6', 'mMaj7', '7', '7b9', '7#11', '7alt', '7sus4', 'ø7', '°7'];
+const LEGACY_SYMBOLS = { m7b5: 'ø7', dim7: '°7' };
 export const ROOTS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
 
 export const DEFAULT_SETTINGS = Object.freeze({
@@ -47,7 +49,8 @@ export function saveSettings(settings, storage = globalThis.localStorage) {
 
 function sanitize(saved) {
   const listOf = (value, allowed) => (Array.isArray(value) ? value.filter(item => allowed.includes(item)) : []);
-  const qualities = listOf(saved.qualities, DRILL_SYMBOLS);
+  const migrated = Array.isArray(saved.qualities) ? saved.qualities.map(q => LEGACY_SYMBOLS[q] ?? q) : [];
+  const qualities = listOf(migrated, DRILL_SYMBOLS);
   const roots = listOf(saved.roots, ROOTS);
   const debounceMs = Number.isFinite(saved.debounceMs) ? Math.min(2000, Math.max(50, saved.debounceMs)) : DEFAULT_SETTINGS.debounceMs;
   const nextNote = saved.nextNote === null ? null

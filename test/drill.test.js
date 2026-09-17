@@ -15,6 +15,14 @@ test('every drill symbol parses with every root', () => {
   }
 });
 
+test('diminished chords use their symbols in the drill; old saved names are migrated', () => {
+  assert.ok(DRILL_SYMBOLS.includes('ø7') && DRILL_SYMBOLS.includes('°7'));
+  assert.ok(!DRILL_SYMBOLS.includes('m7b5') && !DRILL_SYMBOLS.includes('dim7'));
+  const storage = fakeStorage();
+  storage.setItem('voicing-lab.settings', JSON.stringify({ qualities: ['m7b5', 'dim7', 'm7'] }));
+  assert.deepEqual(loadSettings(storage).qualities, ['ø7', '°7', 'm7']);
+});
+
 test('nextChord draws only from the selected roots and qualities', () => {
   const settings = { ...DEFAULT_SETTINGS, roots: ['F', 'Bb'], qualities: ['7', 'm7'] };
   const seen = new Set();
