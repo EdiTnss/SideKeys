@@ -9,7 +9,8 @@
 // Clashes and warnings are recomputed from the melody against the chosen chords, not copied
 // from the candidates: this is the safety net that proves the menu was built correctly.
 
-import { parseChord, classifyPc } from './chords.js';
+import { parseChord } from './chords.js';
+import { checkMelody } from './piece.js';
 
 export const DENSITY_TARGETS = {
   light: { min: 0, max: 0.25 },
@@ -61,7 +62,9 @@ export function resolveChoices(piece, chosen) {
 export function scoreReharm(piece, chosen, { intensity = 'medium' } = {}) {
   const slots = resolveChoices(piece, chosen);
   const sequence = slots.flatMap(s => s.chords);
-  const { clashes, warnings } = melodyAgainst(piece, sequence);
+  const issues = checkMelody(piece, sequence);                   // one source of truth, shared with piece.js
+  const clashes = issues.filter(issue => issue.relation === 'outside').length;
+  const warnings = issues.length - clashes;
 
   const changed = slots.filter(s => s.changed).length;
   const density = slots.length ? changed / slots.length : 0;
@@ -88,33 +91,6 @@ export function scoreReharm(piece, chosen, { intensity = 'medium' } = {}) {
     maxRun, maxRunOk,
     techniqueMix: Object.keys(techniques).length, techniques,
   };
-}
-
-// Every structural melody note against the chord active under it (passing notes are free).
-function melodyAgainst(piece, sequence) {
-  let clashes = 0;
-  let warnings = 0;
-  piece.bars.forEach((bar, barIndex) => {
-    for (const note of bar.melody) {
-      if (!note.structural) continue;
-      const chord = activeChord(sequence, barIndex + 1, note.beat);
-      if (!chord) continue;
-      const { role } = classifyPc(chordOf(chord.symbol), note.midi % 12);
-      if (role === 'wrong') clashes++;
-      else if (role === 'avoid') warnings++;
-    }
-  });
-  return { clashes, warnings };
-}
-
-// The last chord that starts at or before (bar, beat); the sequence is in piece order.
-function activeChord(sequence, bar, beat) {
-  let active = null;
-  for (const chord of sequence) {
-    if (chord.bar < bar || (chord.bar === bar && chord.beat <= beat + EPSILON)) active = chord;
-    else break;
-  }
-  return active;
 }
 
 // 1 − the average bass-move cost; the bass is the slash note when there is one, else the root.

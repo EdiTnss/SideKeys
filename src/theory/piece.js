@@ -6,11 +6,13 @@
 // Notes shorter than 60 ms only live in `raw`. The melody is the last recording.
 
 import { parseGrid } from './progressions.js';
-import { parseChord } from './chords.js';
+import { parseChord, classifyPc } from './chords.js';
+import { midiToName } from './notes.js';
 import { quantizePosition } from './timing.js';
 
 const STORAGE_KEY = 'voicing-lab.pieces';
 const EPSILON = 1e-9;
+const BEAT_EPSILON = 1e-6;
 
 export function createPiece({ title = 'Untitled', key = 'C', timeSignature = [4, 4], tempo = 120, grid, bars } = {}) {
   const source = bars ?? parseGrid(grid, { timeSignature }).bars;
@@ -64,6 +66,91 @@ function isStrongBeat(beat, beatsPerBar) {
 export function structuralMelody(piece) {
   return piece.bars.flatMap((bar, i) =>
     bar.melody.filter(note => note.structural).map(note => ({ bar: i + 1, midi: note.midi, beat: note.beat, duration: note.duration })));
+}
+
+// ---- The reharmonization safety net ------------------------------------------------------
+//
+// Runs on the final result whatever its source (pipeline, hand editing, import). With candidates
+// generated correctly an 'outside' issue cannot happen; if one does, it is a bug with a test to
+// write, and meanwhile the slot goes back to its original chord.
+
+const chordCache = new Map();
+const chordOf = symbol => {
+  if (!chordCache.has(symbol)) chordCache.set(symbol, parseChord(symbol));
+  return chordCache.get(symbol);
+};
+
+/**
+ * Every structural melody note against the chord sounding under it. Passing notes are free.
+ * `sequence` is the chords in piece order: [{ symbol, bar, beat }]; the caller's own objects
+ * come back on `chord`, so extra fields (an owning slot, say) survive the trip.
+ * → [{ note: { bar, beat, midi }, chord, symbol, degree, relation }], relation 'avoid' | 'outside'
+ */
+export function checkMelody(piece, sequence) {
+  const issues = [];
+  piece.bars.forEach((bar, barIndex) => {
+    for (const note of bar.melody) {
+      if (!note.structural) continue;
+      const chord = activeChord(sequence, barIndex + 1, note.beat);
+      if (!chord) continue;
+      const { role, degree } = classifyPc(chordOf(chord.symbol), note.midi % 12);
+      if (role !== 'wrong' && role !== 'avoid') continue;
+      issues.push({
+        note: { bar: barIndex + 1, beat: note.beat, midi: note.midi },
+        chord,
+        symbol: chord.symbol,
+        degree: role === 'wrong' ? null : degree,
+        relation: role === 'wrong' ? 'outside' : 'avoid',
+      });
+    }
+  });
+  return issues;
+}
+
+// The last chord that starts at or before (bar, beat); the sequence is in piece order.
+function activeChord(sequence, bar, beat) {
+  let active = null;
+  for (const chord of sequence) {
+    if (chord.bar < bar || (chord.bar === bar && chord.beat <= beat + BEAT_EPSILON)) active = chord;
+    else break;
+  }
+  return active;
+}
+
+/**
+ * validateReharm(piece, slots) → { issues, warnings, rejects, ok }
+ * `slots` is the resolved list from scoring.js. An avoid note is a warning and the slot stays;
+ * an outside note rejects the slot that put the chord there, along with any slot it covers.
+ */
+export function validateReharm(piece, slots) {
+  const sequence = slots.flatMap(slot => slot.chords.map(chord => ({ ...chord, owner: slot })));
+  const issues = checkMelody(piece, sequence).map(issue => ({
+    note: issue.note,
+    symbol: issue.symbol,
+    degree: issue.degree,
+    relation: issue.relation,
+    slot: { bar: issue.chord.owner.bar, slot: issue.chord.owner.slot },
+  }));
+
+  const rejects = [];
+  const seen = new Set();
+  const add = (bar, slot, reason) => {
+    const key = `${bar}:${slot}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    rejects.push({ bar, slot, reason });
+  };
+  for (const issue of issues) {
+    if (issue.relation !== 'outside') continue;
+    const owner = slots.find(slot => slot.bar === issue.slot.bar && slot.slot === issue.slot.slot);
+    add(issue.slot.bar, issue.slot.slot, `${midiToName(issue.note.midi)} is not in ${issue.symbol}`);
+    for (const covered of slots) {
+      if (owner?.candidate && covered.coveredBy === owner.candidate.id) {
+        add(covered.bar, covered.slot, `covered by the rejected candidate from bar ${owner.bar}`);
+      }
+    }
+  }
+  return { issues, warnings: issues.filter(issue => issue.relation === 'avoid').length, rejects, ok: rejects.length === 0 };
 }
 
 export function toJSON(piece) {
