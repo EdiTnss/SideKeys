@@ -41,18 +41,20 @@ test('nextChord never repeats the previous chord, unless it is the only one', ()
 
 test('settings survive a save/load round trip and fall back to defaults on garbage', () => {
   const storage = fakeStorage();
-  const settings = { ...DEFAULT_SETTINGS, qualities: ['7alt'], roots: ['Db'], debounceMs: 450, nextNote: 36 };
+  const settings = { ...DEFAULT_SETTINGS, qualities: ['7alt'], roots: ['Db'], debounceMs: 450, nextNote: 36, outputId: 'out-1', channel: 3 };
   assert.equal(saveSettings(settings, storage), true);
   assert.deepEqual(loadSettings(storage), settings);
 
   storage.setItem('voicing-lab.settings', '{not json');
   assert.deepEqual(loadSettings(storage), DEFAULT_SETTINGS);
 
-  storage.setItem('voicing-lab.settings', JSON.stringify({ qualities: ['nope', 'm7'], roots: ['H'], debounceMs: 'x' }));
+  storage.setItem('voicing-lab.settings', JSON.stringify({ qualities: ['nope', 'm7'], roots: ['H'], debounceMs: 'x', channel: 99, outputId: 7 }));
   const cleaned = loadSettings(storage);
   assert.deepEqual(cleaned.qualities, ['m7']);
   assert.deepEqual(cleaned.roots, DEFAULT_SETTINGS.roots);   // an empty list would block the drill
   assert.equal(cleaned.debounceMs, DEFAULT_SETTINGS.debounceMs);
+  assert.equal(cleaned.channel, 1);
+  assert.equal(cleaned.outputId, null);
 
   assert.deepEqual(loadSettings(undefined), DEFAULT_SETTINGS);     // no storage at all
   assert.equal(saveSettings(settings, undefined), false);

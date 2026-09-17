@@ -29,7 +29,11 @@ export function suggestVoicings(chord, { register = DEFAULT_REGISTER, previous =
     const at = TYPE_PRIORITY.indexOf(candidate.type);
     return at === -1 ? TYPE_PRIORITY.length : at;
   };
-  candidates.sort((a, b) => (previous ? a.comparison.movement - b.comparison.movement : 0) || rank(a) - rank(b));
+  // With a previous voicing: keep its texture (same number of notes) first, then move as little
+  // as possible; a two-note shell would otherwise always "win" against a four-note voicing.
+  const sizeGap = candidate => Math.abs(candidate.notes.length - previous.length);
+  candidates.sort((a, b) =>
+    (previous ? sizeGap(a) - sizeGap(b) || a.comparison.movement - b.comparison.movement : 0) || rank(a) - rank(b));
   return candidates;
 }
 

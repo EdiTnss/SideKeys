@@ -37,8 +37,17 @@ test('after Dm7 in the A form, the closest G7 is the B form: F A B E', () => {
   assert.deepEqual(best.notes, v('F3 A3 B3 E4'));
   assert.equal(best.type, 'rootless-B');
   assert.equal(best.comparison.movement, 1);
-  const movements = suggest('G7', { previous: v('F3 A3 C4 E4') }).map(c => c.comparison.movement);
-  assert.deepEqual(movements, [...movements].sort((a, b) => a - b));   // sorted by movement
+  const movements = suggest('G7', { previous: v('F3 A3 C4 E4') }).filter(c => c.notes.length === 4).map(c => c.comparison.movement);
+  assert.deepEqual(movements, [...movements].sort((a, b) => a - b));   // four-note candidates sorted by movement
+});
+
+test('suggestions keep the texture: same note count as the previous voicing first, then least movement', () => {
+  const after4 = suggest('Em7', { previous: v('F3 A3 C4 E4') });
+  assert.equal(after4[0].notes.length, 4);                             // not a two-note shell
+  const fourNoteMovements = after4.filter(c => c.notes.length === 4).map(c => c.comparison.movement);
+  assert.deepEqual(fourNoteMovements, [...fourNoteMovements].sort((a, b) => a - b));
+  const after2 = suggest('Em7', { previous: v('F3 C4') });
+  assert.equal(after2[0].notes.length, 2);                             // a shell follows a shell
 });
 
 test('altered dominants fill the 9 and 13 slots with what the chord allows', () => {

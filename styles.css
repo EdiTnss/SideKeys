@@ -110,3 +110,9 @@ footer a { color: inherit; }
 .summary .jumpy { color: var(--warn); }
 .comparison { color: var(--muted); margin: 0 0 .5rem; }
 .comparison.jumpy { color: var(--warn); }
+
+/* Suggestions */
+.key.suggested { stroke: var(--tension); stroke-width: 3; stroke-dasharray: 4 2; }
+.suggestion { color: var(--tension); margin: .5rem 0 0; }
+.actions { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: flex-end; }
+[hidden] { display: none !important; }

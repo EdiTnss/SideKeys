@@ -134,9 +134,26 @@ export function renderSettings(container, settings, { symbols, roots, onChange }
       h('span', { class: 'note-name' }, settings.nextNote === null ? '' : ` = ${midiToName(settings.nextNote)}`)),
   );
 
-  form.append(checks('qualities', symbols, settings.qualities), checks('roots', roots, settings.roots), numbers);
+  const outputSelect = h('select', { name: 'outputId' }, h('option', { value: '' }, 'no MIDI output'));
+  const midiOut = h('fieldset', {},
+    h('legend', {}, 'MIDI out (suggestions)'),
+    h('label', {}, 'Port ', outputSelect),
+    h('label', {}, 'Channel ', h('input', { type: 'number', name: 'channel', min: 1, max: 16, value: settings.channel })),
+  );
+
+  form.append(checks('qualities', symbols, settings.qualities), checks('roots', roots, settings.roots), numbers, midiOut);
   form.addEventListener('change', () => onChange(read()));
   container.replaceChildren(form);
+
+  /** Refills the output port list when devices come and go; keeps the chosen port when it still exists. */
+  function setOutputs(outputs, selectedId) {
+    const wanted = selectedId ?? outputSelect.value;
+    outputSelect.replaceChildren(
+      h('option', { value: '' }, outputs.length ? 'first available' : 'no MIDI output'),
+      ...outputs.map(o => h('option', { value: o.id }, o.name)),
+    );
+    outputSelect.value = outputs.some(o => o.id === wanted) ? wanted : '';
+  }
 
   function setAll(name, checked) {
     for (const box of form.querySelectorAll(`input[name="${name}"]`)) box.checked = checked;
@@ -153,6 +170,26 @@ export function renderSettings(container, settings, { symbols, roots, onChange }
       roots: listOf('roots'),
       debounceMs: Number(form.elements.debounceMs.value) || settings.debounceMs,
       nextNote: next,
+      outputId: form.elements.outputId.value || null,
+      channel: Math.min(16, Math.max(1, Number(form.elements.channel.value) || 1)),
     };
   }
+
+  return { setOutputs };
+}
+
+/** A line under the analysis: which voicing was suggested and whether it was sent. */
+export function renderSuggestion(el, candidate, chord, { sent, index, total }) {
+  el.querySelector('.suggestion')?.remove();
+  const notes = candidate.notes.map(midi => noteLabel({ midi, degree: chord.degrees[midi % 12] }, chord).replace(/ \(.*\)$/, '')).join(' ');
+  const type = candidate.type.replace(/-/g, ' ').replace(/^\w/, c => c.toUpperCase());
+  const where = sent ? 'sent to MIDI out' : 'no MIDI output selected';
+  el.append(h('p', { class: 'suggestion' }, `Suggestion ${index + 1}/${total}: ${type} — ${notes} (${where}; P for the next one)`));
+}
+
+/** midi → 'suggested' outline for the keyboard, merged over the current classes. */
+export function withSuggestion(classes, notes) {
+  const merged = { ...classes };
+  for (const midi of notes) merged[midi] = merged[midi] ? `${merged[midi]} suggested` : 'suggested';
+  return merged;
 }

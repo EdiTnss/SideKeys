@@ -11,6 +11,8 @@ export const DEFAULT_SETTINGS = Object.freeze({
   roots: [...ROOTS],
   debounceMs: 300,
   nextNote: 28,          // E1, the lowest key on a 76-key Genos; null = keyboard/button only
+  outputId: null,        // MIDI output port id; null = the first one available
+  channel: 1,            // MIDI channel for suggestions
 });
 
 const STORAGE_KEY = 'voicing-lab.settings';
@@ -57,10 +59,13 @@ function sanitize(saved) {
   const nextNote = saved.nextNote === null ? null
     : Number.isInteger(saved.nextNote) && saved.nextNote >= 0 && saved.nextNote <= 127 ? saved.nextNote
       : DEFAULT_SETTINGS.nextNote;
+  const channel = Number.isInteger(saved.channel) && saved.channel >= 1 && saved.channel <= 16 ? saved.channel : DEFAULT_SETTINGS.channel;
   return {
     qualities: qualities.length ? qualities : [...DEFAULT_SETTINGS.qualities],
     roots: roots.length ? roots : [...DEFAULT_SETTINGS.roots],
     debounceMs,
     nextNote,
+    outputId: typeof saved.outputId === 'string' && saved.outputId ? saved.outputId : null,
+    channel,
   };
 }
