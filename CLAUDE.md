@@ -38,6 +38,7 @@ Ambele scopuri sunt egale. Dacă o decizie tehnică ajută portofoliul dar stric
 
 ```
 index.html                 pagina aplicației
+styles.css                 stilurile paginii (folderul styles/ e pentru profilurile JSON, Faza 5)
 midi-test.html             Faza 0 — diagnostic MIDI in/out (rămâne în repo ca tool)
 src/
   app.js                   singurul loc care leagă theory, midi și ui
@@ -57,7 +58,6 @@ src/
   ui/drill.js              starea drill-ului: setări, acordul următor, localStorage
   ui/keyboard.js           claviatura SVG, colorată pe rol
   ui/render.js             randare DOM, fără logică de teorie aici
-styles.css                 stilurile paginii (folderul styles/ e pentru profilurile JSON, Faza 5)
   ai/client.js             apel spre proxy (Faza 3a)
   ai/prompts.js            toate prompturile, versionate (Faza 3a)
   ai/pipeline.js           orchestrare plan → execute → review (Faza 3b)
@@ -213,7 +213,7 @@ Principiu: **melodia e fixă, acordurile se schimbă.** Claude propune, `piece.j
 }
 ```
 
-Grila vine din inputul text al Fazei 2 (`| Gm7 C7 | Fmaj7 | % |` — două simboluri într-o măsură = împărțire egală; `%` = repetă măsura anterioară). Melodia vine din `recorder.js`.
+Grila vine din inputul text al Fazei 2 (`| Gm7 C7 | Fmaj7 | % |`): acordurile dintr-o măsură împart timpii egal când numărul lor divide măsura (1, 2, 4 în 4/4; 1, 3 în 3/4), altfel `GridParseError` cu numărul măsurii — durate explicite se adaugă când va fi nevoie; `%` = repetă măsura anterioară; `formatGrid` face drumul invers. Biblioteca (`PROGRESSIONS`) e scrisă în C ca text de grilă și se transpune cu ortografia tonalității-țintă (bemoli în F, Bb, Eb…, diezi în G, D, A, E, B, F#; niciodată Cb/Fb/E#/B# pe fundamentale). Melodia vine din `recorder.js`.
 
 ### Înregistrarea melodiei (`recorder.js`, Faza 2)
 
@@ -447,3 +447,4 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 - **2026-09-17 (analyzer)** — Design aprobat de Edi; **`analyzer.js` implementat, 34/34 teste** (14 noi: fiecare tip de voicing cu caz pozitiv și negativ, cum cere DoD-ul). Schimbare de spec descoperită la scrierea testelor: quartal se verifică înaintea drop-urilor (4 cvarte suprapuse sunt și un drop 2). Poziție strânsă = întindere ≤ 12 semitonuri. Din DoD-ul Fazei 1 rămân: `midi/input.js` (snapshot), UI-ul de drill cu claviatură SVG, `index.html`, tasta „next", sesiunea de 20 de minute. **Următorul pas**: propunere pentru `input.js` + UI minimal, apoi implementare.
 - **2026-09-17 (drill-ul rulează)** — Aprobat de Edi: captura ca `midi/capture.js` (logică pură, 9 teste pe ceas fals) + `midi/input.js` (cablaj Web MIDI, `parseMidiMessage` testat), „next" = Space sau E1 (MIDI 28, configurabil). Implementat: `ui/drill.js` (setări persistate, teste), `ui/keyboard.js` (SVG E1–G7, 76 de clape ca Genos, colorate pe rol), `ui/render.js`, `app.js`, `index.html`, `styles.css`; CI pe GitHub Actions (Node 22/24) cu badge; hook de debug `window.voicingLab.play(...)` pentru consolă fără clapă. Verificat în browser: rootless A recunoscut, avertismentele în ordine, Space și E1 avansează. **48/48 teste.** Structura din plan s-a schimbat: `midi/capture.js` nou, `src/app.js` e cablajul, `styles.css` la rădăcină (folderul `styles/` rămâne pentru profilurile JSON din Faza 5). **Următorul pas**: sesiunea de 20 de minute a lui Edi pe Genos (DoD Faza 1); bug-urile și observațiile lui intră ca teste.
 - **2026-09-17 (Faza 1 bifată)** — Edi a făcut sesiunea pe Genos: fără bug-uri, fără consolă. **DoD Faza 1 îndeplinit** (parser 40+ simboluri, fiecare tip de voicing cu caz pozitiv și negativ, 49 de teste). Singura cerere: în UI, half-diminished și diminished se afișează cu simbolurile lor, `ø7` și `°` fără 7, pentru că simbolul de diminished implică deja septima micșorată (ids-urile interne rămân `m7b5` / `dim7`; setările salvate cu numele vechi migrează). **Următorul pas**: Faza 2, în ordinea: `progressions.js` + parser de grilă text → voice leading (`compareVoicings`) → metronom Web Audio + modul progresie în UI → `output.js` (MIDI out, canalul 1, confirmat în Faza 0) → `recorder.js` + `piece.js` → statistici de sesiune.
+- **2026-09-17 (Faza 2, pasul 1)** — Notație finală în drill: `ø7` și `°` (Edi: doar diminished pierde 7-ul). Ordinea Fazei 2 și biblioteca de progresii aprobate. **`progressions.js` implementat, 57/57 teste**: `parseGrid` / `formatGrid` (împărțire egală sau eroare cu numărul măsurii, `%`), `transposeSymbol` / `transposeGrid` (ortografie după tonalitate), `PROGRESSIONS` (ii-V-I, ii-V-i cu Cm6, blues, jazz blues, rhythm changes A, turnaround, Coltrane) și `getProgression(id, key)`. **Următorul pas**: pasul 2, `theory/voiceLeading.js` cu `compareVoicings`, după confirmarea designului.

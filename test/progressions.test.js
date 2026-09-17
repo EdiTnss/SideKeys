@@ -73,7 +73,7 @@ test('transposeGrid: spelling follows the target key, intervals are preserved', 
       const after = parseChord(moved.bars[i].chords[j].symbol).chordTones;
       assert.deepEqual(after, before.map(pc => (pc + interval) % 12), `${key}: ${chord.symbol}`);
     }));
-    assert.deepEqual(moved.bars[i = 0] && moved.bars[0].chords[0].beat, 1);
+    assert.equal(moved.bars[0].chords[0].beat, 1);
   }
 });
 
