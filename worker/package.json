@@ -8,6 +8,7 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "check": "wrangler deploy --dry-run",
+    "check-key": "node check-key.mjs",
     "secret": "wrangler secret put ANTHROPIC_API_KEY"
   },
   "devDependencies": {

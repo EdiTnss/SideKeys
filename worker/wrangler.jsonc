@@ -6,6 +6,8 @@
   "name": "voicing-lab-proxy",
   "main": "src/index.js",
   "compatibility_date": "2026-09-17",
+  // Declared, never stored here: Wrangler warns in local dev and on deploy when it is missing.
+  "secrets": { "required": ["ANTHROPIC_API_KEY"] },
   "vars": {
     // Browsers send only the origin (scheme + host), never the path, so the GitHub Pages
     // entry does not depend on the repo name.
