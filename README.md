@@ -4,4 +4,4 @@ A voicing and reharmonization trainer for jazz pianists. Connect a MIDI keyboard
 
 **Status:** work in progress. Phase 0 is done: `midi-test.html` checks MIDI in and out.
 
-Run locally with `npx serve .` in Chrome or Edge (Web MIDI), and run the tests with `npm test` (Node 20+). MIT licensed.
+Run locally with `npx serve .` in Chrome or Edge (Web MIDI), and run the tests with `npm test` (Node 22+). MIT licensed.

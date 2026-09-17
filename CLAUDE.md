@@ -24,7 +24,7 @@ Ambele scopuri sunt egale. Dacă o decizie tehnică ajută portofoliul dar stric
 - **Vanilla JS**, ES modules (`<script type="module">`), fără framework, fără bundler, **zero dependențe npm în aplicație**.
 - **Browser țintă**: Chrome/Edge (Web MIDI). Safari nu suportă Web MIDI; nu ne adaptăm pentru el, dar demo mode (Faza 4) trebuie să meargă oriunde.
 - **Dev server**: ES modules nu se încarcă de pe `file://` (CORS), deci pornim cu `npx serve .` sau extensia Live Server din VS Code. `localhost` e context securizat, deci Web MIDI funcționează.
-- **Teste**: `node --test` (test runner-ul încorporat în Node, fără instalare; Node ≥ 20), pornit cu `npm test`. `package.json` există doar pentru `"type": "module"` (Node tratează `.js` ca ES modules pe orice versiune) și scriptul de test — **fără nicio dependență**. Modulele din `src/theory/` sunt JS pur, fără DOM, exact ca să poată fi testate în Node.
+- **Teste**: `node --test` (test runner-ul încorporat în Node, fără instalare; Node ≥ 22 — 20 a ieșit din suport în aprilie 2026), pornit cu `npm test`. CI pe GitHub Actions rulează `npm test` pe Node 22 și 24 la fiecare push, cu badge în README; GitHub pornește o singură rulare per push, pe ultimul commit, deci commit-urile `test:` roșii dinaintea `feat:` nu produc rulări roșii dacă se împing împreună. `package.json` există doar pentru `"type": "module"` (Node tratează `.js` ca ES modules pe orice versiune) și scriptul de test — **fără nicio dependență**. Modulele din `src/theory/` sunt JS pur, fără DOM, exact ca să poată fi testate în Node.
 - **Deploy**: GitHub Pages (static, HTTPS → Web MIDI merge). Proxy-ul AI din Faza 3a e separat, pe Cloudflare Workers.
 - **Cheia Anthropic nu ajunge niciodată în frontend sau în repo.** Doar în variabilele de mediu ale Worker-ului (local în `worker/.dev.vars`, ignorat de git).
 - Singura excepție de la „zero dependențe": `worker/` are propriul `package.json` cu `wrangler` ca dev dependency, pentru rulare locală și deploy. Rămâne izolat în folderul lui; aplicația din `src/` nu importă nimic din npm.
@@ -60,6 +60,7 @@ eval/pieces/*.json         piese de test din domeniul public (Faza 5)
 eval/run.js                rulează pipeline-ul pe piesele de test și raportează metrici (Faza 5)
 worker/                    Cloudflare Worker — proxy Anthropic, fără logică (Faza 3a)
 test/                      *.test.js, rulate cu node --test
+.github/workflows/test.yml CI: npm test pe Node 22 și 24, la fiecare push (Faza 1)
 package.json               fără dependențe: "type": "module" + npm test
 README.md                  engleză, cu GIF/video demo
 LICENSE                    MIT
@@ -71,8 +72,8 @@ Regula de dependență: `theory/` nu importă nimic din `midi/`, `ui/` sau `ai/`
 ## Cum funcționează captura (snapshot de voicing)
 
 1. `input.js` ține un `Set` cu notele apăsate acum (note-on adaugă, note-off / velocity 0 scoate).
-2. La fiecare **note-on**, resetează un timer de ~300 ms. Note-off scoate nota din set, dar nu repornește timer-ul. Când timer-ul expiră și setul are ≥ 2 note, emite un eveniment `voicing` cu notele sortate crescător.
-3. Motivul: când te așezi pe un acord, notele nu ajung simultan; fără debounce am analiza și stările intermediare. Note-off nu repornește timer-ul pentru că nici degetele nu se ridică simultan: altfel analizorul ar primi, după 300 ms, un acord parțial și ar raporta „lipsește 7" pe un acord cântat corect. 300 ms e punct de plecare, se face configurabil.
+2. La fiecare **note-on**, resetează un timer de ~300 ms. Note-off scoate nota din set, dar nu repornește timer-ul; în schimb, primul note-off de după ultimul note-on reține o copie a setului de dinaintea lui. Când timer-ul expiră, emite un eveniment `voicing` cu notele sortate crescător: setul curent, dacă are ≥ 2 note; altfel copia reținută, dacă are ≥ 2 note; altfel nimic.
+3. Motivul: când te așezi pe un acord, notele nu ajung simultan; fără debounce am analiza și stările intermediare. Note-off nu repornește timer-ul pentru că nici degetele nu se ridică simultan: altfel analizorul ar primi, după 300 ms, un acord parțial și ar raporta „lipsește 7" pe un acord cântat corect. Copia de dinaintea primului note-off acoperă acordurile staccato (apăsate și eliberate sub 300 ms), care altfel n-ar produce niciun snapshot; setul curent are prioritate ca o notă greșită corectată rapid să nu fie raportată. 300 ms e punct de plecare, se face configurabil.
 4. Nota de „next" (o notă foarte gravă, configurabilă) e interceptată înainte să intre în set, ca să nu ajungă în analiza acordului ținut.
 5. Ascultăm pe toate canalele. Genos poate transmite părțile pe canale diferite; filtrăm doar dacă apar note nedorite (ex. de la acompaniamentul auto — de dezactivat din Genos în timpul studiului).
 
@@ -85,9 +86,17 @@ Note ca numere MIDI (60 = C4, notație științifică). Genos afișează aceeaș
 Gramatică: `root` `quality` `extensions*` `(/bass)?`
 
 - root: `[A-G](#|b)?`
-- quality: `maj7 | Δ | Δ7 | M7 | m7 | -7 | min7 | 7 | m7b5 | ø | ø7 | dim7 | °7 | o7 | 6 | m6 | -6 | 6/9 | sus4 | 7sus4` (lista se extinde la nevoie). Se alege **cea mai lungă potrivire** din aliasuri, ca `m7b5` să nu fie citit `m7` + rest și `C6/9` să nu fie citit `C6` cu bas.
-- prescurtări: o extensie fără 7 implică 7-ul calității — `C9`, `C13` = `C7` + 9 / 13; `Cm9`, `Cm11` = `Cm7` + 9 / 11; `Cmaj9` = `Cmaj7` + 9.
-- extensions: `9 | b9 | #9 | 11 | #11 | 13 | b13 | alt`, opțional în paranteze (`C7(b9)`) — `alt` = {b9, #9, #11, b13}
+- quality, cu aliasurile acceptate (lista e ținta; parserul acceptă doar calitățile care au rând în tabel):
+  - `maj7`: `maj7 | Δ | Δ7 | ∆ | ∆7 | M7 | MA7 | ma7`
+  - `m7`: `m7 | -7 | min7 | mi7 | MI7`
+  - `7`: `7`
+  - `m7b5`: `m7b5 | ø | ø7 | Ø | Ø7 | mi7(b5)`
+  - `dim7`: `dim7 | °7 | º7 | o7`
+  - `6`: `6`; `6/9`: `6/9 | 69`; `m6`: `m6 | -6`; `mMaj7`: `mMaj7 | m(maj7) | -Δ | -Δ7 | mM7`; `sus4`: `sus4 | sus`; `7sus4`: `7sus4 | 7sus`
+  - triade și augmentate, când primesc rând: `maj` (fără sufix, ex. `C`, `C/E`), `m` (`m | -`), `+` (`+ | aug`), `7#5` (`7#5 | +7 | 7+`)
+  - Se alege **cea mai lungă potrivire** din aliasuri, ca `m7b5` să nu fie citit `m7` + rest și `C6/9` să nu fie citit `C6` cu bas. `Δ` (U+0394) și `∆` (U+2206), `°` și `º`, `ø` și `Ø` arată la fel în majoritatea fonturilor, de aceea sunt toate acceptate.
+- prescurtări: o extensie fără 7 implică 7-ul calității — `C9`, `C13` = `C7` + 9 / 13; `Cm9`, `Cm11` = `Cm7` + 9 / 11; `Cmaj9` = `Cmaj7` + 9; `Calt` = `C7alt`.
+- extensions: `9 | b9 | #9 | 11 | #11 | 13 | b13 | alt`, opțional în paranteze, separate prin virgulă sau spațiu (`C7(b9,#11)`) — `alt` = {b9, #9, #11, b13}. Pe dominante, `b5` și `#5` sunt aliasuri pentru `#11` și `b13` (același pitch class).
 - extensiile scrise explicit schimbă acordul:
   - `b9` → b9 devine obligatoriu (intră în `required`), 9 natural devine wrong
   - `alt` → 5, 9 și 13 naturale devin wrong
@@ -110,7 +119,7 @@ Chord tones, tensiuni și note obligatorii (jazz standard). Tabelul trăiește �
 | quality | chord tones | required | tensiuni disponibile | avoid | caution |
 |---|---|---|---|---|---|
 | maj7 | 1 3 5 7 | 3 7 | 9, #11, 13 | 11 (semiton peste 3) | — |
-| 6 | 1 3 5 6 | 3 6 | 9, #11 | 11 | — |
+| 6 | 1 3 5 6 | 3 6 | 9, #11, 7 | 11 | — |
 | m7 | 1 b3 5 b7 | b3 b7 | 9, 11, 13 | — | 13 când funcția e ii (anticipează terța lui V); nimic când e i |
 | 7 (dominantă) | 1 3 5 b7 | 3 b7 | 9, 13 + alterate b9, #9, #11, b13 | 11 | — |
 | 7sus4 | 1 4 5 b7 | 4 b7 | 9, 13 | 3 (dacă nu e cerut explicit) | — |
@@ -122,9 +131,9 @@ Regulile tabelului:
 - **Listele sunt complete.** Pentru o calitate din tabel, orice pitch class care nu e chord tone, tensiune (disponibilă sau alterată) sau avoid e **wrong note** (ex. Db pe Cmaj7 e wrong, nu avoid).
 - **Caution e subset al tensiunilor disponibile**: nota e validă (inclusiv ca notă de melodie în candidați și la validare), iar analizorul o marchează doar informativ.
 - **Sus vs 11**: sus = terța e înlocuită cu 2 sau 4, deci e o calitate separată (`7sus4`), unde nota e treapta 4 și e chord tone. Cu terța prezentă, aceeași notă e 11 (extensie în sus) și pe maj7 și 7 e avoid.
-- **Funcția lui m7** vine din context: `parseChord(symbol, { minorFunction: 'ii' | 'i' })`, implicit `ii`. În drill acordurile sunt izolate, deci ii; din Faza 2 progresia știe treapta.
-- **Regula generică de rezervă** (o notă la un semiton deasupra unui chord tone e avoid, în afara b9 pe dominantă) se aplică doar calităților care nu au încă rând în tabel.
-- Calități din gramatică fără rând încă: `m6`, `6/9`, `sus4` — se adaugă după ce Edi confirmă rândurile.
+- **Funcția lui m7** vine din context: `parseChord(symbol, { minorFunction: 'ii' | 'i' })`, implicit `ii`. În drill acordurile sunt izolate, deci ii; din Faza 2 progresia știe treapta. Enum-ul rămâne extensibil: în tonal, iii are b9 și b13 avoid, vi are b13 avoid — se adaugă când `analysis.js` știe treapta.
+- Nu există regulă generică de avoid: tabelul e singura sursă. O calitate fără rând nu se parsează.
+- Calități din gramatică fără rând încă: `m6`, `6/9`, `sus4`, `mMaj7`, triadele, `+`, `7#5` — se adaugă după ce Edi confirmă rândurile.
 
 ### Clasificarea voicing-ului (`analyzer.js`)
 
@@ -136,15 +145,17 @@ Intrare: notele cântate (MIDI, sortate) + acordul parsat. Ieșire ordonată dup
 4. **Dublări**: același pitch class de mai multe ori (excepție root/5 în bas) → informativ.
 5. **Tipul de voicing**, detectat în ordinea asta (prima potrivire câștigă):
    - **shell**: doar {3, 7} sau {3, 7} + root (2–3 note)
-   - **rootless A**: 4 note, de jos în sus 3-5-7-9 (pe dominantă 3-13-7-9)
-   - **rootless B**: 4 note, de jos în sus 7-9-3-5 (pe dominantă 7-9-3-13)
-   - **drop 2**: 4 note; dacă ridici nota a doua de sus cu o octavă, obții poziție strânsă (toate notele într-o octavă)
-   - **drop 3**: idem cu nota a treia de sus
-   - **drop 2&4**: analog
+   - **rootless A**: 4 note, de jos în sus 3-5-7-9; pe dominantă slotul 2 acceptă 5, 13 sau b13 și slotul 4 acceptă 9, b9 sau #9 (G7alt în forma A e B Eb F Ab)
+   - **rootless B**: 4 note, de jos în sus 7-9-3-5; pe dominantă slotul 2 acceptă 9, b9 sau #9 și slotul 4 acceptă 5, 13 sau b13
+   - **drop 2**: 4 note; dacă ridici **nota cea mai de jos** cu o octavă obții poziție strânsă (toate notele într-o octavă) și nota ridicată ajunge a doua de sus. Exemplu: G3 C4 E4 B4 → C4 E4 G4 B4, G e a doua de sus
+   - **drop 3**: idem, dar nota ridicată ajunge a treia de sus. Exemplu: E3 C4 G4 B4 → C4 E4 G4 B4, E e a treia de sus
+   - **drop 2&4**: ridici cele două note de jos cu o octavă, obții poziție strânsă și ele ajung a doua și a patra de sus. Exemplu: C3 G3 E4 B4 → C4 E4 G4 B4
+   - Regula e inversul derivării (drop 2 = din poziția strânsă cobori a doua voce de sus cu o octavă, deci ea devine nota cea mai de jos); a ridica „a doua de sus" din voicing-ul cântat nu dă niciodată poziție strânsă
    - **quartal**: ≥ 3 note, toate intervalele adiacente sunt 4P sau 4A; o singură 3M tolerată (ca în voicing-urile „So What"), dar doar de la 4 note în sus — cu 3 note, 4P + 3M e o triadă în inversiunea a doua (D-G-B)
    - **upper structure triad**: pe dominantă, cele 3 note de sus formează o triadă majoră/minoră a cărei fundamentală nu e root-ul acordului, deasupra unei baze de 3/7
    - **close**: toate notele într-o octavă (și nu s-a potrivit nimic mai sus)
    - **spread / open**: orice altceva
+   - **Bas separat**: dacă nota cea mai de jos e root sau 5, se clasifică și restul notelor fără ea; dacă restul primește un tip mai specific decât close/spread, se raportează `bass: 'root' | '5'` + tipul restului (C2 + E4 G4 B4 D5 → „root + rootless A", cum se compă fără basist). C E G B strâns rămâne close, pentru că restul (E G B) nu se potrivește nicăieri.
 6. **Voice leading** față de voicing-ul anterior (doar în modul progresie): asociază fiecare notă cu cea mai apropiată din voicing-ul precedent (greedy e suficient pentru 3–5 note), raportează suma deplasărilor în semitonuri și numărul de note comune. Scor: sumă mică + multe note comune = bun. Nu penaliza salturile intenționate de registru (dacă ambele voicings sunt „spread", tolerează).
 
 Ieșirea analizorului e un obiect JSON simplu; UI-ul îl randează, iar în Faza 3a exact același obiect intră în promptul spre Claude.
@@ -175,7 +186,7 @@ Grila vine din inputul text al Fazei 2 (`| Gm7 C7 | Fmaj7 | % |` — două simbo
 ### Înregistrarea melodiei (`recorder.js`, Faza 2)
 
 1. Utilizatorul pornește metronomul pe grilă (o măsură de count-in) și cântă melodia o singură dată, pe mâna dreaptă.
-2. Fiecare note-on e marcat cu `AudioContext.currentTime` (același ceas ca metronomul, nu `Date.now()` — altfel se decalează).
+2. Fiecare note-on e marcat cu `event.timeStamp` al evenimentului Web MIDI (ceasul `performance.now()`, momentul real al notei, nu momentul în care rulează handler-ul), convertit în ceasul metronomului (`AudioContext`) printr-un offset calculat o dată la pornire cu `AudioContext.getOutputTimestamp()`. Nu `Date.now()` — altfel se decalează.
 3. Timpul se transformă în `(bar, beat)` și se cuantizează la optime (configurabil la triolete/șaisprezecimi mai târziu). Duration = până la note-off sau până la următoarea notă.
 4. Note foarte scurte (< 60 ms) și ornamentele sub o optime se păstrează în datele brute dar nu intră în melodia „structurală" trimisă la reharm — acolo contează nota de pe fiecare timp tare și notele ținute.
 5. Dacă o măsură rămâne fără note (pauză), se marchează `melody: []` — orice acord e valid acolo.
@@ -205,7 +216,7 @@ Pe fiecare slot de acord:
 - `roman`: treaptă relativă la tonalitate, cu dominante secundare (`V7/ii`), împrumuturi (`bVI`, `iv`) și „?" când nu se încadrează
 - `function`: `T` / `S` / `D` / `passing`
 - `cadence`: `true` când slotul e V (sau tritonalul lui) care rezolvă pe următorul slot cu o cvintă în jos / semiton
-- `guideTones`: pitch class-urile 3 și 7 ale acordului original
+- `guideTones`: din parser (3 și 7 ale acordului original, sau echivalentele: 3 și 6 pe `6`, 4 și b7 pe `7sus4`)
 - `melody.structural`: notele-țintă — cele de pe timpii 1 și 3 (în 4/4) și orice notă ținută ≥ 1 timp; celelalte sunt `passing`
 - `melody.relation` per notă structurală: `chordTone` / `tension` / `avoid` / `outside`
 
@@ -314,6 +325,7 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 ### Faza 1 — MVP de studiu (1–2 săptămâni)
 
 - `notes.js`, `chords.js`, `analyzer.js` cu teste (`node --test` trece).
+- CI pe GitHub Actions adăugat odată cu primele teste verzi; badge în README.
 - Drill aleatoriu: alegi calitățile de exersat (ex. „doar 7alt", „maj7 + m7") și tonalități; aplicația arată un chord symbol mare, tu cânți, feedback în < 100 ms de la snapshot.
 - Feedback pe ecran: tipul detectat, tensiunile prezente, avertismente în ordinea de mai sus, notele cântate pe o claviatură desenată (SVG simplu).
 - Tastă „next" (Space sau o notă foarte gravă pe clapă, configurabil) pentru acordul următor.
@@ -394,3 +406,4 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 - **2026-09-17 (mai târziu)** — Adăugat „reharmonize piece": piesa intră ca grilă tastată + melodie cântată pe Genos și înregistrată cu poziția pe măsuri (Faza 2); Claude reharmonizează cu melodia fixă, `piece.js` validează determinist fiecare măsură (Faza 3). Import de fișiere MIDI și lead sheet din imagine — respinse deocamdată, posibil Faza 5.
 - **2026-09-17 (seara)** — Reharmonizarea ridicată la arhitectură hibridă: codul face analiza armonică și generează candidații compatibili cu melodia, etichetați pe tehnică; Claude alege doar dintre candidați (`execute`), cu `plan` pe fraze și un `review` separat; scoruri deterministe; `realize.js` transformă grila în aranjament cântabil pe Genos. Faza 3 împărțită în 3a (hibrid minim) și 3b (pipeline complet + voicings). Faza 5 nouă: interactivitate, stiluri ca JSON, few-shot cu reharm-urile proprii, set de evaluare cu metrici și rating-uri. Următorul pas neschimbat: Faza 0.
 - **2026-09-17 (noaptea)** — **Faza 0**: `midi-test.html` confirmat pe Genos în ambele direcții. Nume final Voicing Lab (`voicing-lab`), licență MIT, CLAUDE.md public. Repo local inițializat (README, `.gitignore`, `package.json` fără dependențe, LICENSE, primul commit); push după ce Edi creează repo-ul gol pe GitHub. **Decizii**: snapshot armat doar la note-on, nota de „next" interceptată; 60 = C4 peste tot (comentariul din `midi-test.html` corectat); m7 implicit funcție ii; caution ⊆ tensiuni disponibile; listele din tabel sunt complete (restul = wrong), regula generică doar pentru calități fără rând; sus = terța înlocuită cu 2/4, 11 = extensie cu terța prezentă; forma `C6/9`; `C13` = `C7` + 13; `b9` explicit = obligatoriu și 9 wrong; `alt` = 5/9/13 naturale wrong; câmp `required` per calitate; quartal cu 3M tolerată doar de la 4 note. Design aprobat pentru `notes.js` / `chords.js` (semnături + 10 teste); stub-uri și cele 10 teste scrise, roșii, necommise. **Deschise**: rândurile pentru `m6`, `6/9`, `sus4`; b5 obligatoriu pe m7b5 / dim7; ce e obligatoriu pe `alt`; regula b9 extinsă la #9 / b13 / 9 / 13; low interval limits (ce notă se compară, praguri vs tabel pe interval). **Următorul pas**: push, apoi implementarea `notes.js` și `chords.js` până trec cele 10 teste.
+- **2026-09-17 (revizie înainte de push)** — Recitit tot planul. **Corectat**: regula de detecție drop 2/3/2&4 (se ridică nota cea mai de jos, nu „a doua de sus"); regula generică de avoid scoasă (tabelul e singura sursă; era moartă după decizia (a)). **Adăugat, aprobat de Edi**: snapshot pentru acorduri staccato (copia setului de dinaintea primului note-off); rootless A/B acceptă alterațiile pe dominante; „bas separat" (root/5 jos + tipul restului); 7 mare e tensiune disponibilă pe `6`; aliasuri Unicode și Real Book (`∆`, `º`, `Ø`, `MA7`, `MI7`), `Calt`, `b5`/`#5` pe dominante, `mMaj7`/triade/`+`/`7#5` în gramatică (rânduri încă deschise); `minorFunction` rămâne enum extensibil (iii, vi mai târziu); recorder-ul folosește `event.timeStamp` aliniat la `AudioContext`. Shell rămâne {3, 7} ± root deocamdată (Bud Powell R–7 / R–3 respins pentru moment). **Repo**: `.gitattributes` (LF), `.gitignore` extins (`.wrangler/`, fișiere de OS), Node ≥ 22, CI planificat în Faza 1. **Deschise, în plus**: rândurile pentru `mMaj7`, triade, `+`, `7#5`.

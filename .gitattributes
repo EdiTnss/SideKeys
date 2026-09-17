@@ -1,0 +1,9 @@
+# Normalize line endings to LF in the repo and in every working copy,
+# regardless of the contributor's core.autocrlf setting.
+* text=auto eol=lf
+
+# Binary assets that must never be touched.
+*.mid binary
+*.png binary
+*.gif binary
+*.mp4 binary
