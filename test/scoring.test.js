@@ -103,7 +103,7 @@ test('a Coltrane cycle counts as two changed slots; a choice on the covered slot
   const slots = resolveChoices(piece, [cycle, ignored]);
   assert.deepEqual(slots.flatMap(s => s.chords).map(c => c.symbol), ['Abmaj7', 'B7', 'Emaj7', 'G7', 'Cmaj7', 'Cmaj7']);
   assert.deepEqual(slots.map(s => s.changed), [true, true, false, false]);
-  assert.equal(slots[1].coveredBy, cycle.id);
+  assert.equal(slots[1].coveredBy, cycle.candidate.id);
   assert.equal(slots[1].candidate, null);
   assert.equal(slots[2].technique, 'original');
 
