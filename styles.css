@@ -94,8 +94,9 @@ footer a { color: inherit; }
 .progression label { display: inline-flex; align-items: center; gap: .35rem; }
 .progression select, .progression textarea {
   font: inherit; padding: .3rem .5rem; border-radius: 6px;
-  border: 1px solid var(--line); background: transparent; color: inherit;
+  border: 1px solid var(--line);
 }
+.progression textarea { background: transparent; color: inherit; }
 .progression textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, Consolas, monospace; resize: vertical; }
 .modes { display: flex; gap: 1rem; flex-wrap: wrap; margin-right: auto; }
 .grid-view { display: flex; flex-wrap: wrap; gap: .4rem; }
@@ -131,3 +132,7 @@ footer a { color: inherit; }
 .recording #status { color: var(--bad); }
 .stats { margin: 0; font-size: .9rem; color: var(--muted); flex-basis: 100%; }
 .stats .weak { color: var(--warn); }
+
+/* Dropdowns: Chrome on Windows paints the popup with the select's background, so a transparent
+   select in dark mode gave white text on white. System colors follow color-scheme. */
+select, option { background-color: Canvas; color: CanvasText; }
