@@ -88,6 +88,26 @@ test('an id that does not exist leaves the slot on the original and is reported,
   assert.match(twice.problems[0].reason, /twice|already/i);
 });
 
+test('a shortened id is recovered from the menu by its chords; an unoffered chord is still refused', async () => {
+  const grid = '| Dm7 | G7 | Cmaj7 |';
+  const short = await reharmonize(fakeClient(null, { payload: { bars: [
+    { bar: 2, slot: 1, candidateId: 'b2s1-Db7', why: 'the short form the model sometimes writes' },
+  ] } }), piece(grid));
+  assert.deepEqual(symbolsOf(short), ['Dm7', 'Db7', 'Cmaj7']);
+  assert.deepEqual(short.problems, []);
+  assert.deepEqual(short.repairs.map(r => [r.bar, r.slot, r.wrote, r.used]), [[2, 1, 'b2s1-Db7', 'b2s1-tritone-sub-Db7']]);
+  assert.equal(short.slots[1].why, 'the short form the model sometimes writes');
+  assert.equal(short.scores.density, 1 / 3);
+
+  const bare = await reharmonize(fakeClient(null, { payload: { bars: [{ bar: 2, slot: 1, candidateId: 'Db7', why: '' }] } }), piece(grid));
+  assert.deepEqual(symbolsOf(bare), ['Dm7', 'Db7', 'Cmaj7']);              // no prefix at all still matches
+
+  const invented = await reharmonize(fakeClient(null, { payload: { bars: [{ bar: 2, slot: 1, candidateId: 'b2s1-Xmaj7', why: '' }] } }), piece(grid));
+  assert.deepEqual(symbolsOf(invented), ['Dm7', 'G7', 'Cmaj7']);
+  assert.equal(invented.problems.length, 1);
+  assert.deepEqual(invented.repairs, []);
+});
+
 test('a two-slot candidate fills both bars and a choice on the covered slot is reported', async () => {
   const client = fakeClient(slot => (slot.bar === 1 ? byTechnique('coltrane')(slot) : byTechnique('tritone-sub')(slot)));
   const result = await reharmonize(client, piece('| Dm7 | G7 | Cmaj7 | % |'), { style: 'coltrane', intensity: 'heavy' });
