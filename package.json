@@ -1,0 +1,14 @@
+{
+  "name": "voicing-lab",
+  "version": "0.1.0",
+  "description": "Voicing and reharmonization trainer for jazz pianists, with Web MIDI and Claude.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}
