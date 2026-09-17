@@ -87,21 +87,24 @@ Note ca numere MIDI (60 = C4, notație științifică). Genos afișează aceeaș
 Gramatică: `root` `quality` `extensions*` `(/bass)?`
 
 - root: `[A-G](#|b)?`
-- quality, cu aliasurile acceptate (lista e ținta; parserul acceptă doar calitățile care au rând în tabel):
+- quality, cu aliasurile acceptate (lista exactă e `QUALITIES` din `chords.js`; ce e aici e rezumatul):
   - `maj7`: `maj7 | Δ | Δ7 | ∆ | ∆7 | M7 | MA7 | ma7`
   - `m7`: `m7 | -7 | min7 | mi7 | MI7`
   - `7`: `7`
   - `m7b5`: `m7b5 | ø | ø7 | Ø | Ø7 | mi7(b5)`
   - `dim7`: `dim7 | °7 | º7 | o7`
   - `6`: `6`; `6/9`: `6/9 | 69`; `m6`: `m6 | -6`; `mMaj7`: `mMaj7 | m(maj7) | -Δ | -Δ7 | mM7`; `sus4`: `sus4 | sus`; `7sus4`: `7sus4 | 7sus`
-  - triade și augmentate, când primesc rând: `maj` (fără sufix, ex. `C`, `C/E`), `m` (`m | -`), `+` (`+ | aug`), `7#5` (`7#5 | +7 | 7+`)
+  - triade: `maj` (fără sufix: `C`, `C/E`; și `maj | M | MA | ma`), `m` (`m | - | min | mi | MI`); `+` / `aug` (triada mărită) când primește rând
+  - **respinse**: `7+` și `+7` — înseamnă maj7 în convenția europeană și 7#5 în cea americană, deci dau eroare; se scrie `maj7` / `Δ` și `7#5`. `-7` rămâne m7, ca în Real Book.
   - Se alege **cea mai lungă potrivire** din aliasuri, ca `m7b5` să nu fie citit `m7` + rest și `C6/9` să nu fie citit `C6` cu bas. `Δ` (U+0394) și `∆` (U+2206), `°` și `º`, `ø` și `Ø` arată la fel în majoritatea fonturilor, de aceea sunt toate acceptate.
 - prescurtări: o extensie fără 7 implică 7-ul calității — `C9`, `C13` = `C7` + 9 / 13; `Cm9`, `Cm11` = `Cm7` + 9 / 11; `Cmaj9` = `Cmaj7` + 9; `Calt` = `C7alt`.
 - extensions: `9 | b9 | #9 | 11 | #11 | 13 | b13 | alt`, opțional în paranteze, separate prin virgulă sau spațiu (`C7(b9,#11)`) — `alt` = {b9, #9, #11, b13}. Pe dominante, `b5` și `#5` sunt aliasuri pentru `#11` și `b13` (același pitch class).
 - extensiile scrise explicit schimbă acordul:
   - orice extensie scrisă devine obligatorie (intră în `required`) și face wrong celelalte forme ale aceleiași trepte: `b9` → 9 wrong (#9 rămâne disponibil, ambele sunt în gama semiton-ton); `#9` → 9 wrong (b9 rămâne); `9` → b9 și #9 wrong; `b13` → 13 wrong; `13` → b13 wrong
+  - `11` scris explicit (`C11`) iese din avoid și devine obligatoriu
+  - o extensie care nu e în tensiunile calității dă eroare (`Cmaj7b9`); `b5`, `#5` și `alt` sunt valide doar pe `7`
   - `#5` pe dominantă (`7#5`) = b13 obligatoriu, 13 și 5 naturale wrong
-  - `alt` → 5, 9 și 13 naturale devin wrong; ce e obligatoriu pe `alt` e încă deschis (vezi Jurnal)
+  - `alt` → b13 obligatoriu; 5, 9 și 13 naturale wrong; dacă b9, #9 și #11 rămân disponibile e încă deschis (vezi Jurnal) — până atunci rămân, ca în uzul standard
 - ieșire (toate listele sunt pitch class-uri, în ordinea treptelor):
 
 ```js
@@ -129,8 +132,11 @@ Chord tones, tensiuni și note obligatorii (jazz standard). Tabelul trăiește �
 | 7sus4 | 1 4 5 b7 | 4 b7 | 9, 13 | 3 (dacă nu e cerut explicit) | — |
 | m7b5 | 1 b3 b5 b7 | b3 b5 b7 | 9, 11, b13 | — | 9 (în context tonal) |
 | dim7 | 1 b3 b5 bb7 | b3 b5 bb7 | 9, 11, b13, 7 (= tensiune ton întreg peste fiecare chord tone) | — | — |
+| sus4 | 1 4 5 | 4 | 9, 13, b7 | 3 | — |
+| maj (triadă) | 1 3 5 | 3 | 7, 9, #11, 13 | 11 | — |
+| m (triadă) | 1 b3 5 | b3 | b7, 7, 9, 11, 13 | — | — |
 
-Etichetele treptelor din tabel și din cod urmează convenția jazz în engleză (Berklee / Real Book): `7` = septimă mare, `b7` = septimă mică, `bb7` = septimă micșorată. Edi citește intervalele în convenția europeană (`7` = mică, `7+` = mare, `-7` = micșorată); notele sunt aceleași, doar eticheta diferă — vezi Jurnal pentru decizia de afișare.
+Etichetele treptelor din tabel, din cod și de pe ecran urmează convenția jazz în engleză (Berklee / Real Book): `7` = septimă mare, `b7` = septimă mică, `bb7` = septimă micșorată — decis, pentru că simbolurile de acord (`C7`, `Cmaj7`) și README-ul urmează aceeași convenție. Edi citește intervalele în convenția europeană (`7` = mică, `7+` = mare, `-7` = micșorată); notele sunt aceleași, doar eticheta diferă. O opțiune de afișare europeană (o tabelă de etichete în UI) se poate adăuga oricând, fără să atingă logica.
 
 Regulile tabelului:
 
@@ -139,7 +145,7 @@ Regulile tabelului:
 - **Sus vs 11**: sus = terța e înlocuită cu 2 sau 4, deci e o calitate separată (`7sus4`), unde nota e treapta 4 și e chord tone. Cu terța prezentă, aceeași notă e 11 (extensie în sus) și pe maj7 și 7 e avoid.
 - **Funcția lui m7** vine din context: `parseChord(symbol, { minorFunction: 'ii' | 'i' })`, implicit `ii`. În drill acordurile sunt izolate, deci ii; din Faza 2 progresia știe treapta. Enum-ul rămâne extensibil: în tonal, iii are b9 și b13 avoid, vi are b13 avoid — se adaugă când `analysis.js` știe treapta.
 - Nu există regulă generică de avoid: tabelul e singura sursă. O calitate fără rând nu se parsează.
-- Calități din gramatică fără rând încă: `sus4`, triadele `maj` și `m`, `+` — chord tones și `required` sunt decise (sus4: 1 4 5, required 4; maj: 1 3 5, required 3; m: 1 b3 5, required b3), tensiunile așteaptă confirmarea lui Edi. `7#5` nu e calitate separată: e `7` + extensia `#5` (vezi mai sus).
+- Fără rând încă: `+` (triada mărită), amânat. `7#5` nu e calitate separată: e `7` + extensia `#5` (vezi mai sus).
 
 ### Clasificarea voicing-ului (`analyzer.js`)
 
@@ -416,3 +422,4 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 - **2026-09-17 (înainte de push)** — Edi a ridicat problema vizibilității („nu vreau să-mi fure cineva munca"). Decis: repo **privat până la Faza 4**, apoi public (Pages cere public pe cont gratuit); **fără licență** deocamdată (LICENSE șters, `"license": "UNLICENSED"`), decizia se ia la publicare. Regula „niciun secret în repo" e valabilă și cât e privat, pentru că istoricul devine public integral.
 - **2026-09-17 (push)** — **Faza 0 bifată**: MIDI în ambele direcții, repo online (privat). GitHub raportează numele `Voicing-Lab` (cu majuscule); de decis dacă se redenumește în `voicing-lab` (recomandat, URL-ul Pages devine lowercase) sau se actualizează URL-urile din acest fișier. **Faza 1 începută**: commit `test:` cu cele 10 teste și stub-uri (roșu), apoi `feat:` cu `notes.js` (4/4 verzi). Urmează `chords.js` pe cele 6 teste rămase; rândurile deschise din tabel așteaptă răspunsurile lui Edi (întrebările a–j).
 - **2026-09-17 (răspunsuri a–j)** — Nume păstrat `Voicing-Lab`; remote și URL-uri actualizate; corectată justificarea (Origin nu conține calea). **Decise**: `6/9` = rândul 6 cu 9 chord tone obligatoriu; `m6` cu tensiuni 9, 11, 7; `mMaj7` = 1 b3 5 7 (C Eb G B) cu tensiuni 9, 11, 13; b5 obligatoriu pe m7b5 și dim7; extensia scrisă explicit e obligatorie și face wrong celelalte forme ale treptei (b9/#9 coexistă); `7#5` = 7 + b13 obligatoriu, 5 și 13 wrong; low interval limits pe nota de jos a perechii, praguri ca tabel pe interval. **Deschise**: (1) convenția etichetelor — Edi citește `7` = septimă mică, `7+` = mare, `-7` = micșorată; tabelul și codul folosesc Berklee (`b7`, `7`, `bb7`); de decis dacă UI-ul afișează Berklee sau are opțiune de afișare europeană; (2) sensul lui `alt` — Edi: „alterat, adică mărit, 1 3 #5"; de clarificat dacă `7alt` rămâne dominanta alterată standard (b9 #9 #11 b13) cu 3, b7 și b13 obligatorii, sau înseamnă doar `7#5`; (3) aliasurile `7+` / `+7` (european = maj7, american = 7#5) și `-7` (american = m7) — de decis ce acceptă parserul; (4) tensiunile pe `sus4`, `maj`, `m`.
+- **2026-09-17 (chords.js)** — **Decise**: etichete Berklee peste tot (opțiune de afișare europeană posibilă mai târziu); `7+` / `+7` respinse, `-7` = m7; tensiuni pe `sus4` (9, 13, b7; avoid 3), `maj` (7, 9, #11, 13; avoid 11), `m` (b7, 7, 9, 11, 13). **`chords.js` implementat, 10/10 teste verzi**: tabelul ca date, cea mai lungă potrivire pe aliasuri, prescurtări (`C9`, `Cm11`, `Cmaj13`, `C9sus4`, `Calt`), extensii explicite cu regula de excludere, `b5`/`#5`/`alt` doar pe dominantă, `classifyPc` ca unic loc de decizie. **Deschis**: `alt` — Edi a scris de două ori „C7alt = C E G# Bb"; de clarificat dacă b9/#9/#11 rămân disponibile (standard, implementat acum) sau devin wrong (alt = 7#5). Întrebare mică: `C°` / `Cdim` fără 7 ca alias pentru dim7? **Următorul pas**: testele parserului până la ≥ 20 de simboluri (prescurtări, extensii explicite, ii/i, `classifyPc`, erori), apoi `analyzer.js` test-first.
