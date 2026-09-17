@@ -2,7 +2,7 @@
 
 Antrenor de voicings și reharmonizare pentru pianiști de jazz. Conectezi clapa (Yamaha Genos) prin USB-MIDI la browser, aplicația îți cere un acord, tu îl cânți, iar ea îți spune instant ce ai cântat (tip de voicing, tensiuni, note evitate, calitatea voice leading-ului). În fazele următoare, Claude propune alternative și reharmonizări pe care le auzi direct pe Genos prin MIDI out.
 
-Numele e **Voicing Lab**, final din Faza 0: repo `voicing-lab`, GitHub Pages pe `editnss.github.io/voicing-lab`. Repo-ul nu se mai redenumește, pentru că URL-ul intră în verificarea `Origin` din Worker și în link-ul de demo, iar GitHub Pages nu face redirect după redenumire. Numele rămâne consecvent în README, `<title>` și `package.json`.
+Numele e **Voicing Lab**, final din Faza 0: repo `EdiTnss/Voicing-Lab` (cu majuscule, cum l-a creat Edi), GitHub Pages pe `editnss.github.io/Voicing-Lab`. Repo-ul nu se mai redenumește, pentru că GitHub Pages nu face redirect după redenumire și link-ul de demo ar muri. Verificarea `Origin` din Worker nu depinde de numele repo-ului: header-ul `Origin` conține doar `https://editnss.github.io`, fără cale. `package.json` păstrează `"name": "voicing-lab"` (npm cere litere mici). Numele rămâne consecvent în README, `<title>` și `package.json`.
 
 Repo-ul e **privat până la Faza 4**: portofoliul are valoare abia când e prezentabil (README, demo, teste). Atunci trece pe public, pentru că GitHub Pages pe cont gratuit funcționează doar pe repo-uri publice (alternativa e GitHub Pro). La trecere devine vizibil **tot istoricul**, deci regula „niciun secret în repo" se aplică de la primul commit. Licență: **niciuna deocamdată** (toate drepturile rezervate; codul se poate citi, nu refolosi); se decide la publicare, `package.json` are `"license": "UNLICENSED"` până atunci.
 
@@ -99,9 +99,9 @@ Gramatică: `root` `quality` `extensions*` `(/bass)?`
 - prescurtări: o extensie fără 7 implică 7-ul calității — `C9`, `C13` = `C7` + 9 / 13; `Cm9`, `Cm11` = `Cm7` + 9 / 11; `Cmaj9` = `Cmaj7` + 9; `Calt` = `C7alt`.
 - extensions: `9 | b9 | #9 | 11 | #11 | 13 | b13 | alt`, opțional în paranteze, separate prin virgulă sau spațiu (`C7(b9,#11)`) — `alt` = {b9, #9, #11, b13}. Pe dominante, `b5` și `#5` sunt aliasuri pentru `#11` și `b13` (același pitch class).
 - extensiile scrise explicit schimbă acordul:
-  - `b9` → b9 devine obligatoriu (intră în `required`), 9 natural devine wrong
-  - `alt` → 5, 9 și 13 naturale devin wrong
-  - celelalte extensii (#9, #11, b13, 9, 11, 13): regula e încă deschisă, vezi Jurnal
+  - orice extensie scrisă devine obligatorie (intră în `required`) și face wrong celelalte forme ale aceleiași trepte: `b9` → 9 wrong (#9 rămâne disponibil, ambele sunt în gama semiton-ton); `#9` → 9 wrong (b9 rămâne); `9` → b9 și #9 wrong; `b13` → 13 wrong; `13` → b13 wrong
+  - `#5` pe dominantă (`7#5`) = b13 obligatoriu, 13 și 5 naturale wrong
+  - `alt` → 5, 9 și 13 naturale devin wrong; ce e obligatoriu pe `alt` e încă deschis (vezi Jurnal)
 - ieșire (toate listele sunt pitch class-uri, în ordinea treptelor):
 
 ```js
@@ -121,11 +121,16 @@ Chord tones, tensiuni și note obligatorii (jazz standard). Tabelul trăiește �
 |---|---|---|---|---|---|
 | maj7 | 1 3 5 7 | 3 7 | 9, #11, 13 | 11 (semiton peste 3) | — |
 | 6 | 1 3 5 6 | 3 6 | 9, #11, 7 | 11 | — |
+| 6/9 | 1 3 5 6 9 | 3 6 9 | #11, 7 | 11 | — |
 | m7 | 1 b3 5 b7 | b3 b7 | 9, 11, 13 | — | 13 când funcția e ii (anticipează terța lui V); nimic când e i |
+| m6 | 1 b3 5 6 | b3 6 | 9, 11, 7 | — | — |
+| mMaj7 | 1 b3 5 7 | b3 7 | 9, 11, 13 | — | — |
 | 7 (dominantă) | 1 3 5 b7 | 3 b7 | 9, 13 + alterate b9, #9, #11, b13 | 11 | — |
 | 7sus4 | 1 4 5 b7 | 4 b7 | 9, 13 | 3 (dacă nu e cerut explicit) | — |
-| m7b5 | 1 b3 b5 b7 | b3 b7 (b5: deschis) | 9, 11, b13 | — | 9 (în context tonal) |
-| dim7 | 1 b3 b5 bb7 | b3 bb7 (b5: deschis) | 9, 11, b13, 7 (= tensiune ton întreg peste fiecare chord tone) | — | — |
+| m7b5 | 1 b3 b5 b7 | b3 b5 b7 | 9, 11, b13 | — | 9 (în context tonal) |
+| dim7 | 1 b3 b5 bb7 | b3 b5 bb7 | 9, 11, b13, 7 (= tensiune ton întreg peste fiecare chord tone) | — | — |
+
+Etichetele treptelor din tabel și din cod urmează convenția jazz în engleză (Berklee / Real Book): `7` = septimă mare, `b7` = septimă mică, `bb7` = septimă micșorată. Edi citește intervalele în convenția europeană (`7` = mică, `7+` = mare, `-7` = micșorată); notele sunt aceleași, doar eticheta diferă — vezi Jurnal pentru decizia de afișare.
 
 Regulile tabelului:
 
@@ -134,7 +139,7 @@ Regulile tabelului:
 - **Sus vs 11**: sus = terța e înlocuită cu 2 sau 4, deci e o calitate separată (`7sus4`), unde nota e treapta 4 și e chord tone. Cu terța prezentă, aceeași notă e 11 (extensie în sus) și pe maj7 și 7 e avoid.
 - **Funcția lui m7** vine din context: `parseChord(symbol, { minorFunction: 'ii' | 'i' })`, implicit `ii`. În drill acordurile sunt izolate, deci ii; din Faza 2 progresia știe treapta. Enum-ul rămâne extensibil: în tonal, iii are b9 și b13 avoid, vi are b13 avoid — se adaugă când `analysis.js` știe treapta.
 - Nu există regulă generică de avoid: tabelul e singura sursă. O calitate fără rând nu se parsează.
-- Calități din gramatică fără rând încă: `m6`, `6/9`, `sus4`, `mMaj7`, triadele, `+`, `7#5` — se adaugă după ce Edi confirmă rândurile.
+- Calități din gramatică fără rând încă: `sus4`, triadele `maj` și `m`, `+` — chord tones și `required` sunt decise (sus4: 1 4 5, required 4; maj: 1 3 5, required 3; m: 1 b3 5, required b3), tensiunile așteaptă confirmarea lui Edi. `7#5` nu e calitate separată: e `7` + extensia `#5` (vezi mai sus).
 
 ### Clasificarea voicing-ului (`analyzer.js`)
 
@@ -142,7 +147,7 @@ Intrare: notele cântate (MIDI, sortate) + acordul parsat. Ieșire ordonată dup
 
 1. **Corectitudine**: lipsește o notă din `required` (3 și 7 sau echivalentele din tabel: 6 pe `6`, 4 pe `7sus4`, bb7 pe `dim7`, plus extensiile obligatorii, ca b9 din `C7b9`) → avertisment principal. Root lipsă e OK (rootless e un scop), se raportează doar ca informație.
 2. **Note străine**: pitch class-uri care nu sunt nici chord tones, nici tensiuni → „wrong note". Note în listele de avoid → „avoid note". „Caution" → nivel informativ.
-3. **Low interval limits**: sub C3 (MIDI 48), intervalele de 2M/2m/3m între note adiacente sunt semnalate ca „muddy"; sub G2 și 3M. Praguri configurabile.
+3. **Low interval limits**: pentru fiecare pereche de note adiacente se compară **nota de jos** a perechii cu pragul, strict `<`: sub C3 (MIDI 48), 2m, 2M și 3m sunt semnalate ca „muddy"; sub G2 (43) și 3M. Pragurile stau într-un tabel de date pe interval (configurabil), ca valorile clasice să poată fi puse mai târziu fără să schimbăm codul.
 4. **Dublări**: același pitch class de mai multe ori (excepție root/5 în bas) → informativ.
 5. **Tipul de voicing**, detectat în ordinea asta (prima potrivire câștigă):
    - **shell**: doar {3, 7} sau {3, 7} + root (2–3 note)
@@ -410,3 +415,4 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 - **2026-09-17 (revizie înainte de push)** — Recitit tot planul. **Corectat**: regula de detecție drop 2/3/2&4 (se ridică nota cea mai de jos, nu „a doua de sus"); regula generică de avoid scoasă (tabelul e singura sursă; era moartă după decizia (a)). **Adăugat, aprobat de Edi**: snapshot pentru acorduri staccato (copia setului de dinaintea primului note-off); rootless A/B acceptă alterațiile pe dominante; „bas separat" (root/5 jos + tipul restului); 7 mare e tensiune disponibilă pe `6`; aliasuri Unicode și Real Book (`∆`, `º`, `Ø`, `MA7`, `MI7`), `Calt`, `b5`/`#5` pe dominante, `mMaj7`/triade/`+`/`7#5` în gramatică (rânduri încă deschise); `minorFunction` rămâne enum extensibil (iii, vi mai târziu); recorder-ul folosește `event.timeStamp` aliniat la `AudioContext`. Shell rămâne {3, 7} ± root deocamdată (Bud Powell R–7 / R–3 respins pentru moment). **Repo**: `.gitattributes` (LF), `.gitignore` extins (`.wrangler/`, fișiere de OS), Node ≥ 22, CI planificat în Faza 1. **Deschise, în plus**: rândurile pentru `mMaj7`, triade, `+`, `7#5`.
 - **2026-09-17 (înainte de push)** — Edi a ridicat problema vizibilității („nu vreau să-mi fure cineva munca"). Decis: repo **privat până la Faza 4**, apoi public (Pages cere public pe cont gratuit); **fără licență** deocamdată (LICENSE șters, `"license": "UNLICENSED"`), decizia se ia la publicare. Regula „niciun secret în repo" e valabilă și cât e privat, pentru că istoricul devine public integral.
 - **2026-09-17 (push)** — **Faza 0 bifată**: MIDI în ambele direcții, repo online (privat). GitHub raportează numele `Voicing-Lab` (cu majuscule); de decis dacă se redenumește în `voicing-lab` (recomandat, URL-ul Pages devine lowercase) sau se actualizează URL-urile din acest fișier. **Faza 1 începută**: commit `test:` cu cele 10 teste și stub-uri (roșu), apoi `feat:` cu `notes.js` (4/4 verzi). Urmează `chords.js` pe cele 6 teste rămase; rândurile deschise din tabel așteaptă răspunsurile lui Edi (întrebările a–j).
+- **2026-09-17 (răspunsuri a–j)** — Nume păstrat `Voicing-Lab`; remote și URL-uri actualizate; corectată justificarea (Origin nu conține calea). **Decise**: `6/9` = rândul 6 cu 9 chord tone obligatoriu; `m6` cu tensiuni 9, 11, 7; `mMaj7` = 1 b3 5 7 (C Eb G B) cu tensiuni 9, 11, 13; b5 obligatoriu pe m7b5 și dim7; extensia scrisă explicit e obligatorie și face wrong celelalte forme ale treptei (b9/#9 coexistă); `7#5` = 7 + b13 obligatoriu, 5 și 13 wrong; low interval limits pe nota de jos a perechii, praguri ca tabel pe interval. **Deschise**: (1) convenția etichetelor — Edi citește `7` = septimă mică, `7+` = mare, `-7` = micșorată; tabelul și codul folosesc Berklee (`b7`, `7`, `bb7`); de decis dacă UI-ul afișează Berklee sau are opțiune de afișare europeană; (2) sensul lui `alt` — Edi: „alterat, adică mărit, 1 3 #5"; de clarificat dacă `7alt` rămâne dominanta alterată standard (b9 #9 #11 b13) cu 3, b7 și b13 obligatorii, sau înseamnă doar `7#5`; (3) aliasurile `7+` / `+7` (european = maj7, american = 7#5) și `-7` (american = m7) — de decis ce acceptă parserul; (4) tensiunile pe `sus4`, `maj`, `m`.
