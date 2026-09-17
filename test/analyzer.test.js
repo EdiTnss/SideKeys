@@ -42,6 +42,9 @@ test('low interval limits compare the lower note of each pair with the threshold
   assert.deepEqual(analyze('Cmaj7', 'C2 E2', { limits: [] }).muddy, []);
   const custom = [{ below: 60, semitones: [7] }];
   assert.equal(analyze('Cmaj7', 'C3 G3', { limits: custom }).muddy.length, 1);
+  // Spelled from the chord, like every other note in the report.
+  const muddy = analyze('F#7', 'F#1 G#1').messages.find(m => m.code === 'muddy');
+  assert.match(muddy.text, /F#1–G#1 \(M2\)/);
 });
 
 test('doublings: the same pitch class twice, except root or 5 in the bass', () => {

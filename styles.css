@@ -1,0 +1,87 @@
+:root {
+  color-scheme: light dark;
+  --ok: #2e9e5b;
+  --warn: #d97706;
+  --bad: #dc2626;
+  --muted: color-mix(in srgb, currentColor 55%, transparent);
+  --line: color-mix(in srgb, currentColor 25%, transparent);
+  --chord-tone: #2e9e5b;
+  --tension: #3b82f6;
+  --altered: #8b5cf6;
+  --avoid: #f59e0b;
+  --wrong: #ef4444;
+  --held: #9ca3af;
+}
+
+body {
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+  max-width: 64rem;
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+header { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+h1 { font-size: 1.3rem; margin: 0; }
+#status { margin: 0; font-size: .9rem; color: var(--muted); }
+#status.ok { color: var(--ok); }
+#status.warn { color: var(--warn); }
+
+.drill { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 1.5rem 0 1rem; }
+.chord { font-size: clamp(3rem, 12vw, 6rem); font-weight: 700; letter-spacing: .01em; line-height: 1; }
+
+button {
+  font: inherit; padding: .5rem 1rem; border-radius: 8px; cursor: pointer;
+  border: 1px solid color-mix(in srgb, currentColor 35%, transparent);
+  background: transparent; color: inherit;
+}
+button:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
+kbd {
+  font: .8em ui-monospace, Consolas, monospace; padding: .1em .4em; border-radius: 4px;
+  border: 1px solid var(--line); margin-left: .3em;
+}
+
+/* Keyboard */
+.keyboard { width: 100%; height: auto; display: block; }
+.key { stroke: #333; stroke-width: 1; }
+.key.white { fill: #fff; }
+.key.black { fill: #222; }
+.key.held { fill: var(--held); }
+.key.role-chordTone { fill: var(--chord-tone); }
+.key.role-tension { fill: var(--tension); }
+.key.role-altered { fill: var(--altered); }
+.key.role-avoid { fill: var(--avoid); }
+.key.role-wrong { fill: var(--wrong); }
+.key.caution { stroke: var(--warn); stroke-width: 3; }
+.key-label { font-size: 9px; fill: #555; pointer-events: none; }
+
+/* Feedback */
+.feedback { min-height: 8rem; margin-top: 1rem; }
+.hint { color: var(--muted); font-size: 1.1rem; }
+.headline { font-size: 1.4rem; font-weight: 600; margin: 0 0 .5rem; }
+.headline.ok { color: var(--ok); }
+.headline.warn { color: var(--bad); }
+.messages { margin: 0 0 .75rem; padding-left: 1.25rem; }
+.messages .warning { color: var(--warn); }
+.messages .warning.wrong, .messages .warning.missing { color: var(--bad); }
+.messages .info { color: var(--muted); }
+.notes { display: flex; flex-wrap: wrap; gap: .5rem 1rem; margin: 0; font-family: ui-monospace, Consolas, monospace; }
+.notes .role-chordTone { color: var(--chord-tone); }
+.notes .role-tension { color: var(--tension); }
+.notes .role-altered { color: var(--altered); }
+.notes .role-avoid { color: var(--avoid); }
+.notes .role-wrong { color: var(--wrong); }
+
+/* Settings */
+.settings { margin-top: 2rem; border-top: 1px solid var(--line); padding-top: .75rem; }
+summary { cursor: pointer; font-weight: 600; }
+.settings-form { display: grid; gap: 1rem; margin-top: .75rem; }
+fieldset { border: 1px solid var(--line); border-radius: 8px; padding: .5rem .75rem .75rem; display: flex; flex-wrap: wrap; gap: .35rem .9rem; align-items: center; }
+legend { padding: 0 .3rem; font-size: .85rem; color: var(--muted); }
+.check { white-space: nowrap; }
+.bulk { margin-left: auto; display: flex; gap: .3rem; }
+.bulk button { padding: .15rem .5rem; font-size: .8rem; }
+input[type="number"] { width: 5.5rem; font: inherit; padding: .2rem .4rem; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: inherit; }
+.note-name { color: var(--muted); }
+
+footer { margin-top: 2rem; color: var(--muted); }
+footer a { color: inherit; }

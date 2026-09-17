@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voicing Lab</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<header>
+  <h1>Voicing Lab</h1>
+  <p id="status">Requesting MIDI access…</p>
+</header>
+
+<main>
+  <section class="drill">
+    <div id="chord" class="chord">—</div>
+    <button id="next" type="button">Next <kbd>Space</kbd></button>
+  </section>
+
+  <svg id="keyboard" class="keyboard" role="img" aria-label="Keyboard"></svg>
+
+  <section id="feedback" class="feedback" aria-live="polite"></section>
+
+  <details class="settings">
+    <summary>Settings</summary>
+    <div id="settings-body"></div>
+  </details>
+</main>
+
+<footer>
+  <small>Play the chord on your MIDI keyboard. Space or the lowest key (E1) moves on. <a href="./midi-test.html">MIDI test</a></small>
+</footer>
+
+<script type="module" src="./src/app.js"></script>
+</body>
+</html>

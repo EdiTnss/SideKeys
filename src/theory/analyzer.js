@@ -2,7 +2,7 @@
 // Input: MIDI notes (60 = C4) and a chord from parseChord. Output: a plain object the UI
 // renders and, in Phase 3a, the prompt receives unchanged.
 
-import { pitchClass, midiToName, spellDegree } from './notes.js';
+import { pitchClass, octave, midiToName, spellDegree } from './notes.js';
 import { classifyPc } from './chords.js';
 
 // Lower note of an adjacent pair below `below` → that interval is muddy. Data, so the
@@ -191,6 +191,8 @@ function pcName(pc, chord) {
   return label ? spellDegree(chord.root, label) : midiToName(pc).replace(/-?\d+$/, '');
 }
 
+const noteName = (midi, chord) => pcName(pitchClass(midi), chord) + octave(midi);
+
 function buildMessages({ chord, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing }) {
   const withDegree = pc => `${pcName(pc, chord)} (${chord.degrees[pc]})`;
   const messages = [];
@@ -201,7 +203,7 @@ function buildMessages({ chord, missing, hasRoot, wrong, avoid, caution, muddy, 
   for (const pc of caution) messages.push({ level: 'info', code: 'caution', text: `Caution: ${withDegree(pc)}` });
   for (const { lower, upper, semitones } of muddy) {
     const interval = INTERVAL_NAMES[semitones] ?? `${semitones} semitones`;
-    messages.push({ level: 'warning', code: 'muddy', text: `Muddy: ${midiToName(lower)}–${midiToName(upper)} (${interval}) is too low` });
+    messages.push({ level: 'warning', code: 'muddy', text: `Muddy: ${noteName(lower, chord)}–${noteName(upper, chord)} (${interval}) is too low` });
   }
   for (const pc of doublings) messages.push({ level: 'info', code: 'doubling', text: `Doubled: ${pcName(pc, chord)}` });
   if (voicing.type) messages.push({ level: 'info', code: 'type', text: describeVoicing(voicing) });
