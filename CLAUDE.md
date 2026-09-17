@@ -159,18 +159,33 @@ Intrare: notele cântate (MIDI, sortate) + acordul parsat. Ieșire ordonată dup
    - **shell**: doar {3, 7} sau {3, 7} + root (2–3 note)
    - **rootless A**: 4 note, de jos în sus 3-5-7-9; pe dominantă slotul 2 acceptă 5, 13 sau b13 și slotul 4 acceptă 9, b9 sau #9 (G7alt în forma A e B Eb F Ab)
    - **rootless B**: 4 note, de jos în sus 7-9-3-5; pe dominantă slotul 2 acceptă 9, b9 sau #9 și slotul 4 acceptă 5, 13 sau b13
-   - **drop 2**: 4 note; dacă ridici **nota cea mai de jos** cu o octavă obții poziție strânsă (toate notele într-o octavă) și nota ridicată ajunge a doua de sus. Exemplu: G3 C4 E4 B4 → C4 E4 G4 B4, G e a doua de sus
+   - **quartal**: ≥ 3 note, toate intervalele adiacente sunt 4P sau 4A; o singură 3M tolerată (ca în voicing-urile „So What"), dar doar de la 4 note în sus — cu 3 note, 4P + 3M e o triadă în inversiunea a doua (D-G-B). Se verifică **înaintea** drop-urilor: orice 4 cvarte suprapuse sunt și drop 2 al unei poziții strânse cu o secundă în ea (D3 G3 C4 F4 → G3 C4 D4 F4), iar un pianist le numește quartal
+   - **drop 2**: 4 note; dacă ridici **nota cea mai de jos** cu o octavă obții poziție strânsă (întindere ≤ 12 semitonuri) și nota ridicată ajunge a doua de sus. Exemplu: G3 C4 E4 B4 → C4 E4 G4 B4, G e a doua de sus
    - **drop 3**: idem, dar nota ridicată ajunge a treia de sus. Exemplu: E3 C4 G4 B4 → C4 E4 G4 B4, E e a treia de sus
    - **drop 2&4**: ridici cele două note de jos cu o octavă, obții poziție strânsă și ele ajung a doua și a patra de sus. Exemplu: C3 G3 E4 B4 → C4 E4 G4 B4
-   - Regula e inversul derivării (drop 2 = din poziția strânsă cobori a doua voce de sus cu o octavă, deci ea devine nota cea mai de jos); a ridica „a doua de sus" din voicing-ul cântat nu dă niciodată poziție strânsă
-   - **quartal**: ≥ 3 note, toate intervalele adiacente sunt 4P sau 4A; o singură 3M tolerată (ca în voicing-urile „So What"), dar doar de la 4 note în sus — cu 3 note, 4P + 3M e o triadă în inversiunea a doua (D-G-B)
+   - Regula e inversul derivării (drop 2 = din poziția strânsă cobori a doua voce de sus cu o octavă, deci ea devine nota cea mai de jos); a ridica „a doua de sus" din voicing-ul cântat nu dă niciodată poziție strânsă. Consecință de știut: C3 B3 E4 G4 e drop 3 al inversiunii a treia, nu spread
    - **upper structure triad**: pe dominantă, cele 3 note de sus formează o triadă majoră/minoră a cărei fundamentală nu e root-ul acordului, deasupra unei baze de 3/7
    - **close**: toate notele într-o octavă (și nu s-a potrivit nimic mai sus)
    - **spread / open**: orice altceva
    - **Bas separat**: dacă nota cea mai de jos e root sau 5, se clasifică și restul notelor fără ea; dacă restul primește un tip mai specific decât close/spread, se raportează `bass: 'root' | '5'` + tipul restului (C2 + E4 G4 B4 D5 → „root + rootless A", cum se compă fără basist). C E G B strâns rămâne close, pentru că restul (E G B) nu se potrivește nicăieri.
 6. **Voice leading** față de voicing-ul anterior (doar în modul progresie): asociază fiecare notă cu cea mai apropiată din voicing-ul precedent (greedy e suficient pentru 3–5 note), raportează suma deplasărilor în semitonuri și numărul de note comune. Scor: sumă mică + multe note comune = bun. Nu penaliza salturile intenționate de registru (dacă ambele voicings sunt „spread", tolerează).
 
-Ieșirea analizorului e un obiect JSON simplu; UI-ul îl randează, iar în Faza 3a exact același obiect intră în promptul spre Claude.
+Ieșirea analizorului e un obiect JSON simplu; UI-ul îl randează, iar în Faza 3a exact același obiect intră în promptul spre Claude:
+
+```js
+analyzeVoicing(notes, chord, { limits = LOW_INTERVAL_LIMITS } = {}) → {
+  notes,                    // MIDI sortate
+  roles,                    // per notă: { midi, pc, role, degree, caution }, prin classifyPc
+  missing, hasRoot,         // pc-uri obligatorii lipsă; root lipsă e doar informativ
+  wrong, avoid, caution,    // pc-uri
+  muddy,                    // [{ lower, upper, semitones }]
+  doublings,                // pc-uri dublate, în afara root/5 din bas
+  voicing: { type, bass, detail },   // type: shell | rootless-A | rootless-B | drop-2 | drop-3 | drop-2-4 | quartal | upper-structure | close | spread; bass: null | 'root' | '5'; detail: triada din UST
+  messages,                 // [{ level: 'warning' | 'info', code, text }], în ordinea de mai sus
+}
+```
+
+`LOW_INTERVAL_LIMITS` e o listă de date `{ below, semitones }`, configurabilă prin opțiuni. Voice leading-ul (Faza 2) va fi o funcție separată, `compareVoicings(previous, next)`, ca analiza unui acord izolat să rămână pură.
 
 ## Specificația reharmonizării unei piese
 
@@ -424,3 +439,4 @@ Evaluare: `eval/pieces/*.json` — 6–10 piese scurte din domeniul public (comp
 - **2026-09-17 (răspunsuri a–j)** — Nume păstrat `Voicing-Lab`; remote și URL-uri actualizate; corectată justificarea (Origin nu conține calea). **Decise**: `6/9` = rândul 6 cu 9 chord tone obligatoriu; `m6` cu tensiuni 9, 11, 7; `mMaj7` = 1 b3 5 7 (C Eb G B) cu tensiuni 9, 11, 13; b5 obligatoriu pe m7b5 și dim7; extensia scrisă explicit e obligatorie și face wrong celelalte forme ale treptei (b9/#9 coexistă); `7#5` = 7 + b13 obligatoriu, 5 și 13 wrong; low interval limits pe nota de jos a perechii, praguri ca tabel pe interval. **Deschise**: (1) convenția etichetelor — Edi citește `7` = septimă mică, `7+` = mare, `-7` = micșorată; tabelul și codul folosesc Berklee (`b7`, `7`, `bb7`); de decis dacă UI-ul afișează Berklee sau are opțiune de afișare europeană; (2) sensul lui `alt` — Edi: „alterat, adică mărit, 1 3 #5"; de clarificat dacă `7alt` rămâne dominanta alterată standard (b9 #9 #11 b13) cu 3, b7 și b13 obligatorii, sau înseamnă doar `7#5`; (3) aliasurile `7+` / `+7` (european = maj7, american = 7#5) și `-7` (american = m7) — de decis ce acceptă parserul; (4) tensiunile pe `sus4`, `maj`, `m`.
 - **2026-09-17 (chords.js)** — **Decise**: etichete Berklee peste tot (opțiune de afișare europeană posibilă mai târziu); `7+` / `+7` respinse, `-7` = m7; tensiuni pe `sus4` (9, 13, b7; avoid 3), `maj` (7, 9, #11, 13; avoid 11), `m` (b7, 7, 9, 11, 13). **`chords.js` implementat, 10/10 teste verzi**: tabelul ca date, cea mai lungă potrivire pe aliasuri, prescurtări (`C9`, `Cm11`, `Cmaj13`, `C9sus4`, `Calt`), extensii explicite cu regula de excludere, `b5`/`#5`/`alt` doar pe dominantă, `classifyPc` ca unic loc de decizie. **Deschis**: `alt` — Edi a scris de două ori „C7alt = C E G# Bb"; de clarificat dacă b9/#9/#11 rămân disponibile (standard, implementat acum) sau devin wrong (alt = 7#5). Întrebare mică: `C°` / `Cdim` fără 7 ca alias pentru dim7? **Următorul pas**: testele parserului până la ≥ 20 de simboluri (prescurtări, extensii explicite, ii/i, `classifyPc`, erori), apoi `analyzer.js` test-first.
 - **2026-09-17 (parser complet)** — **Decise**: `alt` = dominanta alterată standard cu 3, b7, b13 obligatorii (b9/#9/#11 rămân disponibile); `C°`/`Cdim` = dim7; repo confirmat Private. Parserul are **20/20 teste, 40+ simboluri** (DoD-ul Fazei 1 pentru parser e acoperit). Capcană JS găsită de un test: `Object.keys` pune cheile numerice (`'6'`, `'7'`) primele, deci ordinea tabelului e ținută explicit în `QUALITY_IDS`, verificată la încărcare față de `QUALITIES`. **Următorul pas**: `analyzer.js` — propunere de semnătură, formă a ieșirii și primele teste, apoi implementare după confirmarea lui Edi.
+- **2026-09-17 (analyzer)** — Design aprobat de Edi; **`analyzer.js` implementat, 34/34 teste** (14 noi: fiecare tip de voicing cu caz pozitiv și negativ, cum cere DoD-ul). Schimbare de spec descoperită la scrierea testelor: quartal se verifică înaintea drop-urilor (4 cvarte suprapuse sunt și un drop 2). Poziție strânsă = întindere ≤ 12 semitonuri. Din DoD-ul Fazei 1 rămân: `midi/input.js` (snapshot), UI-ul de drill cu claviatură SVG, `index.html`, tasta „next", sesiunea de 20 de minute. **Următorul pas**: propunere pentru `input.js` + UI minimal, apoi implementare.
