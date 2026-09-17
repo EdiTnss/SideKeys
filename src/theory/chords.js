@@ -60,7 +60,7 @@ export const QUALITIES = {
     tensions: ['9', '11', 'b13'], altered: [], avoid: [], caution: ['9'],
   },
   dim7: {
-    aliases: ['dim7', '°7', 'º7', 'o7'],
+    aliases: ['dim7', '°7', 'º7', 'o7', 'dim', '°', 'º'], // a bare ° or dim reads as dim7, as in charts
     chordTones: ['1', 'b3', 'b5', 'bb7'], guideTones: ['b3', 'bb7'], required: ['b3', 'b5', 'bb7'],
     tensions: ['9', '11', 'b13', '7'], altered: [], avoid: [], caution: [],
   },
@@ -75,6 +75,13 @@ export const QUALITIES = {
     tensions: ['b7', '7', '9', '11', '13'], altered: [], avoid: [], caution: [],
   },
 };
+
+// Table order for the drill picker. Kept by hand because Object.keys() moves the
+// integer-like keys '6' and '7' to the front. Checked against the table at load time.
+const QUALITY_IDS = ['maj7', '6', '6/9', 'm7', 'm6', 'mMaj7', '7', '7sus4', 'sus4', 'm7b5', 'dim7', 'maj', 'm'];
+if ([...QUALITY_IDS].sort().join() !== Object.keys(QUALITIES).sort().join()) {
+  throw new Error('QUALITY_IDS and QUALITIES are out of sync');
+}
 
 // 'C9', 'Cm11', 'Cmaj13': an extension right after the family name implies the family's seventh chord.
 const SHORTHAND_FAMILIES = [
@@ -113,9 +120,8 @@ const EXCLUDES = {
   '11': [], '#11': [],
 };
 
-// Dominant-only spellings. '#5' is the b13 with the natural 5 gone; 'alt' also drops 9 and 13.
-// Whether 'alt' keeps b9, #9 and #11 available is still open (see CLAUDE.md journal);
-// until then it keeps them, as in standard chord-symbol usage.
+// Dominant-only spellings. '#5' is the b13 with the natural 5 gone; 'alt' also drops 9 and 13
+// and keeps b9, #9, #11 and b13 available: the augmented core is required, the rest is color.
 const DOMINANT_SHORTHANDS = {
   b5: { label: '#11', wrong: [] },
   '#5': { label: 'b13', wrong: ['5', '13'] },
@@ -263,5 +269,5 @@ export function classifyPc(chord, pc) {
 
 /** Canonical quality ids in table order: ['maj7', '6', '6/9', 'm7', …] */
 export function qualityIds() {
-  return Object.keys(QUALITIES);
+  return [...QUALITY_IDS];
 }
