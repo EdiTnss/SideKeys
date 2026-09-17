@@ -40,7 +40,8 @@ export async function reharmonize(client, piece, {
   });
 
   const problems = [];
-  let { chosen, why } = readAnswer(data, candidates, problems);
+  const repairs = [];
+  let { chosen, why } = readAnswer(data, candidates, problems, repairs);
   let slots = resolveChoices(analyzed, chosen);
   reportCovered(slots, chosen, problems);
 
@@ -85,6 +86,7 @@ export async function reharmonize(client, piece, {
     gridParses,
     issues: validation.issues,
     problems,
+    repairs,
     model,
     usage,
     promptVersion: prompt.version,
@@ -93,7 +95,7 @@ export async function reharmonize(client, piece, {
 
 // Turns the model's answer into choices. Anything unusable becomes a problem and leaves the
 // slot on its original chord.
-function readAnswer(data, candidates, problems) {
+function readAnswer(data, candidates, problems, repairs) {
   const chosen = [];
   const why = new Map();
   const entries = Array.isArray(data?.bars) ? data.bars : null;
@@ -119,16 +121,29 @@ function readAnswer(data, candidates, problems) {
       problems.push({ bar: entry.bar, slot: entry.slot, reason: `Bar ${entry.bar} slot ${entry.slot} was answered twice; the first answer stands.` });
       continue;
     }
-    const candidate = slot.candidates.find(option => option.id === entry.candidateId);
+    const exact = slot.candidates.find(option => option.id === entry.candidateId);
+    const candidate = exact ?? matchBySymbols(slot, entry.candidateId);
     if (!candidate) {
       problems.push({ bar: entry.bar, slot: entry.slot, reason: `"${entry.candidateId}" is not a candidate for bar ${entry.bar}; the original stays.` });
       continue;
     }
+    if (!exact) repairs.push({ bar: entry.bar, slot: entry.slot, wrote: entry.candidateId, used: candidate.id });
     taken.add(key);
     if (typeof entry.why === 'string') why.set(key, entry.why);
     if (candidate.technique !== 'original') chosen.push({ bar: entry.bar, slot: entry.slot, candidate });
   }
   return { chosen, why };
+}
+
+// The model sometimes shortens an id, writing "b2s1-Ab7" for "b2s1-chromatic-approach-Ab7".
+// Matching what is left against the candidates' own chord symbols recovers the choice it meant
+// without loosening anything: the chords still come from the menu the code computed.
+function matchBySymbols(slot, id) {
+  if (typeof id !== 'string') return null;
+  const wanted = id.replace(/^b\d+s\d+-/, '').trim().toLowerCase();
+  if (!wanted) return null;
+  const matches = slot.candidates.filter(option => option.chords.map(chord => chord.symbol).join('_').toLowerCase() === wanted);
+  return matches.length === 1 ? matches[0] : null;
 }
 
 // A two-slot candidate already owns the slot after it; a choice there was never applied.

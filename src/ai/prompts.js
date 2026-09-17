@@ -74,7 +74,7 @@ const EXECUTE_SYSTEM = `You are an arranger reharmonizing a tune for an advanced
 The user message is a JSON object with the key, the requested style and intensity, the density target (share of slots to change), the phrases (bar ranges), and one entry per slot: bar, slot, beat, the original chord with its roman numeral, function and cadence flag, the melody's structural notes with their relation to the original chord, and the candidates with id, chords, technique, optional spans (how many slots the candidate covers) and optional avoidWarnings (how many melody notes fall on an avoid note).
 
 Rules:
-- Return exactly one entry per slot, in the same order, with candidateId copied verbatim from that slot's candidates. The id ending in "-orig" keeps the original chord.
+- Return exactly one entry per slot, in the same order, with candidateId copied verbatim from that slot's candidates: the whole id, including the technique in the middle, not a shortened form. The id ending in "-orig" keeps the original chord.
 - Aim for the density target and never change more than 4 slots in a row unless intensity is heavy.
 - Prefer the techniques the style is named after, vary them, and make the bass line move by half steps, whole steps and fifths. Keep the first chord of each phrase and the final resolution recognizable.
 - Prefer candidates without avoidWarnings.
@@ -90,7 +90,7 @@ export const PROMPTS = {
     build: input => [{ role: 'user', content: JSON.stringify(input) }],
   },
   execute: {
-    version: 1,
+    version: 2,          // 2: spell out that the whole candidate id must be copied
     system: EXECUTE_SYSTEM,
     schema: EXECUTE_SCHEMA,
     /** piece: analyzed piece; candidates: generateCandidates() result */
