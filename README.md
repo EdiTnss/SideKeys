@@ -1,7 +1,23 @@
 # Voicing Lab
 
+[![tests](https://github.com/EdiTnss/Voicing-Lab/actions/workflows/test.yml/badge.svg)](https://github.com/EdiTnss/Voicing-Lab/actions/workflows/test.yml)
+
 A voicing and reharmonization trainer for jazz pianists. Connect a MIDI keyboard, play the chord the app asks for, and get instant feedback on what you played: voicing type, tensions, avoid notes and voice leading. Later phases add Claude-powered reharmonization that keeps the melody fixed.
 
-**Status:** work in progress. Phase 0 is done: `midi-test.html` checks MIDI in and out.
+**Status:** work in progress. Phase 1 (the drill) is being played in.
 
-Run locally with `npx serve .` in Chrome or Edge (Web MIDI), and run the tests with `npm test` (Node 22+).
+## Run it
+
+```bash
+npx serve .
+```
+
+Open http://localhost:3000 in Chrome or Edge (Web MIDI) with your keyboard connected. `midi-test.html` is a diagnostic page for MIDI in and out.
+
+## Tests
+
+```bash
+npm test
+```
+
+Node 22+, no dependencies: the music theory lives in `src/theory/` as pure modules and runs under `node --test`.
