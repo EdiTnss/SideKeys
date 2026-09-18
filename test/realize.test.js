@@ -71,6 +71,15 @@ test('when every voicing holds the melody note, it is doubled and said so; when 
   assert.ok(buried.voicings[1].notes, 'the next chord gets its voicing again');
 });
 
+test('when one melody note cannot be avoided, the left hand still avoids the others', () => {
+  // Over G7 the melody plays F and G. F is the required 7th, so every voicing doubles it; G is not needed.
+  const result = realize(piece('| G7 |', [raw('F4', 1, 1, 2), raw('G4', 1, 3, 2)]));
+  const [voicing] = result.voicings;
+  assert.ok(voicing.notes.some(midi => midi % 12 === 5), 'F is in every G7 voicing');
+  assert.ok(voicing.notes.every(midi => midi % 12 !== 7), `${voicing.notes}: no G under the melody G`);
+  assert.equal(voicing.doublesMelody, true);
+});
+
 test('the melody plays as recorded, in beats from the first downbeat; events come sorted with a velocity per part', () => {
   const result = realize(piece('| Dm7 | G7 |', [raw('F4', 1, 1, 2), raw('A4', 2, 3, 2)]));
   assert.deepEqual(part(result, 'melody').map(e => [e.beat, e.duration, e.midi]), [[0, 2, 65], [6, 2, 69]]);
