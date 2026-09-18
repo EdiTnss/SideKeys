@@ -39,6 +39,16 @@
       </label>
       <button id="reharm-run" type="button">Reharmonize</button>
     </div>
+    <div class="row play-row">
+      <button id="play-original" type="button">Play original</button>
+      <button id="play-reharm" type="button" disabled>Play reharm</button>
+      <button id="play-stop" type="button" disabled>Stop</button>
+      <span class="parts">
+        <label class="check"><input type="checkbox" name="part" value="bass"> bass</label>
+        <label class="check"><input type="checkbox" name="part" value="lh"> left hand</label>
+        <label class="check"><input type="checkbox" name="part" value="melody"> melody</label>
+      </span>
+    </div>
     <p id="reharm-source" class="hint"></p>
     <div id="reharm-view"></div>
   </section>

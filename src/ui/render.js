@@ -175,6 +175,14 @@ export function renderSettings(container, settings, { symbols, roots, onChange, 
     h('label', {}, 'Channel ', h('input', { type: 'number', name: 'channel', min: 1, max: 16, value: settings.channel })),
   );
 
+  const channel = (label, part) => h('label', {}, `${label} `,
+    h('input', { type: 'number', name: `ch-${part}`, min: 1, max: 16, value: settings.channels?.[part] ?? '' }));
+  const arrangement = h('fieldset', {},
+    h('legend', {}, 'Arrangement channels (Reharm playback)'),
+    channel('Melody', 'melody'), channel('Left hand', 'lh'), channel('Bass', 'bass'),
+    h('span', { class: 'note-name' }, 'Give each channel its voice on the Genos: piano, piano, bass.'),
+  );
+
   const statsLine = h('span', { class: 'stats-cumulative' }, '');
   const statistics = h('fieldset', {},
     h('legend', {}, 'Statistics (all sessions)'),
@@ -189,7 +197,7 @@ export function renderSettings(container, settings, { symbols, roots, onChange, 
     h('span', { class: 'note-name' }, 'The Cloudflare Worker from worker/; empty = off. The key never leaves the Worker.'),
   );
 
-  form.append(checks('qualities', symbols, settings.qualities), checks('roots', roots, settings.roots), numbers, midiOut, ai, statistics);
+  form.append(checks('qualities', symbols, settings.qualities), checks('roots', roots, settings.roots), numbers, midiOut, arrangement, ai, statistics);
   form.addEventListener('change', () => onChange(read()));
   container.replaceChildren(form);
 
@@ -225,6 +233,8 @@ export function renderSettings(container, settings, { symbols, roots, onChange, 
       outputId: form.elements.outputId.value || null,
       channel: Math.min(16, Math.max(1, Number(form.elements.channel.value) || 1)),
       proxyUrl: form.elements.proxyUrl.value.trim(),
+      channels: Object.fromEntries(['melody', 'lh', 'bass'].map(part =>
+        [part, Math.min(16, Math.max(1, Number(form.elements[`ch-${part}`].value) || settings.channels[part]))])),
     };
   }
 

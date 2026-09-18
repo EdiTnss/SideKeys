@@ -152,6 +152,7 @@ select, option { background-color: Canvas; color: CanvasText; }
 .reharm-why { margin: 0; min-height: 1.5rem; color: var(--muted); }
 .reharm-problems { margin: 0; padding-left: 1.25rem; color: var(--warn); font-size: .9rem; }
 .reharm-use { display: flex; gap: .5rem; margin: .25rem 0 0; }
+.reharm .parts { display: inline-flex; gap: .9rem; margin-left: .5rem; }
 
 /* Ask Claude */
 .ai { margin: .75rem 0 0; padding-top: .5rem; border-top: 1px dashed var(--line); }

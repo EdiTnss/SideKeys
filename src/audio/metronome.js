@@ -4,7 +4,7 @@
 // setInterval for the sound itself, which would drift). A JavaScript timer only wakes the
 // scheduler up; the UI gets an onBeat callback close to the moment the click is heard.
 
-import { beatDuration, positionAt } from '../theory/timing.js';
+import { beatDuration, positionAt, timeOf } from '../theory/timing.js';
 
 const LOOKAHEAD_S = 0.12;   // schedule clicks this far ahead
 const TICK_MS = 25;         // scheduler wake-up interval
@@ -80,10 +80,25 @@ export function createMetronome({ tempo = 120, timeSignature = [4, 4], countInBa
     return positionAt(toContextTime(performanceMs), { tempo, timeSignature, startTime, countInBars });
   }
 
+  /**
+   * When (bar, beat) is heard, in performance.now() milliseconds: the inverse of positionOf, for
+   * scheduling Web MIDI messages on the metronome's grid. Call it after start().
+   */
+  function performanceTimeOf(bar, beat) {
+    const contextTime = timeOf(bar, beat, { tempo, timeSignature, startTime, countInBars });
+    const stamp = context.getOutputTimestamp?.();
+    // A context that has only just started can report a zero stamp; fall back to the current time then.
+    if (stamp && Number.isFinite(stamp.contextTime) && stamp.performanceTime > 0) {
+      return stamp.performanceTime + (contextTime - stamp.contextTime) * 1000;
+    }
+    return performance.now() + (contextTime - context.currentTime) * 1000;
+  }
+
   return {
     start,
     stop,
     positionOf,
+    performanceTimeOf,
     get running() { return running; },
     get tempo() { return tempo; },
     set tempo(value) { if (!running) tempo = value; },

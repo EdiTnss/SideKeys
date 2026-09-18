@@ -19,6 +19,8 @@ import { createClient, AiError } from './ai/client.js';
 import { explainVoicing } from './ai/explain.js';
 import { reharmonize } from './ai/pipeline.js';
 import { STYLES } from './theory/candidates.js';
+import { realize } from './theory/realize.js';
+import { arrangementMessages } from './midi/player.js';
 import {
   renderChord, renderStatus, renderAnalysis, renderComparison, clearFeedback, renderSettings,
   roleClasses, heldClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
@@ -52,6 +54,7 @@ let aiResult = null;                // { symbol, suggestions, rejected, model }:
 let asking = false;
 let piece = null;                   // the piece on screen (grid + recorded melody)
 let reharmResult = null;            // the last reharmonization, for the A/B buttons
+let playback = null;                // { which, bars, voicings } while an arrangement plays
 let recorder = null;                // active while a melody pass is being recorded
 const heldWhileRecording = new Set();
 let sessionStats = emptyStats();    // this session only
@@ -219,8 +222,10 @@ async function runReharm() {
   try {
     reharmResult = await reharmonize(ai, target, { style: $('reharm-style').value, intensity: $('reharm-intensity').value });
     renderReharm($('reharm-view'), reharmResult, { onUse: useGrid });
+    $('play-reharm').disabled = Boolean(playback);
   } catch (error) {
     reharmResult = null;
+    $('play-reharm').disabled = true;
     renderError($('reharm-view'), `Claude: ${error instanceof AiError ? error.message : error?.message ?? error}`);
     console.error(error);
   } finally {
@@ -233,6 +238,70 @@ function useGrid(which) {
   $('prog-library').value = 'custom';
   $('prog-grid').value = which === 'reharm' ? reharmResult.grid : reharmResult.originalGrid;
   setMode('progression');
+}
+
+// ---- Play an arrangement on the Genos ---------------------------------------------------------
+
+// Bass, left hand and melody from realize.js, sent as timed MIDI on the metronome's grid, with a
+// bar of count-in. The keyboard shows the left-hand voicing of the chord that is sounding.
+function playArrangement(which) {
+  const source = which === 'reharm' ? reharmResult?.reharmonized : reharmPiece();
+  if (!source) return;
+  if (!output?.port) {
+    renderStatus($('status'), 'No MIDI output selected: choose the Genos in Settings, MIDI out.', 'warn');
+    return;
+  }
+  stopArrangement();
+  const tempo = Number($('prog-tempo').value) || source.tempo || 120;
+  const { events, voicings } = realize(source);
+  metronome = createMetronome({ tempo, timeSignature: source.timeSignature, onBeat: onPlaybackBeat });
+  metronome.start();
+  const startMs = metronome.performanceTimeOf(1, 1);
+  output.sendScheduled(arrangementMessages(events, { tempo, startMs, channels: settings.channels, parts: settings.parts }));
+  playback = { which, bars: source.bars.length, voicings };
+  setPlaybackControls(true);
+}
+
+function onPlaybackBeat({ bar, beat, countIn }) {
+  if (!playback) return;
+  if (countIn) {
+    renderStatus($('status'), `Count-in… ${beat}`, 'ok');
+    return;
+  }
+  if (bar > playback.bars) {
+    stopArrangement();
+    return;
+  }
+  renderStatus($('status'), `Playing the ${playback.which}: bar ${bar} · beat ${beat}`, 'ok');
+  const sounding = playback.voicings.filter(v => v.bar < bar || (v.bar === bar && v.beat <= beat)).at(-1);
+  keyboard.highlight(sounding?.notes && settings.parts.lh ? heldClasses(sounding.notes) : {});
+}
+
+function stopArrangement() {
+  if (!playback) return;
+  playback = null;
+  metronome?.stop();
+  metronome = null;
+  output?.silence(Object.values(settings.channels));
+  keyboard.highlight({});
+  setPlaybackControls(false);
+  showMidiStatus();
+}
+
+function setPlaybackControls(playing) {
+  $('play-original').disabled = playing;
+  $('play-reharm').disabled = playing || !reharmResult;
+  $('play-stop').disabled = !playing;
+}
+
+function showParts() {
+  for (const box of document.querySelectorAll('input[name="part"]')) box.checked = settings.parts[box.value] !== false;
+}
+
+function changeParts() {
+  const parts = Object.fromEntries([...document.querySelectorAll('input[name="part"]')].map(box => [box.value, box.checked]));
+  settings = { ...settings, parts };
+  saveSettings(settings);
 }
 
 // ---- Progression -------------------------------------------------------------------------
@@ -486,6 +555,7 @@ function onNext() {
 // ---- Mode switch, settings, wiring ------------------------------------------------------
 
 function setMode(next) {
+  if (playback) stopArrangement();
   if (recorder) stopRecording();
   if (mode === 'progression' && $('prog-start').disabled) stopProgression();
   mode = next;
@@ -507,7 +577,7 @@ function selectOutput() {
 }
 
 function applySettings(next) {
-  settings = next;
+  settings = { ...settings, ...next };      // the parts toggles live in the Reharm tab, not in this form
   saveSettings(settings);
   capture.debounceMs = settings.debounceMs;
   capture.nextNote = settings.nextNote;
@@ -551,6 +621,10 @@ $('tab-drill').addEventListener('click', () => setMode('drill'));
 $('tab-progression').addEventListener('click', () => setMode('progression'));
 $('tab-reharm').addEventListener('click', () => setMode('reharm'));
 $('reharm-run').addEventListener('click', () => { runReharm(); $('reharm-run').blur(); });
+$('play-original').addEventListener('click', () => { playArrangement('original'); $('play-original').blur(); });
+$('play-reharm').addEventListener('click', () => { playArrangement('reharm'); $('play-reharm').blur(); });
+$('play-stop').addEventListener('click', () => { stopArrangement(); $('play-stop').blur(); });
+for (const box of document.querySelectorAll('input[name="part"]')) box.addEventListener('change', changeParts);
 $('prog-library').addEventListener('change', () => { fillGridFromLibrary(); buildSession(); });
 $('prog-key').addEventListener('change', () => { fillGridFromLibrary(); buildSession(); });
 $('prog-time').addEventListener('change', buildSession);
@@ -563,6 +637,7 @@ fillSelect($('prog-library'), { ...Object.fromEntries(Object.entries(PROGRESSION
 fillSelect($('prog-key'), Object.fromEntries(ROOTS.map(r => [r, r])), 'C');
 fillSelect($('reharm-style'), Object.fromEntries(Object.keys(STYLES).map(id => [id, id.replace(/-/g, ' ')])), 'tritone');
 fillSelect($('reharm-intensity'), { light: 'light', medium: 'medium', heavy: 'heavy' }, 'medium');
+showParts();
 fillGridFromLibrary();
 refreshPieceList();
 const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL_SYMBOLS, roots: ROOTS, onChange: applySettings, onResetStats: resetStats });
@@ -600,4 +675,6 @@ window.voicingLab = {
   suggest: playSuggestion,
   ask: askClaude,
   reharm: runReharm,
+  playArrangement,
+  stopArrangement,
 };
