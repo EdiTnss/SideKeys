@@ -19,7 +19,7 @@ import { createClient, AiError } from './ai/client.js';
 import { explainVoicing } from './ai/explain.js';
 import { reharmonize } from './ai/pipeline.js';
 import { STYLES } from './theory/candidates.js';
-import { realize } from './theory/realize.js';
+import { realize, BASS_REGISTERS } from './theory/realize.js';
 import { arrangementMessages } from './midi/player.js';
 import {
   renderChord, renderStatus, renderAnalysis, renderComparison, clearFeedback, renderSettings,
@@ -253,7 +253,7 @@ function playArrangement(which) {
   }
   stopArrangement();
   const tempo = Number($('prog-tempo').value) || source.tempo || 120;
-  const { events, voicings } = realize(source);
+  const { events, voicings } = realize(source, { bassRegister: BASS_REGISTERS[settings.bassRegister] });
   metronome = createMetronome({ tempo, timeSignature: source.timeSignature, onBeat: onPlaybackBeat });
   metronome.start();
   const startMs = metronome.performanceTimeOf(1, 1);

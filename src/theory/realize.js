@@ -2,10 +2,11 @@
 // Pure, no DOM, no MIDI; midi/player.js turns the events into messages for the Genos.
 //
 // - Bass: the root, or the note after the slash, held for the chord and struck again at every
-//   change (Edi's choice). It lives in one octave, so every note has exactly one place: E2–D#3
-//   by default, because E1–D#2 (where a double bass sits) sounded muddy on the Genos; the lower
-//   octaves stay available as settings. The left hand always starts above the bass, never a
-//   muddy interval away from it (the analyzer's low interval limits, applied to that pair).
+//   change (Edi's choice). It lives in one octave, so every note has exactly one place: E1–D#2
+//   by default, where a double bass sits, with two higher octaves available as settings. (It
+//   once sounded muddy on the Genos: the bass voice itself was set an octave down.) The left
+//   hand always starts above the bass, never a muddy interval away from it (the analyzer's low
+//   interval limits, applied to that pair).
 // - Left hand: the voicing from voicings.js closest to the one before (same texture first,
 //   then the least movement), held for the chord. Its top note stays under the lowest melody
 //   note sounding over the chord, and it doubles as few of the melody's pitch classes as a
@@ -24,7 +25,7 @@ export const BASS_REGISTERS = Object.freeze({
   middle: Object.freeze([33, 44]),     // A1–G#2
   high: Object.freeze([40, 51]),       // E2–D#3
 });
-export const BASS_REGISTER = BASS_REGISTERS.high;
+export const BASS_REGISTER = BASS_REGISTERS.low;
 export const PART_VELOCITY = Object.freeze({ bass: 80, lh: 64, melody: 90 });
 const PART_ORDER = { bass: 0, lh: 1, melody: 2 };
 

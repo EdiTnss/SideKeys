@@ -177,10 +177,14 @@ export function renderSettings(container, settings, { symbols, roots, onChange, 
 
   const channel = (label, part) => h('label', {}, `${label} `,
     h('input', { type: 'number', name: `ch-${part}`, min: 1, max: 16, value: settings.channels?.[part] ?? '' }));
+  const registers = { low: 'E1–D#2', middle: 'A1–G#2', high: 'E2–D#3' };
+  const bassRegister = h('select', { name: 'bassRegister' }, ...Object.entries(registers).map(([value, label]) =>
+    h('option', { value, ...(value === settings.bassRegister ? { selected: '' } : {}) }, label)));
   const arrangement = h('fieldset', {},
-    h('legend', {}, 'Arrangement channels (Reharm playback)'),
+    h('legend', {}, 'Arrangement (Reharm playback)'),
     channel('Melody', 'melody'), channel('Left hand', 'lh'), channel('Bass', 'bass'),
-    h('span', { class: 'note-name' }, 'Give each channel its voice on the Genos: piano, piano, bass.'),
+    h('label', {}, 'Bass register ', bassRegister),
+    h('span', { class: 'note-name' }, 'Give each channel its voice on the Genos: piano, piano, bass, with the bass voice at its normal octave.'),
   );
 
   const statsLine = h('span', { class: 'stats-cumulative' }, '');
@@ -235,6 +239,7 @@ export function renderSettings(container, settings, { symbols, roots, onChange, 
       proxyUrl: form.elements.proxyUrl.value.trim(),
       channels: Object.fromEntries(['melody', 'lh', 'bass'].map(part =>
         [part, Math.min(16, Math.max(1, Number(form.elements[`ch-${part}`].value) || settings.channels[part]))])),
+      bassRegister: form.elements.bassRegister.value,
     };
   }
 

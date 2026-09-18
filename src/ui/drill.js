@@ -19,7 +19,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   proxyUrl: '',          // the AI proxy (Cloudflare Worker) URL; '' = Ask Claude is off
   channels: DEFAULT_CHANNELS,                                   // arrangement playback, one channel per part
   parts: Object.freeze({ melody: true, lh: true, bass: true }), // which parts the arrangement plays
-  bassRegister: 'high',  // a key of BASS_REGISTERS; E1–D#2 sounded muddy on the Genos
+  bassRegister: 'low',   // a key of BASS_REGISTERS: low E1–D#2, middle A1–G#2, high E2–D#3
 });
 
 const STORAGE_KEY = 'voicing-lab.settings';
