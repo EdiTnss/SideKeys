@@ -26,3 +26,23 @@ test('createOutput: selects a port, plays a voicing and releases it after the du
   assert.deepEqual(midi.sent.at(-1), [0xb1, 123, 0]);
   assert.equal(output.select('missing'), null);
 });
+
+test('createOutput: sends timed messages, and silences channels after dropping what is still queued', () => {
+  const sent = [];
+  let cleared = 0;
+  const port = { id: 'out-1', name: 'Genos', send: (bytes, time) => sent.push([[...bytes], time]), clear: () => { cleared += 1; } };
+  const output = createOutput({ outputs: new Map([[port.id, port]]) });
+  assert.equal(output.sendScheduled([{ time: 1000, data: [0x90, 60, 90] }]), false);   // no port selected yet
+  output.select('out-1');
+  assert.equal(output.sendScheduled([{ time: 1000, data: [0x90, 60, 90] }, { time: 1500, data: [0x80, 60, 0] }]), true);
+  assert.deepEqual(sent, [[[0x90, 60, 90], 1000], [[0x80, 60, 0], 1500]]);
+  output.silence([1, 2, 3]);
+  assert.equal(cleared, 1);
+  assert.deepEqual(sent.slice(-3).map(([bytes]) => bytes), [[0xb0, 123, 0], [0xb1, 123, 0], [0xb2, 123, 0]]);
+
+  const old = { id: 'old', name: 'Old port', send: bytes => sent.push([[...bytes]]) };  // no clear(): still silenced
+  const legacy = createOutput({ outputs: new Map([[old.id, old]]) });
+  legacy.select('old');
+  assert.doesNotThrow(() => legacy.silence([4]));
+  assert.deepEqual(sent.at(-1), [[0xb3, 123, 0]]);
+});

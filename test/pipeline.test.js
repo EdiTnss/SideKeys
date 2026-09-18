@@ -154,3 +154,15 @@ test('a failed call is not swallowed: the caller sees the AiError', async () => 
   const failing = { call: async () => { throw new AiError('rate-limited', 'slow down', { status: 429 }); } };
   await assert.rejects(() => reharmonize(failing, piece('| Dm7 | G7 |')), error => error instanceof AiError && error.kind === 'rate-limited');
 });
+
+test('the result carries the reharmonized piece, with its real onsets and the melody, ready to realize', async () => {
+  const tune = piece('| Dm7 G7 | Cmaj7 |', [raw('E4', 1, 1, 2), raw('F4', 1, 3, 1), raw('E4', 2, 1, 4)]);
+  const result = await reharmonize(fakeClient(byTechnique('related-ii')), tune);
+  assert.deepEqual(result.reharmonized.bars[0].chords, [{ symbol: 'Dm7', beat: 1 }, { symbol: 'Dm7', beat: 3 }, { symbol: 'G7', beat: 4 }]);
+  assert.deepEqual(result.reharmonized.bars[1].chords, [{ symbol: 'Cmaj7', beat: 1 }]);
+  assert.deepEqual(result.reharmonized.bars.map(bar => bar.melody), tune.bars.map(bar => bar.melody));
+  assert.equal(result.reharmonized.tempo, tune.tempo);
+  assert.deepEqual(result.reharmonized.timeSignature, tune.timeSignature);
+  assert.equal(result.reharmonized.analysis, undefined);                // a plain piece, not the analyzed one
+  assert.notEqual(result.reharmonized.bars[1].melody, tune.bars[1].melody);   // copied, not shared
+});

@@ -63,3 +63,22 @@ test('settings survive a save/load round trip and fall back to defaults on garba
   assert.deepEqual(loadSettings(undefined), DEFAULT_SETTINGS);     // no storage at all
   assert.equal(saveSettings(settings, undefined), false);
 });
+
+test('arrangement channels and parts: defaults, a round trip, and bad values falling back', () => {
+  assert.deepEqual(DEFAULT_SETTINGS.channels, { melody: 1, lh: 2, bass: 3 });
+  assert.deepEqual(DEFAULT_SETTINGS.parts, { melody: true, lh: true, bass: true });
+  const storage = fakeStorage();
+  const custom = { ...DEFAULT_SETTINGS, channels: { melody: 4, lh: 5, bass: 6 }, parts: { melody: true, lh: false, bass: true } };
+  saveSettings(custom, storage);
+  assert.deepEqual(loadSettings(storage).channels, custom.channels);
+  assert.deepEqual(loadSettings(storage).parts, custom.parts);
+
+  storage.setItem('voicing-lab.settings', JSON.stringify({ channels: { melody: 0, lh: 17, bass: 'x' }, parts: { lh: 'no' } }));
+  const cleaned = loadSettings(storage);
+  assert.deepEqual(cleaned.channels, { melody: 1, lh: 2, bass: 3 });
+  assert.deepEqual(cleaned.parts, { melody: true, lh: true, bass: true });
+
+  const fresh = loadSettings(undefined);
+  fresh.channels.lh = 9;                                            // a loaded copy never touches the defaults
+  assert.equal(DEFAULT_SETTINGS.channels.lh, 2);
+});
