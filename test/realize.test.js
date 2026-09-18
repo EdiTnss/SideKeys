@@ -98,6 +98,13 @@ test('when one melody note cannot be avoided, the left hand still avoids the oth
   assert.equal(voicing.doublesMelody, true);
 });
 
+test('a thin voicing forced by a tight spot does not stick: the next chord with room is full again', () => {
+  // Bar 1: bass D3 and melody E4 leave room only for a shell. Bar 2 has no melody, so plenty of room.
+  const result = realize(piece('| Dm7 | Dm7 |', [raw('E4', 1, 1, 4)]), { bassRegister: BASS_REGISTERS.high });
+  assert.equal(result.voicings[0].notes.length, 2, `${result.voicings[0].notes}`);
+  assert.equal(result.voicings[1].notes.length, 4, `${result.voicings[1].notes}`);
+});
+
 test('the melody plays as recorded, in beats from the first downbeat; events come sorted with a velocity per part', () => {
   const result = realize(piece('| Dm7 | G7 |', [raw('F4', 1, 1, 2), raw('A4', 2, 3, 2)]));
   assert.deepEqual(part(result, 'melody').map(e => [e.beat, e.duration, e.midi]), [[0, 2, 65], [6, 2, 69]]);
