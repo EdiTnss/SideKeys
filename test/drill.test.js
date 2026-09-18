@@ -82,3 +82,12 @@ test('arrangement channels and parts: defaults, a round trip, and bad values fal
   fresh.channels.lh = 9;                                            // a loaded copy never touches the defaults
   assert.equal(DEFAULT_SETTINGS.channels.lh, 2);
 });
+
+test('the bass register is one of the named ones, high by default', () => {
+  assert.equal(DEFAULT_SETTINGS.bassRegister, 'high');
+  const storage = fakeStorage();
+  saveSettings({ ...DEFAULT_SETTINGS, bassRegister: 'middle' }, storage);
+  assert.equal(loadSettings(storage).bassRegister, 'middle');
+  storage.setItem('voicing-lab.settings', JSON.stringify({ bassRegister: 'subsonic' }));
+  assert.equal(loadSettings(storage).bassRegister, 'high');
+});
