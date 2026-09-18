@@ -73,8 +73,9 @@ test('when every voicing holds the melody note, it is doubled and said so; when 
 
 test('when one melody note cannot be avoided, the left hand still avoids the others', () => {
   // Over G7 the melody plays F and G. F is the required 7th, so every voicing doubles it; G is not needed.
-  const result = realize(piece('| G7 |', [raw('F4', 1, 1, 2), raw('G4', 1, 3, 2)]));
-  const [voicing] = result.voicings;
+  // The Dm7 before it matters: the voicing that moves least from there is G2 D3 F3 B3, with a G in it.
+  const result = realize(piece('| Dm7 | G7 |', [raw('E4', 1, 1, 4), raw('F4', 2, 1, 2), raw('G4', 2, 3, 2)]));
+  const voicing = result.voicings[1];
   assert.ok(voicing.notes.some(midi => midi % 12 === 5), 'F is in every G7 voicing');
   assert.ok(voicing.notes.every(midi => midi % 12 !== 7), `${voicing.notes}: no G under the melody G`);
   assert.equal(voicing.doublesMelody, true);
