@@ -78,6 +78,7 @@ export async function reharmonize(client, piece, {
   return {
     analyzed,
     candidates,
+    reharmonized: toPiece(piece, slots),
     slots: detailed,
     chosen,
     scores: scoreReharm(analyzed, chosen, { intensity }),
@@ -154,6 +155,27 @@ function reportCovered(slots, chosen, problems) {
       problems.push({ bar: slot.bar, slot: slot.slot, reason: `Bar ${slot.bar} slot ${slot.slot} is covered by a two-slot candidate; the choice there was ignored.` });
     }
   }
+}
+
+// ---- The reharmonized piece ---------------------------------------------------------------
+
+// A plain piece with the chosen chords at their real onsets (a related ii at beat 4 stays at
+// beat 4, unlike the grid text) and the melody untouched: what realize.js plays.
+function toPiece(piece, slots) {
+  const chordsPerBar = piece.bars.map(() => []);
+  for (const slot of slots) {
+    for (const chord of slot.chords) {
+      if (chord.bar >= 1 && chord.bar <= chordsPerBar.length) chordsPerBar[chord.bar - 1].push({ symbol: chord.symbol, beat: chord.beat });
+    }
+  }
+  return {
+    ...piece,
+    timeSignature: [...piece.timeSignature],
+    bars: piece.bars.map((bar, i) => ({
+      chords: chordsPerBar[i].length ? chordsPerBar[i].sort((a, b) => a.beat - b.beat) : bar.chords.map(chord => ({ ...chord })),
+      melody: bar.melody.map(note => ({ ...note })),
+    })),
+  };
 }
 
 // ---- Back to grid text --------------------------------------------------------------------

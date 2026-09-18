@@ -33,10 +33,26 @@ export function createOutput(midiAccess, { channel = 1, setTimer = (fn, ms) => s
     if (port) port.send([0xb0 | (channel - 1), 123, 0]);
   }
 
+  /** Timed messages [{ time, data }], time in performance.now() milliseconds; the browser delivers them. */
+  function sendScheduled(messages) {
+    if (!port) return false;
+    for (const { time, data } of messages) port.send(data, time);
+    return true;
+  }
+
+  /** Drops what is still queued (where the port can) and sends All Notes Off on each channel. */
+  function silence(channels = [channel]) {
+    if (!port) return;
+    port.clear?.();
+    for (const ch of channels) port.send([0xb0 | (ch - 1), 123, 0]);
+  }
+
   return {
     select,
     playVoicing,
     allNotesOff,
+    sendScheduled,
+    silence,
     get port() { return port; },
     get channel() { return channel; },
     set channel(value) { channel = value; },

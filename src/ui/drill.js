@@ -1,5 +1,7 @@
 // Drill state: what to practise, which chord comes next, settings persistence. No DOM, no theory.
 
+import { DEFAULT_CHANNELS } from '../midi/player.js';
+
 // Half-diminished is shown as ø7, diminished as a bare ° (the symbol already implies the
 // diminished seventh). The parser accepts every alias.
 export const DRILL_SYMBOLS = ['maj7', '6', '6/9', 'm7', 'm6', 'mMaj7', '7', '7b9', '7#11', '7alt', '7sus4', 'ø7', '°'];
@@ -14,9 +16,21 @@ export const DEFAULT_SETTINGS = Object.freeze({
   outputId: null,        // MIDI output port id; null = the first one available
   channel: 1,            // MIDI channel for suggestions
   proxyUrl: '',          // the AI proxy (Cloudflare Worker) URL; '' = Ask Claude is off
+  channels: DEFAULT_CHANNELS,                                   // arrangement playback, one channel per part
+  parts: Object.freeze({ melody: true, lh: true, bass: true }), // which parts the arrangement plays
 });
 
 const STORAGE_KEY = 'voicing-lab.settings';
+const PARTS = ['melody', 'lh', 'bass'];
+
+// A fresh copy every time, so a loaded settings object can be edited without touching the defaults.
+const defaults = () => ({
+  ...DEFAULT_SETTINGS,
+  qualities: [...DEFAULT_SETTINGS.qualities],
+  roots: [...DEFAULT_SETTINGS.roots],
+  channels: { ...DEFAULT_SETTINGS.channels },
+  parts: { ...DEFAULT_SETTINGS.parts },
+});
 
 /** A random symbol from the selected roots × qualities, never the previous one unless it is the only option. */
 export function nextChord(settings, previous = null, random = Math.random) {
@@ -33,10 +47,10 @@ export function nextChord(settings, previous = null, random = Math.random) {
 export function loadSettings(storage = globalThis.localStorage) {
   try {
     const raw = storage?.getItem(STORAGE_KEY);
-    if (!raw) return { ...DEFAULT_SETTINGS };
+    if (!raw) return defaults();
     return sanitize(JSON.parse(raw));
   } catch {
-    return { ...DEFAULT_SETTINGS };
+    return defaults();
   }
 }
 
@@ -62,6 +76,11 @@ function sanitize(saved) {
       : DEFAULT_SETTINGS.nextNote;
   const channel = Number.isInteger(saved.channel) && saved.channel >= 1 && saved.channel <= 16 ? saved.channel : DEFAULT_SETTINGS.channel;
   const proxyUrl = typeof saved.proxyUrl === 'string' && /^https?:\/\//.test(saved.proxyUrl.trim()) ? saved.proxyUrl.trim() : '';
+  const isChannel = value => Number.isInteger(value) && value >= 1 && value <= 16;
+  const channels = Object.fromEntries(PARTS.map(part =>
+    [part, isChannel(saved.channels?.[part]) ? saved.channels[part] : DEFAULT_SETTINGS.channels[part]]));
+  const parts = Object.fromEntries(PARTS.map(part =>
+    [part, typeof saved.parts?.[part] === 'boolean' ? saved.parts[part] : DEFAULT_SETTINGS.parts[part]]));
   return {
     qualities: qualities.length ? qualities : [...DEFAULT_SETTINGS.qualities],
     roots: roots.length ? roots : [...DEFAULT_SETTINGS.roots],
@@ -70,5 +89,7 @@ function sanitize(saved) {
     outputId: typeof saved.outputId === 'string' && saved.outputId ? saved.outputId : null,
     channel,
     proxyUrl,
+    channels,
+    parts,
   };
 }
