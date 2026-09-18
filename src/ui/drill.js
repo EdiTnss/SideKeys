@@ -1,6 +1,7 @@
 // Drill state: what to practise, which chord comes next, settings persistence. No DOM, no theory.
 
 import { DEFAULT_CHANNELS } from '../midi/player.js';
+import { BASS_REGISTERS } from '../theory/realize.js';
 
 // Half-diminished is shown as ø7, diminished as a bare ° (the symbol already implies the
 // diminished seventh). The parser accepts every alias.
@@ -18,6 +19,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   proxyUrl: '',          // the AI proxy (Cloudflare Worker) URL; '' = Ask Claude is off
   channels: DEFAULT_CHANNELS,                                   // arrangement playback, one channel per part
   parts: Object.freeze({ melody: true, lh: true, bass: true }), // which parts the arrangement plays
+  bassRegister: 'high',  // a key of BASS_REGISTERS; E1–D#2 sounded muddy on the Genos
 });
 
 const STORAGE_KEY = 'voicing-lab.settings';
@@ -91,5 +93,6 @@ function sanitize(saved) {
     proxyUrl,
     channels,
     parts,
+    bassRegister: Object.hasOwn(BASS_REGISTERS, saved.bassRegister) ? saved.bassRegister : DEFAULT_SETTINGS.bassRegister,
   };
 }

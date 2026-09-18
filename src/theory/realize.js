@@ -2,8 +2,10 @@
 // Pure, no DOM, no MIDI; midi/player.js turns the events into messages for the Genos.
 //
 // - Bass: the root, or the note after the slash, held for the chord and struck again at every
-//   change (Edi's choice). It lives in E1–D#2: one octave, so every note has exactly one place
-//   and the bass always sits under the left hand.
+//   change (Edi's choice). It lives in one octave, so every note has exactly one place: E2–D#3
+//   by default, because E1–D#2 (where a double bass sits) sounded muddy on the Genos; the lower
+//   octaves stay available as settings. The left hand always starts above the bass, never a
+//   muddy interval away from it (the analyzer's low interval limits, applied to that pair).
 // - Left hand: the voicing from voicings.js closest to the one before (same texture first,
 //   then the least movement), held for the chord. Its top note stays under the lowest melody
 //   note sounding over the chord, and it doubles as few of the melody's pitch classes as a
@@ -15,8 +17,14 @@
 
 import { parseChord } from './chords.js';
 import { suggestVoicings, DEFAULT_REGISTER } from './voicings.js';
+import { LOW_INTERVAL_LIMITS } from './analyzer.js';
 
-export const BASS_REGISTER = [28, 39];
+export const BASS_REGISTERS = Object.freeze({
+  low: Object.freeze([28, 39]),        // E1–D#2
+  middle: Object.freeze([33, 44]),     // A1–G#2
+  high: Object.freeze([40, 51]),       // E2–D#3
+});
+export const BASS_REGISTER = BASS_REGISTERS.high;
 export const PART_VELOCITY = Object.freeze({ bass: 80, lh: 64, melody: 90 });
 const PART_ORDER = { bass: 0, lh: 1, melody: 2 };
 
@@ -50,11 +58,15 @@ export function realize(piece, { register = DEFAULT_REGISTER, bassRegister = BAS
   for (const slot of slots) {
     const chord = parseChord(slot.symbol);
     const duration = slot.end - slot.start;
-    events.push({ beat: slot.start, duration, part: 'bass', midi: placeBass(chord.bassPc ?? chord.rootPc, bassRegister), velocity: velocity.bass });
+    const bass = placeBass(chord.bassPc ?? chord.rootPc, bassRegister);
+    events.push({ beat: slot.start, duration, part: 'bass', midi: bass, velocity: velocity.bass });
 
     const over = melody.filter(note => note.start < slot.end && note.start + note.duration > slot.start);
     const top = over.length ? Math.min(register[1], Math.min(...over.map(note => note.midi)) - melodyGap) : register[1];
-    const options = top >= register[0] ? suggestVoicings(chord, { register: [register[0], top], previous }) : [];
+    const floor = Math.max(register[0], bass + 1);
+    const options = top >= floor
+      ? fullestFirst(suggestVoicings(chord, { register: [floor, top], previous }).filter(option => !muddyPair(bass, option.notes[0])))
+      : [];
     const { picked, doubled } = leastDoubling(options, new Set(over.map(note => note.midi % 12)));
     const entry = { bar: slot.bar, beat: slot.beat, symbol: slot.symbol };
 
@@ -75,8 +87,20 @@ export function realize(piece, { register = DEFAULT_REGISTER, bassRegister = BAS
   return { events, voicings, totalBeats: piece.bars.length * beatsPerBar };
 }
 
+// The drill's suggestions keep the texture of the previous voicing first, which in an
+// arrangement means one forced shell turns every later chord into a shell too. Here the fuller
+// voicing comes first, then the one that moves least, then the drill's own order.
+function fullestFirst(options) {
+  return options
+    .map((option, order) => ({ option, order }))
+    .sort((a, b) => b.option.notes.length - a.option.notes.length
+      || (a.option.comparison?.movement ?? 0) - (b.option.comparison?.movement ?? 0)
+      || a.order - b.order)
+    .map(entry => entry.option);
+}
+
 // The voicing that doubles the fewest of the melody's pitch classes; among equals, the first,
-// since the options already come in voice-leading order. A required note the melody also
+// since the options already come fullest first, then in voice-leading order. A required note the melody also
 // plays (the 7th of G7 under a melody F) cannot be avoided, but the rest still can.
 function leastDoubling(options, melodyPcs) {
   let picked = null;
@@ -90,6 +114,12 @@ function leastDoubling(options, melodyPcs) {
     }
   }
   return { picked, doubled: picked ? doubled : 0 };
+}
+
+// The analyzer's low interval limits, applied to the bass and the left hand's lowest note: the
+// same rule that keeps a voicing clear keeps the gap between the hands clear.
+function muddyPair(low, high) {
+  return LOW_INTERVAL_LIMITS.some(limit => low < limit.below && limit.semitones.includes(high - low));
 }
 
 // The note of this pitch class at or above the bottom of the register. With a one-octave
