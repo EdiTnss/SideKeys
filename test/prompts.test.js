@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createPiece } from '../src/theory/piece.js';
 import { analyzePiece } from '../src/theory/analysis.js';
-import { generateCandidates } from '../src/theory/candidates.js';
+import { generateCandidates, TECHNIQUES } from '../src/theory/candidates.js';
 import { PROMPTS, PROMPT_VERSIONS, VOICING_TYPES } from '../src/ai/prompts.js';
 
 // Structured outputs accept only a JSON Schema subset: every object needs additionalProperties
@@ -20,7 +20,7 @@ function assertStrict(schema, path) {
 }
 
 test('every prompt has an integer version, a system text, a builder and a strict JSON schema', () => {
-  assert.deepEqual(Object.keys(PROMPTS).sort(), ['execute', 'explain']);
+  assert.deepEqual(Object.keys(PROMPTS).sort(), ['execute', 'explain', 'plan']);
   for (const [name, prompt] of Object.entries(PROMPTS)) {
     assert.ok(Number.isInteger(prompt.version) && prompt.version >= 1, name);
     assert.equal(PROMPT_VERSIONS[name], prompt.version);
@@ -63,4 +63,34 @@ test('execute: one entry per slot with candidate ids, techniques, melody relatio
   const entry = PROMPTS.execute.schema.properties.bars.items.properties;
   assert.deepEqual(Object.keys(entry), ['bar', 'slot', 'candidateId', 'why']);
   assert.match(PROMPTS.execute.system, /candidateId/);
+});
+
+test('plan: one entry per phrase with the techniques its menu offers; the answer names techniques from the known list', () => {
+  const piece = analyzePiece(createPiece({ key: 'C', grid: '| Dm7 | G7 | Cmaj7 | % |' }));
+  const candidates = generateCandidates(piece, { style: 'tritone', intensity: 'light' });
+  const phrases = [{ bars: [1, 4], techniques: ['tritone-sub', 'related-ii', 'quality-change'] }];
+  const input = JSON.parse(PROMPTS.plan.build({ piece, candidates, style: 'tritone', intensity: 'light', phrases })[0].content);
+  assert.equal(input.key, 'C major');
+  assert.equal(input.style, 'tritone');
+  assert.deepEqual(input.densityTarget, { min: 0, max: 0.25 });
+  assert.deepEqual(input.phrases[0].bars, [1, 4]);
+  assert.deepEqual(input.phrases[0].techniques, phrases[0].techniques);
+  assert.deepEqual(input.phrases[0].slots.map(slot => [slot.bar, slot.original, slot.roman]),
+    [[1, 'Dm7', 'ii7'], [2, 'G7', 'V7'], [3, 'Cmaj7', 'Imaj7'], [4, 'Cmaj7', 'Imaj7']]);
+  assert.equal('candidates' in input.phrases[0].slots[0], false);        // the plan works on the analysis, not the menu
+
+  const entry = PROMPTS.plan.schema.properties.phrases.items.properties;
+  assert.deepEqual(Object.keys(entry), ['bars', 'strategy', 'techniques']);
+  assert.deepEqual(entry.techniques.items.enum, TECHNIQUES.filter(technique => technique !== 'original'));
+});
+
+test('execute: the plan goes in when there is one and stays out when there is none', () => {
+  const piece = analyzePiece(createPiece({ key: 'C', grid: '| Dm7 | G7 | Cmaj7 |' }));
+  const candidates = generateCandidates(piece, { style: 'tritone' });
+  const plan = [{ bars: [1, 3], strategy: 'Tritone on the V.', techniques: ['tritone-sub'] }];
+  const withPlan = JSON.parse(PROMPTS.execute.build({ piece, candidates, style: 'tritone', intensity: 'medium', plan })[0].content);
+  assert.deepEqual(withPlan.plan, plan);
+  const without = JSON.parse(PROMPTS.execute.build({ piece, candidates, style: 'tritone', intensity: 'medium', plan: null })[0].content);
+  assert.equal('plan' in without, false);
+  assert.match(PROMPTS.execute.system, /plan/i);
 });

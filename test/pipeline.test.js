@@ -10,38 +10,49 @@ import { reharmonize } from '../src/ai/pipeline.js';
 const raw = (name, bar, beat, durationBeats) => ({ midi: nameToMidi(name), bar, beat, durationBeats, velocity: 80 });
 const piece = (grid, melody = []) => addMelody(createPiece({ key: 'C', grid }), melody);
 
-// A client that answers `execute` by running `choose` on every slot of the prompt input.
-// `choose(slot)` returns a candidate, an id, or nothing (which keeps the original).
-const fakeClient = (choose, { payload = null } = {}) => {
+// A client that answers every call. `execute` runs `choose` on every slot of the prompt input:
+// `choose(slot)` returns a candidate, an id, or nothing (which keeps the original); `payload`
+// replaces the whole execute answer. `plan` and `review` are an answer, or a function of the
+// prompt input that returns one (or throws); by default the plan names every phrase with no
+// techniques and the review changes nothing.
+const fakeClient = (choose, { payload = null, plan = null, review = null } = {}) => {
   const calls = [];
+  const usage = { input_tokens: 10, output_tokens: 20 };
   return {
     calls,
     call: async (action, options) => {
       calls.push({ action, options });
       const input = JSON.parse(options.messages[0].content);
+      const answer = (given, fallback) => ({ data: typeof given === 'function' ? given(input) : given ?? fallback(), model: 'fake-model', usage });
+      if (action === 'plan') return answer(plan, () => ({ phrases: input.phrases.map(phrase => ({ bars: phrase.bars, strategy: 'Keep it plain.', techniques: [] })) }));
+      if (action === 'review') return answer(review, () => ({ verdict: 'Fine as it is.', changes: [] }));
       if (payload) return { data: payload, model: 'fake-model', usage: null };
       const bars = input.slots.map(slot => {
         const picked = choose?.(slot);
         const id = typeof picked === 'string' ? picked : picked?.id ?? slot.candidates[0].id;
         return { bar: slot.bar, slot: slot.slot, candidateId: id, why: id.endsWith('-orig') ? '' : `because of ${id}` };
       });
-      return { data: { bars }, model: 'fake-model', usage: { input_tokens: 10, output_tokens: 20 } };
+      return { data: { bars }, model: 'fake-model', usage };
     },
   };
 };
+const inputOf = (client, action) => JSON.parse(client.calls.find(call => call.action === action).options.messages[0].content);
 const byTechnique = technique => slot => slot.candidates.find(c => c.technique === technique);
 const symbolsOf = result => result.slots.flatMap(s => s.chords).map(c => c.symbol);
 
-test('the whole chain runs: the prompt goes out, the answer comes back as chords, scores and a grid', async () => {
+test('execute alone (Phase 3a): one call, and the answer comes back as chords, scores and a grid', async () => {
   const client = fakeClient(byTechnique('tritone-sub'));
-  const result = await reharmonize(client, piece('| Dm7 | G7 | Cmaj7 |'), { style: 'tritone', intensity: 'light' });
+  const result = await reharmonize(client, piece('| Dm7 | G7 | Cmaj7 |'), { style: 'tritone', intensity: 'light', plan: false, review: false });
 
   assert.equal(client.calls.length, 1);
   assert.equal(client.calls[0].action, 'execute');
   assert.equal(client.calls[0].options.system, PROMPTS.execute.system);
   assert.equal(client.calls[0].options.schema, PROMPTS.execute.schema);
+  assert.equal('plan' in inputOf(client, 'execute'), false);
   assert.equal(result.promptVersion, PROMPTS.execute.version);
   assert.equal(result.model, 'fake-model');
+  assert.equal(result.plan, null);
+  assert.equal(result.review, null);
 
   assert.deepEqual(symbolsOf(result), ['Dm7', 'Db7', 'Cmaj7']);
   assert.equal(result.originalGrid, '| Dm7 | G7 | Cmaj7 |');
@@ -165,4 +176,85 @@ test('the result carries the reharmonized piece, with its real onsets and the me
   assert.deepEqual(result.reharmonized.timeSignature, tune.timeSignature);
   assert.equal(result.reharmonized.analysis, undefined);                // a plain piece, not the analyzed one
   assert.notEqual(result.reharmonized.bars[1].melody, tune.bars[1].melody);   // copied, not shared
+});
+
+// ---- Phase 3b: plan -------------------------------------------------------------------------
+
+const EIGHT = '| Dm7 | G7 | Cmaj7 | % | Dm7 | G7 | Cmaj7 | % |';
+
+test('plan first, then execute with the plan, each step announced before its call', async () => {
+  const steps = [];
+  const client = fakeClient(byTechnique('tritone-sub'), {
+    plan: input => ({ phrases: input.phrases.map((phrase, i) => ({ bars: phrase.bars, strategy: `Phrase ${i + 1}: tritone into the cadence.`, techniques: ['tritone-sub'] })) }),
+  });
+  const result = await reharmonize(client, piece(EIGHT), { style: 'tritone', intensity: 'light', review: false, onStep: step => steps.push([step, client.calls.length]) });
+
+  assert.deepEqual(client.calls.map(call => call.action), ['plan', 'execute']);
+  assert.deepEqual(steps, [['plan', 0], ['execute', 1]]);
+  assert.equal(client.calls[0].options.system, PROMPTS.plan.system);
+  assert.equal(client.calls[0].options.schema, PROMPTS.plan.schema);
+
+  // The plan sees, per phrase, what the menu can actually give (light: four techniques at most).
+  const planInput = inputOf(client, 'plan');
+  assert.deepEqual(planInput.phrases.map(phrase => phrase.bars), [[1, 4], [5, 8]]);
+  assert.deepEqual(planInput.phrases[0].techniques, ['tritone-sub', 'related-ii', 'quality-change']);
+  assert.deepEqual(planInput.phrases[0].slots.map(slot => slot.original), ['Dm7', 'G7', 'Cmaj7', 'Cmaj7']);
+  assert.equal(planInput.phrases[0].slots[1].roman, 'V7');
+
+  const plan = [
+    { bars: [1, 4], strategy: 'Phrase 1: tritone into the cadence.', techniques: ['tritone-sub'] },
+    { bars: [5, 8], strategy: 'Phrase 2: tritone into the cadence.', techniques: ['tritone-sub'] },
+  ];
+  assert.deepEqual(result.plan, plan);
+  assert.deepEqual(inputOf(client, 'execute').plan, plan);           // execute follows the plan
+
+  assert.deepEqual(result.calls.map(call => call.action), ['plan', 'execute']);
+  assert.deepEqual(result.promptVersions, { plan: PROMPTS.plan.version, execute: PROMPTS.execute.version });
+  assert.deepEqual(result.usage, { input_tokens: 20, output_tokens: 40 });     // both calls
+  assert.equal(result.grid, '| Dm7 | Db7 | Cmaj7 | % | Dm7 | Db7 | Cmaj7 | % |');
+});
+
+test('the plan is checked against the piece: foreign phrases, repeats and techniques the menu lacks are dropped and reported', async () => {
+  const client = fakeClient(null, { plan: { phrases: [
+    { bars: [1, 4], strategy: 'A section: one tritone.', techniques: ['tritone-sub', 'coltrane', 'tritone-sub'] },
+    { bars: [2, 5], strategy: 'Not a phrase of this piece.', techniques: [] },
+    { bars: [1, 4], strategy: 'The same phrase again.', techniques: [] },
+    { bars: [5, 8], strategy: 'Close plainly.', techniques: ['other'] },
+    { bars: [9], strategy: 'Half a range.', techniques: [] },
+  ] } });
+  const result = await reharmonize(client, piece(EIGHT), { style: 'tritone', intensity: 'light', review: false });
+
+  assert.deepEqual(result.plan, [
+    { bars: [1, 4], strategy: 'A section: one tritone.', techniques: ['tritone-sub'] },
+    { bars: [5, 8], strategy: 'Close plainly.', techniques: [] },
+  ]);
+  const planProblems = result.problems.filter(problem => problem.stage === 'plan');
+  assert.equal(planProblems.length, 5);
+  assert.ok(planProblems.some(problem => /coltrane/.test(problem.reason) && /1–4/.test(problem.reason)));
+  assert.ok(planProblems.some(problem => /other/.test(problem.reason)));
+  assert.ok(planProblems.some(problem => /2–5/.test(problem.reason)));
+  assert.ok(planProblems.some(problem => /twice/.test(problem.reason)));
+  assert.ok(planProblems.every(problem => problem.bar === null));
+  assert.deepEqual(inputOf(client, 'execute').plan, result.plan);
+
+  const empty = await reharmonize(fakeClient(null, { plan: { nothing: true } }), piece(EIGHT), { review: false });
+  assert.equal(empty.plan, null);
+  assert.match(empty.problems.find(problem => problem.stage === 'plan').reason, /without/i);
+});
+
+test('a plan the model could not give does not stop the run; a proxy that cannot be reached does', async () => {
+  for (const kind of ['refusal', 'truncated', 'invalid-json', 'upstream']) {
+    const client = fakeClient(byTechnique('tritone-sub'), { plan: () => { throw new AiError(kind, `plan went ${kind}`); } });
+    const result = await reharmonize(client, piece(EIGHT), { style: 'tritone', intensity: 'light', review: false });
+    assert.equal(result.plan, null, kind);
+    assert.deepEqual(client.calls.map(call => call.action), ['plan', 'execute'], kind);
+    assert.equal('plan' in inputOf(client, 'execute'), false, kind);
+    assert.match(result.problems.find(problem => problem.stage === 'plan').reason, new RegExp(`plan went ${kind}`), kind);
+    assert.equal(result.grid, '| Dm7 | Db7 | Cmaj7 | % | Dm7 | Db7 | Cmaj7 | % |', kind);
+  }
+  for (const kind of ['network', 'forbidden', 'rate-limited', 'not-configured']) {
+    const client = fakeClient(null, { plan: () => { throw new AiError(kind, kind); } });
+    await assert.rejects(() => reharmonize(client, piece(EIGHT), { review: false }), error => error instanceof AiError && error.kind === kind, kind);
+    assert.deepEqual(client.calls.map(call => call.action), ['plan'], kind);
+  }
 });
