@@ -16,8 +16,8 @@ const lhAt = (result, beat) => part(result, 'lh').filter(event => event.beat ===
 test('ii-V-I: the bass plays each root once, in one octave under the left hand', () => {
   const result = realize(piece('| Dm7 | G7 | Cmaj7 |'));
   assert.deepEqual(BASS_REGISTERS, { low: [28, 39], middle: [33, 44], high: [40, 51] });
-  assert.deepEqual(BASS_REGISTER, BASS_REGISTERS.high);                   // E2–D#3: E1 sounded muddy on the Genos
-  assert.deepEqual(part(result, 'bass').map(e => [e.beat, e.duration, e.midi]), [[0, 4, 50], [4, 4, 43], [8, 4, 48]]);
+  assert.deepEqual(BASS_REGISTER, BASS_REGISTERS.low);                    // E1–D#2, where a double bass sits
+  assert.deepEqual(part(result, 'bass').map(e => [e.beat, e.duration, e.midi]), [[0, 4, 38], [4, 4, 31], [8, 4, 36]]);
   assert.equal(result.totalBeats, 12);
   assert.deepEqual(result.voicings.map(v => [v.bar, v.beat, v.symbol]), [[1, 1, 'Dm7'], [2, 1, 'G7'], [3, 1, 'Cmaj7']]);
   for (const event of part(result, 'lh')) assert.ok(event.midi >= 40, `left hand ${event.midi} under E2`);
@@ -40,11 +40,11 @@ test('every left-hand voicing is clean for its chord and moves smoothly from the
 
 test('two chords in a bar split it; a slash chord puts its bass note in the bass', () => {
   const split = realize(piece('| Dm7 G7 | Cmaj7 |'));
-  assert.deepEqual(part(split, 'bass').map(e => [e.beat, e.duration, e.midi]), [[0, 2, 50], [2, 2, 43], [4, 4, 48]]);
+  assert.deepEqual(part(split, 'bass').map(e => [e.beat, e.duration, e.midi]), [[0, 2, 38], [2, 2, 31], [4, 4, 36]]);
   assert.ok(part(split, 'lh').filter(e => e.beat === 0).every(e => e.duration === 2));
   const slash = realize(piece('| C/E | F |'));
-  assert.equal(part(slash, 'bass')[0].midi, 40);                         // E2, not C
-  assert.equal(part(slash, 'bass')[1].midi, 41);                         // F2
+  assert.equal(part(slash, 'bass')[0].midi, 28);                         // E1, not C
+  assert.equal(part(slash, 'bass')[1].midi, 29);                         // F1
 });
 
 test('the left hand always starts above the bass, never a muddy interval away, in every bass register', () => {
@@ -117,8 +117,8 @@ test('the melody plays as recorded, in beats from the first downbeat; events com
 });
 
 test('registers and velocities can be changed; 3/4 counts three beats a bar', () => {
-  const result = realize(piece('| Dm7 |'), { bassRegister: BASS_REGISTERS.low, velocity: { bass: 100, lh: 50, melody: 110 } });
-  assert.equal(part(result, 'bass')[0].midi, 38);                         // D2
+  const result = realize(piece('| Dm7 |'), { bassRegister: BASS_REGISTERS.high, velocity: { bass: 100, lh: 50, melody: 110 } });
+  assert.equal(part(result, 'bass')[0].midi, 50);                         // D3
   assert.equal(part(result, 'bass')[0].velocity, 100);
   const waltz = realize(piece('| Fmaj7 | Gm7 C7 C7 |', [], { timeSignature: [3, 4] }));
   assert.equal(waltz.totalBeats, 6);
