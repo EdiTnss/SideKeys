@@ -6,9 +6,9 @@
 //   and the bass always sits under the left hand.
 // - Left hand: the voicing from voicings.js closest to the one before (same texture first,
 //   then the least movement), held for the chord. Its top note stays under the lowest melody
-//   note sounding over the chord, and it avoids the melody's pitch classes when some voicing
-//   can (Edi's choice); when none can, it doubles and says so. When nothing fits under the
-//   melody, the left hand rests on that chord and says why.
+//   note sounding over the chord, and it doubles as few of the melody's pitch classes as a
+//   voicing allows (Edi's choice), saying so when it cannot avoid them all. When nothing fits
+//   under the melody, the left hand rests on that chord and says why.
 // - Melody: as recorded.
 //
 // Time is in beats from the first downbeat (0-based), so the result does not depend on tempo.
@@ -55,9 +55,7 @@ export function realize(piece, { register = DEFAULT_REGISTER, bassRegister = BAS
     const over = melody.filter(note => note.start < slot.end && note.start + note.duration > slot.start);
     const top = over.length ? Math.min(register[1], Math.min(...over.map(note => note.midi)) - melodyGap) : register[1];
     const options = top >= register[0] ? suggestVoicings(chord, { register: [register[0], top], previous }) : [];
-    const melodyPcs = new Set(over.map(note => note.midi % 12));
-    const clean = options.find(option => !option.notes.some(midi => melodyPcs.has(midi % 12)));
-    const picked = clean ?? options[0] ?? null;
+    const { picked, doubled } = leastDoubling(options, new Set(over.map(note => note.midi % 12)));
     const entry = { bar: slot.bar, beat: slot.beat, symbol: slot.symbol };
 
     if (!picked) {
@@ -65,7 +63,7 @@ export function realize(piece, { register = DEFAULT_REGISTER, bassRegister = BAS
         reason: over.length ? 'no voicing fits under the melody' : 'no voicing fits the register' });
       continue;
     }
-    voicings.push({ ...entry, notes: picked.notes, type: picked.type, doublesMelody: !clean, reason: null });
+    voicings.push({ ...entry, notes: picked.notes, type: picked.type, doublesMelody: doubled > 0, reason: null });
     for (const midi of picked.notes) events.push({ beat: slot.start, duration, part: 'lh', midi, velocity: velocity.lh });
     previous = picked.notes;
   }
@@ -75,6 +73,23 @@ export function realize(piece, { register = DEFAULT_REGISTER, bassRegister = BAS
   }
   events.sort((a, b) => a.beat - b.beat || PART_ORDER[a.part] - PART_ORDER[b.part] || a.midi - b.midi);
   return { events, voicings, totalBeats: piece.bars.length * beatsPerBar };
+}
+
+// The voicing that doubles the fewest of the melody's pitch classes; among equals, the first,
+// since the options already come in voice-leading order. A required note the melody also
+// plays (the 7th of G7 under a melody F) cannot be avoided, but the rest still can.
+function leastDoubling(options, melodyPcs) {
+  let picked = null;
+  let doubled = Infinity;
+  for (const option of options) {
+    const count = new Set(option.notes.map(midi => midi % 12).filter(pc => melodyPcs.has(pc))).size;
+    if (count < doubled) {
+      picked = option;
+      doubled = count;
+      if (doubled === 0) break;
+    }
+  }
+  return { picked, doubled: picked ? doubled : 0 };
 }
 
 // The note of this pitch class at or above the bottom of the register. With a one-octave
