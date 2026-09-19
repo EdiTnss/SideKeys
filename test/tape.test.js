@@ -223,3 +223,20 @@ test('a change to the capture\'s timing beyond a late timer is caught: a rolled 
   assert.equal(shorter.counts.missing, 1);
   assert.ok(shorter.counts.extra >= 1);
 });
+
+test('a slow roll: the live timer fired on the first note alone (no snapshot), and the snapshot that follows starts on the second', () => {
+  // From a real session: Ebm7 rolled with 321, 217 and 214 ms between the notes.
+  const [eb, gb, bb, db] = v('Eb3 Gb3 Bb3 Db4');
+  const events = [
+    { t: 0, type: 'mode', mode: 'drill' },
+    { t: 0, type: 'chord', symbol: 'Ebm7', slot: null },
+    { t: 1000, type: 'midi', data: [0x90, eb, 39] },        // due at 1300: fired live with one note, so nothing
+    { t: 1321, type: 'midi', data: [0x90, gb, 45] },        // 21 ms past due, inside the late window
+    { t: 1538, type: 'midi', data: [0x90, bb, 33] },
+    { t: 1752, type: 'midi', data: [0x90, db, 43] },
+    shot([eb, gb, bb, db], 1321, 'Ebm7', { lastAt: 1752 }), // starts on Gb3: the evidence
+  ];
+  const result = replayTape(session(events));
+  assert.equal(result.ok, true, formatReport('slow roll', result));
+  assert.equal(result.snapshots[0].startedAt, 1321);
+});

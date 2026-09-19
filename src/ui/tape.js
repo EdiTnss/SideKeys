@@ -110,6 +110,7 @@ export function replayTape(session, { lateMs = LATE_MS } = {}) {
   const events = [...session.events].sort((a, b) => a.t - b.t);
   const recorded = events.filter(event => event.type === 'snapshot');
   const fires = recorded.map(event => event.t);
+  const starts = recorded.map(event => event.startedAt);
   const used = new Set();
   const replayed = [];
   let state = { mode: null, symbol: null, slot: null, session: null, timeSignature: [4, 4], started: false, timed: false, clock: null, recording: false };
@@ -129,9 +130,12 @@ export function replayTape(session, { lateMs = LATE_MS } = {}) {
   });
 
   // Runs the timers due by `t`. When the tape shows the live timer firing (a snapshot within
-  // lateMs of when it was due), it fires there; when it shows none and something arrives within
-  // lateMs, the live timer had not run yet and stays pending; otherwise it fires when due.
-  function settle(t) {
+  // lateMs of when it was due), it fires there. When it shows none and a note arrives within
+  // lateMs, the live timer had not run yet and stays pending, unless a recorded snapshot starts
+  // on that very note: then the live timer had run before it, on a single held note, which
+  // leaves no snapshot on the tape (a slow roll, 321 ms between the first two notes). Otherwise
+  // it fires when due.
+  function settle(t, opensSnapshot = false) {
     for (;;) {
       let due = null;
       for (const entry of timers) if (entry[1].at <= t && (!due || entry[1].at < due[1].at)) due = entry;
@@ -141,7 +145,7 @@ export function replayTape(session, { lateMs = LATE_MS } = {}) {
       if (k !== -1) {
         used.add(k);
         clock = fires[k];
-      } else if (t - timer.at <= lateMs) {
+      } else if (t - timer.at <= lateMs && !opensSnapshot) {
         break;
       } else {
         clock = timer.at;
@@ -153,7 +157,8 @@ export function replayTape(session, { lateMs = LATE_MS } = {}) {
   }
 
   for (const event of events) {
-    settle(event.t);
+    const noteOn = event.type === 'midi' && parseMidiMessage(event.data).type === 'noteOn';
+    settle(event.t, noteOn && starts.some(start => Math.abs(start - event.t) <= 1));
     switch (event.type) {
       case 'midi': {
         if (state.recording) break;                       // live, the melody recorder had these
