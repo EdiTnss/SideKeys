@@ -7,6 +7,7 @@
 
 import { midiToName } from '../theory/notes.js';
 import { DENSITY_TARGETS } from '../theory/scoring.js';
+import { TECHNIQUES } from '../theory/candidates.js';
 
 /** The analyzer's voicing types, exactly as analyzeVoicing reports them. */
 export const VOICING_TYPES = ['shell', 'rootless-A', 'rootless-B', 'drop-2', 'drop-3', 'drop-2-4', 'quartal', 'upper-structure', 'close', 'spread'];
@@ -71,15 +72,52 @@ const EXECUTE_SCHEMA = {
 
 const EXECUTE_SYSTEM = `You are an arranger reharmonizing a tune for an advanced jazz pianist. The melody is fixed. For every slot you choose one candidate chord from the menu the app computed; every candidate is already checked against the melody, so choose for taste, line and coherence, not for correctness.
 
-The user message is a JSON object with the key, the requested style and intensity, the density target (share of slots to change), the phrases (bar ranges), and one entry per slot: bar, slot, beat, the original chord with its roman numeral, function and cadence flag, the melody's structural notes with their relation to the original chord, and the candidates with id, chords, technique, optional spans (how many slots the candidate covers) and optional avoidWarnings (how many melody notes fall on an avoid note).
+The user message is a JSON object with the key, the requested style and intensity, the density target (share of slots to change), the phrases (bar ranges), the plan when there is one (per phrase: a strategy and the techniques to prefer), and one entry per slot: bar, slot, beat, the original chord with its roman numeral, function and cadence flag, the melody's structural notes with their relation to the original chord, and the candidates with id, chords, technique, optional spans (how many slots the candidate covers) and optional avoidWarnings (how many melody notes fall on an avoid note).
 
 Rules:
 - Return exactly one entry per slot, in the same order, with candidateId copied verbatim from that slot's candidates: the whole id, including the technique in the middle, not a shortened form. The id ending in "-orig" keeps the original chord.
 - Aim for the density target and never change more than 4 slots in a row unless intensity is heavy.
+- When there is a plan, follow it phrase by phrase: its strategy decides where the changes go, and its techniques come first where they fit. The density target and the run limit still apply.
 - Prefer the techniques the style is named after, vary them, and make the bass line move by half steps, whole steps and fifths. Keep the first chord of each phrase and the final resolution recognizable.
 - Prefer candidates without avoidWarnings.
 - A candidate with spans 2 also covers the next slot: when you choose it, give the next slot its "-orig" id (it is ignored).
 - why is one short sentence for a changed slot, naming the technique and the melody note it works with; an empty string for an unchanged slot.`;
+
+const PLAN_SCHEMA = {
+  type: 'object',
+  properties: {
+    phrases: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          bars: { type: 'array', items: { type: 'integer' }, description: 'the first and last bar of the phrase, copied from the input' },
+          strategy: { type: 'string', description: 'one or two sentences' },
+          techniques: {
+            type: 'array',
+            items: { type: 'string', enum: TECHNIQUES.filter(technique => technique !== 'original') },
+            description: 'up to three, only from this phrase\'s list, in order of preference',
+          },
+        },
+        required: ['bars', 'strategy', 'techniques'],
+        additionalProperties: false,
+      },
+    },
+  },
+  required: ['phrases'],
+  additionalProperties: false,
+};
+
+const PLAN_SYSTEM = `You are an arranger planning the reharmonization of a tune for an advanced jazz pianist, phrase by phrase, before any chord is chosen. The melody is fixed. A colleague will then pick the chords, slot by slot, from a menu the app computed, following your plan.
+
+The user message is a JSON object with the key, the requested style and intensity, the density target (share of slots to change over the whole tune), and the phrases. Each phrase has its bars (first and last), its slots (bar, slot, beat, the original chord with its roman numeral, function and cadence flag, and the melody's structural notes with their relation to the original chord) and the techniques the menu can actually offer in that phrase.
+
+Reply with one entry per phrase, in the same order:
+- bars: the phrase's first and last bar, copied from the input.
+- strategy: one or two sentences on what the phrase should do harmonically and why: where the tension goes, where the harmony stays still, how the cadence is approached, and how the phrase relates to the others (the same idea on a repeated section, or a deliberate variation).
+- techniques: up to three techniques for this phrase, only from that phrase's list, in order of preference. An empty list means keep the phrase close to the original.
+
+Think about the whole form: the density target applies to the whole tune, so some phrases can stay plain while others carry the color. Prefer the techniques the style is named after, keep the first chord of each phrase and the final resolution recognizable, and aim for a bass line that moves by half steps, whole steps and fifths.`;
 
 export const PROMPTS = {
   explain: {
@@ -89,46 +127,79 @@ export const PROMPTS = {
     /** input: the object from buildExplainInput (src/ai/explain.js) */
     build: input => [{ role: 'user', content: JSON.stringify(input) }],
   },
+  plan: {
+    version: 1,
+    system: PLAN_SYSTEM,
+    schema: PLAN_SCHEMA,
+    /** phrases: [{ bars: [first, last], techniques }], the techniques each phrase's menu offers */
+    build: ({ piece, candidates, style, intensity, phrases }) => [{ role: 'user', content: JSON.stringify(planInput(piece, candidates, style, intensity, phrases)) }],
+  },
   execute: {
-    version: 2,          // 2: spell out that the whole candidate id must be copied
+    version: 3,          // 2: spell out that the whole candidate id must be copied; 3: follow the plan
     system: EXECUTE_SYSTEM,
     schema: EXECUTE_SCHEMA,
-    /** piece: analyzed piece; candidates: generateCandidates() result */
-    build: ({ piece, candidates, style, intensity }) => [{ role: 'user', content: JSON.stringify(executeInput(piece, candidates, style, intensity)) }],
+    /** piece: analyzed piece; candidates: generateCandidates() result; plan: the checked plan, or null */
+    build: ({ piece, candidates, style, intensity, plan = null }) => [{ role: 'user', content: JSON.stringify(executeInput(piece, candidates, style, intensity, plan)) }],
   },
 };
 
 export const PROMPT_VERSIONS = Object.fromEntries(Object.entries(PROMPTS).map(([name, prompt]) => [name, prompt.version]));
 
-function executeInput(piece, candidates, style, intensity) {
-  const { key, phrases } = piece.analysis;
+function header(piece, style, intensity) {
+  const { key } = piece.analysis;
   return {
     key: `${key.tonic} ${key.mode}`,
     timeSignature: `${piece.timeSignature[0]}/${piece.timeSignature[1]}`,
     style,
     intensity,
     densityTarget: { ...(DENSITY_TARGETS[intensity] ?? DENSITY_TARGETS.medium) },
-    phrases,
-    slots: candidates.slots.map(slot => {
-      const chord = piece.bars[slot.bar - 1].chords[slot.slot - 1];
-      const { roman, function: harmonicFunction, cadence, melody } = chord.analysis;
-      return {
-        bar: slot.bar,
-        slot: slot.slot,
-        beat: slot.beat,
-        original: slot.original,
-        roman,
-        function: harmonicFunction,
-        cadence,
-        melody: melody.structural.map(note => `${midiToName(note.midi)} (${note.relation})`),
-        candidates: slot.candidates.map(candidate => ({
-          id: candidate.id,
-          chords: candidate.chords.map(c => c.symbol).join(' '),
-          technique: candidate.technique,
-          ...(candidate.spans > 1 ? { spans: candidate.spans } : {}),
-          ...(candidate.warnings.length > 0 ? { avoidWarnings: candidate.warnings.length } : {}),
-        })),
-      };
-    }),
+  };
+}
+
+// What a slot is, before any choice: the original chord, its analysis and the melody over it.
+function slotSummary(piece, slot) {
+  const chord = piece.bars[slot.bar - 1].chords[slot.slot - 1];
+  const { roman, function: harmonicFunction, cadence, melody } = chord.analysis;
+  return {
+    bar: slot.bar,
+    slot: slot.slot,
+    beat: slot.beat,
+    original: slot.original,
+    roman,
+    function: harmonicFunction,
+    cadence,
+    melody: melody.structural.map(note => `${midiToName(note.midi)} (${note.relation})`),
+  };
+}
+
+function menuOf(slot) {
+  return slot.candidates.map(candidate => ({
+    id: candidate.id,
+    chords: candidate.chords.map(c => c.symbol).join(' '),
+    technique: candidate.technique,
+    ...(candidate.spans > 1 ? { spans: candidate.spans } : {}),
+    ...(candidate.warnings.length > 0 ? { avoidWarnings: candidate.warnings.length } : {}),
+  }));
+}
+
+function planInput(piece, candidates, style, intensity, phrases) {
+  return {
+    ...header(piece, style, intensity),
+    phrases: phrases.map(phrase => ({
+      bars: phrase.bars,
+      techniques: phrase.techniques,
+      slots: candidates.slots
+        .filter(slot => slot.bar >= phrase.bars[0] && slot.bar <= phrase.bars[1])
+        .map(slot => slotSummary(piece, slot)),
+    })),
+  };
+}
+
+function executeInput(piece, candidates, style, intensity, plan) {
+  return {
+    ...header(piece, style, intensity),
+    phrases: piece.analysis.phrases,
+    ...(plan ? { plan } : {}),
+    slots: candidates.slots.map(slot => ({ ...slotSummary(piece, slot), candidates: menuOf(slot) })),
   };
 }

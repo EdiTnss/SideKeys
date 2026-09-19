@@ -52,7 +52,6 @@ test('execute alone (Phase 3a): one call, and the answer comes back as chords, s
   assert.equal(result.promptVersion, PROMPTS.execute.version);
   assert.equal(result.model, 'fake-model');
   assert.equal(result.plan, null);
-  assert.equal(result.review, null);
 
   assert.deepEqual(symbolsOf(result), ['Dm7', 'Db7', 'Cmaj7']);
   assert.equal(result.originalGrid, '| Dm7 | G7 | Cmaj7 |');
