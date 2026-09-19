@@ -1,6 +1,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import * as entry from '../worker/src/index.js';
 import { handleRequest } from '../worker/src/index.js';
+
+// workerd reads every named export of the entry module as an entrypoint and refuses to start on
+// anything that is not a function or a handler (found when MAX_BODY_BYTES was exported from here).
+test('the entry module exports only what the Workers runtime accepts: the default handler and functions', () => {
+  for (const [name, value] of Object.entries(entry)) {
+    if (name === 'default') assert.equal(typeof value.fetch, 'function');
+    else assert.equal(typeof value, 'function', `${name} is a ${typeof value}: the Worker would not start`);
+  }
+});
 
 const PAGES = 'https://editnss.github.io';
 const LOCAL = 'http://localhost:3000';

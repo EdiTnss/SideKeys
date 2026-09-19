@@ -8,7 +8,7 @@ import { generateCandidates } from '../src/theory/candidates.js';
 import { PROMPTS } from '../src/ai/prompts.js';
 import { AiError } from '../src/ai/client.js';
 import { reharmonize, splitIntoParts, MAX_PART_SLOTS } from '../src/ai/pipeline.js';
-import { MAX_BODY_BYTES } from '../worker/src/index.js';
+import { MAX_BODY_BYTES } from '../worker/src/limits.js';
 
 const raw = (name, bar, beat, durationBeats) => ({ midi: nameToMidi(name), bar, beat, durationBeats, velocity: 80 });
 const piece = (grid, melody = []) => addMelody(createPiece({ key: 'C', grid }), melody);
