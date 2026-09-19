@@ -83,6 +83,15 @@ test('arrangement channels and parts: defaults, a round trip, and bad values fal
   assert.equal(DEFAULT_SETTINGS.channels.lh, 2);
 });
 
+test('plan & review is on by default and remembered; anything but a boolean falls back to on', () => {
+  assert.equal(DEFAULT_SETTINGS.planReview, true);
+  const storage = fakeStorage();
+  saveSettings({ ...DEFAULT_SETTINGS, planReview: false }, storage);
+  assert.equal(loadSettings(storage).planReview, false);
+  storage.setItem('voicing-lab.settings', JSON.stringify({ planReview: 'no' }));
+  assert.equal(loadSettings(storage).planReview, true);
+});
+
 test('the bass register is one of the named ones, low by default', () => {
   assert.equal(DEFAULT_SETTINGS.bassRegister, 'low');
   const storage = fakeStorage();
