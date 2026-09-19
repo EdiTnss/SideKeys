@@ -1,0 +1,450 @@
+{
+  "title": "Study in F",
+  "key": "F",
+  "timeSignature": [
+    4,
+    4
+  ],
+  "tempo": 120,
+  "bars": [
+    {
+      "chords": [
+        {
+          "symbol": "Fmaj7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 69,
+          "beat": 1,
+          "duration": 2,
+          "structural": true
+        },
+        {
+          "midi": 72,
+          "beat": 3,
+          "duration": 2,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Dm7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 69,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Gm7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 70,
+          "beat": 1,
+          "duration": 2,
+          "structural": true
+        },
+        {
+          "midi": 74,
+          "beat": 3,
+          "duration": 2,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "C7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 72,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Fmaj7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 69,
+          "beat": 1,
+          "duration": 2,
+          "structural": true
+        },
+        {
+          "midi": 72,
+          "beat": 3,
+          "duration": 2,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Dm7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 69,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Gm7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 70,
+          "beat": 1,
+          "duration": 2,
+          "structural": true
+        },
+        {
+          "midi": 74,
+          "beat": 3,
+          "duration": 2,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "C7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 72,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Fmaj7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 69,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "F7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 75,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Bbmaj7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 74,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Bbm7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 73,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Fmaj7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 72,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "D7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 69,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Gm7",
+          "beat": 1
+        },
+        {
+          "symbol": "C7",
+          "beat": 3
+        }
+      ],
+      "melody": [
+        {
+          "midi": 70,
+          "beat": 1,
+          "duration": 2,
+          "structural": true
+        },
+        {
+          "midi": 69,
+          "beat": 3,
+          "duration": 2,
+          "structural": true
+        }
+      ]
+    },
+    {
+      "chords": [
+        {
+          "symbol": "Fmaj7",
+          "beat": 1
+        }
+      ],
+      "melody": [
+        {
+          "midi": 65,
+          "beat": 1,
+          "duration": 4,
+          "structural": true
+        }
+      ]
+    }
+  ],
+  "raw": [
+    {
+      "midi": 69,
+      "bar": 1,
+      "beat": 1,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 72,
+      "bar": 1,
+      "beat": 3,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 69,
+      "bar": 2,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 70,
+      "bar": 3,
+      "beat": 1,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 74,
+      "bar": 3,
+      "beat": 3,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 72,
+      "bar": 4,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 69,
+      "bar": 5,
+      "beat": 1,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 72,
+      "bar": 5,
+      "beat": 3,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 69,
+      "bar": 6,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 70,
+      "bar": 7,
+      "beat": 1,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 74,
+      "bar": 7,
+      "beat": 3,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 72,
+      "bar": 8,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 69,
+      "bar": 9,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 75,
+      "bar": 10,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 74,
+      "bar": 11,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 73,
+      "bar": 12,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 72,
+      "bar": 13,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 69,
+      "bar": 14,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    },
+    {
+      "midi": 70,
+      "bar": 15,
+      "beat": 1,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 69,
+      "bar": 15,
+      "beat": 3,
+      "durationBeats": 2,
+      "velocity": 80
+    },
+    {
+      "midi": 65,
+      "bar": 16,
+      "beat": 1,
+      "durationBeats": 4,
+      "velocity": 80
+    }
+  ]
+}
