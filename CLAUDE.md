@@ -106,21 +106,16 @@ Regula de dependență: `theory/` nu importă nimic din `midi/`, `ui/` sau `ai/`
 
 La 2026-09-19:
 
-- **Fazele 0, 1, 2 și 3a sunt bifate** (DoD-urile în [docs/PHASES.md](docs/PHASES.md)). **Faza 3b**: aranjamentul (`realize.js`, `player.js`) a fost ascultat de Edi pe Genos; `plan` și `review` sunt implementate, cu DoD-ul măsurat îndeplinit pe piesa de 16 măsuri (bas 0,85 față de 0,80, mix de tehnici 4,67 față de 3,67; `eval/reports/compare-2026-09-19T13-59-52-398Z.json`). Din 3b rămâne execuția pe fraze peste 32 de măsuri.
-- **179 de teste** verzi, CI pe Node 22 și 24.
-- **Planul de produs** e în [docs/PRODUCT.md](docs/PRODUCT.md); suntem în **P0**. Din P0 e făcută spargerea lui `CLAUDE.md` în reguli, jurnal și specificații. Reharm-ul a ieșit din produs: rămâne în repo și în demo, fără lucru nou în afara execuției pe fraze, care e în P0.
+- **Fazele 0, 1, 2 și 3a sunt bifate** (DoD-urile în [docs/PHASES.md](docs/PHASES.md)). **Faza 3b**: aranjamentul (`realize.js`, `player.js`) a fost ascultat de Edi pe Genos; `plan` și `review` sunt implementate, cu DoD-ul măsurat îndeplinit pe piesa de 16 măsuri (bas 0,85 față de 0,80, mix de tehnici 4,67 față de 3,67; `eval/reports/compare-2026-09-19T13-59-52-398Z.json`). **Execuția pe bucăți** (piesele peste 32 de sloturi) e implementată și testată fără cheie; nu e încă măsurată cu modelul real.
+- **186 de teste** verzi, CI pe Node 22 și 24.
+- **Planul de produs** e în [docs/PRODUCT.md](docs/PRODUCT.md); suntem în **P0**. Din P0 e făcută spargerea lui `CLAUDE.md` în reguli, jurnal și specificații. Reharm-ul a ieșit din produs: rămâne în repo și în demo; după măsurarea execuției pe bucăți, `pipeline.js` nu mai primește lucru nou.
 - **Worker-ul** rulează doar local (`start.cmd`); nu e publicat în cloud (`npx wrangler login`, `npm --prefix worker run deploy`, `npm --prefix worker run secret`). Publicarea face parte din Faza 4, deci din P0.
-- Repo-ul e privat. Necommise: `assets/` (logo, favicon, imagine OG, `BRAND.md`, ale lui Edi, pentru Faza 4) și `Voicing Lab ca produs.pdf`, care nu intră în repo (analiza de piață stă în afara lui, vezi `PRODUCT.md`).
+- Repo-ul e privat. Necommise: `assets/` (logo, favicon, imagine OG, `BRAND.md`, ale lui Edi, pentru Faza 4), `Voicing Lab ca produs.pdf`, care nu intră în repo (analiza de piață stă în afara lui, vezi `PRODUCT.md`), `eval/pieces/study-in-bb-aaba.json` (piesa de măsurare, până o verifică Edi) și `docs/claude-setup/` (apărut în sesiunea din 2026-09-19, neatins).
 
 ## Următorul pas
 
-1. **Execuția pe fraze** pentru piese peste 32 de măsuri, cu contextul frazei precedente (ultimul punct din Faza 3b, primul din P0). Designul nu e aprobat; de decis cu Edi:
-   - cât cuprinde un apel `execute`: o frază de 4 măsuri sau bucăți de până la 32 de măsuri, tăiate la granițe de frază;
-   - ce context primește bucata următoare: ultimele 2 acorduri alese (cum zice spec-ul) și poate scorurile parțiale, ca densitatea să rămână în țintă pe toată piesa;
-   - dacă `plan` rămâne un singur apel pe toată piesa;
-   - `review`: o singură rundă pe toată piesa (spec: fără bucle) sau câte una pe bucată;
-   - cum se testează fără cheie (clientul fals din `test/pipeline.test.js` răspunde deja pe acțiune) și pe ce piesă lungă se măsoară.
-2. Restul lui P0, din `PRODUCT.md`: Faza 4 integral (demo mode, claviatură pe ecran, `audio/synth.js`, repo public, Pages, Worker publicat), harness-ul de verificare (port MIDI fals + sesiuni înregistrate care se reiau), prototipul de intrare pe microfon cu `basic-pitch-ts` (prag: peste 90% din 20 de voicings identificate corect, cu octava exactă).
+1. **Măsurarea execuției pe bucăți**, ultimul punct din Faza 3b. Edi verifică `eval/pieces/study-in-bb-aaba.json` (grila, melodia; se poate asculta cu Import JSON) și confirmă bugetul. Apoi, cu Worker-ul local pornit, `node eval/compare.js --piece eval/pieces/study-in-bb-aaba.json --runs 3` (~5 $; porți: 0 clash-uri, densitatea în țintă, `maxRun` în limită și peste granițe, nicio cerere refuzată sau trunchiată; de raportat basul la granițe, timpul, costul) și o rulare de control pe `study-in-f` (~0,35 $).
+2. Restul lui P0, în ordinea aprobată de Edi: **harness-ul de verificare** (port MIDI fals + sesiuni înregistrate care se reiau), apoi **demo mode** (claviatură pe ecran, `audio/synth.js`, piesa demo, pe intrarea injectată a harness-ului), apoi **publicarea** (istoric verificat pentru secrete, licență, repo public, Pages, Worker publicat, README, GIF, video), apoi **prototipul de microfon** cu `basic-pitch-ts`, în afara lui `src/` (prag: peste 90% din 20 de voicings identificate corect, cu octava exactă).
 3. De la Edi: o piesă proprie cu „plan & review" în tab-ul Reharm, ascultată pe Genos.
 
 ## Documentație
