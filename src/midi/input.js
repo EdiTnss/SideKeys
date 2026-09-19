@@ -15,14 +15,17 @@ export function parseMidiMessage(data) {
 /**
  * Asks for MIDI access, listens to every input on every channel and keeps listening as
  * devices come and go. Resolves with the MIDIAccess object; rejects with a readable message.
+ * `access` replaces the browser's (a virtual one from virtual.js); `onMessage(data, timeStamp)`
+ * sees every message before it is parsed, pedals and all.
  */
-export async function connectMidi({ onNoteOn, onNoteOff, onDevices = () => {} }) {
-  if (typeof navigator === 'undefined' || !navigator.requestMIDIAccess) {
+export async function connectMidi({ onNoteOn, onNoteOff, onMessage: onRaw = () => {}, onDevices = () => {}, access = null }) {
+  if (!access && (typeof navigator === 'undefined' || !navigator.requestMIDIAccess)) {
     throw new Error('Web MIDI is not available in this browser. Use Chrome or Edge.');
   }
-  const midi = await navigator.requestMIDIAccess();
+  const midi = access ?? await navigator.requestMIDIAccess();
 
   const onMessage = event => {
+    onRaw(event.data, event.timeStamp);
     const message = parseMidiMessage(event.data);
     if (message.type === 'noteOn') onNoteOn(message.note, message.velocity);
     else if (message.type === 'noteOff') onNoteOff(message.note);
