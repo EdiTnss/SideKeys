@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { nameToMidi } from '../src/theory/notes.js';
 import { parseGrid } from '../src/theory/progressions.js';
-import { createSession } from '../src/ui/session.js';
+import { createSession, snapshotTarget } from '../src/ui/session.js';
 
 const v = names => names.split(' ').map(nameToMidi);
 const grid = () => parseGrid('| Dm7 G7 | Cmaj7 | % |');
@@ -72,4 +72,22 @@ test('summary: the voice-leading score over the playing order, then a fresh chor
   assert.equal(session.history.length, 0);
   assert.equal(session.results.size, 0);
   assert.equal(session.summary().score.rating, null);
+});
+
+test('snapshotTarget: which chord a captured voicing answers, the one rule the app and the replay share', () => {
+  const session = createSession(grid(), { loop: false });
+  assert.deepEqual(snapshotTarget({ mode: 'drill', symbol: 'Cmaj7' }), { symbol: 'Cmaj7', slot: null });
+  assert.equal(snapshotTarget({ mode: 'drill', symbol: null }), null);         // no quality selected, no chord on screen
+  assert.equal(snapshotTarget({ mode: 'reharm', symbol: 'Cmaj7', session }), null);
+  assert.equal(snapshotTarget({ mode: 'progression', session: null, started: true }), null);
+
+  // Free: the slot under the cursor, once the pass has started.
+  assert.equal(snapshotTarget({ mode: 'progression', session, started: false, current: 1 }), null);
+  assert.deepEqual(snapshotTarget({ mode: 'progression', session, started: true, current: 1 }), { symbol: 'G7', slot: 1 });
+  // Timed: the slot where the voicing started, whatever is on screen by the time it is captured.
+  const timed = position => snapshotTarget({ mode: 'progression', session, started: true, timed: true, position, current: 0 });
+  assert.deepEqual(timed({ bar: 1, beat: 3.2 }), { symbol: 'G7', slot: 1 });
+  assert.deepEqual(timed({ bar: 2, beat: 1 }), { symbol: 'Cmaj7', slot: 2 });
+  assert.equal(timed({ bar: 0, beat: 4.5 }), null);                              // count-in
+  assert.equal(timed({ bar: 4, beat: 1 }), null);                                // past the end, no loop
 });
