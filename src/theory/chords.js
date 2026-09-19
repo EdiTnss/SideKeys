@@ -1,5 +1,5 @@
 // Chord symbol → pitch-class sets: chord tones, tensions, avoid notes. Pure, no DOM.
-// The quality table from CLAUDE.md lives here as data (QUALITIES). Keep both in sync.
+// The quality table from docs/spec-analyzer.md lives here as data (QUALITIES). Keep both in sync.
 // Degree labels follow the Berklee / Real Book convention:
 // 7 = major seventh, b7 = minor seventh, bb7 = diminished seventh.
 

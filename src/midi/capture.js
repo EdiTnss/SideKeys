@@ -1,6 +1,6 @@
 // Voicing capture: turns note-on / note-off events into chord snapshots. Pure, no Web MIDI here.
 //
-// Rules (see CLAUDE.md, "Cum funcționează captura"):
+// Rules (see docs/spec-capture.md):
 // - every note-on restarts a debounce timer; a note-off never does, because fingers do not
 //   lift together any more than they land together;
 // - the first note-off after the last note-on keeps a copy of the set, so a staccato chord

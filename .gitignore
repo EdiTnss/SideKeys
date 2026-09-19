@@ -8,6 +8,9 @@ worker/.env*
 .wrangler/
 *.local.json
 
+# Product analysis (market, economics, legal) stays out of the repo; see docs/PRODUCT.md
+/Voicing Lab ca produs.pdf
+
 # OS files
 Thumbs.db
 .DS_Store
