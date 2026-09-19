@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { nameToMidi } from '../src/theory/notes.js';
 import { parseGrid } from '../src/theory/progressions.js';
-import { createSession, snapshotTarget } from '../src/ui/session.js';
+import { createSession, snapshotTarget, ANTICIPATION_BEATS } from '../src/ui/session.js';
 
 const v = names => names.split(' ').map(nameToMidi);
 const grid = () => parseGrid('| Dm7 G7 | Cmaj7 | % |');
@@ -88,6 +88,22 @@ test('snapshotTarget: which chord a captured voicing answers, the one rule the a
   const timed = position => snapshotTarget({ mode: 'progression', session, started: true, timed: true, position, current: 0 });
   assert.deepEqual(timed({ bar: 1, beat: 3.2 }), { symbol: 'G7', slot: 1 });
   assert.deepEqual(timed({ bar: 2, beat: 1 }), { symbol: 'Cmaj7', slot: 2 });
-  assert.equal(timed({ bar: 0, beat: 4.5 }), null);                              // count-in
+  assert.equal(timed({ bar: 0, beat: 3 }), null);                                // count-in
   assert.equal(timed({ bar: 4, beat: 1 }), null);                                // past the end, no loop
+});
+
+test('snapshotTarget, timed: from the "and" of the beat before a change, a voicing counts for the next chord (Edi\'s rule)', () => {
+  assert.equal(ANTICIPATION_BEATS, 0.5);
+  const session = createSession(grid(), { loop: false });                        // | Dm7 G7 | Cmaj7 | % |
+  const timed = (position, on = session) => snapshotTarget({ mode: 'progression', session: on, started: true, timed: true, position })?.symbol ?? null;
+  assert.equal(timed({ bar: 1, beat: 2.49 }), 'Dm7');
+  assert.equal(timed({ bar: 1, beat: 2.5 }), 'G7');                              // the "and" of 2, before G7 on 3
+  assert.equal(timed({ bar: 1, beat: 4.49 }), 'G7');
+  assert.equal(timed({ bar: 1, beat: 4.5 }), 'Cmaj7');                           // the "and" of 4
+  assert.equal(timed({ bar: 0, beat: 4.6 }), 'Dm7');                             // the first chord, pushed from the count-in
+  assert.equal(timed({ bar: 3, beat: 4.8 }), 'Cmaj7');                           // nothing follows without a loop: the last chord keeps it
+  assert.equal(timed({ bar: 3, beat: 4.8 }, createSession(grid(), { loop: true })), 'Dm7');   // looped: the next chorus
+  const waltz = createSession(parseGrid('| Dm7 | G7 |', { timeSignature: [3, 4] }), { loop: false });
+  assert.equal(timed({ bar: 1, beat: 3.4 }, waltz), 'Dm7');
+  assert.equal(timed({ bar: 1, beat: 3.5 }, waltz), 'G7');                       // in 3/4, the "and" of 3
 });

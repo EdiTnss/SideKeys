@@ -158,8 +158,9 @@ test('a timed progression: the slot comes from where the voicing started on the 
   assert.deepEqual(result.snapshots.map(s => s.now.target), [{ symbol: 'Dm7', slot: 0 }, { symbol: 'G7', slot: 1 }, { symbol: 'Cmaj7', slot: 2 }]);
 
   // The page's clock drifts against the metronome's by a few ms over minutes, so a recorded
-  // position wins over the one computed from bar1At (here 2995 ms computes to bar 1, beat 4.99).
-  const drifted = replayTape(session([progression, on(2995, G7_B), shot(G7_B, 2995, 'G7', { slot: 1, position: { bar: 2, beat: 1.01 } }), off(3600, G7_B)]));
+  // position wins over the one computed from bar1At: 2700 ms computes to bar 1, beat 4.4, still
+  // Dm7; the metronome said 4.55, past the "and" of 4, so G7.
+  const drifted = replayTape(session([progression, on(2700, G7_B), shot(G7_B, 2700, 'G7', { slot: 1, position: { bar: 1, beat: 4.55 } }), off(3600, G7_B)]));
   assert.equal(drifted.ok, true, formatReport('drifted', drifted));
   assert.deepEqual(drifted.snapshots[0].now.target, { symbol: 'G7', slot: 1 });
 });
@@ -239,4 +240,23 @@ test('a slow roll: the live timer fired on the first note alone (no snapshot), a
   const result = replayTape(session(events));
   assert.equal(result.ok, true, formatReport('slow roll', result));
   assert.equal(result.snapshots[0].startedAt, 1321);
+});
+
+test('timed, as the app records it now: the slot change keeps the capture, and a chord pushed from the "and" of 4 counts for the next chord', () => {
+  const progression = [
+    { t: 0, type: 'mode', mode: 'progression' },
+    { t: 0, type: 'progression', grid: '| Dm7 | G7 | Cmaj7 |', timeSignature: [4, 4], loop: false },
+    { t: 0, type: 'chord', symbol: 'Dm7', slot: 0 },
+    { t: 500, type: 'start', timed: true, tempo: 120, bar1At: 1000 },
+  ];
+  const pushed = replayTape(session([
+    progression,
+    { t: 3000, type: 'chord', symbol: 'G7', slot: 1, cancels: false },
+    on(2800, G7_B), shot(G7_B, 2800, 'G7', { slot: 1 }), off(3600, G7_B),      // bar 1, beat 4.6, held across the bar line
+  ]));
+  assert.equal(pushed.ok, true, formatReport('pushed', pushed));
+  assert.deepEqual(pushed.snapshots[0].now.target, { symbol: 'G7', slot: 1 });
+  // Recorded before the change, a slot change cancelled what was pending: the same notes gave nothing.
+  const before = replayTape(session([progression, { t: 3000, type: 'chord', symbol: 'G7', slot: 1 }, on(2800, G7_B), off(3600, G7_B)]));
+  assert.deepEqual(before.counts, { same: 0, changed: 0, missing: 0, extra: 0 });
 });
