@@ -28,6 +28,7 @@ Ambele scopuri sunt egale. Dacă o decizie tehnică ajută portofoliul dar stric
 
 - La finalul fiecărei sesiuni, adaugă o intrare în [docs/JOURNAL.md](docs/JOURNAL.md) (data, ce s-a făcut, ce urmează, decizii luate) și actualizează „Starea curentă" și „Următorul pas" din acest fișier. Jurnalul nu se citește la începutul sesiunii; se caută în el istoricul unei decizii, la nevoie.
 - Înainte de o schimbare care atinge `analyzer.js` sau `chords.js`, scrie testul întâi, apoi implementarea.
+- Rulează testele cu `npm run test:quiet`: o linie când sunt verzi, numele și diff-ul când pică. Raportul implicit al lui `node --test` scrie o linie pe test — circa 25 KB de context la fiecare rulare, fără nicio informație. `npm test` rămâne raportul complet, pentru CI și pentru un eșec care cere mai mult context.
 - Când se adaugă o regulă de teorie nouă, se adaugă și în tabelul din [docs/spec-analyzer.md](docs/spec-analyzer.md). Când se adaugă o tehnică de substituție nouă, se adaugă în tabelul de candidați din [docs/spec-reharm.md](docs/spec-reharm.md), cu regula de detecție și un test.
 - Precizările din implementare (decizii, capcane, schimbări de spec) se scriu în specificația modulului din `docs/`, în același commit cu codul, nu în acest fișier.
 - Orice schimbare în `ai/prompts.js` incrementează `PROMPT_VERSION` și, din Faza 5, se rulează pe setul de evaluare înainte de commit.
@@ -94,8 +95,10 @@ harness/replay.js          reia sesiunile salvate și raportează ce s-a schimba
 harness/sessions/*.json    sesiuni înregistrate de aplicație („Save session"), reluate și în CI
 worker/                    Cloudflare Worker — proxy Anthropic, fără logică (Faza 3a)
 test/                      *.test.js, rulate cu node --test
+tools/quiet-report.mjs     rulează testele și rezumă (vezi antetul: numele din tools/ nu au voie
+                           să semene cu test-*, *-test, *_test sau *.test, altfel runner-ul le execută)
 .github/workflows/test.yml CI: npm test pe Node 22 și 24, la fiecare push (Faza 1)
-package.json               fără dependențe: "type": "module" + npm test
+package.json               fără dependențe: "type": "module" + npm test (și test:quiet)
 README.md                  engleză, cu GIF/video demo
 CLAUDE.md                  acest fișier, în repo (public odată cu repo-ul, la Faza 4)
 docs/PRODUCT.md            scopul produsului: poziționare, fazele P0–P4, reguli de scop (sursa de adevăr)
