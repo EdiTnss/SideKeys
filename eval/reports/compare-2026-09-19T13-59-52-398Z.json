@@ -1,0 +1,690 @@
+{
+  "piece": "eval/pieces/study-in-f.json",
+  "style": "tritone",
+  "intensity": "medium",
+  "runs": 3,
+  "price": {
+    "input": 5,
+    "output": 25
+  },
+  "summary": {
+    "execute": {
+      "runs": 3,
+      "failed": 0,
+      "bassSmoothness": {
+        "mean": 0.7962622549019608,
+        "range": "0.78–0.83"
+      },
+      "techniqueMix": {
+        "mean": 3.6666666666666665,
+        "range": "3.00–4.00"
+      },
+      "density": 0.4705882352941176,
+      "densityOk": 3,
+      "clashes": 0,
+      "seconds": 17.247666666666664,
+      "cost": 0.09179833333333333
+    },
+    "draft": {
+      "runs": 3,
+      "failed": 0,
+      "bassSmoothness": {
+        "mean": 0.8523284313725491,
+        "range": "0.83–0.89"
+      },
+      "techniqueMix": {
+        "mean": 4,
+        "range": "4.00–4.00"
+      },
+      "density": 0.411764705882353,
+      "densityOk": 3,
+      "clashes": 0,
+      "seconds": 58.89833333333333,
+      "cost": 0.24743
+    },
+    "full": {
+      "runs": 3,
+      "failed": 0,
+      "bassSmoothness": {
+        "mean": 0.8544730392156863,
+        "range": "0.83–0.90"
+      },
+      "techniqueMix": {
+        "mean": 4.666666666666667,
+        "range": "4.00–5.00"
+      },
+      "density": 0.45098039215686275,
+      "densityOk": 3,
+      "clashes": 0,
+      "seconds": 58.89833333333333,
+      "cost": 0.24743
+    }
+  },
+  "verdict": "bass smoothness at least as good, technique mix at least as good",
+  "results": [
+    {
+      "run": 1,
+      "mode": "execute",
+      "seconds": 19.378,
+      "cost": 0.09559,
+      "usage": {
+        "input_tokens": 11003,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 1623
+      },
+      "scores": {
+        "bassSmoothness": 0.828125,
+        "techniqueMix": 4,
+        "density": 0.47058823529411764,
+        "densityOk": true,
+        "maxRun": 2,
+        "clashes": 0,
+        "warnings": 0
+      },
+      "draftScores": null,
+      "grid": "| Fmaj7 | Ab7 | Gm7 | Gb7 | Fmaj7 | D7b9 | Db7 | C7 | Fmaj7 | B7 | Bbmaj7 | Eb7 | Fmaj7 | Ab7 | Gm7 Gb7 | Fmaj7 |",
+      "draftGrid": null,
+      "plan": null,
+      "review": null,
+      "problems": [],
+      "repairs": [],
+      "calls": [
+        {
+          "action": "execute",
+          "usage": {
+            "input_tokens": 11003,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 1623,
+            "output_tokens_details": {
+              "thinking_tokens": 775
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 19346,
+          "promptVersion": 3
+        }
+      ]
+    },
+    {
+      "run": 1,
+      "mode": "full",
+      "seconds": 62.938,
+      "cost": 0.25379,
+      "usage": {
+        "input_tokens": 27318,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4688
+      },
+      "scores": {
+        "bassSmoothness": 0.828125,
+        "techniqueMix": 4,
+        "density": 0.4117647058823529,
+        "densityOk": true,
+        "maxRun": 1,
+        "clashes": 0,
+        "warnings": 0
+      },
+      "draftScores": {
+        "bassSmoothness": 0.828125,
+        "techniqueMix": 4,
+        "density": 0.4117647058823529,
+        "densityOk": true,
+        "maxRun": 1,
+        "clashes": 0,
+        "warnings": 0
+      },
+      "grid": "| Fmaj7 | Dm7 | Gm7 | C7sus4 | Fmaj7 | Dm6 | Gm7 | Gb7 | Fmaj7 | B7 | Bbmaj7 | Eb7 | Fmaj7 | Ab7 | Gm7 Gb7 | Fmaj7 |",
+      "draftGrid": "| Fmaj7 | Dm7 | Gm7 | C7sus4 | Fmaj7 | Dm6 | Gm7 | Gb7 | Fmaj7 | B7 | Bbmaj7 | Eb7 | Fmaj7 | Ab7 | Gm7 Gb7 | Fmaj7 |",
+      "plan": [
+        {
+          "bars": [
+            1,
+            4
+          ],
+          "strategy": "State the tune plainly so the head is recognizable: tonic area stays still through bars 1-2 and the ii-V lands honestly on C7, with at most a related ii inserted ahead of the cadence to get the bass walking in fifths. This is the reference version that the repeat in bars 5-8 will deliberately recolor.",
+          "techniques": [
+            "related-ii",
+            "sus-color"
+          ]
+        },
+        {
+          "bars": [
+            5,
+            8
+          ],
+          "strategy": "Same melody, rewritten harmony: keep Fmaj7 as the anchor on bar 5, then push tension through the second half by replacing the V7 with its tritone sub (Gb7) so the bass falls Gm-Gb-F by half step into the next section. A quality change or chromatic approach on bar 6 keeps the tonic bars from sounding identical to phrase one.",
+          "techniques": [
+            "tritone-sub",
+            "quality-change",
+            "chromatic-approach"
+          ]
+        },
+        {
+          "bars": [
+            9,
+            12
+          ],
+          "strategy": "This is the bridge-like color zone: exploit the built-in I7-IV-iv motion by treating F7 as a dominant that can be flipped to its tritone sub (B7) into Bbmaj7, and keep the iv7/backdoor flavor in bar 12 so the descent to the last phrase is chromatic in the bass.",
+          "techniques": [
+            "tritone-sub",
+            "backdoor",
+            "modal-interchange"
+          ]
+        },
+        {
+          "bars": [
+            13,
+            16
+          ],
+          "strategy": "Final cadence carries the style name: keep Fmaj7 at bar 13 and the Fmaj7 resolution at bar 16 clear, but substitute the V7/ii and the V7 in bar 15 with their tritone partners (Ab7, Db7) so the bass slides Ab-G-Db-F into the tonic. Optionally precede with the related ii to make each sub feel prepared.",
+          "techniques": [
+            "tritone-sub",
+            "related-ii",
+            "quality-change"
+          ]
+        }
+      ],
+      "review": {
+        "verdict": "This reads as a disciplined tritone arrangement: phrase one stays plain with only a sus softening, the repeat is recolored by Dm6 and the Gm-Gb-F half-step drop, the bridge flips F7 to B7 and lands a genuine backdoor Eb7 into bar 13, and the final cadence gives the textbook Ab-G-Gb-F chromatic bass. Density sits just above the floor with no runs and no avoid notes, and the technique mix is wide enough that the four tritone subs read as the style rather than a tic. I found nothing worth trading away — every substitution serves the plan for its phrase, so I left the grid untouched.",
+        "changes": [],
+        "undone": null
+      },
+      "problems": [],
+      "repairs": [],
+      "calls": [
+        {
+          "action": "plan",
+          "usage": {
+            "input_tokens": 2549,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 1069,
+            "output_tokens_details": {
+              "thinking_tokens": 433
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 17931,
+          "promptVersion": 1
+        },
+        {
+          "action": "execute",
+          "usage": {
+            "input_tokens": 11634,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 1695,
+            "output_tokens_details": {
+              "thinking_tokens": 872
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 17849,
+          "promptVersion": 3
+        },
+        {
+          "action": "review",
+          "usage": {
+            "input_tokens": 13135,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 1924,
+            "output_tokens_details": {
+              "thinking_tokens": 1692
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 27149,
+          "promptVersion": 1
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "mode": "execute",
+      "seconds": 17.266,
+      "cost": 0.09289,
+      "usage": {
+        "input_tokens": 11003,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 1515
+      },
+      "scores": {
+        "bassSmoothness": 0.7794117647058824,
+        "techniqueMix": 4,
+        "density": 0.47058823529411764,
+        "densityOk": true,
+        "maxRun": 2,
+        "clashes": 0,
+        "warnings": 0
+      },
+      "draftScores": null,
+      "grid": "| Fmaj7 | Ab7 | Gm7 | Gb7 | Fmaj7 | Dm7 | Db7 | Gm7 C7 | Fmaj7 | B7 | Bbmaj7 | Eb7 | Fmaj7 | Ab7 | Gm7 Gb7 | Fmaj7 |",
+      "draftGrid": null,
+      "plan": null,
+      "review": null,
+      "problems": [],
+      "repairs": [],
+      "calls": [
+        {
+          "action": "execute",
+          "usage": {
+            "input_tokens": 11003,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 1515,
+            "output_tokens_details": {
+              "thinking_tokens": 673
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 17260,
+          "promptVersion": 3
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "mode": "full",
+      "seconds": 56.308,
+      "cost": 0.244,
+      "usage": {
+        "input_tokens": 27270,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4306
+      },
+      "scores": {
+        "bassSmoothness": 0.8970588235294118,
+        "techniqueMix": 5,
+        "density": 0.47058823529411764,
+        "densityOk": true,
+        "maxRun": 3,
+        "clashes": 0,
+        "warnings": 0
+      },
+      "draftScores": {
+        "bassSmoothness": 0.890625,
+        "techniqueMix": 4,
+        "density": 0.4117647058823529,
+        "densityOk": true,
+        "maxRun": 3,
+        "clashes": 0,
+        "warnings": 0
+      },
+      "grid": "| Fmaj7 | Dm7 | Gm7 | Gb7 | Fmaj7 | D7 | Db7 | Gb7alt | Fmaj7 | Cm7 F7 | Bbmaj7 | Eb7 | Fmaj7 | Ab7 | Gm7 Gb7 | Fmaj7 |",
+      "draftGrid": "| Fmaj7 | Dm7 | Gm7 | Gb7 | Fmaj7 | D7 | Db7 | Gb7 | Fmaj7 | F7 | Bbmaj7 | Eb7 | Fmaj7 | Ab7 | Gm7 Gb7 | Fmaj7 |",
+      "plan": [
+        {
+          "bars": [
+            1,
+            4
+          ],
+          "strategy": "State the tune plainly: keep Fmaj7 and the Dm7 tonic area intact so the theme is recognizable, then color only the cadence by replacing C7 with its tritone sub (Gb7) so the bass walks Gm-Gb-F into bar 5. Bar 3 may add a related ii or secondary dominant only if it keeps the Gm-Gb half-step motion.",
+          "techniques": [
+            "tritone-sub",
+            "related-ii",
+            "secondary-dominant"
+          ]
+        },
+        {
+          "bars": [
+            5,
+            8
+          ],
+          "strategy": "Same shape as bars 1-4 but denser: keep the opening Fmaj7, then reharmonize the Dm7 and Gm7 area with a related ii or quality change and approach the cadence with a chromatic descent into another tritone sub of C7, making this the variation answer to the first phrase.",
+          "techniques": [
+            "tritone-sub",
+            "related-ii",
+            "chromatic-approach"
+          ]
+        },
+        {
+          "bars": [
+            9,
+            12
+          ],
+          "strategy": "This is the subdominant excursion, so let the modal color carry it rather than substitution: keep F7 as the pivot to Bbmaj7 and lean on the iv7/backdoor darkness in bar 12, with at most one tritone sub leading back toward the last phrase.",
+          "techniques": [
+            "backdoor",
+            "modal-interchange",
+            "tritone-sub"
+          ]
+        },
+        {
+          "bars": [
+            13,
+            16
+          ],
+          "strategy": "Turn the final cadence into the payoff: keep the opening Fmaj7, substitute Ab7 for D7 and Gb7 for the C7 in bar 15 so the bass falls F-Ab-Gm-Gb-F, and land on a clean Fmaj7 so the resolution stays unambiguous.",
+          "techniques": [
+            "tritone-sub",
+            "related-ii",
+            "chromatic-approach"
+          ]
+        }
+      ],
+      "review": {
+        "verdict": "The overall shape is convincing: the two Gb7 cadences frame the form, the D7-Db7-Gb7 chromatic chain answers the first phrase, and the Eb7 backdoor in bar 12 gives the subdominant excursion its darkness while bars 13-16 deliver the planned F-Ab-Gm-Gb-F bass fall. My only reservations are that Gb7 appears three times unaltered, making the midpoint cadence sound like a carbon copy, and that bar 10 sits static where the plan's pivot to Bbmaj7 could carry more motion. I sharpened bar 8 to Gb7alt and split bar 10 into its related ii-V, which widens the technique mix without touching density or run limits.",
+        "changes": [
+          {
+            "bar": 8,
+            "slot": 1,
+            "from": "b8s1-tritone-sub-Gb7",
+            "to": "b8s1-tritone-sub-Gb7alt",
+            "why": "Altered tritone sub keeps C5 as the b5 but differentiates the midpoint cadence from the identical Gb7 in bar 4."
+          },
+          {
+            "bar": 10,
+            "slot": 1,
+            "from": "b10s1-orig",
+            "to": "b10s1-related-ii-Cm7_F7",
+            "why": "Related ii gives Eb5 a clean b3 on Cm7 and walks C-F-Bb in fourths into Bbmaj7."
+          }
+        ],
+        "undone": null
+      },
+      "problems": [],
+      "repairs": [],
+      "calls": [
+        {
+          "action": "plan",
+          "usage": {
+            "input_tokens": 2549,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 708,
+            "output_tokens_details": {
+              "thinking_tokens": 108
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 11435,
+          "promptVersion": 1
+        },
+        {
+          "action": "execute",
+          "usage": {
+            "input_tokens": 11598,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 1285,
+            "output_tokens_details": {
+              "thinking_tokens": 442
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 14782,
+          "promptVersion": 3
+        },
+        {
+          "action": "review",
+          "usage": {
+            "input_tokens": 13123,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 2313,
+            "output_tokens_details": {
+              "thinking_tokens": 1879
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 30085,
+          "promptVersion": 1
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "mode": "execute",
+      "seconds": 15.099,
+      "cost": 0.086915,
+      "usage": {
+        "input_tokens": 11003,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 1276
+      },
+      "scores": {
+        "bassSmoothness": 0.78125,
+        "techniqueMix": 3,
+        "density": 0.47058823529411764,
+        "densityOk": true,
+        "maxRun": 3,
+        "clashes": 0,
+        "warnings": 0
+      },
+      "draftScores": null,
+      "grid": "| Fmaj7 | Ab7 | Gm7 | Gb7 | Fmaj7 | D7 | Db7 | Gb7 | Fmaj7 | B7 | Bbmaj7 | E7 | Fmaj7 | Ab7 | Gm7 C7 | Fmaj7 |",
+      "draftGrid": null,
+      "plan": null,
+      "review": null,
+      "problems": [],
+      "repairs": [],
+      "calls": [
+        {
+          "action": "execute",
+          "usage": {
+            "input_tokens": 11003,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 1276,
+            "output_tokens_details": {
+              "thinking_tokens": 451
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 15094,
+          "promptVersion": 3
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "mode": "full",
+      "seconds": 57.449,
+      "cost": 0.2445,
+      "usage": {
+        "input_tokens": 27260,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 4328
+      },
+      "scores": {
+        "bassSmoothness": 0.8382352941176471,
+        "techniqueMix": 5,
+        "density": 0.47058823529411764,
+        "densityOk": true,
+        "maxRun": 3,
+        "clashes": 0,
+        "warnings": 0
+      },
+      "draftScores": {
+        "bassSmoothness": 0.8382352941176471,
+        "techniqueMix": 4,
+        "density": 0.4117647058823529,
+        "densityOk": true,
+        "maxRun": 1,
+        "clashes": 0,
+        "warnings": 0
+      },
+      "grid": "| Fmaj7 | Dm7 | Gm7 | Gm7 C7 | Fmaj7 | D7 | Gm7 | Gb7 | Fmaj7 | B7 | Bbmaj7 | Eb7 | F6/9 | Ab7 | Gm7 Gb7 | Fmaj7 |",
+      "draftGrid": "| Fmaj7 | Dm7 | Gm7 | Gm7 C7 | Fmaj7 | D7 | Gm7 | Gb7 | Fmaj7 | B7 | Bbmaj7 | Eb7 | Fmaj7 | Ab7 | Gm7 Gb7 | Fmaj7 |",
+      "plan": [
+        {
+          "bars": [
+            1,
+            4
+          ],
+          "strategy": "State the head plainly: keep Fmaj7 and the tonic-to-vi motion recognizable, and let the only motion be a light approach into the bar 4 dominant so the first A section sounds like the reference version. Tension is reserved for the cadence, which stays a real V7 here.",
+          "techniques": [
+            "related-ii",
+            "quality-change"
+          ]
+        },
+        {
+          "bars": [
+            5,
+            8
+          ],
+          "strategy": "Answer the first A with the same shape but reharmonized: tritone-sub the bar 8 cadence (Db7 in place of C7, with C5 sitting as a natural tension) and optionally set it up with its related ii so the bass walks Gm–Ab/Db–F. Dm7 can take a secondary-dominant or quality shift to keep the middle moving.",
+          "techniques": [
+            "tritone-sub",
+            "related-ii",
+            "secondary-dominant"
+          ]
+        },
+        {
+          "bars": [
+            9,
+            12
+          ],
+          "strategy": "The bridge already modulates toward IV, so keep F7-to-Bbmaj7 audible and color it instead: treat bar 10 as a dominant that can be tritone-substituted (B7) for a chromatic F–B–Bb descent, and lean on the iv7/backdoor flavor in bar 12 under the Db melody.",
+          "techniques": [
+            "tritone-sub",
+            "backdoor",
+            "modal-interchange"
+          ]
+        },
+        {
+          "bars": [
+            13,
+            16
+          ],
+          "strategy": "Highest density here as the form closes: keep Fmaj7 at the top, substitute the bar 14 V7/ii with Ab7 and the bar 15 beat-3 C7 with Gb7 so the bass falls chromatically Ab–G–Gb–F, and land on a plain Fmaj7 so the resolution is unmistakable.",
+          "techniques": [
+            "tritone-sub",
+            "related-ii",
+            "chromatic-approach"
+          ]
+        }
+      ],
+      "review": {
+        "verdict": "The arc is well judged: the first A stays plain, the tritone subs land exactly where the plan asks (Gb7 in bar 8, B7 in bar 10, Ab7/Gb7 in the turnaround), and the resulting bass line F–B–Bb–Eb and Ab–G–Gb–F is the strongest thing here. My only reservation is that the last A opens on a literal Fmaj7 identical to bars 1, 5 and 9, which makes the highest-density phrase start flat-footed and leaves the technique mix leaning hard on tritone subs. I lightened bar 13 to F6/9, which keeps the tonic unmistakable under C5 while adding a fifth technique.",
+        "changes": [
+          {
+            "bar": 13,
+            "slot": 1,
+            "from": "b13s1-orig",
+            "to": "b13s1-quality-change-F6/9",
+            "why": "Quality change to F6/9 keeps C5 as the 5th but freshens the fourth statement of the tonic and widens the technique mix."
+          }
+        ],
+        "undone": null
+      },
+      "problems": [],
+      "repairs": [],
+      "calls": [
+        {
+          "action": "plan",
+          "usage": {
+            "input_tokens": 2549,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 860,
+            "output_tokens_details": {
+              "thinking_tokens": 255
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 13640,
+          "promptVersion": 1
+        },
+        {
+          "action": "execute",
+          "usage": {
+            "input_tokens": 11603,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 1397,
+            "output_tokens_details": {
+              "thinking_tokens": 576
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 14390,
+          "promptVersion": 3
+        },
+        {
+          "action": "review",
+          "usage": {
+            "input_tokens": 13108,
+            "cache_creation_input_tokens": 0,
+            "cache_read_input_tokens": 0,
+            "cache_creation": {
+              "ephemeral_5m_input_tokens": 0,
+              "ephemeral_1h_input_tokens": 0
+            },
+            "output_tokens": 2071,
+            "output_tokens_details": {
+              "thinking_tokens": 1743
+            },
+            "service_tier": "standard",
+            "inference_geo": "global"
+          },
+          "ms": 29414,
+          "promptVersion": 1
+        }
+      ]
+    }
+  ]
+}
