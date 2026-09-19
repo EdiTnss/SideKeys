@@ -15,6 +15,14 @@
 //   as a whole (Edi's choice), and a review that fails leaves the draft, already paid for.
 // The `candidates` option is also what Phase 5's lock & regenerate will use to pin the slots the
 // user liked.
+//
+// A long piece goes in parts (splitIntoParts): at most MAX_PART_SLOTS slots each, cut at phrase
+// boundaries, so every request stays under the Worker's 64 KB body limit and every answer well
+// under the output cap. The plan still sees the whole tune. Execute runs part by part, in order,
+// each told the last two chords chosen before it and how many changed slots in a row it inherits.
+// Then one review per part, all sent at once; the guard judges them in order, on the whole tune.
+// Validation and scores always run on the whole tune. A piece that fits is one part and runs
+// exactly as before.
 
 import { analyzePiece } from '../theory/analysis.js';
 import { generateCandidates, STYLES, TECHNIQUES } from '../theory/candidates.js';
@@ -30,18 +38,25 @@ const DIVISIONS = { 3: [1, 3], 4: [1, 2, 4] };
 // When the proxy cannot be reached or refuses us, the next call would fail the same way.
 const FATAL = new Set(['not-configured', 'network', 'forbidden', 'rate-limited']);
 const PLAN_TECHNIQUES = 3;
-const PLAN_MAX_TOKENS = 4096;
 export const REVIEW_LIMIT = 4;
+// A part of 32 slots with full menus sends ~43 KB to execute and ~47 KB to review, under the
+// Worker's 64 KB, and gets ~3,000 tokens back. Measured on 2026-09-19; the size test guards it.
+export const MAX_PART_SLOTS = 32;
 
 const keyOf = ({ bar, slot }) => `${bar}:${slot}`;
 
 /**
  * reharmonize(client, piece, options) → {
- *   analyzed, candidates, plan, draft: { chosen, scores, grid }, review: { verdict, changes, undone } | null,
+ *   analyzed, candidates, parts, plan, draft: { chosen, scores, grid },
+ *   review: { verdict, changes, undone, parts? } | null,
  *   reharmonized, slots, chosen, scores, grid, originalGrid, gridParses,
  *   issues, problems, repairs, model, usage, promptVersion, promptVersions, calls }
  * Options: style, intensity, maxPerSlot, maxTokens, effort, candidates, plan and review (true =
- * make that call), onStep(step) called before each call ('plan', 'execute', 'review').
+ * make that call), onStep(step, info) called before each call ('plan', 'execute', 'review'); info
+ * is null for a piece in one part, else { part, parts, bars } before each execute and { parts }
+ * before the reviews, which go out together.
+ * `parts` is the bar range of every part; with more than one, `review.parts` holds each part's
+ * { bars, verdict, changes, undone }, and `review.changes` only the changes that stand.
  * Rejects only when a call fails in a way the run cannot go around (the client's AiError).
  */
 export async function reharmonize(client, piece, {
@@ -49,20 +64,22 @@ export async function reharmonize(client, piece, {
   plan: planning = true, review: reviewing = true, onStep = null,
 } = {}) {
   const analyzed = analyzePiece(piece);
-  const candidates = given ?? generateCandidates(analyzed, { style, intensity, maxPerSlot });
+  const parts = splitIntoParts(analyzed, given ?? generateCandidates(analyzed, { style, intensity, maxPerSlot }));
+  const several = parts.length > 1;
+  // The menu the model actually sees: without the two-slot candidates that would cross a part.
+  const candidates = several ? { slots: parts.flatMap(part => part.candidates.slots) } : parts[0].candidates;
   const problems = [];
   const repairs = [];
   const calls = [];
-  const send = (action, input, limits) => {
-    onStep?.(action);
-    return ask(client, action, input, limits, calls);
-  };
+  const limits = { maxTokens, effort };
+  const step = (action, info = null) => onStep?.(action, info);
 
   let plan = null;
   if (planning) {
     const phrases = phraseMenus(analyzed, candidates, style);
+    step('plan');
     try {
-      const { data } = await send('plan', { piece: analyzed, candidates, style, intensity, phrases }, { maxTokens: Math.min(maxTokens, PLAN_MAX_TOKENS), effort });
+      const { data } = await ask(client, 'plan', { piece: analyzed, candidates, style, intensity, phrases }, limits, calls);
       plan = readPlan(data, phrases, problems);
     } catch (error) {
       if (!(error instanceof AiError) || FATAL.has(error.kind)) throw error;
@@ -70,46 +87,81 @@ export async function reharmonize(client, piece, {
     }
   }
 
-  const { data, model } = await send('execute', { piece: analyzed, candidates, style, intensity, plan }, { maxTokens, effort });
-  const answer = readAnswer(data, candidates, problems, repairs);
-  const draft = settle(analyzed, answer.chosen, intensity, problems, 'execute');
+  // Part by part, in order: each one needs to know what the one before chose.
+  const chosen = [];
+  let why = new Map();
+  let model = null;
+  let answered = 0;
+  let failure = null;
+  for (const [i, part] of parts.entries()) {
+    step('execute', several ? { part: i + 1, parts: parts.length, bars: [...part.bars] } : null);
+    try {
+      const context = several ? partContext(analyzed, parts, i, chosen) : null;
+      const input = { piece: analyzed, candidates: part.candidates, style, intensity, plan: planFor(plan, part, several), part: context };
+      const { data, model: answeredBy } = await ask(client, 'execute', input, limits, calls, several ? i + 1 : null);
+      const answer = readAnswer(data, part.candidates, problems, repairs);
+      chosen.push(...answer.chosen);
+      for (const [key, reason] of answer.why) why.set(key, reason);
+      model = answeredBy;
+      answered++;
+    } catch (error) {
+      if (!several || !(error instanceof AiError) || FATAL.has(error.kind)) throw error;
+      failure = error;
+      problems.push({ stage: 'execute', bar: null, slot: null, reason: `No chords for bars ${part.bars.join('–')} (${error.message}); they keep the original.` });
+    }
+  }
+  if (answered === 0) throw failure;
+
+  const draft = settle(analyzed, chosen, intensity, problems, 'execute');
   const originalGrid = formatGrid(piece.bars);
   const draftGrid = gridOf(analyzed, draft.slots);
 
   let final = draft;
-  let why = answer.why;
   let review = null;
   const revised = new Set();
+  const rejectedLater = new Set();
   if (reviewing) {
-    try {
-      const { data: verdict } = await send('review', {
-        piece: analyzed, candidates, style, intensity, plan,
-        draft: { grid: draftGrid, originalGrid, slots: detail(draft, why), scores: draft.scores },
-      }, { maxTokens, effort });
-      const { text, picks } = readReview(verdict, candidates, problems, repairs);
-      const { chosen, changes } = applyPicks(draft.chosen, picks, candidates);
-      const after = settle(analyzed, chosen, intensity, problems, 'review');
-      const applied = changes.filter(change => !after.covered.has(keyOf(change)) && !after.rejected.has(keyOf(change)));
-      const broken = brokenTargets(draft.scores, after.scores);
-      review = { verdict: text, changes: applied, undone: broken.length ? `it ${broken.join(' and ')}` : null };
-      if (!review.undone) {
-        final = after;
-        why = new Map(why);
-        for (const change of applied) {
-          why.set(keyOf(change), change.why);
-          revised.add(keyOf(change));
-        }
-      }
-    } catch (error) {
+    step('review', several ? { parts: parts.length } : null);
+    const draftInput = { grid: draftGrid, originalGrid, slots: detail(draft, why), scores: draft.scores };
+    // All at once: every review reads the same finished draft and touches only its own slots.
+    // A failed call comes back as { error }, so the other parts still count; a bug still throws.
+    const answers = await Promise.all(parts.map((part, i) => ask(client, 'review', {
+      piece: analyzed, candidates: part.candidates, style, intensity, plan: planFor(plan, part, several), draft: draftInput,
+      part: several ? { index: i + 1, of: parts.length, bars: [...part.bars], tuneBars: analyzed.bars.length } : null,
+    }, limits, calls, several ? i + 1 : null).then(({ data }) => ({ data }), error => {
       if (!(error instanceof AiError)) throw error;
-      problems.push({ stage: 'review', bar: null, slot: null, reason: `No review (${error.message}); the draft stands.` });
+      return { error };
+    })));
+
+    // Applied in order, each judged against the tune as the reviews before it left it.
+    const outcomes = [];
+    why = new Map(why);
+    for (const [i, part] of parts.entries()) {
+      const { data, error } = answers[i];
+      if (error) {
+        problems.push({ stage: 'review', bar: null, slot: null, reason: `No review${several ? ` for bars ${part.bars.join('–')}` : ''} (${error.message}); the draft stands.` });
+        continue;
+      }
+      const { text, picks } = readReview(data, part.candidates, problems, repairs);
+      const { chosen: picked, changes } = applyPicks(final.chosen, picks, part.candidates);
+      const after = settle(analyzed, picked, intensity, problems, 'review');
+      const applied = changes.filter(change => !after.covered.has(keyOf(change)) && !after.rejected.has(keyOf(change)));
+      const broken = brokenTargets(final.scores, after.scores);
+      const outcome = { bars: [...part.bars], verdict: text, changes: applied, undone: broken.length ? `it ${broken.join(' and ')}` : null };
+      outcomes.push(outcome);
+      if (outcome.undone) continue;
+      final = after;
+      for (const key of after.rejected) rejectedLater.add(key);
+      for (const change of applied) {
+        why.set(keyOf(change), change.why);
+        revised.add(keyOf(change));
+      }
     }
+    review = reviewOf(outcomes, several);
   }
 
-  // A slot the validator refused in the draft stays marked, unless the review replaced it.
-  const rejected = final === draft
-    ? draft.rejected
-    : new Set([...[...draft.rejected].filter(key => !revised.has(key)), ...final.rejected]);
+  // A slot the validator refused in the draft stays marked, unless a review replaced it.
+  const rejected = new Set([...[...draft.rejected].filter(key => !revised.has(key)), ...rejectedLater]);
   const grid = final === draft ? draftGrid : gridOf(analyzed, final.slots);
   let gridParses = true;
   try {
@@ -122,6 +174,7 @@ export async function reharmonize(client, piece, {
   return {
     analyzed,
     candidates,
+    parts: parts.map(part => [...part.bars]),
     plan,
     draft: { chosen: draft.chosen, scores: draft.scores, grid: draftGrid },
     review,
@@ -187,8 +240,9 @@ function detail(settled, why, { rejected = settled.rejected, revised = new Set()
 
 const gridOf = (piece, slots) => formatGrid(toGridBars(piece, slots));
 
-// One call through the client, recorded with its model, usage, prompt version and duration.
-async function ask(client, action, input, { maxTokens, effort }, calls) {
+// One call through the client, recorded with its model, usage, prompt version and duration, and
+// with the part it was for when the piece has several.
+async function ask(client, action, input, { maxTokens, effort }, calls, part = null) {
   const prompt = PROMPTS[action];
   const started = now();
   const { data, model, usage } = await client.call(action, {
@@ -198,7 +252,7 @@ async function ask(client, action, input, { maxTokens, effort }, calls) {
     maxTokens,
     effort,
   });
-  calls.push({ action, model, usage, promptVersion: prompt.version, ms: Math.round(now() - started) });
+  calls.push({ action, ...(part ? { part } : {}), model, usage, promptVersion: prompt.version, ms: Math.round(now() - started) });
   return { data, model };
 }
 
@@ -215,6 +269,102 @@ function totalUsage(calls) {
     }
   }
   return total;
+}
+
+// ---- The parts of a long piece ------------------------------------------------------------
+
+/**
+ * splitIntoParts(analyzedPiece, candidates, { maxSlots }) →
+ *   [{ bars: [first, last], phrases: [[first, last]], candidates: { slots } }]
+ * A piece of up to maxSlots slots is one part, with the very menu it was given. A longer one is
+ * cut at phrase boundaries into the fewest parts that fit, as even as the phrases allow (36
+ * slots in phrases of 4 make 20 + 16, not 32 + 4). A phrase too big for a part on its own is cut
+ * at bar lines. A two-slot candidate that would cross into the next part is left out of the
+ * part's menu.
+ */
+export function splitIntoParts(piece, candidates, { maxSlots = MAX_PART_SLOTS } = {}) {
+  const { phrases } = piece.analysis;
+  if (candidates.slots.length <= maxSlots) {
+    return [{ bars: [1, piece.bars.length], phrases: phrases.map(phrase => [...phrase]), candidates }];
+  }
+  const slotsIn = (first, last) => candidates.slots.filter(slot => slot.bar >= first && slot.bar <= last).length;
+  const units = phrases.flatMap(([first, last]) => {
+    const size = slotsIn(first, last);
+    if (size <= maxSlots) return [{ first, last, size }];
+    return Array.from({ length: last - first + 1 }, (_, i) => ({ first: first + i, last: first + i, size: slotsIn(first + i, first + i) }));
+  });
+  // Greedy packing gives the fewest parts; the smallest capacity that still packs into that
+  // many evens them out.
+  const pack = capacity => {
+    const groups = [];
+    for (const unit of units) {
+      const open = groups.at(-1);
+      if (open && open.size + unit.size <= capacity) Object.assign(open, { last: unit.last, size: open.size + unit.size });
+      else groups.push({ ...unit });
+    }
+    return groups;
+  };
+  const fewest = pack(maxSlots).length;
+  let capacity = Math.ceil(candidates.slots.length / fewest);
+  while (pack(capacity).length > fewest) capacity++;
+
+  return pack(capacity).map(({ first, last }) => {
+    const slots = candidates.slots.filter(slot => slot.bar >= first && slot.bar <= last);
+    return {
+      bars: [first, last],
+      phrases: phrases.filter(([a, b]) => a <= last && b >= first).map(([a, b]) => [Math.max(a, first), Math.min(b, last)]),
+      candidates: {
+        slots: slots.map((slot, i) => {
+          const room = slots.length - i;                          // slots left in the part, this one included
+          const inside = slot.candidates.filter(candidate => (candidate.spans ?? 1) <= room);
+          return inside.length === slot.candidates.length ? slot : { ...slot, candidates: inside };
+        }),
+      },
+    };
+  });
+}
+
+// What a part needs from the tune around it: where it sits, its phrases, the last two chords
+// already chosen before it (as they sound, for the bass) and the run of changed slots it inherits.
+function partContext(piece, parts, index, chosen) {
+  const { bars: [first, last], phrases } = parts[index];
+  const before = resolveChoices(piece, chosen).filter(slot => slot.bar < first);
+  let run = 0;
+  for (const slot of before) run = slot.changed ? run + 1 : 0;
+  const sounding = before.flatMap(slot => slot.chords.map(chord => ({ bar: chord.bar, beat: chord.beat, chord: chord.symbol, technique: slot.technique })));
+  return {
+    index: index + 1,
+    of: parts.length,
+    bars: [first, last],
+    tuneBars: piece.bars.length,
+    phrases,
+    previousChords: sounding.slice(-2),
+    changedInARowBefore: run,
+  };
+}
+
+// The plan entries of a part's phrases, or null when it has none.
+function planFor(plan, part, several) {
+  if (!plan || !several) return plan;
+  const [first, last] = part.bars;
+  const entries = plan.filter(({ bars: [a, b] }) => a <= last && b >= first);
+  return entries.length ? entries : null;
+}
+
+// The reviews' outcomes as the result reports them: one part reads as it always did; several
+// keep their own outcome in `parts`, and the summary lists only the changes that stand.
+function reviewOf(outcomes, several) {
+  if (outcomes.length === 0) return null;
+  if (!several) {
+    const [{ verdict, changes, undone }] = outcomes;
+    return { verdict, changes, undone };
+  }
+  return {
+    verdict: outcomes.map(outcome => `Bars ${outcome.bars.join('–')}: ${outcome.verdict}`).join(' '),
+    changes: outcomes.filter(outcome => !outcome.undone).flatMap(outcome => outcome.changes),
+    undone: null,
+    parts: outcomes,
+  };
 }
 
 // ---- The plan -----------------------------------------------------------------------------

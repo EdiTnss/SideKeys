@@ -493,12 +493,12 @@ test('a long piece: one review per part, all sent at once, each on its own slots
   assert.equal(second.proposedGrid, result.draft.grid);
   assert.equal(first.scores.density, 0.5);                                  // and the whole tune's scores
 
-  // Part 1 stands (19 of 36); part 2 would make 23 of 36 and a run over bars 19–24, so it is undone alone.
+  // Part 1 stands (19 of 36); part 2 would make 23 of 36 and a run over bars 19–28, so it is undone alone.
   const [one, two] = result.review.parts;
   assert.deepEqual([one.bars, one.undone], [[1, 20], null]);
   assert.deepEqual(two.bars, [21, 36]);
   assert.match(two.undone, /density/);
-  assert.match(two.undone, /run of 6/);
+  assert.match(two.undone, /run of 10/);
   assert.deepEqual(two.changes.map(change => change.bar), [21, 22, 25, 26]);  // what it proposed, for the record
   assert.deepEqual(result.review.changes.map(change => change.bar), [1]);    // what stands
   assert.equal(result.review.undone, null);

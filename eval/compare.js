@@ -70,7 +70,8 @@ for (let run = 1; run <= runs; run++) {
         review: result.review,
         problems: result.problems,
         repairs: result.repairs,
-        calls: result.calls.map(({ action, usage, ms, promptVersion }) => ({ action, usage, ms, promptVersion })),
+        parts: result.parts,
+        calls: result.calls.map(({ action, part, usage, ms, promptVersion }) => ({ action, part, usage, ms, promptVersion })),
       };
       results.push(entry);
       const review = entry.review ? (entry.review.undone ? `review undone (${entry.review.undone})` : `review changed ${entry.review.changes.length}`) : '';

@@ -72,11 +72,12 @@ const EXECUTE_SCHEMA = {
 
 const EXECUTE_SYSTEM = `You are an arranger reharmonizing a tune for an advanced jazz pianist. The melody is fixed. For every slot you choose one candidate chord from the menu the app computed; every candidate is already checked against the melody, so choose for taste, line and coherence, not for correctness.
 
-The user message is a JSON object with the key, the requested style and intensity, the density target (share of slots to change), the phrases (bar ranges), the plan when there is one (per phrase: a strategy and the techniques to prefer), and one entry per slot: bar, slot, beat, the original chord with its roman numeral, function and cadence flag, the melody's structural notes with their relation to the original chord, and the candidates with id, chords, technique, optional spans (how many slots the candidate covers) and optional avoidWarnings (how many melody notes fall on an avoid note).
+The user message is a JSON object with the key, the requested style and intensity, the density target (share of slots to change), the phrases (bar ranges), the part when the tune is long (see the rules), the plan when there is one (per phrase: a strategy and the techniques to prefer), and one entry per slot: bar, slot, beat, the original chord with its roman numeral, function and cadence flag, the melody's structural notes with their relation to the original chord, and the candidates with id, chords, technique, optional spans (how many slots the candidate covers) and optional avoidWarnings (how many melody notes fall on an avoid note).
 
 Rules:
 - Return exactly one entry per slot, in the same order, with candidateId copied verbatim from that slot's candidates: the whole id, including the technique in the middle, not a shortened form. The id ending in "-orig" keeps the original chord.
 - Aim for the density target and never change more than 4 slots in a row unless intensity is heavy.
+- A long tune is reharmonized in parts, one after the other. When there is a part (index, of, bars, tuneBars), the slots, phrases and plan are only that part's: the bars before it are already chosen and the bars after it come next. previousChords are the last chords already chosen before the part: lead the bass on from the last one. changedInARowBefore is how many changed slots in a row end the part before: they count toward the run limit. The density target applies to this part.
 - When there is a plan, follow it phrase by phrase: its strategy decides where the changes go, and its techniques come first where they fit. The density target and the run limit still apply.
 - Prefer the techniques the style is named after, vary them, and make the bass line move by half steps, whole steps and fifths. Keep the first chord of each phrase and the final resolution recognizable.
 - Prefer candidates without avoidWarnings.
@@ -145,7 +146,7 @@ const REVIEW_SCHEMA = {
 
 const REVIEW_SYSTEM = `You are a demanding arranger reviewing a colleague's reharmonization of a tune for an advanced jazz pianist. The melody is fixed, and every candidate in the menu already fits it, so judge taste, line and coherence, not correctness.
 
-The user message is a JSON object with the key, the requested style and intensity, the density target, the plan when there is one (per phrase: a strategy and the techniques to prefer), the original grid and the proposed grid, the scores the app computed for the proposal, and one entry per slot: bar, slot, beat, the original chord with its roman numeral, function and cadence flag, the melody's structural notes with their relation to the original chord, the chosen candidate (id, chords, technique and your colleague's reason; the id ending in "-orig" is the original chord), or coveredBy when a two-slot candidate from the slot before already covers it, and the full menu of candidates with the same fields as the colleague saw.
+The user message is a JSON object with the key, the requested style and intensity, the density target, the part when the tune is long (see the rules), the plan when there is one (per phrase: a strategy and the techniques to prefer), the original grid and the proposed grid, the scores the app computed for the proposal, and one entry per slot: bar, slot, beat, the original chord with its roman numeral, function and cadence flag, the melody's structural notes with their relation to the original chord, the chosen candidate (id, chords, technique and your colleague's reason; the id ending in "-orig" is the original chord), or coveredBy when a two-slot candidate from the slot before already covers it, and the full menu of candidates with the same fields as the colleague saw.
 
 The scores: density is the share of changed slots and must stay inside densityTarget; maxRun is the longest run of changed slots in a row and must stay at or under maxRunLimit (null means no limit); bassSmoothness runs from 0 to 1 and is higher when the bass moves by half steps, whole steps, fourths and fifths; techniqueMix counts the distinct techniques used, and one technique everywhere is monotonous; avoidWarnings counts melody notes that fall on an avoid note.
 
@@ -155,6 +156,7 @@ Reply with a verdict and at most 4 changes:
 - Change a slot only when it clearly improves the arrangement: a smoother bass line, a tension placed where the melody supports it, a wider mix of techniques, a clearer cadence, or a closer fit to the plan.
 - Never take the density out of its target, make a run longer than maxRunLimit, or add avoid notes when the proposal has none of those problems: the app undoes the whole review if you do.
 - Do not change a slot marked coveredBy. A candidate with spans 2 also covers the next slot.
+- A long tune is reviewed in parts, each by its own reviewer at the same time. When there is a part (index, of, bars, tuneBars), the slots, the menu and the plan are only that part's and you change only those slots; the grids show the whole tune and the scores are the whole tune's.
 - why is one short sentence per change, naming the technique and the melody note or the bass motion it serves.`;
 
 export const PROMPTS = {
@@ -173,18 +175,22 @@ export const PROMPTS = {
     build: ({ piece, candidates, style, intensity, phrases }) => [{ role: 'user', content: JSON.stringify(planInput(piece, candidates, style, intensity, phrases)) }],
   },
   execute: {
-    version: 3,          // 2: spell out that the whole candidate id must be copied; 3: follow the plan
+    version: 4,          // 2: spell out that the whole candidate id must be copied; 3: follow the plan; 4: parts of a long tune
     system: EXECUTE_SYSTEM,
     schema: EXECUTE_SCHEMA,
-    /** piece: analyzed piece; candidates: generateCandidates() result; plan: the checked plan, or null */
-    build: ({ piece, candidates, style, intensity, plan = null }) => [{ role: 'user', content: JSON.stringify(executeInput(piece, candidates, style, intensity, plan)) }],
+    /**
+     * piece: analyzed piece; candidates: generateCandidates() result, or one part's menu; plan: the
+     * checked plan, or null; part: null for a tune in one part, else { index, of, bars, tuneBars,
+     * phrases, previousChords, changedInARowBefore }
+     */
+    build: ({ piece, candidates, style, intensity, plan = null, part = null }) => [{ role: 'user', content: JSON.stringify(executeInput(piece, candidates, style, intensity, plan, part)) }],
   },
   review: {
-    version: 1,
+    version: 2,          // 2: parts of a long tune
     system: REVIEW_SYSTEM,
     schema: REVIEW_SCHEMA,
-    /** draft: { grid, originalGrid, slots (resolved, with why), scores } */
-    build: ({ piece, candidates, style, intensity, plan = null, draft }) => [{ role: 'user', content: JSON.stringify(reviewInput(piece, candidates, style, intensity, plan, draft)) }],
+    /** draft: { grid, originalGrid, slots (resolved, with why), scores }; part: null, or { index, of, bars, tuneBars } */
+    build: ({ piece, candidates, style, intensity, plan = null, draft, part = null }) => [{ role: 'user', content: JSON.stringify(reviewInput(piece, candidates, style, intensity, plan, draft, part)) }],
   },
 };
 
@@ -240,10 +246,12 @@ function planInput(piece, candidates, style, intensity, phrases) {
   };
 }
 
-function executeInput(piece, candidates, style, intensity, plan) {
+function executeInput(piece, candidates, style, intensity, plan, part) {
+  const { phrases = piece.analysis.phrases, ...where } = part ?? {};
   return {
     ...header(piece, style, intensity),
-    phrases: piece.analysis.phrases,
+    phrases,
+    ...(part ? { part: where } : {}),
     ...(plan ? { plan } : {}),
     slots: candidates.slots.map(slot => ({ ...slotSummary(piece, slot), candidates: menuOf(slot) })),
   };
@@ -251,11 +259,12 @@ function executeInput(piece, candidates, style, intensity, plan) {
 
 const round2 = value => Math.round(value * 100) / 100;
 
-function reviewInput(piece, candidates, style, intensity, plan, draft) {
+function reviewInput(piece, candidates, style, intensity, plan, draft, part) {
   const drafted = new Map(draft.slots.map(slot => [`${slot.bar}:${slot.slot}`, slot]));
   const { scores } = draft;
   return {
     ...header(piece, style, intensity),
+    ...(part ? { part } : {}),
     ...(plan ? { plan } : {}),
     originalGrid: draft.originalGrid,
     proposedGrid: draft.grid,

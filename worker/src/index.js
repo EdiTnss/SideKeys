@@ -10,7 +10,7 @@
 
 const ANTHROPIC_URL = 'https://api.anthropic.com/v1/messages';
 const ANTHROPIC_VERSION = '2023-06-01';
-const MAX_BODY_BYTES = 64 * 1024;
+export const MAX_BODY_BYTES = 64 * 1024;           // the pipeline's parts are sized to fit (test/pipeline.test.js)
 const DEFAULT_MAX_TOKENS = 4096;
 const EFFORTS = new Set(['low', 'medium', 'high']);
 const ROLES = new Set(['user', 'assistant']);

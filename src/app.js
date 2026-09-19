@@ -197,11 +197,14 @@ function reharmPiece() {
   }
 }
 
-// What the status line says while each call is out, with the seconds so far.
+// What the status line says while each call is out, with the seconds so far. A long piece goes
+// in parts: its execute calls name their bars, and its reviews go out together.
 const REHARM_STEPS = {
-  plan: 'Claude is planning the phrases…',
-  execute: 'Claude is choosing the chords…',
-  review: 'Claude is reviewing the draft…',
+  plan: () => 'Claude is planning the phrases…',
+  execute: info => (info
+    ? `Claude is choosing the chords, bars ${info.bars[0]}–${info.bars[1]} (part ${info.part} of ${info.parts})…`
+    : 'Claude is choosing the chords…'),
+  review: info => (info ? `Claude is reviewing the draft, ${info.parts} parts at once…` : 'Claude is reviewing the draft…'),
 };
 
 function showPlanReview() {
@@ -236,9 +239,10 @@ async function runReharm() {
   $('reharm-view').replaceChildren();
   const started = performance.now();
   let timer = null;
-  const onStep = step => {
+  const onStep = (step, info) => {
     clearInterval(timer);
-    const show = () => renderAiStatus($('reharm-view'), `${REHARM_STEPS[step]} ${Math.round((performance.now() - started) / 1000)} s`);
+    const label = REHARM_STEPS[step](info);
+    const show = () => renderAiStatus($('reharm-view'), `${label} ${Math.round((performance.now() - started) / 1000)} s`);
     show();
     timer = setInterval(show, 1000);
   };

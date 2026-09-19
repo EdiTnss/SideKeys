@@ -288,7 +288,7 @@ export function renderReharm(el, result, { onUse } = {}) {
       ...(phrase.techniques.length ? [h('span', { class: 'phrase-techniques' }, ` (${phrase.techniques.join(', ')})`)] : [])))),
     h('p', { class: 'reharm-scores' }, scoreLine(result.scores)),
     reviewChanged(result) && h('p', { class: 'reharm-scores draft' }, `Before the review: ${scoreLine(result.draft.scores)}`),
-    result.review && h('p', { class: 'reharm-review' }, reviewLine(result.review)),
+    ...(result.review ? (result.review.parts ?? [result.review]).map(review => h('p', { class: 'reharm-review' }, reviewLine(review))) : []),
     row('Original', bar => bar.from, false),
     row('Reharm', bar => bar.to, true),
     why,
@@ -323,12 +323,14 @@ function problemLine(problem) {
 
 const reviewChanged = result =>Boolean(result.review && !result.review.undone && result.review.changes.length);
 
+// One review, or on a long piece the review of one part (it has `bars`).
 function reviewLine(review) {
   const bars = [...new Set(review.changes.map(change => change.bar))].join(', ');
-  const outcome = review.undone ? ` Undone: ${review.undone}, so the draft stands.`
+  const outcome = review.undone ? ` Undone: ${review.undone}, so the draft stands${review.bars ? ' there' : ''}.`
     : review.changes.length ? ` Changed bar${review.changes.length > 1 ? 's' : ''} ${bars}.`
       : ' No changes.';
-  return `Review: ${review.verdict || '(no verdict)'}${outcome}`;
+  const title = review.bars ? `Review of bars ${review.bars[0]}–${review.bars[1]}` : 'Review';
+  return `${title}: ${review.verdict || '(no verdict)'}${outcome}`;
 }
 
 function scoreLine(scores) {
