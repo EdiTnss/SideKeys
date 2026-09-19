@@ -131,3 +131,35 @@ test('review: the draft with its reasons and scores, the same menu, and an answe
   assert.match(PROMPTS.review.system, /at most 4/i);
   assert.match(PROMPTS.review.system, /-orig/);
 });
+
+test('one part of a long tune: execute gets that part\'s slots and phrases, where it sits and what came before; review gets where it sits', () => {
+  const piece = analyzePiece(createPiece({ key: 'C', grid: '| Dm7 | G7 | Cmaj7 | % | Dm7 | G7 | Cmaj7 | % |' }));
+  const candidates = generateCandidates(piece, { style: 'tritone' });
+  const menu = { slots: candidates.slots.slice(4) };
+  const previousChords = [{ bar: 3, beat: 1, chord: 'Cmaj7', technique: 'original' }, { bar: 4, beat: 1, chord: 'C6/9', technique: 'quality-change' }];
+  const part = { index: 2, of: 2, bars: [5, 8], tuneBars: 8, phrases: [[5, 8]], previousChords, changedInARowBefore: 1 };
+
+  const input = JSON.parse(PROMPTS.execute.build({ piece, candidates: menu, style: 'tritone', intensity: 'medium', plan: null, part })[0].content);
+  assert.deepEqual(input.phrases, [[5, 8]]);
+  assert.deepEqual(input.part, { index: 2, of: 2, bars: [5, 8], tuneBars: 8, previousChords, changedInARowBefore: 1 });
+  assert.deepEqual(input.slots.map(slot => slot.bar), [5, 6, 7, 8]);
+  const whole = JSON.parse(PROMPTS.execute.build({ piece, candidates, style: 'tritone', intensity: 'medium' })[0].content);
+  assert.equal('part' in whole, false);                                     // a tune in one part reads as before
+  assert.deepEqual(whole.phrases, [[1, 4], [5, 8]]);
+  assert.match(PROMPTS.execute.system, /previousChords/);
+  assert.match(PROMPTS.execute.system, /changedInARowBefore/);
+
+  const draft = {
+    grid: '| Dm7 | G7 | Cmaj7 | % | Dm7 | Db7 | Cmaj7 | % |',
+    originalGrid: '| Dm7 | G7 | Cmaj7 | % | Dm7 | G7 | Cmaj7 | % |',
+    slots: [],
+    scores: { clashes: 0, warnings: 0, bassSmoothness: 0.9, density: 0.125, densityTarget: { min: 0.4, max: 0.6 }, densityOk: false, maxRun: 1, maxRunOk: true, techniqueMix: 1, techniques: { 'tritone-sub': 1 } },
+  };
+  const review = JSON.parse(PROMPTS.review.build({ piece, candidates: menu, style: 'tritone', intensity: 'medium', plan: null, draft, part: { index: 2, of: 2, bars: [5, 8], tuneBars: 8 } })[0].content);
+  assert.deepEqual(review.part, { index: 2, of: 2, bars: [5, 8], tuneBars: 8 });
+  assert.deepEqual(review.slots.map(slot => slot.bar), [5, 6, 7, 8]);
+  assert.equal(review.proposedGrid, draft.grid);
+  const wholeReview = JSON.parse(PROMPTS.review.build({ piece, candidates, style: 'tritone', intensity: 'medium', plan: null, draft })[0].content);
+  assert.equal('part' in wholeReview, false);
+  assert.match(PROMPTS.review.system, /part/);
+});
