@@ -52,6 +52,7 @@ test('execute alone (Phase 3a): one call, and the answer comes back as chords, s
   assert.equal(result.promptVersion, PROMPTS.execute.version);
   assert.equal(result.model, 'fake-model');
   assert.equal(result.plan, null);
+  assert.equal(result.review, null);
 
   assert.deepEqual(symbolsOf(result), ['Dm7', 'Db7', 'Cmaj7']);
   assert.equal(result.originalGrid, '| Dm7 | G7 | Cmaj7 |');
@@ -256,4 +257,136 @@ test('a plan the model could not give does not stop the run; a proxy that cannot
     await assert.rejects(() => reharmonize(client, piece(EIGHT), { review: false }), error => error instanceof AiError && error.kind === kind, kind);
     assert.deepEqual(client.calls.map(call => call.action), ['plan'], kind);
   }
+});
+
+// ---- Phase 3b: review -----------------------------------------------------------------------
+
+// Execute changes bars 2 and 6 to the tritone sub; the review is given as a function of its input.
+const tritoneOn = bars => slot => (bars.includes(slot.bar) ? byTechnique('tritone-sub')(slot) : undefined);
+const idOf = (input, bar, technique) => input.slots.find(slot => slot.bar === bar).candidates.find(c => c.technique === technique).id;
+
+test('the full chain: plan, execute, review, in that order; the review sees the draft, its reasons and its scores', async () => {
+  const steps = [];
+  const client = fakeClient(tritoneOn([2, 6]));
+  const result = await reharmonize(client, piece(EIGHT), { style: 'tritone', intensity: 'medium', onStep: step => steps.push(step) });
+
+  assert.deepEqual(client.calls.map(call => call.action), ['plan', 'execute', 'review']);
+  assert.deepEqual(steps, ['plan', 'execute', 'review']);
+  assert.equal(client.calls[2].options.system, PROMPTS.review.system);
+  assert.equal(client.calls[2].options.schema, PROMPTS.review.schema);
+  assert.deepEqual(result.promptVersions, { plan: PROMPTS.plan.version, execute: PROMPTS.execute.version, review: PROMPTS.review.version });
+  assert.deepEqual(result.usage, { input_tokens: 30, output_tokens: 60 });
+
+  const input = inputOf(client, 'review');
+  assert.equal(input.originalGrid, '| Dm7 | G7 | Cmaj7 | % | Dm7 | G7 | Cmaj7 | % |');
+  assert.equal(input.proposedGrid, '| Dm7 | Db7 | Cmaj7 | % | Dm7 | Db7 | Cmaj7 | % |');
+  assert.deepEqual(input.plan, result.plan);
+  assert.equal(input.scores.density, 0.25);
+  assert.equal(input.scores.densityOk, false);
+  assert.equal(input.scores.maxRunLimit, 4);
+  assert.deepEqual(input.scores.techniques, { 'tritone-sub': 2 });
+  assert.deepEqual(input.slots[1].chosen, { id: 'b2s1-tritone-sub-Db7', chords: 'Db7', technique: 'tritone-sub', why: 'because of b2s1-tritone-sub-Db7' });
+  assert.deepEqual(input.slots[0].chosen, { id: 'b1s1-orig', chords: 'Dm7', technique: 'original', why: '' });
+  assert.ok(input.slots[1].candidates.some(c => c.id === 'b2s1-related-ii-Dm7_G7'));
+
+  // Nothing changed: the result is the draft, and says so.
+  assert.deepEqual(result.review, { verdict: 'Fine as it is.', changes: [], undone: null });
+  assert.equal(result.grid, result.draft.grid);
+  assert.deepEqual(result.draft.scores, result.scores);
+});
+
+test('review changes are applied and re-scored; the draft stays visible and the revised slots carry the reviewer\'s reasons', async () => {
+  const client = fakeClient(tritoneOn([2, 6]), {
+    review: input => ({ verdict: 'Two tritones in a row is monotonous; A7 pulls into bar 5.', changes: [
+      { bar: 4, slot: 1, candidateId: idOf(input, 4, 'secondary-dominant'), why: 'A7 as V of Dm7.' },
+      { bar: 6, slot: 1, candidateId: 'b6s1-orig', why: 'Keep the second V plain.' },
+    ] }),
+  });
+  const result = await reharmonize(client, piece(EIGHT), { style: 'tritone', intensity: 'medium' });
+
+  assert.equal(result.draft.grid, '| Dm7 | Db7 | Cmaj7 | % | Dm7 | Db7 | Cmaj7 | % |');
+  assert.equal(result.grid, '| Dm7 | Db7 | Cmaj7 | A7 | Dm7 | G7 | Cmaj7 | % |');
+  assert.deepEqual(result.draft.scores.techniques, { 'tritone-sub': 2 });
+  assert.deepEqual(result.scores.techniques, { 'tritone-sub': 1, 'secondary-dominant': 1 });
+  assert.equal(result.review.undone, null);
+  assert.deepEqual(result.review.changes.map(change => [change.bar, change.from, change.to]), [
+    [4, 'b4s1-orig', 'b4s1-secondary-dominant-A7'],
+    [6, 'b6s1-tritone-sub-Db7', 'b6s1-orig'],
+  ]);
+  assert.deepEqual(result.slots.map(slot => slot.revised), [false, false, false, true, false, true, false, false]);
+  assert.equal(result.slots[3].why, 'A7 as V of Dm7.');
+  assert.equal(result.slots[5].why, 'Keep the second V plain.');
+  assert.equal(result.slots[5].changed, false);
+  assert.equal(result.slots[1].why, 'because of b2s1-tritone-sub-Db7');     // untouched slots keep execute's reason
+  assert.deepEqual(result.reharmonized.bars[3].chords, [{ symbol: 'A7', beat: 1 }]);
+});
+
+test('at most four review changes; entries it cannot use cost only themselves', async () => {
+  const client = fakeClient(tritoneOn([2, 6]), {
+    review: input => ({ verdict: 'Busy.', changes: [
+      { bar: 3, slot: 1, candidateId: 'b3s1-nope', why: '' },
+      { bar: 4, slot: 1, candidateId: idOf(input, 4, 'secondary-dominant'), why: 'A7.' },
+      { bar: 4, slot: 1, candidateId: 'b4s1-orig', why: 'Changed my mind.' },
+      { bar: 9, slot: 1, candidateId: 'b9s1-orig', why: '' },
+      { bar: 8, slot: 1, candidateId: idOf(input, 8, 'quality-change'), why: 'Fifth change, never read.' },
+    ] }),
+  });
+  const result = await reharmonize(client, piece(EIGHT), { style: 'tritone', intensity: 'medium' });
+  assert.equal(result.grid, '| Dm7 | Db7 | Cmaj7 | A7 | Dm7 | Db7 | Cmaj7 | % |');
+  const reviewProblems = result.problems.filter(problem => problem.stage === 'review');
+  assert.equal(reviewProblems.length, 4);
+  assert.ok(reviewProblems.some(problem => /5 changes/.test(problem.reason) && /first 4/.test(problem.reason)));
+  assert.ok(reviewProblems.some(problem => /b3s1-nope/.test(problem.reason)));
+  assert.ok(reviewProblems.some(problem => /twice/.test(problem.reason)));
+  assert.ok(reviewProblems.some(problem => problem.bar === 9));
+  assert.deepEqual(result.review.changes.map(change => change.bar), [4]);
+
+  const shapeless = await reharmonize(fakeClient(tritoneOn([2, 6]), { review: { verdict: 'Hm.' } }), piece(EIGHT), { style: 'tritone', intensity: 'medium' });
+  assert.equal(shapeless.grid, shapeless.draft.grid);
+  assert.match(shapeless.problems.find(problem => problem.stage === 'review').reason, /no list of changes/i);
+});
+
+test('a review that breaks a target the draft met is undone as a whole, and says why', async () => {
+  // Draft: bars 2, 4, 6 and 8 changed, 50%, inside the medium target, no run longer than 1.
+  const draftBars = slot => ({ 2: 'tritone-sub', 4: 'secondary-dominant', 6: 'tritone-sub', 8: 'quality-change' })[slot.bar];
+  const execute = slot => (draftBars(slot) ? byTechnique(draftBars(slot))(slot) : undefined);
+  const busy = input => ({ verdict: 'More colour.', changes: [1, 3, 5].map(bar => ({ bar, slot: 1, candidateId: idOf(input, bar, 'quality-change'), why: 'More.' })) });
+  const result = await reharmonize(fakeClient(execute, { review: busy }), piece(EIGHT), { style: 'tritone', intensity: 'medium' });
+
+  assert.equal(result.draft.scores.densityOk, true);
+  assert.equal(result.grid, result.draft.grid);
+  assert.deepEqual(result.scores, result.draft.scores);
+  assert.match(result.review.undone, /density/);
+  assert.match(result.review.undone, /run of 6/);                               // bars 1–6
+  assert.deepEqual(result.review.changes.map(change => change.bar), [1, 3, 5]);   // what it proposed, for the record
+  assert.ok(result.slots.every(slot => !slot.revised));
+
+  // A new avoid note is enough on its own: G7sus4 makes the melody C a chord tone, the original G7 makes it an avoid note.
+  const tune = piece('| Dm7 | G7 | Cmaj7 |', [raw('C5', 2, 1, 4)]);
+  const back = await reharmonize(fakeClient(byTechnique('sus-color'), { review: { verdict: 'Plainer.', changes: [{ bar: 2, slot: 1, candidateId: 'b2s1-orig', why: 'Plain V.' }] } }), tune, { style: 'tritone', intensity: 'medium' });
+  assert.equal(back.draft.scores.warnings, 0);
+  assert.equal(back.grid, '| Dm7 | G7sus4 | Cmaj7 |');
+  assert.match(back.review.undone, /avoid/);
+});
+
+test('a review choosing a two-slot candidate takes over the next slot; a choice there is reported', async () => {
+  const client = fakeClient(tritoneOn([2]), {
+    review: input => ({ verdict: 'Coltrane it.', changes: [{ bar: 1, slot: 1, candidateId: idOf(input, 1, 'coltrane'), why: 'Giant steps into C.' }] }),
+  });
+  const result = await reharmonize(client, piece('| Dm7 | G7 | Cmaj7 | % |'), { style: 'coltrane', intensity: 'heavy' });
+  assert.equal(result.grid, '| Abmaj7 B7 | Emaj7 G7 | Cmaj7 | % |');
+  assert.deepEqual(result.problems.filter(problem => problem.stage === 'review').map(problem => [problem.bar, problem.slot]), [[2, 1]]);
+  assert.match(result.problems.find(problem => problem.stage === 'review').reason, /covered/);
+});
+
+test('a review that fails keeps the draft: the call already paid for is never lost', async () => {
+  for (const kind of ['network', 'rate-limited', 'upstream', 'refusal', 'truncated', 'invalid-json']) {
+    const client = fakeClient(tritoneOn([2, 6]), { review: () => { throw new AiError(kind, `review went ${kind}`); } });
+    const result = await reharmonize(client, piece(EIGHT), { style: 'tritone', intensity: 'medium' });
+    assert.equal(result.review, null, kind);
+    assert.equal(result.grid, '| Dm7 | Db7 | Cmaj7 | % | Dm7 | Db7 | Cmaj7 | % |', kind);
+    assert.match(result.problems.find(problem => problem.stage === 'review').reason, new RegExp(`review went ${kind}`), kind);
+  }
+  const buggy = fakeClient(tritoneOn([2]), { review: () => { throw new TypeError('a bug'); } });
+  await assert.rejects(() => reharmonize(buggy, piece(EIGHT)), TypeError);    // a bug is not a model failure
 });

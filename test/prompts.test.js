@@ -20,7 +20,7 @@ function assertStrict(schema, path) {
 }
 
 test('every prompt has an integer version, a system text, a builder and a strict JSON schema', () => {
-  assert.deepEqual(Object.keys(PROMPTS).sort(), ['execute', 'explain', 'plan']);
+  assert.deepEqual(Object.keys(PROMPTS).sort(), ['execute', 'explain', 'plan', 'review']);
   for (const [name, prompt] of Object.entries(PROMPTS)) {
     assert.ok(Number.isInteger(prompt.version) && prompt.version >= 1, name);
     assert.equal(PROMPT_VERSIONS[name], prompt.version);
@@ -93,4 +93,41 @@ test('execute: the plan goes in when there is one and stays out when there is no
   const without = JSON.parse(PROMPTS.execute.build({ piece, candidates, style: 'tritone', intensity: 'medium', plan: null })[0].content);
   assert.equal('plan' in without, false);
   assert.match(PROMPTS.execute.system, /plan/i);
+});
+
+test('review: the draft with its reasons and scores, the same menu, and an answer of a verdict and changes', () => {
+  const piece = analyzePiece(createPiece({ key: 'C', grid: '| Dm7 | G7 | Cmaj7 |' }));
+  const candidates = generateCandidates(piece, { style: 'tritone' });
+  const db7 = candidates.slots[1].candidates.find(c => c.id === 'b2s1-tritone-sub-Db7');
+  const draft = {
+    grid: '| Dm7 | Db7 | Cmaj7 |',
+    originalGrid: '| Dm7 | G7 | Cmaj7 |',
+    slots: [
+      { bar: 1, slot: 1, candidate: null, technique: 'original', coveredBy: null, why: '' },
+      { bar: 2, slot: 1, candidate: db7, technique: 'tritone-sub', coveredBy: null, why: 'Db7 walks down to C.' },
+      { bar: 3, slot: 1, candidate: null, technique: 'original', coveredBy: null, why: '' },
+    ],
+    scores: { clashes: 0, warnings: 0, bassSmoothness: 0.8333333, density: 1 / 3, densityTarget: { min: 0.4, max: 0.6 }, densityOk: false, maxRun: 1, maxRunOk: true, techniqueMix: 1, techniques: { 'tritone-sub': 1 } },
+  };
+  const input = JSON.parse(PROMPTS.review.build({ piece, candidates, style: 'tritone', intensity: 'medium', plan: null, draft })[0].content);
+  assert.equal(input.originalGrid, '| Dm7 | G7 | Cmaj7 |');
+  assert.equal(input.proposedGrid, '| Dm7 | Db7 | Cmaj7 |');
+  assert.equal('plan' in input, false);
+  assert.deepEqual(input.scores, {
+    density: 0.33, densityOk: false, maxRun: 1, maxRunLimit: 4, maxRunOk: true,
+    bassSmoothness: 0.83, techniqueMix: 1, techniques: { 'tritone-sub': 1 }, avoidWarnings: 0,
+  });
+  assert.deepEqual(input.slots[1].chosen, { id: 'b2s1-tritone-sub-Db7', chords: 'Db7', technique: 'tritone-sub', why: 'Db7 walks down to C.' });
+  assert.deepEqual(input.slots[0].chosen, { id: 'b1s1-orig', chords: 'Dm7', technique: 'original', why: '' });
+  assert.equal(input.slots[1].roman, 'V7');
+  assert.deepEqual(input.slots[1].candidates.map(c => c.id), candidates.slots[1].candidates.map(c => c.id));
+
+  const heavy = JSON.parse(PROMPTS.review.build({ piece, candidates, style: 'tritone', intensity: 'heavy', plan: null, draft })[0].content);
+  assert.equal(heavy.scores.maxRunLimit, null);                             // no run limit at heavy
+
+  const schema = PROMPTS.review.schema;
+  assert.deepEqual(Object.keys(schema.properties), ['verdict', 'changes']);
+  assert.deepEqual(Object.keys(schema.properties.changes.items.properties), ['bar', 'slot', 'candidateId', 'why']);
+  assert.match(PROMPTS.review.system, /at most 4/i);
+  assert.match(PROMPTS.review.system, /-orig/);
 });
