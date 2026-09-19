@@ -174,8 +174,8 @@ export function replayTape(session, { lateMs = LATE_MS } = {}) {
       case 'mode':
         state = { ...state, mode: event.mode };
         break;
-      case 'chord':                                       // a new chord on screen drops what was pending
-        capture.cancel();
+      case 'chord':                                       // a new chord on screen drops what was pending,
+        if (event.cancels !== false) capture.cancel();    // except on the metronome's own slot changes
         state = { ...state, symbol: event.symbol ?? null, slot: event.slot ?? null };
         break;
       case 'progression':

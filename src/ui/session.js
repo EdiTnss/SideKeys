@@ -6,11 +6,15 @@ import { analyzeVoicing } from '../theory/analyzer.js';
 import { compareVoicings, scoreProgression } from '../theory/voiceLeading.js';
 
 const EPSILON = 1e-6;
+// In a timed pass, a voicing started from the "and" of the beat before a chord change (an eighth
+// note ahead) is an anticipation of the next chord, not a late one of this chord (Edi's rule).
+export const ANTICIPATION_BEATS = 0.5;
 
 export function createSession(progression, { loop = true } = {}) {
   const slots = progression.bars.flatMap((bar, i) =>
     bar.chords.map(chord => ({ bar: i + 1, beat: chord.beat, symbol: chord.symbol, chord: parseChord(chord.symbol) })));
   const barCount = progression.bars.length;
+  const beatsPerBar = progression.timeSignature?.[0] ?? 4;
   let current = 0;
   let finished = false;
   let results = new Map();     // slot index → latest { notes, analysis }
@@ -79,6 +83,7 @@ export function createSession(progression, { loop = true } = {}) {
   return {
     slots,
     barCount,
+    beatsPerBar,
     loop,
     locate,
     advance,
@@ -96,13 +101,28 @@ export function createSession(progression, { loop = true } = {}) {
 
 /**
  * Which chord a captured voicing answers: in the drill, the chord on screen; in a progression,
- * once the pass has started, the slot where the voicing started on the metronome's grid (timed)
- * or the slot under the cursor (free); nowhere else. → { symbol, slot } or null.
+ * once the pass has started, the slot where the voicing started on the metronome's grid (timed,
+ * the next slot from ANTICIPATION_BEATS before it) or the slot under the cursor (free); nowhere
+ * else. → { symbol, slot } or null.
  * The app and the harness's replay (midi/tape.js) share this rule, so they cannot drift apart.
  */
 export function snapshotTarget({ mode, symbol = null, session = null, started = false, timed = false, position = null, current = 0 }) {
   if (mode === 'drill') return symbol ? { symbol, slot: null } : null;
   if (mode !== 'progression' || !session || !started) return null;
-  const slot = timed ? session.locate(position.bar, position.beat)?.index ?? null : current;
+  const slot = timed ? timedSlot(session, position) : current;
   return slot === null ? null : { symbol: session.slots[slot].symbol, slot };
+}
+
+// Where the voicing started, looked at an eighth note later: inside the last eighth before a
+// change that is the next chord. Past the end of a pass without a loop nothing follows, so the
+// last chord keeps it; from the count-in, the first chord is the one anticipated.
+function timedSlot(session, { bar, beat }) {
+  let aheadBar = bar;
+  let aheadBeat = beat + ANTICIPATION_BEATS;
+  if (aheadBeat >= session.beatsPerBar + 1 - EPSILON) {
+    aheadBar += 1;
+    aheadBeat -= session.beatsPerBar;
+  }
+  const location = session.locate(aheadBar, aheadBeat) ?? session.locate(bar, beat);
+  return location?.index ?? null;
 }

@@ -87,9 +87,12 @@ function advance() {
   newChordOnScreen();
 }
 
-function newChordOnScreen() {
-  capture.cancel();
-  tape.event('chord', { symbol, slot: mode === 'progression' ? shownIndex : null });
+// A new chord drops the snapshot still waiting for the old one, except when the metronome moves
+// the slot: in a timed pass the voicing belongs to where it started (or, pushed from the "and"
+// of the beat before, to the next chord), so a chord held across the bar line must survive.
+function newChordOnScreen({ keepCapture = false } = {}) {
+  if (!keepCapture) capture.cancel();
+  tape.event('chord', { symbol, slot: mode === 'progression' ? shownIndex : null, ...(keepCapture ? { cancels: false } : {}) });
   currentClasses = {};
   suggestions = null;
   lastAnalysis = null;
@@ -378,12 +381,12 @@ function buildSession({ loop = $('prog-loop').checked } = {}) {
   showSlot(session.current);
 }
 
-function showSlot(index) {
+function showSlot(index, { keepCapture = false } = {}) {
   shownIndex = index;
   const slot = session.slots[index];
   symbol = slot.symbol;
   chord = slot.chord;
-  newChordOnScreen();
+  newChordOnScreen({ keepCapture });
   renderGrid($('grid-view'), session, index);
 }
 
@@ -417,7 +420,7 @@ function onBeat({ bar, beat, countIn }) {
     chorus = location.chorus;
   }
   renderStatus($('status'), `Bar ${((bar - 1) % session.barCount) + 1} · beat ${beat}`, 'ok');
-  if (location.index !== shownIndex) showSlot(location.index);
+  if (location.index !== shownIndex) showSlot(location.index, { keepCapture: true });
 }
 
 function startProgression() {
