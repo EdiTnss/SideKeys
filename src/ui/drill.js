@@ -20,6 +20,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   channels: DEFAULT_CHANNELS,                                   // arrangement playback, one channel per part
   parts: Object.freeze({ melody: true, lh: true, bass: true }), // which parts the arrangement plays
   bassRegister: 'low',   // a key of BASS_REGISTERS: low E1–D#2, middle A1–G#2, high E2–D#3
+  planReview: true,      // Reharm: plan and review around execute (off = execute alone, as in Phase 3a)
 });
 
 const STORAGE_KEY = 'voicing-lab.settings';
@@ -94,5 +95,6 @@ function sanitize(saved) {
     channels,
     parts,
     bassRegister: Object.hasOwn(BASS_REGISTERS, saved.bassRegister) ? saved.bassRegister : DEFAULT_SETTINGS.bassRegister,
+    planReview: typeof saved.planReview === 'boolean' ? saved.planReview : DEFAULT_SETTINGS.planReview,
   };
 }

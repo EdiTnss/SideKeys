@@ -197,6 +197,22 @@ function reharmPiece() {
   }
 }
 
+// What the status line says while each call is out, with the seconds so far.
+const REHARM_STEPS = {
+  plan: 'Claude is planning the phrases…',
+  execute: 'Claude is choosing the chords…',
+  review: 'Claude is reviewing the draft…',
+};
+
+function showPlanReview() {
+  $('reharm-plan-review').checked = settings.planReview;
+}
+
+function changePlanReview() {
+  settings = { ...settings, planReview: $('reharm-plan-review').checked };
+  saveSettings(settings);
+}
+
 function showReharmSource() {
   const target = reharmPiece();
   if (!target) {
@@ -218,9 +234,22 @@ async function runReharm() {
   }
   $('reharm-run').disabled = true;
   $('reharm-view').replaceChildren();
-  renderAiStatus($('reharm-view'), 'Asking Claude…');
+  const started = performance.now();
+  let timer = null;
+  const onStep = step => {
+    clearInterval(timer);
+    const show = () => renderAiStatus($('reharm-view'), `${REHARM_STEPS[step]} ${Math.round((performance.now() - started) / 1000)} s`);
+    show();
+    timer = setInterval(show, 1000);
+  };
   try {
-    reharmResult = await reharmonize(ai, target, { style: $('reharm-style').value, intensity: $('reharm-intensity').value });
+    reharmResult = await reharmonize(ai, target, {
+      style: $('reharm-style').value,
+      intensity: $('reharm-intensity').value,
+      plan: settings.planReview,
+      review: settings.planReview,
+      onStep,
+    });
     renderReharm($('reharm-view'), reharmResult, { onUse: useGrid });
     $('play-reharm').disabled = Boolean(playback);
   } catch (error) {
@@ -229,6 +258,7 @@ async function runReharm() {
     renderError($('reharm-view'), `Claude: ${error instanceof AiError ? error.message : error?.message ?? error}`);
     console.error(error);
   } finally {
+    clearInterval(timer);            // runs straight after the result is drawn, before any tick
     $('reharm-run').disabled = false;
   }
 }
@@ -625,6 +655,7 @@ $('play-original').addEventListener('click', () => { playArrangement('original')
 $('play-reharm').addEventListener('click', () => { playArrangement('reharm'); $('play-reharm').blur(); });
 $('play-stop').addEventListener('click', () => { stopArrangement(); $('play-stop').blur(); });
 for (const box of document.querySelectorAll('input[name="part"]')) box.addEventListener('change', changeParts);
+$('reharm-plan-review').addEventListener('change', changePlanReview);
 $('prog-library').addEventListener('change', () => { fillGridFromLibrary(); buildSession(); });
 $('prog-key').addEventListener('change', () => { fillGridFromLibrary(); buildSession(); });
 $('prog-time').addEventListener('change', buildSession);
@@ -638,6 +669,7 @@ fillSelect($('prog-key'), Object.fromEntries(ROOTS.map(r => [r, r])), 'C');
 fillSelect($('reharm-style'), Object.fromEntries(Object.keys(STYLES).map(id => [id, id.replace(/-/g, ' ')])), 'tritone');
 fillSelect($('reharm-intensity'), { light: 'light', medium: 'medium', heavy: 'heavy' }, 'medium');
 showParts();
+showPlanReview();
 fillGridFromLibrary();
 refreshPieceList();
 const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL_SYMBOLS, roots: ROOTS, onChange: applySettings, onResetStats: resetStats });

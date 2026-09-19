@@ -149,6 +149,12 @@ select, option { background-color: Canvas; color: CanvasText; }
 .reharm .bar.changed { cursor: pointer; border-color: var(--tension); background: color-mix(in srgb, var(--tension) 14%, transparent); font-weight: 600; }
 .reharm .bar.changed.warning { border-color: var(--warn); background: color-mix(in srgb, var(--warn) 16%, transparent); }
 .reharm .bar.changed.rejected { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 16%, transparent); }
+.reharm .bar.revised { cursor: pointer; outline: 2px dashed var(--altered); outline-offset: 2px; }
+.reharm-plan { margin: 0; padding-left: 1.25rem; font-size: .9rem; display: grid; gap: .2rem; }
+.reharm-plan .phrase-bars { font-weight: 600; }
+.reharm-plan .phrase-techniques { color: var(--muted); }
+.reharm-scores.draft { font-size: .85rem; }
+.reharm-review { margin: 0; font-size: .9rem; }
 .reharm-why { margin: 0; min-height: 1.5rem; color: var(--muted); }
 .reharm-problems { margin: 0; padding-left: 1.25rem; color: var(--warn); font-size: .9rem; }
 .reharm-use { display: flex; gap: .5rem; margin: .25rem 0 0; }

@@ -275,21 +275,26 @@ export function renderReharm(el, result, { onUse } = {}) {
   const row = (label, pick, changeable) => h('div', { class: 'grid-view' },
     h('span', { class: 'row-label' }, label),
     ...bars.map(bar => h('span', {
-      class: `bar${changeable && bar.changed ? ` changed ${bar.status}` : ''}`,
+      class: `bar${changeable && bar.changed ? ` changed ${bar.status}` : ''}${changeable && bar.revised ? ' revised' : ''}`,
       ...(changeable && bar.why ? { title: bar.why } : {}),
       onclick: () => { why.textContent = barReason(bar); },
     }, pick(bar).join(' ') || '—')),
   );
 
-  el.replaceChildren(
+  el.replaceChildren(...[
+    result.plan && h('ol', { class: 'reharm-plan' }, ...result.plan.map(phrase => h('li', {},
+      h('span', { class: 'phrase-bars' }, `Bars ${phrase.bars[0]}–${phrase.bars[1]}`),
+      ` ${phrase.strategy}`,
+      ...(phrase.techniques.length ? [h('span', { class: 'phrase-techniques' }, ` (${phrase.techniques.join(', ')})`)] : [])))),
     h('p', { class: 'reharm-scores' }, scoreLine(result.scores)),
+    reviewChanged(result) && h('p', { class: 'reharm-scores draft' }, `Before the review: ${scoreLine(result.draft.scores)}`),
+    result.review && h('p', { class: 'reharm-review' }, reviewLine(result.review)),
     row('Original', bar => bar.from, false),
     row('Reharm', bar => bar.to, true),
     why,
-  );
+  ].filter(Boolean));
   if (result.problems.length) {
-    el.append(h('ul', { class: 'reharm-problems' }, ...result.problems.map(problem =>
-      h('li', {}, problem.bar ? `Bar ${problem.bar}: ${problem.reason}` : problem.reason))));
+    el.append(h('ul', { class: 'reharm-problems' }, ...result.problems.map(problem => h('li', {}, problemLine(problem)))));
   }
   if (!result.gridParses) {
     el.append(h('p', { class: 'reharm-problems' }, 'This grid cannot be written as text (a chord starts off the beat), so it cannot be sent to the Progression tab.'));
@@ -304,10 +309,26 @@ export function renderReharm(el, result, { onUse } = {}) {
 }
 
 function barReason(bar) {
-  if (!bar.changed) return `Bar ${bar.bar}: unchanged.`;
-  const technique = bar.techniques.join(', ');
   const reason = bar.why || 'no reason given';
-  return `Bar ${bar.bar} (${technique}): ${reason}`;
+  if (!bar.changed) return bar.revised ? `Bar ${bar.bar}, back to the original in the review: ${reason}` : `Bar ${bar.bar}: unchanged.`;
+  const technique = bar.techniques.join(', ');
+  return `Bar ${bar.bar} (${technique}${bar.revised ? ', from the review' : ''}): ${reason}`;
+}
+
+// Where a problem came from: the review's own ones say so, the rest name their bar when they have one.
+function problemLine(problem) {
+  const where = [problem.stage === 'review' ? 'review' : null, problem.bar ? `bar ${problem.bar}` : null].filter(Boolean).join(', ');
+  return where ? `${where[0].toUpperCase()}${where.slice(1)}: ${problem.reason}` : problem.reason;
+}
+
+const reviewChanged = result =>Boolean(result.review && !result.review.undone && result.review.changes.length);
+
+function reviewLine(review) {
+  const bars = [...new Set(review.changes.map(change => change.bar))].join(', ');
+  const outcome = review.undone ? ` Undone: ${review.undone}, so the draft stands.`
+    : review.changes.length ? ` Changed bar${review.changes.length > 1 ? 's' : ''} ${bars}.`
+      : ' No changes.';
+  return `Review: ${review.verdict || '(no verdict)'}${outcome}`;
 }
 
 function scoreLine(scores) {
@@ -333,6 +354,7 @@ function reharmBars(result) {
     status: 'ok',
     techniques: [],
     why: '',
+    revised: false,
     beats: [],
   }));
   for (const slot of result.slots) {
@@ -341,7 +363,11 @@ function reharmBars(result) {
       if (!entry) continue;
       entry.beats.push({ beat: chord.beat, symbol: chord.symbol });
       if (slot.changed && !entry.techniques.includes(slot.technique)) entry.techniques.push(slot.technique);
-      if (slot.changed && slot.why && !entry.why) entry.why = slot.why;
+      if (slot.revised && !entry.revised) {
+        entry.revised = true;
+        entry.why = slot.why;                     // the reviewer's reason wins over the draft's
+      }
+      if ((slot.changed || slot.revised) && slot.why && !entry.why) entry.why = slot.why;
       if (slot.status === 'rejected') entry.status = 'rejected';
       else if (slot.status === 'warning' && entry.status === 'ok') entry.status = 'warning';
     }
