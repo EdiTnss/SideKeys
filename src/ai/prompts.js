@@ -6,7 +6,7 @@
 // with all properties required; no min/max constraints (those are checked in code).
 
 import { midiToName } from '../theory/notes.js';
-import { DENSITY_TARGETS } from '../theory/scoring.js';
+import { DENSITY_TARGETS, MAX_RUN } from '../theory/scoring.js';
 import { TECHNIQUES } from '../theory/candidates.js';
 
 /** The analyzer's voicing types, exactly as analyzeVoicing reports them. */
@@ -119,6 +119,44 @@ Reply with one entry per phrase, in the same order:
 
 Think about the whole form: the density target applies to the whole tune, so some phrases can stay plain while others carry the color. Prefer the techniques the style is named after, keep the first chord of each phrase and the final resolution recognizable, and aim for a bass line that moves by half steps, whole steps and fifths.`;
 
+const REVIEW_SCHEMA = {
+  type: 'object',
+  properties: {
+    verdict: { type: 'string', description: 'two or three sentences on the proposal as a whole' },
+    changes: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          bar: { type: 'integer' },
+          slot: { type: 'integer' },
+          candidateId: { type: 'string', description: 'an id taken verbatim from that slot\'s candidates' },
+          why: { type: 'string', description: 'one short sentence' },
+        },
+        required: ['bar', 'slot', 'candidateId', 'why'],
+        additionalProperties: false,
+      },
+      description: 'at most 4, only the slots you change',
+    },
+  },
+  required: ['verdict', 'changes'],
+  additionalProperties: false,
+};
+
+const REVIEW_SYSTEM = `You are a demanding arranger reviewing a colleague's reharmonization of a tune for an advanced jazz pianist. The melody is fixed, and every candidate in the menu already fits it, so judge taste, line and coherence, not correctness.
+
+The user message is a JSON object with the key, the requested style and intensity, the density target, the plan when there is one (per phrase: a strategy and the techniques to prefer), the original grid and the proposed grid, the scores the app computed for the proposal, and one entry per slot: bar, slot, beat, the original chord with its roman numeral, function and cadence flag, the melody's structural notes with their relation to the original chord, the chosen candidate (id, chords, technique and your colleague's reason; the id ending in "-orig" is the original chord), or coveredBy when a two-slot candidate from the slot before already covers it, and the full menu of candidates with the same fields as the colleague saw.
+
+The scores: density is the share of changed slots and must stay inside densityTarget; maxRun is the longest run of changed slots in a row and must stay at or under maxRunLimit (null means no limit); bassSmoothness runs from 0 to 1 and is higher when the bass moves by half steps, whole steps, fourths and fifths; techniqueMix counts the distinct techniques used, and one technique everywhere is monotonous; avoidWarnings counts melody notes that fall on an avoid note.
+
+Reply with a verdict and at most 4 changes:
+- verdict: two or three sentences on the proposal as a whole: what works, what does not, and what you changed.
+- changes: only the slots you change, each with candidateId copied verbatim from that slot's candidates: the whole id, not a shortened form. The id ending in "-orig" puts the original chord back. An empty list is the right answer when the proposal is already good.
+- Change a slot only when it clearly improves the arrangement: a smoother bass line, a tension placed where the melody supports it, a wider mix of techniques, a clearer cadence, or a closer fit to the plan.
+- Never take the density out of its target, make a run longer than maxRunLimit, or add avoid notes when the proposal has none of those problems: the app undoes the whole review if you do.
+- Do not change a slot marked coveredBy. A candidate with spans 2 also covers the next slot.
+- why is one short sentence per change, naming the technique and the melody note or the bass motion it serves.`;
+
 export const PROMPTS = {
   explain: {
     version: 1,
@@ -140,6 +178,13 @@ export const PROMPTS = {
     schema: EXECUTE_SCHEMA,
     /** piece: analyzed piece; candidates: generateCandidates() result; plan: the checked plan, or null */
     build: ({ piece, candidates, style, intensity, plan = null }) => [{ role: 'user', content: JSON.stringify(executeInput(piece, candidates, style, intensity, plan)) }],
+  },
+  review: {
+    version: 1,
+    system: REVIEW_SYSTEM,
+    schema: REVIEW_SCHEMA,
+    /** draft: { grid, originalGrid, slots (resolved, with why), scores } */
+    build: ({ piece, candidates, style, intensity, plan = null, draft }) => [{ role: 'user', content: JSON.stringify(reviewInput(piece, candidates, style, intensity, plan, draft)) }],
   },
 };
 
@@ -202,4 +247,41 @@ function executeInput(piece, candidates, style, intensity, plan) {
     ...(plan ? { plan } : {}),
     slots: candidates.slots.map(slot => ({ ...slotSummary(piece, slot), candidates: menuOf(slot) })),
   };
+}
+
+const round2 = value => Math.round(value * 100) / 100;
+
+function reviewInput(piece, candidates, style, intensity, plan, draft) {
+  const drafted = new Map(draft.slots.map(slot => [`${slot.bar}:${slot.slot}`, slot]));
+  const { scores } = draft;
+  return {
+    ...header(piece, style, intensity),
+    ...(plan ? { plan } : {}),
+    originalGrid: draft.originalGrid,
+    proposedGrid: draft.grid,
+    scores: {
+      density: round2(scores.density),
+      densityOk: scores.densityOk,
+      maxRun: scores.maxRun,
+      maxRunLimit: intensity === 'heavy' ? null : MAX_RUN,
+      maxRunOk: scores.maxRunOk,
+      bassSmoothness: round2(scores.bassSmoothness),
+      techniqueMix: scores.techniqueMix,
+      techniques: { ...scores.techniques },
+      avoidWarnings: scores.warnings,
+    },
+    slots: candidates.slots.map(slot => {
+      const current = drafted.get(`${slot.bar}:${slot.slot}`);
+      const placed = current?.coveredBy ? { chosen: null, coveredBy: current.coveredBy } : { chosen: chosenOf(slot, current) };
+      return { ...slotSummary(piece, slot), ...placed, candidates: menuOf(slot) };
+    }),
+  };
+}
+
+// What the draft has on a slot, in the menu's own terms: the chosen candidate, or the original.
+function chosenOf(slot, current) {
+  const candidate = current?.candidate ?? slot.candidates.find(option => option.technique === 'original') ?? null;
+  const why = current?.why ?? '';
+  if (!candidate) return { id: null, chords: slot.original, technique: 'original', why };
+  return { id: candidate.id, chords: candidate.chords.map(c => c.symbol).join(' '), technique: candidate.technique, why };
 }
