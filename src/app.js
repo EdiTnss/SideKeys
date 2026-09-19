@@ -8,11 +8,13 @@ import { suggestVoicings } from './theory/voicings.js';
 import { createPiece, addMelody, structuralMelody, toJSON, fromJSON, savePiece, loadPiece, listPieces, deletePiece } from './theory/piece.js';
 import { VoicingCapture } from './midi/capture.js';
 import { connectMidi } from './midi/input.js';
+import { createVirtualMidi } from './midi/virtual.js';
 import { createOutput } from './midi/output.js';
 import { createRecorder } from './midi/recorder.js';
 import { createMetronome } from './audio/metronome.js';
 import { DRILL_SYMBOLS, ROOTS, nextChord, loadSettings, saveSettings } from './ui/drill.js';
-import { createSession } from './ui/session.js';
+import { createSession, snapshotTarget } from './ui/session.js';
+import { createTape, keepMidi, verdictOf, formatSession } from './ui/tape.js';
 import { createKeyboard } from './ui/keyboard.js';
 import { emptyStats, recordAttempt, weakSpots, summaryLine, loadStats, saveStats } from './ui/stats.js';
 import { createClient, AiError } from './ai/client.js';
@@ -61,6 +63,13 @@ let sessionStats = emptyStats();    // this session only
 let allStats = loadStats();         // every session, persisted
 useStatsSummary(summaryLine);
 
+// The last hour of playing and of what the app answered, for "Save session" and the harness.
+const tape = createTape({ settings: { debounceMs: settings.debounceMs, nextNote: settings.nextNote } });
+// ?midi=virtual: no hardware and no Web MIDI permission needed; voicingLab.midi drives it.
+const virtualMidi = new URLSearchParams(location.search).get('midi') === 'virtual'
+  ? createVirtualMidi({ inputs: ['Virtual keyboard'], outputs: ['Virtual output'] })
+  : null;
+
 const keyboard = createKeyboard($('keyboard'));
 const capture = new VoicingCapture({
   debounceMs: settings.debounceMs,
@@ -80,6 +89,7 @@ function advance() {
 
 function newChordOnScreen() {
   capture.cancel();
+  tape.event('chord', { symbol, slot: mode === 'progression' ? shownIndex : null });
   currentClasses = {};
   suggestions = null;
   lastAnalysis = null;
@@ -90,13 +100,14 @@ function newChordOnScreen() {
 }
 
 function analyse(notes) {
-  if (!chord) return;
+  if (!chord) return null;
   const analysis = analyzeVoicing(notes, chord);
   renderAnalysis($('feedback'), analysis, chord);
   showAnalysis(analysis, notes);
   lastAnalysis = analysis;
   // Claude's answer stays on screen for the same chord, so a played suggestion can be compared with its label.
   if (aiResult?.symbol === symbol) renderAiSuggestions($('feedback'), aiResult, chord, { onPlay: playAiSuggestion });
+  return analysis;
 }
 
 function showAnalysis(analysis, notes) {
@@ -354,8 +365,10 @@ function buildSession({ loop = $('prog-loop').checked } = {}) {
   try {
     const grid = parseGrid($('prog-grid').value, { timeSignature: timeSignature() });
     session = createSession(grid, { loop });
+    tape.event('progression', { grid: $('prog-grid').value, timeSignature: timeSignature(), loop });
   } catch (error) {
     session = null;
+    tape.event('progression', { grid: null });
     $('grid-view').replaceChildren();
     renderError($('summary'), error instanceof GridParseError ? error.message : String(error));
     return;
@@ -380,6 +393,7 @@ function recordAndRender(index, notes) {
   renderComparison($('feedback'), entry.comparison);
   showAnalysis(entry.analysis, notes);
   renderGrid($('grid-view'), session, shownIndex);
+  return entry.analysis;
 }
 
 function chorusDone(label) {
@@ -414,11 +428,15 @@ function startProgression() {
   if (progressionMode() === 'timed') {
     metronome = createMetronome({ tempo: Number($('prog-tempo').value) || 120, timeSignature: timeSignature(), onBeat });
     metronome.start();
+    tape.event('start', { timed: true, tempo: metronome.tempo, bar1At: tape.at(metronome.performanceTimeOf(1, 1)) });
+  } else {
+    tape.event('start', { timed: false });
   }
   setProgressionControls(true);
 }
 
 function stopProgression() {
+  tape.event('stop');
   metronome?.stop();
   metronome = null;
   if (session) chorusDone(progressionMode() === 'timed' ? `Chorus ${chorus}` : 'Pass');
@@ -450,6 +468,7 @@ function startRecording() {
   metronome = createMetronome({ tempo: Number($('prog-tempo').value) || 120, timeSignature: timeSignature(), onBeat: onRecordingBeat });
   recorder = createRecorder({ positionOf: metronome.positionOf, timeSignature: timeSignature() });
   heldWhileRecording.clear();
+  tape.event('recorder', { on: true });
   recorder.start();
   metronome.start();
   setProgressionControls(true);
@@ -477,6 +496,7 @@ function stopRecording() {
   if (!recorder) return;
   const raw = recorder.stop(performance.now());
   recorder = null;
+  tape.event('recorder', { on: false });
   metronome?.stop();
   metronome = null;
   document.body.classList.remove('recording');
@@ -533,6 +553,16 @@ function exportPiece() {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+// The last hour of playing, as a JSON file the harness replays (harness/replay.js).
+function saveSession() {
+  const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+  const blob = new Blob([formatSession(tape.toJSON())], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = Object.assign(document.createElement('a'), { href: url, download: `voicing-lab-session-${stamp}.json` });
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 async function importPiece(file) {
   if (!file) return;
   try {
@@ -544,17 +574,20 @@ async function importPiece(file) {
 
 // ---- Events from the keyboard -----------------------------------------------------------
 
+// Which chord the voicing answers is snapshotTarget's decision, shared with the harness's replay;
+// every snapshot goes on the tape with that chord and its verdict.
 function onVoicing(notes, { startedAt }) {
-  if (mode === 'drill') return analyse(notes);
-  if (mode !== 'progression' || !session) return;
-  if (timedRunning()) {
-    const position = metronome.positionOf(startedAt);
-    const location = session.locate(position.bar, position.beat);
-    if (location) recordAndRender(location.index, notes);
-    return;
-  }
-  if (!$('prog-start').disabled) return;            // free mode, not started
-  recordAndRender(session.current, notes);
+  const timed = mode === 'progression' && Boolean(timedRunning());
+  const position = timed ? metronome.positionOf(startedAt) : null;
+  const target = snapshotTarget({ mode, symbol, session, started: $('prog-start').disabled, timed, position, current: session?.current ?? 0 });
+  const analysis = !target ? null : mode === 'drill' ? analyse(notes) : recordAndRender(target.slot, notes);
+  tape.event('snapshot', {
+    startedAt: tape.at(startedAt ?? performance.now()),
+    notes,
+    target,
+    ...(position ? { position } : {}),
+    verdict: analysis ? verdictOf(analysis) : null,
+  });
 }
 
 function onMidiNoteOn(note, velocity) {
@@ -593,6 +626,7 @@ function setMode(next) {
   if (recorder) stopRecording();
   if (mode === 'progression' && $('prog-start').disabled) stopProgression();
   mode = next;
+  tape.event('mode', { mode });
   for (const tab of ['drill', 'progression', 'reharm']) $(`tab-${tab}`).setAttribute('aria-selected', String(mode === tab));
   $('progression-panel').hidden = mode !== 'progression';
   $('reharm-panel').hidden = mode !== 'reharm';
@@ -607,12 +641,17 @@ function setMode(next) {
 function selectOutput() {
   if (!output) return;
   output.channel = settings.channel;
-  output.select(settings.outputId ?? outputs[0]?.id ?? '');
+  const chosen = output.select(settings.outputId ?? outputs[0]?.id ?? '');
+  // The saved port is a real one (the Genos): on the virtual access, take the virtual output.
+  if (!chosen && virtualMidi) output.select(outputs[0]?.id ?? '');
 }
 
 function applySettings(next) {
   settings = { ...settings, ...next };      // the parts toggles live in the Reharm tab, not in this form
   saveSettings(settings);
+  if (capture.debounceMs !== settings.debounceMs || capture.nextNote !== settings.nextNote) {
+    tape.event('settings', { debounceMs: settings.debounceMs, nextNote: settings.nextNote });
+  }
   capture.debounceMs = settings.debounceMs;
   capture.nextNote = settings.nextNote;
   selectOutput();
@@ -647,6 +686,7 @@ $('piece-save').addEventListener('click', savePieceAs);
 $('piece-load').addEventListener('click', () => { const loaded = loadPiece($('piece-list').value); if (loaded) loadIntoControls(loaded); });
 $('piece-delete').addEventListener('click', () => { deletePiece($('piece-list').value); refreshPieceList(); });
 $('piece-export').addEventListener('click', exportPiece);
+$('save-session').addEventListener('click', () => { saveSession(); $('save-session').blur(); });
 $('piece-import').addEventListener('change', event => { importPiece(event.target.files[0]); event.target.value = ''; });
 $('next').addEventListener('click', advance);
 $('suggest').addEventListener('click', () => { playSuggestion(); $('suggest').blur(); });
@@ -680,8 +720,10 @@ const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL
 showStats();
 
 connectMidi({
+  access: virtualMidi?.access,
   onNoteOn: onMidiNoteOn,
   onNoteOff: onMidiNoteOff,
+  onMessage: data => { if (keepMidi(data)) tape.midi(data); },
   onDevices: devices => {
     outputs = devices.outputs;
     settingsUi.setOutputs(outputs, settings.outputId);
@@ -703,7 +745,9 @@ connectMidi({
 setMode('drill');
 
 // Debug hook, for the DevTools console when no keyboard is connected:
-// voicingLab.play(60, 64, 67, 71) then voicingLab.release().
+// voicingLab.play(60, 64, 67, 71) then voicingLab.release(). These skip the MIDI input, so they
+// never reach the tape; with ?midi=virtual, voicingLab.midi.send([0x90, 60, 80]) goes the whole
+// way, and voicingLab.midi.sent holds what the app sent out.
 window.voicingLab = {
   capture,
   play: (...notes) => notes.forEach(note => onMidiNoteOn(note, 80)),
@@ -713,4 +757,7 @@ window.voicingLab = {
   reharm: runReharm,
   playArrangement,
   stopArrangement,
+  midi: virtualMidi,
+  tape,
+  saveSession,
 };

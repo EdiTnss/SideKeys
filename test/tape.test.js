@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { nameToMidi } from '../src/theory/notes.js';
 import { parseChord } from '../src/theory/chords.js';
 import { analyzeVoicing } from '../src/theory/analyzer.js';
-import { createTape, keepMidi, verdictOf, replayTape, updateTape, formatReport, TAPE_FORMAT } from '../src/midi/tape.js';
+import { createTape, keepMidi, verdictOf, replayTape, updateTape, formatReport, formatSession, TAPE_FORMAT } from '../src/ui/tape.js';
 
 const v = names => names.split(' ').map(nameToMidi);
 // A chord landing the way hands do: 10 ms between the notes.
@@ -14,7 +14,7 @@ const verdict = (notes, symbol) => verdictOf(analyzeVoicing(notes, parseChord(sy
 const shot = (notes, startedAt, symbol, { slot = null, lastAt = startedAt + (notes.length - 1) * 10, ...extra } = {}) => ({
   t: lastAt + 300, type: 'snapshot', startedAt, notes, target: symbol ? { symbol, slot } : null, ...extra, verdict: symbol ? verdict(notes, symbol) : null,
 });
-const session = events => ({ format: TAPE_FORMAT, settings: { debounceMs: 300, nextNote: 28 }, events: events.flat().sort((a, b) => a.t - b.t) });
+const session = events => ({ format: TAPE_FORMAT, settings: { debounceMs: 300, nextNote: 28 }, events: events.flat(Infinity).sort((a, b) => a.t - b.t) });
 
 const CMAJ7_A = v('E3 G3 B3 D4');       // rootless A
 const DM7_A = v('F3 A3 C4 E4');
@@ -197,4 +197,29 @@ test('a debounce timer that fired late live is replayed as it happened, not as i
   const onTime = replayTape(session([live, { ...shot(CMAJ7_A, 1000, 'Cmaj7'), t: 1332 }, shot(merged, 1340, 'Cmaj7', { lastAt: 1350 })]));
   assert.equal(onTime.ok, true, formatReport('on time', onTime));
   assert.equal(onTime.snapshots[0].t, 1332);
+});
+
+test('a saved session is JSON with one event per line, and reads back as it was', () => {
+  const saved = session([{ t: 0, type: 'mode', mode: 'drill' }, on(1000, CMAJ7_A), shot(CMAJ7_A, 1000, 'Cmaj7')]);
+  const text = formatSession(saved);
+  assert.deepEqual(JSON.parse(text), saved);
+  assert.equal(text.split('\n').filter(line => line.startsWith('    {')).length, saved.events.length);
+  assert.ok(text.endsWith('}\n'));
+  assert.deepEqual(JSON.parse(formatSession({ ...saved, events: [] })).events, []);
+});
+
+test('a change to the capture\'s timing beyond a late timer is caught: a rolled chord split by a shorter debounce', () => {
+  const rolled = v('D3 A3 C4 F4');
+  const played = [
+    { t: 0, type: 'mode', mode: 'drill' },
+    { t: 0, type: 'chord', symbol: 'Dm7', slot: null },
+    rolled.map((note, i) => ({ t: 1000 + i * 60, type: 'midi', data: [0x90, note, 80] })),   // 60 ms apart
+    off(2000, rolled),
+  ];
+  const live = session([played, shot(rolled, 1000, 'Dm7', { lastAt: 1180 })]);
+  assert.equal(replayTape(live).ok, true);
+  const shorter = replayTape({ ...live, settings: { ...live.settings, debounceMs: 30 } });
+  assert.equal(shorter.ok, false);
+  assert.equal(shorter.counts.missing, 1);
+  assert.ok(shorter.counts.extra >= 1);
 });

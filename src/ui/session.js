@@ -93,3 +93,16 @@ export function createSession(progression, { loop = true } = {}) {
     get history() { return history; },
   };
 }
+
+/**
+ * Which chord a captured voicing answers: in the drill, the chord on screen; in a progression,
+ * once the pass has started, the slot where the voicing started on the metronome's grid (timed)
+ * or the slot under the cursor (free); nowhere else. → { symbol, slot } or null.
+ * The app and the harness's replay (midi/tape.js) share this rule, so they cannot drift apart.
+ */
+export function snapshotTarget({ mode, symbol = null, session = null, started = false, timed = false, position = null, current = 0 }) {
+  if (mode === 'drill') return symbol ? { symbol, slot: null } : null;
+  if (mode !== 'progression' || !session || !started) return null;
+  const slot = timed ? session.locate(position.bar, position.beat)?.index ?? null : current;
+  return slot === null ? null : { symbol: session.slots[slot].symbol, slot };
+}
