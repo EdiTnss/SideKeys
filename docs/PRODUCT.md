@@ -47,16 +47,37 @@ mult cod — se repară ipoteza.
 
 ### P0 — Închidem ce avem (săptămânile 1–2)
 
-- Execuția pe fraze pentru piese peste 32 de măsuri (ultimul punct din Faza 3b).
-- Faza 4 integral: demo mode, claviatură pe ecran, `audio/synth.js`, repo public, Pages,
+- [x] Execuția pe fraze pentru piese peste 32 de măsuri (ultimul punct din Faza 3b).
+- [x] Harness de verificare permanent: port MIDI virtual + sesiuni înregistrate care se reiau.
+- [x] Spargerea lui `CLAUDE.md` în reguli / jurnal / specificații.
+- [ ] Faza 4 integral: demo mode, claviatură pe ecran, `audio/synth.js`, repo public, Pages,
   Worker publicat.
-- Harness de verificare permanent: port MIDI fals + sesiuni înregistrate care se reiau.
-- Spargerea lui `CLAUDE.md` în reguli / jurnal / specificații.
-- Prototip de intrare pe microfon cu `basic-pitch-ts`, măsurat pe 20 de voicings.
+- [ ] Prototip de intrare pe microfon cu `basic-pitch-ts`, măsurat pe 20 de voicings.
   Prag de acceptare: peste 90% identificate corect **cu octava exactă**.
 
 **DoD:** demo-ul public merge fără clapă; harness-ul reia o sesiune înregistrată și raportează;
 verdictul microfonului e scris în jurnal.
+
+#### Cerințe ferme pentru demo mode
+
+Nu sunt propuneri; se respectă sau se renegociază explicit cu Edi înainte de cod.
+
+1. **Reharm-ul din demo servește un rezultat pre-calculat, salvat în repo. Niciun apel live.**
+   Worker-ul limitează o singură dată, pe IP, fără să deosebească acțiunile: un `execute` costă
+   în jur de 25 de cenți, deci un demo public cu apel live poate fi golit de buzunar de un singur
+   vizitator. Dacă la un moment dat chiar e nevoie de un apel live în demo, condiția prealabilă e
+   o limită separată, mult mai strânsă, pe acțiunile scumpe.
+2. **Verdictul spune pentru ce acord a fost dat.** În timed, un voicing început în fereastra de
+   anticipare e judecat pe acordul următor, cât ecranul îl arată încă pe cel curent — la tempo
+   lent, diferența se vede. Panoul de feedback scrie simbolul acordului judecat, iar când a fost
+   o anticipare o marchează ca atare. Decizie luată de Claude din Cowork pe 2026-09-19, Edi o
+   poate răsturna: varianta respinsă a fost întârzierea verdictului până la schimbarea ecranului,
+   pentru că intră în conflict cu regula „feedback sub 100 ms" din `CLAUDE.md`; a doua variantă
+   respinsă, acordul următor arătat estompat în fereastra de anticipare, adaugă pâlpâire înaintea
+   fiecărei schimbări de acord, inclusiv când nu anticipezi nimic.
+
+**Poarta P0** nu e „codul funcționează", ci **40 de adrese de email în 4 săptămâni de la primul
+clip**. Ceasul pornește la publicare, deci publicarea nu se amână după microfon.
 
 ### P1 — Scheletul de produs (săptămânile 3–6)
 

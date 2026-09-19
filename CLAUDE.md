@@ -31,6 +31,7 @@ Ambele scopuri sunt egale. Dacă o decizie tehnică ajută portofoliul dar stric
 - Rulează testele cu `npm run test:quiet`: o linie când sunt verzi, numele și diff-ul când pică. Raportul implicit al lui `node --test` scrie o linie pe test — circa 25 KB de context la fiecare rulare, fără nicio informație. `npm test` rămâne raportul complet, pentru CI și pentru un eșec care cere mai mult context.
 - Când se adaugă o regulă de teorie nouă, se adaugă și în tabelul din [docs/spec-analyzer.md](docs/spec-analyzer.md). Când se adaugă o tehnică de substituție nouă, se adaugă în tabelul de candidați din [docs/spec-reharm.md](docs/spec-reharm.md), cu regula de detecție și un test.
 - Precizările din implementare (decizii, capcane, schimbări de spec) se scriu în specificația modulului din `docs/`, în același commit cu codul, nu în acest fișier.
+- `node harness/replay.js --update` rescrie referința de regresie a harness-ului. Se rulează doar cu aprobarea lui Edi, după ce diferența raportată a fost citită și explicată, iar diferența se scrie în jurnal. E echivalentul harness-ului pentru „nu slăbi testul ca să treacă": spre deosebire de un test, referința se schimbă dintr-o comandă și nu lasă urmă vizibilă în diff.
 - Orice schimbare în `ai/prompts.js` incrementează `PROMPT_VERSION` și, din Faza 5, se rulează pe setul de evaluare înainte de commit.
 - Nu rula `git push --force`, nu șterge fișiere fără confirmare.
 
