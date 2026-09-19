@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": ["${CLAUDE_PROJECT_DIR}/.claude/hooks/guard.mjs"],
+            "timeout": 120,
+            "statusMessage": "Verific testele și regulile proiectului..."
+          }
+        ]
+      }
+    ]
+  }
+}
