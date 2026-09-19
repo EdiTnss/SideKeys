@@ -56,7 +56,8 @@ start.cmd                  Windows: pornește pagina, proxy-ul local și Chrome 
 src/
   app.js                   singurul loc care leagă theory, midi și ui
   midi/capture.js          regulile de snapshot (debounce, staccato, „next"), logică pură, testată
-  midi/input.js            requestMIDIAccess, toate intrările/canalele, parseMidiMessage
+  midi/input.js            requestMIDIAccess (sau accesul primit), toate intrările/canalele, parseMidiMessage
+  midi/virtual.js          acces MIDI fără hardware (?midi=virtual, harness; claviatura și synth-ul din Faza 4)
   midi/recorder.js         înregistrează melodia cântată în timp muzical (bar, beat, durată în timpi), pozițiile vin din metronom; testat
   midi/output.js           trimite voicings spre Genos (Faza 2), mesaje programate în timp și oprire curată (Faza 3b)
   midi/player.js           evenimentele aranjamentului → mesaje MIDI cu timp, un canal pe voce (Faza 3b)
@@ -70,6 +71,7 @@ src/
   audio/metronome.js       metronom Web Audio cu lookahead, count-in, onBeat, positionOf(performance.now)
   ui/session.js            o trecere prin progresie: sloturi, locate(bar, beat), record, summary (testat)
   ui/stats.js              statistici: încercări, curate, probleme pe calitate; sesiune + cumulativ în localStorage (testat)
+  ui/tape.js               banda sesiunii: ultima oră de cântat și verdictele; reluarea ei (harness), testată
   theory/piece.js          modelul unei piese (grilă + melodie), cuantizare, validare reharm
   theory/analysis.js       analiză armonică: trepte, funcții, cadențe, fraze, note-țintă (Faza 3a)
   theory/candidates.js     generează acordurile compatibile cu melodia, etichetate pe tehnică (Faza 3a)
@@ -88,6 +90,8 @@ eval/pieces/*.json         piese de test din domeniul public (Faza 5)
 eval/run.js                rulează pipeline-ul pe piesele de test și raportează metrici (Faza 5)
 eval/compare.js            execute singur vs plan + execute + review pe o piesă, de N ori (Faza 3b; sămânța lui run.js)
 eval/reports/*.json        rapoartele măsurătorilor, păstrate ca dovadă
+harness/replay.js          reia sesiunile salvate și raportează ce s-a schimbat (--update acceptă)
+harness/sessions/*.json    sesiuni înregistrate de aplicație („Save session"), reluate și în CI
 worker/                    Cloudflare Worker — proxy Anthropic, fără logică (Faza 3a)
 test/                      *.test.js, rulate cu node --test
 .github/workflows/test.yml CI: npm test pe Node 22 și 24, la fiecare push (Faza 1)
@@ -107,23 +111,25 @@ Regula de dependență: `theory/` nu importă nimic din `midi/`, `ui/` sau `ai/`
 La 2026-09-19:
 
 - **Fazele 0, 1, 2 și 3a sunt bifate** (DoD-urile în [docs/PHASES.md](docs/PHASES.md)). **Faza 3b**: aranjamentul (`realize.js`, `player.js`) a fost ascultat de Edi pe Genos; `plan` și `review` sunt implementate, cu DoD-ul măsurat îndeplinit pe piesa de 16 măsuri (bas 0,85 față de 0,80, mix de tehnici 4,67 față de 3,67; `eval/reports/compare-2026-09-19T13-59-52-398Z.json`). **Execuția pe bucăți** (piesele peste 32 de sloturi) e implementată și măsurată pe un studiu de 64 de măsuri (bas 0,90 față de 0,84, mix 4,67 față de 3,67, 0 clash-uri, densitatea în țintă în toate 6 rulările; `eval/reports/compare-2026-09-19T16-37-52-096Z.json`). Toate punctele Fazei 3b sunt făcute; din DoD rămâne ca Edi să asculte pe Genos o piesă proprie cu „plan & review".
-- **187 de teste** verzi, CI pe Node 22 și 24.
-- **Planul de produs** e în [docs/PRODUCT.md](docs/PRODUCT.md); suntem în **P0**. Din P0 sunt făcute spargerea lui `CLAUDE.md` și execuția pe fraze. Reharm-ul a ieșit din produs: rămâne în repo și în demo, iar `pipeline.js` nu mai primește lucru nou.
+- **Harness-ul de verificare** e implementat (spec în [docs/spec-capture.md](docs/spec-capture.md)): portul MIDI virtual (`?midi=virtual`), banda sesiunii cu „Save session", reluarea în Node și CI (`node harness/replay.js`). Prima sesiune, înregistrată de aplicație pe portul virtual, se reia cu toate cele 13 snapshot-uri la fel. Din DoD-ul P0 lipsesc sesiunile reale ale lui Edi. **Găsit de harness, nerezolvat**: în timed, un acord anticipat peste bara de măsură nu primește verdict (schimbarea de slot anulează captura).
+- **206 teste** verzi, CI pe Node 22 și 24.
+- **Planul de produs** e în [docs/PRODUCT.md](docs/PRODUCT.md); suntem în **P0**. Din P0 sunt făcute spargerea lui `CLAUDE.md`, execuția pe fraze și harness-ul (fără sesiunile reale). Reharm-ul a ieșit din produs: rămâne în repo și în demo, iar `pipeline.js` nu mai primește lucru nou.
 - **Worker-ul** rulează doar local (`start.cmd`); nu e publicat în cloud (`npx wrangler login`, `npm --prefix worker run deploy`, `npm --prefix worker run secret`). Publicarea face parte din Faza 4, deci din P0.
 - Repo-ul e privat. Necommise: `assets/` (logo, favicon, imagine OG, `BRAND.md`, ale lui Edi, pentru Faza 4), `Voicing Lab ca produs.pdf`, care nu intră în repo (analiza de piață stă în afara lui, vezi `PRODUCT.md`), și `docs/claude-setup/` (apărut în sesiunea din 2026-09-19, neatins).
 
 ## Următorul pas
 
-1. **Harness-ul de verificare** (port MIDI fals + sesiuni înregistrate care se reiau și raportează), următorul punct din P0. Designul nu e aprobat; de propus lui Edi: formatul unei sesiuni înregistrate (mesaje MIDI cu timp, plus ce a răspuns aplicația), unde se injectează portul fals ca să-l poată folosi și claviatura de pe ecran din demo mode, ce raportează o reluare.
-2. Restul lui P0, în ordinea aprobată de Edi: **demo mode** (claviatură pe ecran, `audio/synth.js`, piesa demo, pe intrarea injectată a harness-ului; reharm-ul din demo, propunere: rezultat pre-calculat, nu apel live), apoi **publicarea** (istoric verificat pentru secrete, licență, repo public, Pages, Worker publicat, README, GIF, video), apoi **prototipul de microfon** cu `basic-pitch-ts`, în afara lui `src/` (prag: peste 90% din 20 de voicings identificate corect, cu octava exactă).
-3. De la Edi: o piesă proprie cu „plan & review" în tab-ul Reharm, ascultată pe Genos (ultima jumătate a DoD-ului Fazei 3b).
+1. **De la Edi, pentru DoD-ul harness-ului**: 2–3 sesiuni reale pe Genos (drill ~5 min, jazz blues timed pe 2 chorusuri, o progresie free), salvate cu „Save session" din Settings; intră în `harness/sessions/` și se reiau în CI.
+2. **Acordurile anticipate în timed**, de decis cu Edi: schimbarea de slot să nu mai anuleze captura, iar un voicing început cu puțin înainte de schimbare (cât: o optime?) să conteze pentru acordul următor. Apoi reparat test-first și verificat pe sesiunile înregistrate (cele cu anticipări apar ca `changed`/`extra`, acceptate cu `--update` după ce Edi le vede).
+3. Restul lui P0, în ordinea aprobată de Edi: **demo mode** (claviatură pe ecran, `audio/synth.js`, piesa demo, pe intrarea injectată a harness-ului; reharm-ul din demo, propunere: rezultat pre-calculat, nu apel live), apoi **publicarea** (istoric verificat pentru secrete, licență, repo public, Pages, Worker publicat, README, GIF, video), apoi **prototipul de microfon** cu `basic-pitch-ts`, în afara lui `src/` (prag: peste 90% din 20 de voicings identificate corect, cu octava exactă).
+4. De la Edi: o piesă proprie cu „plan & review" în tab-ul Reharm, ascultată pe Genos (ultima jumătate a DoD-ului Fazei 3b).
 
 ## Documentație
 
 | Fișier | Ce conține | Când se citește |
 |---|---|---|
 | [docs/PRODUCT.md](docs/PRODUCT.md) | poziționarea, ce iese din v1, fazele P0–P4 cu porțile lor, regulile de scop | la începutul fiecărei sesiuni |
-| [docs/spec-capture.md](docs/spec-capture.md) | snapshot-ul de voicing: debounce, staccato, nota de „next", canalele | `midi/capture.js`, `midi/input.js` |
+| [docs/spec-capture.md](docs/spec-capture.md) | snapshot-ul de voicing: debounce, staccato, nota de „next", canalele; harness-ul: portul virtual, banda sesiunii, reluarea | `midi/capture.js`, `midi/input.js`, `midi/virtual.js`, `ui/tape.js`, `harness/` |
 | [docs/spec-analyzer.md](docs/spec-analyzer.md) | parserul de chord symbol, tabelul calităților, clasificarea voicing-ului, voice leading | `theory/chords.js`, `analyzer.js`, `voiceLeading.js`, `voicings.js` |
 | [docs/spec-reharm.md](docs/spec-reharm.md) | piesa, recorder-ul, analiza, candidații, pipeline-ul AI și Worker-ul, scorurile, validarea, realizarea, partenerul de studiu, evaluarea | `piece.js`, `recorder.js`, `analysis.js`, `candidates.js`, `scoring.js`, `realize.js`, `player.js`, `ai/`, `worker/`, `eval/` |
 | [docs/PHASES.md](docs/PHASES.md) | fazele 0–5 cu DoD și vechiul scope guard | când P0 trimite la o fază veche (3b, 4) |
