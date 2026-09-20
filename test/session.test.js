@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { nameToMidi } from '../src/theory/notes.js';
 import { parseGrid } from '../src/theory/progressions.js';
-import { createSession, snapshotTarget, ANTICIPATION_BEATS } from '../src/ui/session.js';
+import { createSession, snapshotTarget, isAnticipated, ANTICIPATION_BEATS } from '../src/ui/session.js';
 
 const v = names => names.split(' ').map(nameToMidi);
 const grid = () => parseGrid('| Dm7 G7 | Cmaj7 | % |');
@@ -106,4 +106,19 @@ test('snapshotTarget, timed: from the "and" of the beat before a change, a voici
   const waltz = createSession(parseGrid('| Dm7 | G7 |', { timeSignature: [3, 4] }), { loop: false });
   assert.equal(timed({ bar: 1, beat: 3.4 }, waltz), 'Dm7');
   assert.equal(timed({ bar: 1, beat: 3.5 }, waltz), 'G7');                       // in 3/4, the "and" of 3
+});
+
+test('isAnticipated: whether the verdict is for a chord the screen has not reached yet', () => {
+  const session = createSession(grid(), { loop: false });                        // | Dm7 G7 | Cmaj7 | % |
+  const target = position => snapshotTarget({ mode: 'progression', session, started: true, timed: true, position });
+  const anticipated = position => isAnticipated(session, position, target(position)?.slot ?? null);
+  assert.equal(anticipated({ bar: 1, beat: 1 }), false);
+  assert.equal(anticipated({ bar: 1, beat: 2.49 }), false);
+  assert.equal(anticipated({ bar: 1, beat: 2.5 }), true);                        // judged as G7 while Dm7 is on screen
+  assert.equal(anticipated({ bar: 1, beat: 3 }), false);                         // G7 on its own beat
+  assert.equal(anticipated({ bar: 1, beat: 4.5 }), true);                        // pushed over the bar line
+  assert.equal(anticipated({ bar: 0, beat: 4.6 }), true);                        // from the count-in, before bar 1
+  assert.equal(anticipated({ bar: 3, beat: 4.8 }), false);                       // nothing follows: the last chord keeps it
+  assert.equal(isAnticipated(session, null, 0), false, 'a free pass has no position, so nothing is anticipated');
+  assert.equal(isAnticipated(null, { bar: 1, beat: 2.5 }, 1), false);
 });

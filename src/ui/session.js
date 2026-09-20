@@ -126,3 +126,14 @@ function timedSlot(session, { bar, beat }) {
   const location = session.locate(aheadBar, aheadBeat) ?? session.locate(bar, beat);
   return location?.index ?? null;
 }
+
+/**
+ * Whether a voicing was judged against a chord the screen had not reached yet: it started inside
+ * the anticipation window, so its slot is not the one its position falls in. Derived for the
+ * feedback panel rather than recorded on the tape — a new field inside a recorded target would
+ * make every saved session report a change on replay, for a label that is pure presentation.
+ */
+export function isAnticipated(session, position, slot) {
+  if (!session || !position || slot === null) return false;
+  return (session.locate(position.bar, position.beat)?.index ?? null) !== slot;
+}

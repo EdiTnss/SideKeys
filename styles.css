@@ -11,6 +11,7 @@
   --avoid: #f59e0b;
   --wrong: #ef4444;
   --held: #9ca3af;
+  --armed: #60a5fa;
 }
 
 body {
@@ -52,7 +53,18 @@ kbd {
 .key.role-avoid { fill: var(--avoid); }
 .key.role-wrong { fill: var(--wrong); }
 .key.caution { stroke: var(--warn); stroke-width: 3; }
+.key.armed { fill: var(--armed); }
 .key-label { font-size: 9px; fill: #555; pointer-events: none; }
+.keyboard.playable { cursor: pointer; touch-action: none; }
+
+/* On-screen keyboard controls */
+.onscreen { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; font-size: .9rem; }
+.onscreen .spacer { flex: 1; }
+.onscreen button { padding: .3rem .6rem; }
+.onscreen .hint { font-size: .9rem; }
+.octave { white-space: nowrap; color: var(--muted); }
+#octave-label { font-weight: 600; color: inherit; }
+#connect-midi { padding: .3rem .7rem; font-size: .85rem; }
 
 /* Feedback */
 .feedback { min-height: 8rem; margin-top: 1rem; }
@@ -60,6 +72,8 @@ kbd {
 .headline { font-size: 1.4rem; font-weight: 600; margin: 0 0 .5rem; }
 .headline.ok { color: var(--ok); }
 .headline.warn { color: var(--bad); }
+.judged { color: var(--muted); font-weight: 500; }
+.judged::after { content: " ·"; }
 .messages { margin: 0 0 .75rem; padding-left: 1.25rem; }
 .messages .warning { color: var(--warn); }
 .messages .warning.wrong, .messages .warning.missing { color: var(--bad); }

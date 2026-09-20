@@ -26,14 +26,16 @@ export function noteForKey(code, octave) {
 }
 
 /**
- * createOnScreen({ send, velocity, holdMs, octave, setTimer, clearTimer, onChange })
+ * createOnScreen({ send, echo, velocity, holdMs, octave, setTimer, clearTimer, onChange })
  * → { toggle(midi), play(), clear(), release(), keyDown(code), keyUp(code), octaveUp(),
  *     octaveDown(), armed, sounding, octave }
- * `send(data)` delivers one MIDI message on the virtual input. onChange fires whenever what is
+ * `send(data)` delivers one MIDI message on the virtual input and `echo(data)` sounds it through
+ * the browser synth, because a drawn keyboard has no strings. onChange fires whenever what is
  * armed, sounding or the octave changes, so the drawn keyboard can follow.
  */
 export function createOnScreen({
   send,
+  echo = () => {},               // the same message to the browser synth: on screen you hear what you play
   velocity = 88,
   holdMs = 1300,                 // longer than the capture's debounce: the verdict lands while the chord still sounds
   octave = 60,
@@ -48,8 +50,11 @@ export function createOnScreen({
   let timer = null;
 
   const sorted = set => [...set].sort((a, b) => a - b);
-  const noteOn = note => send([0x90, note, velocity]);
-  const noteOff = note => send([0x80, note, 0]);
+  // The app gets the message because it is the input; the synth gets it because the drawn keyboard
+  // has no strings of its own. One call, so the ear and the analyser can never hear two chords.
+  const emit = data => { send(data); echo(data); };
+  const noteOn = note => emit([0x90, note, velocity]);
+  const noteOff = note => emit([0x80, note, 0]);
 
   function changed() {
     onChange({ armed: sorted(armed), sounding: [...sounding], octave });
@@ -111,10 +116,15 @@ export function createOnScreen({
     return true;
   }
 
+  /** Lets go of every letter key still down, where it sounded. */
+  function releaseKeys() {
+    for (const code of [...down.keys()]) keyUp(code);
+  }
+
   function shift(by) {
     const next = Math.min(OCTAVE_HIGH, Math.max(OCTAVE_LOW, octave + by));
     if (next === octave) return;
-    for (const code of [...down.keys()]) keyUp(code);      // released where they sounded, not where the row moved to
+    releaseKeys();                                         // released where they sounded, not where the row moved to
     octave = next;
     changed();
   }
@@ -126,6 +136,7 @@ export function createOnScreen({
     release,
     keyDown,
     keyUp,
+    releaseKeys,
     octaveUp: () => shift(12),
     octaveDown: () => shift(-12),
     get armed() { return sorted(armed); },

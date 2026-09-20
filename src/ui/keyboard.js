@@ -15,8 +15,12 @@ function el(tag, attrs) {
   return node;
 }
 
-/** Builds the keys inside `svg` (E1–G7 by default, the 76 keys of a Genos). Returns { highlight(classesByMidi) }. */
-export function createKeyboard(svg, { from = 28, to = 103 } = {}) {
+/**
+ * Builds the keys inside `svg` (E1–G7 by default, the 76 keys of a Genos). Returns
+ * { highlight(classesByMidi) }. With `onKey`, a key answers the mouse and the touchscreen: it
+ * reports which note was pressed and leaves what that means to the caller.
+ */
+export function createKeyboard(svg, { from = 28, to = 103, onKey = null } = {}) {
   const keys = new Map();
   const whites = [];
   const blacks = [];
@@ -46,6 +50,18 @@ export function createKeyboard(svg, { from = 28, to = 103 } = {}) {
   svg.setAttribute('viewBox', `0 0 ${whiteIndex * WHITE_W} ${WHITE_H}`);
   svg.replaceChildren(...whites, ...blacks, ...labels);
   highlight({});
+
+  if (onKey) {
+    // The black keys are drawn last, so they are on top and the browser hands them the press.
+    const byRect = new Map([...keys].map(([midi, { rect }]) => [rect, midi]));
+    svg.classList.add('playable');
+    svg.addEventListener('pointerdown', event => {
+      const midi = byRect.get(event.target);
+      if (midi === undefined) return;
+      event.preventDefault();
+      onKey(midi);
+    });
+  }
 
   function highlight(classesByMidi) {
     for (const [midi, { rect, base }] of keys) {

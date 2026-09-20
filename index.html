@@ -15,7 +15,8 @@
     <button id="tab-progression" type="button" role="tab" aria-selected="false">Progression</button>
     <button id="tab-reharm" type="button" role="tab" aria-selected="false">Reharm</button>
   </nav>
-  <p id="status">Requesting MIDI access…</p>
+  <p id="status">Starting…</p>
+  <button id="connect-midi" type="button" hidden>Connect MIDI keyboard</button>
   <p id="stats" class="stats">Session: no chords yet</p>
 </header>
 
@@ -102,6 +103,18 @@
 
   <svg id="keyboard" class="keyboard" role="img" aria-label="Keyboard"></svg>
 
+  <div class="onscreen">
+    <button id="play-chord" type="button">Play chord <kbd>Enter</kbd></button>
+    <button id="clear-chord" type="button">Clear <kbd>Esc</kbd></button>
+    <span class="hint">Click the keys to build a voicing, or hold <kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>F</kbd>… like a piano.</span>
+    <span class="spacer"></span>
+    <label class="check"><input id="type-to-play" type="checkbox"> type to play</label>
+    <span class="octave">octave <output id="octave-label">C4</output>
+      <button id="octave-down" type="button" aria-label="Octave down"><kbd>Z</kbd></button>
+      <button id="octave-up" type="button" aria-label="Octave up"><kbd>X</kbd></button>
+    </span>
+  </div>
+
   <section id="feedback" class="feedback" aria-live="polite"></section>
 
   <details class="settings">
@@ -113,7 +126,7 @@
 </main>
 
 <footer>
-  <small>Play the chord on your MIDI keyboard. Space or the lowest key (E1) moves on. <a href="./midi-test.html">MIDI test</a></small>
+  <small>Play the chord on your MIDI keyboard, or on the one above. Space or the lowest key (E1) moves on. <a href="./midi-test.html">MIDI test</a></small>
 </footer>
 
 <script type="module" src="./src/app.js"></script>

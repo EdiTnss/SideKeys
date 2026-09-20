@@ -109,3 +109,16 @@ test('clear takes back what is armed and silences what is sounding', () => {
   assert.deepEqual(onscreen.sounding, []);
   assert.deepEqual(sent, [[0x80, 60, 0], [0x80, 64, 0]]);
 });
+
+test('what is played on screen is heard: the same messages go to the app and to the synth', () => {
+  const heard = [];
+  const { onscreen, sent, release } = harness({ echo: data => heard.push([...data]) });
+  onscreen.toggle(60);
+  onscreen.toggle(64);
+  assert.deepEqual(heard, [], 'arming is silent on both sides');
+  onscreen.play();
+  onscreen.keyDown('KeyG');
+  onscreen.keyUp('KeyG');
+  release();
+  assert.deepEqual(heard, sent, 'the ear and the analyser get the same chord, note for note');
+});

@@ -26,13 +26,21 @@ export function clearFeedback(el) {
   el.replaceChildren(h('p', { class: 'hint' }, 'Play it.'));
 }
 
-/** Headline (first warning, or the voicing type), every message, then the notes with their degrees. */
-export function renderAnalysis(el, analysis, chord) {
+/**
+ * Headline (first warning, or the voicing type), every message, then the notes with their degrees.
+ * `judged` says which chord the verdict is for: in a timed pass a voicing pushed into the
+ * anticipation window is judged against the next chord while the screen still shows the current
+ * one, and at a slow tempo that difference is visible. The panel names the chord it judged and
+ * marks an anticipation as one.
+ */
+export function renderAnalysis(el, analysis, chord, judged = null) {
   const warnings = analysis.messages.filter(m => m.level === 'warning');
   const type = analysis.messages.find(m => m.code === 'type');
-  const headline = warnings.length
-    ? h('p', { class: 'headline warn' }, warnings[0].text)
-    : h('p', { class: 'headline ok' }, `✓ ${type ? type.text : 'OK'}`);
+  const label = judged
+    ? h('span', { class: 'judged' }, judged.anticipated ? `${judged.symbol}, anticipated` : judged.symbol)
+    : null;
+  const verdict = warnings.length ? warnings[0].text : `✓ ${type ? type.text : 'OK'}`;
+  const headline = h('p', { class: `headline ${warnings.length ? 'warn' : 'ok'}` }, ...(label ? [label, ' '] : []), verdict);
   const list = h('ul', { class: 'messages' }, ...analysis.messages.map(m => h('li', { class: `${m.level} ${m.code}` }, m.text)));
   const notes = h('p', { class: 'notes' }, ...analysis.roles.map(role => h('span', { class: `role-${role.role}` }, noteLabel(role, chord))));
   el.replaceChildren(headline, list, notes);
@@ -53,6 +61,11 @@ export function roleClasses(analysis) {
 
 export function heldClasses(notes) {
   return Object.fromEntries(notes.map(midi => [midi, 'held']));
+}
+
+/** Keys clicked on the drawn keyboard but not played yet (ui/onscreen.js). */
+export function armedClasses(notes) {
+  return Object.fromEntries(notes.map(midi => [midi, 'armed']));
 }
 
 /** One line under the analysis: how the played chord moved from the previous one. */

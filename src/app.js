@@ -2,18 +2,21 @@
 // (random chords) and the progression (a grid, free or timed by the metronome).
 
 import { parseChord } from './theory/chords.js';
+import { midiToName } from './theory/notes.js';
 import { analyzeVoicing } from './theory/analyzer.js';
 import { PROGRESSIONS, getProgression, parseGrid, formatGrid, GridParseError } from './theory/progressions.js';
 import { suggestVoicings } from './theory/voicings.js';
 import { createPiece, addMelody, structuralMelody, toJSON, fromJSON, savePiece, loadPiece, listPieces, deletePiece } from './theory/piece.js';
 import { VoicingCapture } from './midi/capture.js';
 import { connectMidi } from './midi/input.js';
-import { createVirtualMidi } from './midi/virtual.js';
+import { createVirtualMidi, mergeAccess } from './midi/virtual.js';
+import { createSynth, SYNTH_ID } from './audio/synth.js';
+import { createOnScreen } from './ui/onscreen.js';
 import { createOutput } from './midi/output.js';
 import { createRecorder } from './midi/recorder.js';
 import { createMetronome } from './audio/metronome.js';
 import { DRILL_SYMBOLS, ROOTS, nextChord, loadSettings, saveSettings } from './ui/drill.js';
-import { createSession, snapshotTarget } from './ui/session.js';
+import { createSession, snapshotTarget, isAnticipated } from './ui/session.js';
 import { createTape, keepMidi, verdictOf, formatSession } from './ui/tape.js';
 import { createKeyboard } from './ui/keyboard.js';
 import { emptyStats, recordAttempt, weakSpots, summaryLine, loadStats, saveStats } from './ui/stats.js';
@@ -25,7 +28,7 @@ import { realize, BASS_REGISTERS } from './theory/realize.js';
 import { arrangementMessages } from './midi/player.js';
 import {
   renderChord, renderStatus, renderAnalysis, renderComparison, clearFeedback, renderSettings,
-  roleClasses, heldClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
+  roleClasses, heldClasses, armedClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
   renderStats, useStatsSummary, renderAiStatus, renderAiSuggestions, renderReharm,
 } from './ui/render.js';
 
@@ -65,19 +68,46 @@ useStatsSummary(summaryLine);
 
 // The last hour of playing and of what the app answered, for "Save session" and the harness.
 const tape = createTape({ settings: { debounceMs: settings.debounceMs, nextNote: settings.nextNote } });
-// ?midi=virtual: no hardware and no Web MIDI permission needed; voicingLab.midi drives it.
-const virtualMidi = new URLSearchParams(location.search).get('midi') === 'virtual'
-  ? createVirtualMidi({ inputs: ['Virtual keyboard'], outputs: ['Virtual output'] })
-  : null;
 
-const keyboard = createKeyboard($('keyboard'));
+// The on-screen keyboard and the browser synth are always here, as MIDI ports beside the real
+// ones: someone with no keyboard plays the app, and the Genos joins them when it arrives.
+// "Virtual output" stays a recording port, which is what the harness and voicingLab.midi.sent read.
+const params = new URLSearchParams(location.search);
+const synth = createSynth();
+const virtualMidi = createVirtualMidi({ inputs: ['On-screen keyboard'], outputs: [synth, 'Virtual output'] });
+const midiPorts = mergeAccess(virtualMidi.access);
+// Hardware is asked for straight away on localhost, where the session starts without a click, and
+// on a button anywhere else, so a visitor is not met by Chrome's permission prompt before the page
+// has said anything. ?midi=virtual is the harness's "no hardware at all".
+const hardwareOffered = params.get('midi') !== 'virtual' && typeof navigator !== 'undefined' && Boolean(navigator.requestMIDIAccess);
+const hardwareAtOnce = hardwareOffered && ['localhost', '127.0.0.1'].includes(location.hostname);
+let hardwareInputs = [];
+
+const keyboard = createKeyboard($('keyboard'), { onKey: midi => onscreen.toggle(midi) });
+// Clicks and letter keys go in through the virtual port, so the app sees a chord played on a
+// keyboard: capture, tape, statistics and the harness need no demo-mode branch anywhere.
+// The synth hears it too, straight, not through the selected output: the drawn keyboard is the
+// one instrument that has to make its own sound, whatever port the suggestions go out on.
+const onscreen = createOnScreen({ send: data => virtualMidi.send(data), echo: data => synth.send(data), onChange: showOnScreen });
 const capture = new VoicingCapture({
   debounceMs: settings.debounceMs,
   nextNote: settings.nextNote,
   onVoicing,
   onNext,
-  onChange: held => keyboard.highlight(heldClasses(held)),
+  onChange: held => showKeys(heldClasses(held)),
 });
+
+// What the drawn keyboard shows: the analysis, or the notes being held, with the armed keys on top.
+let keyClasses = {};
+function showKeys(classes = keyClasses) {
+  keyClasses = classes;
+  keyboard.highlight({ ...classes, ...armedClasses(onscreen.armed) });
+}
+
+function showOnScreen({ octave }) {
+  $('octave-label').textContent = midiToName(octave);
+  showKeys();
+}
 
 // ---- Drill -------------------------------------------------------------------------------
 
@@ -98,8 +128,11 @@ function newChordOnScreen({ keepCapture = false } = {}) {
   lastAnalysis = null;
   aiResult = null;
   renderChord($('chord'), symbol);
-  clearFeedback($('feedback'));
-  keyboard.highlight(heldClasses(capture.snapshot()));
+  // A verdict is not wiped by the metronome moving on: an anticipated voicing is captured a
+  // quarter of a beat before the bar line, and clearing here would leave it on screen for a
+  // blink. It says which chord it judged (renderAnalysis), so it can stay until the next one.
+  if (!keepCapture) clearFeedback($('feedback'));
+  showKeys(heldClasses(capture.snapshot()));
 }
 
 function analyse(notes) {
@@ -115,7 +148,7 @@ function analyse(notes) {
 
 function showAnalysis(analysis, notes) {
   currentClasses = roleClasses(analysis);
-  keyboard.highlight(currentClasses);
+  showKeys(currentClasses);
   lastVoicing = notes;
   suggestions = null;                 // the next suggestion starts from what was just played
   trackAttempt(analysis);
@@ -157,7 +190,7 @@ function playSuggestion() {
   }
   const candidate = list[suggestions.index % list.length];
   const sent = output?.playVoicing(candidate.notes) ?? false;
-  keyboard.highlight(withSuggestion(currentClasses, candidate.notes));
+  showKeys(withSuggestion(currentClasses, candidate.notes));
   renderSuggestion($('feedback'), candidate, chord, { sent, index: suggestions.index % list.length, total: list.length });
   suggestions.index += 1;
 }
@@ -191,7 +224,7 @@ async function askClaude() {
 
 function playAiSuggestion(suggestion) {
   output?.playVoicing(suggestion.notes);
-  keyboard.highlight(withSuggestion(currentClasses, suggestion.notes));
+  showKeys(withSuggestion(currentClasses, suggestion.notes));
 }
 
 function playAiByIndex(index) {
@@ -322,7 +355,7 @@ function onPlaybackBeat({ bar, beat, countIn }) {
   }
   renderStatus($('status'), `Playing the ${playback.which}: bar ${bar} · beat ${beat}`, 'ok');
   const sounding = playback.voicings.filter(v => v.bar < bar || (v.bar === bar && v.beat <= beat)).at(-1);
-  keyboard.highlight(sounding?.notes && settings.parts.lh ? heldClasses(sounding.notes) : {});
+  showKeys(sounding?.notes && settings.parts.lh ? heldClasses(sounding.notes) : {});
 }
 
 function stopArrangement() {
@@ -331,7 +364,7 @@ function stopArrangement() {
   metronome?.stop();
   metronome = null;
   output?.silence(Object.values(settings.channels));
-  keyboard.highlight({});
+  showKeys({});
   setPlaybackControls(false);
   showMidiStatus();
 }
@@ -390,9 +423,9 @@ function showSlot(index, { keepCapture = false } = {}) {
   renderGrid($('grid-view'), session, index);
 }
 
-function recordAndRender(index, notes) {
+function recordAndRender(index, notes, judged = null) {
   const entry = session.record(index, notes);
-  renderAnalysis($('feedback'), entry.analysis, session.slots[index].chord);
+  renderAnalysis($('feedback'), entry.analysis, session.slots[index].chord, judged);
   renderComparison($('feedback'), entry.comparison);
   showAnalysis(entry.analysis, notes);
   renderGrid($('grid-view'), session, shownIndex);
@@ -583,7 +616,12 @@ function onVoicing(notes, { startedAt }) {
   const timed = mode === 'progression' && Boolean(timedRunning());
   const position = timed ? metronome.positionOf(startedAt) : null;
   const target = snapshotTarget({ mode, symbol, session, started: $('prog-start').disabled, timed, position, current: session?.current ?? 0 });
-  const analysis = !target ? null : mode === 'drill' ? analyse(notes) : recordAndRender(target.slot, notes);
+  // In a progression the screen can be showing another chord than the one judged: the slot moves
+  // with the metronome, and a voicing pushed into the anticipation window answers the next chord.
+  const judged = target && mode === 'progression'
+    ? { symbol: target.symbol, anticipated: timed && isAnticipated(session, position, target.slot) }
+    : null;
+  const analysis = !target ? null : mode === 'drill' ? analyse(notes) : recordAndRender(target.slot, notes, judged);
   tape.event('snapshot', {
     startedAt: tape.at(startedAt ?? performance.now()),
     notes,
@@ -597,7 +635,7 @@ function onMidiNoteOn(note, velocity) {
   if (recorder) {
     recorder.noteOn(note, velocity, performance.now());
     heldWhileRecording.add(note);
-    keyboard.highlight(heldClasses([...heldWhileRecording]));
+    showKeys(heldClasses([...heldWhileRecording]));
     return;
   }
   capture.noteOn(note, velocity);
@@ -607,7 +645,7 @@ function onMidiNoteOff(note) {
   if (recorder) {
     recorder.noteOff(note, performance.now());
     heldWhileRecording.delete(note);
-    keyboard.highlight(heldClasses([...heldWhileRecording]));
+    showKeys(heldClasses([...heldWhileRecording]));
     return;
   }
   capture.noteOff(note);
@@ -641,12 +679,18 @@ function setMode(next) {
   else showReharmSource();
 }
 
+// The instrument when it is there, the browser synth when it is not: a visitor has to hear
+// something, and a real port must not lose to a virtual one that is always present.
+function preferredOutput() {
+  return outputs.find(port => !virtualMidi.access.outputs.has(port.id)) ?? outputs.find(port => port.id === SYNTH_ID) ?? outputs[0];
+}
+
 function selectOutput() {
   if (!output) return;
   output.channel = settings.channel;
-  const chosen = output.select(settings.outputId ?? outputs[0]?.id ?? '');
-  // The saved port is a real one (the Genos): on the virtual access, take the virtual output.
-  if (!chosen && virtualMidi) output.select(outputs[0]?.id ?? '');
+  const chosen = output.select(settings.outputId ?? preferredOutput()?.id ?? '');
+  // The saved port is a real one that is not plugged in: fall back to what is here.
+  if (!chosen) output.select(preferredOutput()?.id ?? '');
 }
 
 function applySettings(next) {
@@ -664,15 +708,75 @@ function applySettings(next) {
   if (!stillValid) advance();
 }
 
-let midiStatus = { text: 'Requesting MIDI access…', level: '' };
+let midiStatus = { text: 'Starting…', level: '' };
 function showMidiStatus() {
   renderStatus($('status'), midiStatus.text, midiStatus.level);
+}
+
+// ---- Devices: the on-screen keyboard, and the instrument when it arrives ------------------
+
+let hardwareAsked = false;
+let hadHardware = null;             // unknown until the first list of devices
+let typeToPlay = false;
+
+/** Letters play notes when there is no instrument; with one plugged in they go back to shortcuts. */
+function setTypeToPlay(on) {
+  typeToPlay = on;
+  $('type-to-play').checked = on;
+  if (!on) onscreen.releaseKeys();
+}
+
+function showDevices({ inputs, outputs: ports }) {
+  outputs = ports;
+  settingsUi.setOutputs(outputs, settings.outputId);
+  selectOutput();
+  hardwareInputs = inputs.filter(input => !virtualMidi.access.inputs.has(input.id));
+  $('connect-midi').hidden = !hardwareOffered || hardwareInputs.length > 0;
+  midiStatus = hardwareInputs.length
+    ? { text: `MIDI in: ${hardwareInputs.map(input => input.name).join(', ')}`, level: 'ok' }
+    : hardwareAsked
+      ? { text: 'No MIDI input found — play the keys above. Check the USB cable and the Yamaha USB-MIDI driver.', level: 'warn' }
+      : { text: 'Play the keyboard below: click the keys, or type to play.', level: '' };
+  showMidiStatus();
+  // Only when an instrument arrives or leaves, so a choice made by hand is not overruled at
+  // every device change. `hadHardware` starts unknown, so the first list always decides.
+  const hasHardware = hardwareInputs.length > 0;
+  if (hadHardware !== hasHardware) setTypeToPlay(!hasHardware);
+  hadHardware = hasHardware;
+}
+
+/** Asks the browser for the real ports and drops them in beside the virtual ones. */
+async function connectHardware() {
+  if (!hardwareOffered) return;
+  hardwareAsked = true;
+  $('connect-midi').disabled = true;
+  try {
+    midiPorts.add(await navigator.requestMIDIAccess());
+  } catch (error) {
+    midiStatus = { text: `${error.message} The keys above still play.`, level: 'warn' };
+    showMidiStatus();
+  } finally {
+    $('connect-midi').disabled = false;
+  }
 }
 
 document.addEventListener('keydown', event => {
   const typing = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(event.target.tagName);
   if (typing) return;
-  if (event.code === 'Space') {
+  // While the letters are a piano they are not shortcuts: a note beats Ask on the same key.
+  if (typeToPlay && !recorder && onscreen.keyDown(event.code)) {
+    event.preventDefault();
+    return;
+  }
+  if (event.code === 'Enter') {
+    onscreen.play();
+  } else if (event.code === 'Escape') {
+    onscreen.clear();
+  } else if (event.code === 'KeyZ') {
+    onscreen.octaveDown();
+  } else if (event.code === 'KeyX') {
+    onscreen.octaveUp();
+  } else if (event.code === 'Space') {
     event.preventDefault();
     onNext();
   } else if (event.code === 'KeyP' && !recorder) {
@@ -683,6 +787,13 @@ document.addEventListener('keydown', event => {
     playAiByIndex(event.code === 'Digit1' ? 0 : 1);
   }
 });
+document.addEventListener('keyup', event => onscreen.keyUp(event.code));
+$('play-chord').addEventListener('click', () => { onscreen.play(); $('play-chord').blur(); });
+$('clear-chord').addEventListener('click', () => { onscreen.clear(); $('clear-chord').blur(); });
+$('octave-down').addEventListener('click', () => { onscreen.octaveDown(); $('octave-down').blur(); });
+$('octave-up').addEventListener('click', () => { onscreen.octaveUp(); $('octave-up').blur(); });
+$('type-to-play').addEventListener('change', () => setTypeToPlay($('type-to-play').checked));
+$('connect-midi').addEventListener('click', () => { connectHardware(); $('connect-midi').blur(); });
 $('rec-start').addEventListener('click', startRecording);
 $('rec-stop').addEventListener('click', stopRecording);
 $('piece-save').addEventListener('click', savePieceAs);
@@ -722,24 +833,18 @@ refreshPieceList();
 const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL_SYMBOLS, roots: ROOTS, onChange: applySettings, onResetStats: resetStats });
 showStats();
 
+showOnScreen({ octave: onscreen.octave });
+
 connectMidi({
-  access: virtualMidi?.access,
+  access: midiPorts.access,
   onNoteOn: onMidiNoteOn,
   onNoteOff: onMidiNoteOff,
   onMessage: data => { if (keepMidi(data)) tape.midi(data); },
-  onDevices: devices => {
-    outputs = devices.outputs;
-    settingsUi.setOutputs(outputs, settings.outputId);
-    selectOutput();
-    const { inputs } = devices;
-    midiStatus = inputs.length
-      ? { text: `MIDI in: ${inputs.map(i => i.name).join(', ')}`, level: 'ok' }
-      : { text: 'No MIDI input found. Check the USB cable and the Yamaha USB-MIDI driver.', level: 'warn' };
-    showMidiStatus();
-  },
+  onDevices: showDevices,
 }).then(midi => {
   output = createOutput(midi, { channel: settings.channel });
   selectOutput();
+  if (hardwareAtOnce) connectHardware();
 }).catch(error => {
   midiStatus = { text: error.message, level: 'warn' };
   showMidiStatus();
@@ -757,6 +862,7 @@ window.voicingLab = {
   release: () => [...capture.held, ...heldWhileRecording].forEach(note => onMidiNoteOff(note)),
   suggest: playSuggestion,
   ask: askClaude,
+  onscreen,
   reharm: runReharm,
   playArrangement,
   stopArrangement,
