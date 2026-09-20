@@ -34,11 +34,18 @@ import {
 
 const $ = id => document.getElementById(id);
 
+// The published Worker, filled in when it is deployed (Phase 4): then Ask Claude works on the
+// published site without anyone pasting a URL. It is the only AI call the product makes — one
+// answer, under a cent, limited per IP in the Worker. Reharm never runs live there; see LIVE_REHARM.
+const PUBLISHED_PROXY_URL = '';
+const LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
+
 let settings = loadSettings();
 // Running locally, the proxy is the Worker from worker/ on its usual port, so fill it in once
-// instead of making every browser profile paste it. On the published site the field stays empty.
-if (!settings.proxyUrl && ['localhost', '127.0.0.1'].includes(location.hostname)) {
-  settings = { ...settings, proxyUrl: 'http://127.0.0.1:8787/' };
+// instead of making every browser profile paste it.
+const defaultProxy = LOCAL ? 'http://127.0.0.1:8787/' : PUBLISHED_PROXY_URL;
+if (!settings.proxyUrl && defaultProxy) {
+  settings = { ...settings, proxyUrl: defaultProxy };
   saveSettings(settings);
 }
 let mode = 'drill';                 // 'drill' | 'progression'
@@ -80,7 +87,11 @@ const midiPorts = mergeAccess(virtualMidi.access);
 // on a button anywhere else, so a visitor is not met by Chrome's permission prompt before the page
 // has said anything. ?midi=virtual is the harness's "no hardware at all".
 const hardwareOffered = params.get('midi') !== 'virtual' && typeof navigator !== 'undefined' && Boolean(navigator.requestMIDIAccess);
-const hardwareAtOnce = hardwareOffered && ['localhost', '127.0.0.1'].includes(location.hostname);
+const hardwareAtOnce = hardwareOffered && LOCAL;
+// A reharmonization costs around 25 cents, and the Worker limits per IP without telling the
+// actions apart, so one visitor could empty the key on a public page (PRODUCT.md, firm
+// requirement 1). Live only where the key is the person's own: a Worker they run themselves.
+const LIVE_REHARM = LOCAL || params.get('reharm') === 'live';
 let hardwareInputs = [];
 
 const keyboard = createKeyboard($('keyboard'), { onKey: midi => onscreen.toggle(midi) });
@@ -275,8 +286,33 @@ function showReharmSource() {
     : `${target.title}: ${target.bars.length} bars, no melody recorded. Every chord fits an empty bar, so record a melody in the Progression tab for a result worth playing.`;
 }
 
+// The demo's reharmonization: an answer Claude gave once, saved in the repo, served with the
+// model and the prompt version it came from so nobody has to take the screenshot on trust.
+async function showSavedReharm(target) {
+  $('reharm-run').disabled = true;
+  renderAiStatus($('reharm-saved'), 'Loading the saved answer…');
+  try {
+    const saved = await savedReharm();
+    reharmResult = saved.result;
+    renderReharm($('reharm-view'), reharmResult, { onUse: useGrid });
+    $('play-reharm').disabled = Boolean(playback);
+    const sameGrid = target && saved.result.originalGrid === formatGrid(target.bars);
+    renderAiStatus($('reharm-saved'), `Saved answer: ${saved.title}, ${saved.result.model}, prompt ${saved.result.promptVersion}, ${saved.savedAt}.`
+      + (sameGrid ? '' : ' It is the demo piece, not the grid on screen.')
+      + ' Reharm runs live when you run Voicing Lab yourself, with your own API key.', 'hint');
+  } catch (error) {
+    reharmResult = null;
+    $('play-reharm').disabled = true;
+    renderAiStatus($('reharm-saved'), 'Reharm runs live only when you run Voicing Lab yourself, with your own API key — see the README. No saved answer is published here.', 'warn');
+    console.error(error);
+  } finally {
+    $('reharm-run').disabled = false;
+  }
+}
+
 async function runReharm() {
   const target = reharmPiece();
+  if (!LIVE_REHARM) return showSavedReharm(target);
   if (!target) return;
   if (!settings.proxyUrl) {
     renderError($('reharm-view'), 'Set the AI proxy URL in Settings first (the Worker from worker/).');
@@ -284,6 +320,7 @@ async function runReharm() {
   }
   $('reharm-run').disabled = true;
   $('reharm-view').replaceChildren();
+  $('reharm-saved').replaceChildren();
   const started = performance.now();
   let timer = null;
   const onStep = (step, info) => {
@@ -319,6 +356,41 @@ function useGrid(which) {
   $('prog-library').value = 'custom';
   $('prog-grid').value = which === 'reharm' ? reharmResult.grid : reharmResult.originalGrid;
   setMode('progression');
+}
+
+// ---- The demo piece and the saved answer --------------------------------------------------
+
+const DEMO_PIECE_URL = './demo/piece.json';
+const DEMO_REHARM_URL = './demo/reharm.json';
+let savedReharmFile = null;
+
+async function savedReharm() {
+  if (!savedReharmFile) {
+    const response = await fetch(DEMO_REHARM_URL);
+    if (!response.ok) throw new Error(`${DEMO_REHARM_URL}: ${response.status}`);
+    savedReharmFile = await response.json();
+  }
+  return savedReharmFile;
+}
+
+/**
+ * A browser that has never been here starts on the demo piece, so the grid, the melody and the
+ * reharmonization are one click away. It is saved like any other piece, which means it can be
+ * changed or deleted; Edi, who has pieces of his own, never sees it.
+ */
+async function loadDemoPiece() {
+  if (listPieces().length) return;
+  try {
+    const response = await fetch(DEMO_PIECE_URL);
+    if (!response.ok) return;                       // nothing published yet: the app opens as before
+    const demo = fromJSON(await response.text());
+    savePiece(demo);
+    refreshPieceList();
+    $('piece-list').value = demo.title;
+    loadIntoControls(demo);
+  } catch (error) {
+    console.warn('No demo piece loaded:', error.message);
+  }
 }
 
 // ---- Play an arrangement on the Genos ---------------------------------------------------------
@@ -589,6 +661,27 @@ function exportPiece() {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+/**
+ * The reharmonization on screen, as the file the demo serves (demo/reharm.json): run it once
+ * locally against your own Worker, then voicingLab.saveReharm() writes what the page needs.
+ * The candidate menu and the raw calls stay out — they are the input and the transcript, not
+ * the answer, and they make the file ten times bigger.
+ */
+function saveReharm() {
+  if (!reharmResult) return false;
+  const { candidates, calls, ...result } = reharmResult;
+  const file = { title: reharmPiece()?.title ?? 'Demo piece', savedAt: new Date().toISOString().slice(0, 10), result };
+  download('reharm.json', JSON.stringify(file, null, 2));
+  return true;
+}
+
+function download(name, text) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  const link = Object.assign(document.createElement('a'), { href: url, download: name });
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 // The last hour of playing, as a JSON file the harness replays (harness/replay.js).
 function saveSession() {
   const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
@@ -830,6 +923,7 @@ showParts();
 showPlanReview();
 fillGridFromLibrary();
 refreshPieceList();
+loadDemoPiece();
 const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL_SYMBOLS, roots: ROOTS, onChange: applySettings, onResetStats: resetStats });
 showStats();
 
@@ -869,4 +963,5 @@ window.voicingLab = {
   midi: virtualMidi,
   tape,
   saveSession,
+  saveReharm,
 };
