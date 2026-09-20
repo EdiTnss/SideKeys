@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createVirtualMidi } from '../src/midi/virtual.js';
+import { createVirtualMidi, mergeAccess } from '../src/midi/virtual.js';
 import { connectMidi } from '../src/midi/input.js';
 import { createOutput } from '../src/midi/output.js';
 
@@ -60,4 +60,42 @@ test('what the app sends to a virtual output is kept, with its time; clear() dro
 
 test('without an access and without Web MIDI, connectMidi still says why', async () => {
   await assert.rejects(() => connectMidi({ onNoteOn() {}, onNoteOff() {} }), /Web MIDI is not available/);
+});
+
+test('an output can be a ready-made port: the browser synth goes in as itself', () => {
+  const sent = [];
+  const synth = { id: 'browser-synth', name: 'Browser synth', type: 'output', send: (data, time) => sent.push([[...data], time]) };
+  const midi = createVirtualMidi({ inputs: ['On-screen keyboard'], outputs: [synth, 'Log'] });
+  assert.deepEqual([...midi.access.outputs.keys()], ['browser-synth', 'virtual-output-2']);
+  const output = createOutput(midi.access, { channel: 1, setTimer: () => {} });
+  output.select('browser-synth');
+  output.playVoicing([60, 64], { velocity: 70 });
+  assert.deepEqual(sent.map(([data]) => data), [[0x90, 60, 70], [0x90, 64, 70]]);
+  assert.equal(midi.sent.length, 0, 'a port of its own keeps its own messages, not the tape of the virtual ones');
+});
+
+test('mergeAccess shows the virtual ports next to the real ones, and hardware that arrives later reaches the app', async () => {
+  const virtual = createVirtualMidi({ inputs: ['On-screen keyboard'], outputs: ['Browser synth'] });
+  const merged = mergeAccess(virtual.access);
+  const seen = [];
+  const notes = [];
+  await connectMidi({
+    access: merged.access,
+    onNoteOn: note => notes.push(note),
+    onNoteOff: () => {},
+    onDevices: devices => seen.push([devices.inputs.map(i => i.name), devices.outputs.map(o => o.name)]),
+  });
+  assert.deepEqual(seen.at(-1), [['On-screen keyboard'], ['Browser synth']]);
+
+  // The Genos is plugged in and the user allows Web MIDI: one more access, already listening.
+  const genos = createVirtualMidi({ inputs: ['Genos'], outputs: ['Genos'], idPrefix: 'genos' });
+  merged.add(genos.access);
+  assert.deepEqual(seen.at(-1), [['On-screen keyboard', 'Genos'], ['Browser synth', 'Genos']]);
+  genos.send([0x90, 55, 90]);
+  virtual.send([0x90, 60, 90]);
+  assert.deepEqual(notes, [55, 60], 'both keyboards play the same app');
+
+  // A device coming or going still reaches the app through the merged access.
+  genos.access.onstatechange({ port: { name: 'Genos' } });
+  assert.equal(seen.length, 3);
 });

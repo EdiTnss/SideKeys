@@ -11,13 +11,16 @@
 export function createVirtualMidi({
   inputs = ['Virtual input'],
   outputs = ['Virtual output'],
+  idPrefix = 'virtual',            // two virtual devices in one page need ids that do not collide
   now = () => globalThis.performance?.now() ?? Date.now(),
 } = {}) {
   const sent = [];
-  const port = (type, name, i) => ({ id: `virtual-${type}-${i + 1}`, name, manufacturer: 'Voicing Lab', type, state: 'connected', connection: 'open' });
+  const port = (type, name, i) => ({ id: `${idPrefix}-${type}-${i + 1}`, name, manufacturer: 'Voicing Lab', type, state: 'connected', connection: 'open' });
 
   const inputPorts = inputs.map((name, i) => ({ ...port('input', name, i), onmidimessage: null }));
   const outputPorts = outputs.map((name, i) => {
+    // A ready-made port goes in as itself: that is how the Web Audio synth becomes an output.
+    if (typeof name !== 'string') return name;
     const output = port('output', name, i);
     output.send = (data, time) => { sent.push({ port: output.id, data: [...data], time: time ?? now() }); };
     // Like the real clear(): what is still queued for later never leaves.
@@ -45,4 +48,40 @@ export function createVirtualMidi({
   }
 
   return { access, send, sent, clearSent: () => { sent.length = 0; } };
+}
+
+/**
+ * mergeAccess(first, ...rest) → { access, add(other) }: several MIDI accesses seen as one, so the
+ * virtual ports (the on-screen keyboard, the browser synth) sit next to the real ones instead of
+ * replacing them. The app asks for hardware later — on a button, on the published site — and
+ * `add` drops it into the same access, which fires onstatechange: connectMidi listens to the new
+ * inputs and lists the new outputs on its own, exactly as when a cable is plugged in.
+ */
+export function mergeAccess(...accesses) {
+  const parts = [...accesses];
+  const access = { inputs: new Map(), outputs: new Map(), onstatechange: null, sysexEnabled: false };
+
+  function rebuild() {
+    access.inputs = new Map(parts.flatMap(part => [...part.inputs]));
+    access.outputs = new Map(parts.flatMap(part => [...part.outputs]));
+    access.sysexEnabled = parts.some(part => part.sysexEnabled);
+  }
+
+  function watch(part) {
+    part.onstatechange = event => {
+      rebuild();
+      access.onstatechange?.(event);
+    };
+  }
+
+  function add(part) {
+    parts.push(part);
+    watch(part);
+    rebuild();
+    access.onstatechange?.({ port: null });
+  }
+
+  parts.forEach(watch);
+  rebuild();
+  return { access, add };
 }
