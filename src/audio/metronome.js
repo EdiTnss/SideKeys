@@ -5,6 +5,7 @@
 // scheduler up; the UI gets an onBeat callback close to the moment the click is heard.
 
 import { beatDuration, positionAt, timeOf } from '../theory/timing.js';
+import { audioContext, clockStamp, toContextTime, toPerformanceTime } from './context.js';
 
 const LOOKAHEAD_S = 0.12;   // schedule clicks this far ahead
 const TICK_MS = 25;         // scheduler wake-up interval
@@ -19,8 +20,7 @@ export function createMetronome({ tempo = 120, timeSignature = [4, 4], countInBa
   const timeOfBeat = n => startTime + n * beatDuration(tempo);
 
   function start() {
-    context ??= new AudioContext();
-    if (context.state === 'suspended') context.resume();
+    context = audioContext();          // shared with the synth, so the click and the notes keep one clock
     startTime = context.currentTime + 0.1;
     nextBeat = 0;
     running = true;
@@ -66,18 +66,10 @@ export function createMetronome({ tempo = 120, timeSignature = [4, 4], countInBa
     oscillator.stop(time + 0.05);
   }
 
-  /** performance.now() milliseconds → seconds on this context's clock, as heard at the output. */
-  function toContextTime(performanceMs) {
-    const stamp = context.getOutputTimestamp?.();
-    if (stamp && Number.isFinite(stamp.contextTime)) {
-      return stamp.contextTime + (performanceMs - stamp.performanceTime) / 1000;
-    }
-    return context.currentTime - (performance.now() - performanceMs) / 1000;
-  }
-
   /** Where a performance.now() timestamp falls on the grid: { bar, beat }. */
   function positionOf(performanceMs) {
-    return positionAt(toContextTime(performanceMs), { tempo, timeSignature, startTime, countInBars });
+    const seconds = toContextTime(performanceMs, clockStamp(context));
+    return positionAt(seconds, { tempo, timeSignature, startTime, countInBars });
   }
 
   /**
@@ -85,13 +77,8 @@ export function createMetronome({ tempo = 120, timeSignature = [4, 4], countInBa
    * scheduling Web MIDI messages on the metronome's grid. Call it after start().
    */
   function performanceTimeOf(bar, beat) {
-    const contextTime = timeOf(bar, beat, { tempo, timeSignature, startTime, countInBars });
-    const stamp = context.getOutputTimestamp?.();
-    // A context that has only just started can report a zero stamp; fall back to the current time then.
-    if (stamp && Number.isFinite(stamp.contextTime) && stamp.performanceTime > 0) {
-      return stamp.performanceTime + (contextTime - stamp.contextTime) * 1000;
-    }
-    return performance.now() + (contextTime - context.currentTime) * 1000;
+    const seconds = timeOf(bar, beat, { tempo, timeSignature, startTime, countInBars });
+    return toPerformanceTime(seconds, clockStamp(context));
   }
 
   return {
