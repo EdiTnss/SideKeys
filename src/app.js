@@ -364,6 +364,19 @@ const DEMO_PIECE_URL = './demo/piece.json';
 const DEMO_REHARM_URL = './demo/reharm.json';
 let savedReharmFile = null;
 
+/**
+ * Reharm is out of the product (PRODUCT.md) and stays as technical evidence, so the tab is shown
+ * only where it can do something: a live run of your own, or a saved answer to serve. Publishing
+ * the answer later is a file, not a change of code — this asks for it on every load.
+ */
+function showReharmTab() {
+  $('tab-reharm').hidden = !LIVE_REHARM;
+  if (LIVE_REHARM) return;
+  fetch(DEMO_REHARM_URL, { method: 'HEAD' })
+    .then(response => { $('tab-reharm').hidden = !response.ok; })
+    .catch(() => {});
+}
+
 async function savedReharm() {
   if (!savedReharmFile) {
     const response = await fetch(DEMO_REHARM_URL);
@@ -928,6 +941,7 @@ const settingsUi = renderSettings($('settings-body'), settings, { symbols: DRILL
 showStats();
 
 showOnScreen({ octave: onscreen.octave });
+showReharmTab();
 
 connectMidi({
   access: midiPorts.access,

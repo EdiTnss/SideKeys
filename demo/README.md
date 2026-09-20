@@ -24,6 +24,8 @@ writes this file from the reharmonization on screen, minus the candidate menu an
 The page shows the model, the prompt version and the date beside it, so nobody has to take it on
 trust.
 
+Fără fișierul acesta, tab-ul Reharm nu apare pe site-ul publicat; aplicația îl cere la fiecare încărcare, deci e destul să apară fișierul.
+
 Why saved and not live: an `execute` costs around 25 cents and the Worker limits per IP without
 telling the actions apart, so one visitor could empty the key. A live call happens only where the
 key is the person's own — `localhost`, or `?reharm=live`. This is a firm requirement in
