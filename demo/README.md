@@ -1,7 +1,20 @@
 # demo/
 
-The two files the published demo serves. Both are data: no code reads anything from here that
-is not listed below, and a missing file is not an error — the app opens as it always did.
+What the published demo serves: a manifest that is always here, and the two files it names when
+they exist. All of it is data — no code reads anything from here that is not listed below — and a
+file that is not published yet is not an error: the app opens as it always did.
+
+## `manifest.json`
+
+```json
+{ "piece": null, "reharm": null }
+```
+
+Always published, and the only file the app asks for unprompted. It names what else is here, or
+`null`. Probing for the other two directly meant a 404 in every visitor's console for as long as
+they were not published; asking the manifest first keeps it clean. Add a file, name it here, and
+the app picks it up on the next load — still a file change, not a change of code. `test/demo.test.js`
+checks that a name here is a file that is really committed.
 
 ## `piece.json`
 
@@ -24,7 +37,7 @@ writes this file from the reharmonization on screen, minus the candidate menu an
 The page shows the model, the prompt version and the date beside it, so nobody has to take it on
 trust.
 
-Fără fișierul acesta, tab-ul Reharm nu apare pe site-ul publicat; aplicația îl cere la fiecare încărcare, deci e destul să apară fișierul.
+Fără el — adică atâta timp cât `manifest.json` are `"reharm": null` — tab-ul Reharm nu apare pe site-ul publicat.
 
 Why saved and not live: an `execute` costs around 25 cents and the Worker limits per IP without
 telling the actions apart, so one visitor could empty the key. A live call happens only where the

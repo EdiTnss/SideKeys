@@ -361,27 +361,45 @@ function useGrid(which) {
 
 // ---- The demo piece and the saved answer --------------------------------------------------
 
-const DEMO_PIECE_URL = './demo/piece.json';
-const DEMO_REHARM_URL = './demo/reharm.json';
+// demo/manifest.json is always published and names what else is there, or null. Asking it first
+// is what keeps a visitor's console clean: probing for the files themselves meant a 404 on every
+// load for as long as they are not published. Adding them later is still a file change, not a
+// change of code — see demo/README.md.
+const DEMO_DIR = './demo/';
+let manifestRequest = null;
 let savedReharmFile = null;
+
+function demoManifest() {
+  manifestRequest ??= fetch(`${DEMO_DIR}manifest.json`)
+    .then(response => (response.ok ? response.json() : {}))
+    .catch(() => ({}));
+  return manifestRequest;
+}
+
+/** The response for a demo file the manifest says exists, or null. */
+async function demoFile(name) {
+  const manifest = await demoManifest();
+  const file = typeof manifest?.[name] === 'string' ? manifest[name] : null;
+  if (!file) return null;
+  const response = await fetch(DEMO_DIR + file);
+  return response.ok ? response : null;
+}
 
 /**
  * Reharm is out of the product (PRODUCT.md) and stays as technical evidence, so the tab is shown
- * only where it can do something: a live run of your own, or a saved answer to serve. Publishing
- * the answer later is a file, not a change of code — this asks for it on every load.
+ * only where it can do something: a live run of your own, or a saved answer to serve.
  */
-function showReharmTab() {
+async function showReharmTab() {
   $('tab-reharm').hidden = !LIVE_REHARM;
   if (LIVE_REHARM) return;
-  fetch(DEMO_REHARM_URL, { method: 'HEAD' })
-    .then(response => { $('tab-reharm').hidden = !response.ok; })
-    .catch(() => {});
+  const manifest = await demoManifest();
+  $('tab-reharm').hidden = typeof manifest?.reharm !== 'string';
 }
 
 async function savedReharm() {
   if (!savedReharmFile) {
-    const response = await fetch(DEMO_REHARM_URL);
-    if (!response.ok) throw new Error(`${DEMO_REHARM_URL}: ${response.status}`);
+    const response = await demoFile('reharm');
+    if (!response) throw new Error('no saved reharmonization is published here');
     savedReharmFile = await response.json();
   }
   return savedReharmFile;
@@ -395,8 +413,8 @@ async function savedReharm() {
 async function loadDemoPiece() {
   if (listPieces().length) return;
   try {
-    const response = await fetch(DEMO_PIECE_URL);
-    if (!response.ok) return;                       // nothing published yet: the app opens as before
+    const response = await demoFile('piece');
+    if (!response) return;                          // nothing published yet: the app opens as before
     const demo = fromJSON(await response.text());
     savePiece(demo);
     refreshPieceList();
