@@ -111,6 +111,7 @@ docs/PRODUCT.md            scopul produsului: poziționare, fazele P0–P4, regu
 docs/spec-*.md             specificațiile pe module: capture, analyzer, reharm
 docs/PHASES.md             fazele 0–5 cu DoD și vechiul scope guard
 docs/JOURNAL.md            jurnalul sesiunilor
+docs/design/BRIEF.md       briefingul de brand pentru claude.ai/design (engleză)
 ```
 
 Regula de dependență: `theory/` nu importă nimic din `midi/`, `ui/` sau `ai/`. `midi/` nu știe de UI. `ai/` importă din `theory/` (pentru analiză și candidați) dar nu invers. UI-ul e singurul care le leagă. Worker-ul nu conține logică muzicală și nu conține prompturi — doar adaugă cheia și limitează cererile; prompturile stau în `ai/prompts.js`, vizibile în repo.
@@ -127,7 +128,8 @@ La 2026-09-20:
 - **Piesa demo nu blochează nimic** (decizie Edi, 2026-09-20). DoD-ul P0 cere doar „demo-ul public merge fără clapă"; „apasă reharmonize pe piesa demo" e din `PHASES.md`, adică din faza veche, iar unde se contrazic câștigă `PRODUCT.md`. Deci: **fără `demo/reharm.json`, tab-ul Reharm nu apare pe site-ul publicat**, iar demo-ul arată exact produsul — analiza, drill-ul, progresiile, clapa de ecran. Dovada arhitecturii hibride stă în README (diagrama + cifrele din `eval/reports/`). Dacă Edi vrea totuși exemplul salvat, cel mai ieftin drum e o melodie originală scurtă peste o progresie din bibliotecă, apoi `sideKeys.saveReharm()`; e o schimbare de fișier, nu de cod.
 - **Publicarea e făcută** (2026-09-20): repo public, Pages viu pe https://editnss.github.io/SideKeys/, demo verificat pe link-ul publicat (4 clicuri → acord → analiză, synth-ul sună, fără tab Reharm și fără „Ask Claude", fiindcă nu au ce face acolo), CI verde pe commit-ul publicat. **Rămas din P0**: GIF și video pentru README (de la Edi) — apoi **prototipul de microfon** cu `basic-pitch-ts`, în afara lui `src/` (prag: peste 90% din 20 de voicings identificate corect, cu octava exactă). De la Edi, separat: o piesă proprie cu „plan & review" ascultată pe Genos (ultima jumătate a DoD-ului Fazei 3b).
 - **Worker-ul rămâne local** (`start.cmd`) și **nu se publică** (decizie Edi, 2026-09-20): site-ul publicat nu face niciun apel AI, deci nu poate costa nimic. `PUBLISHED_PROXY_URL` rămâne gol în `app.js`, iar butonul „Ask Claude" apare doar când există un proxy în Settings — cine clonează repo-ul și pornește Worker-ul cu cheia lui îl primește înapoi. Dacă se publică vreodată: limita din `wrangler.jsonc` e 20 de cereri pe minut pe IP, adică ~12 $/oră expunere dacă e scriptată — se scade întâi (6/minut ajunge pentru un om), plus un plafon lunar în consola Anthropic.
-- Necommise: `assets/` (logo, favicon, imagine OG, `BRAND.md`, ale lui Edi, pentru Faza 4) și `Voicing Lab ca produs.pdf` (numele de dinainte de redenumire, cum e pe disc și în `.gitignore`), care nu intră în repo (analiza de piață stă în afara lui, vezi `PRODUCT.md`).
+- **Brandul se face de la zero** cu claude.ai/design; briefingul e în [docs/design/BRIEF.md](docs/design/BRIEF.md). Aplicația n-are azi nici logo, nici favicon, nici imagine OG, iar fontul e `system-ui`. Kitul vechi din `assets/` era pentru numele „Voicing Lab" și se aruncă. Constrângerea reală pentru designer: culorile din interfață sunt **semantice** (chord tone, tensiune, alterată, avoid, wrong, held, armed), deci accentul de brand nu are voie să se confunde cu ele.
+- Necommis: `Voicing Lab ca produs.pdf` (numele de dinainte de redenumire, cum e pe disc și în `.gitignore`), care nu intră în repo (analiza de piață stă în afara lui, vezi `PRODUCT.md`).
 
 ## Următorul pas
 
