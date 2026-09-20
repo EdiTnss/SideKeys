@@ -138,13 +138,17 @@ function matchesRootless(pcs, labels, chord, form) {
 // Adjacent intervals all perfect or augmented fourths; one major third tolerated from four notes up.
 function isQuartal(sorted) {
   if (sorted.length < 3) return false;
-  let thirds = 0;
-  for (let i = 1; i < sorted.length; i++) {
-    const interval = sorted[i] - sorted[i - 1];
-    if (interval === 4) thirds++;
-    else if (interval !== 5 && interval !== 6) return false;
-  }
-  return thirds === 0 || (thirds === 1 && sorted.length >= 4);
+  const intervals = sorted.slice(1).map((midi, i) => midi - sorted[i]);
+  if (intervals.some(interval => interval !== 4 && interval !== 5 && interval !== 6)) return false;
+  // Two augmented fourths in a row span an octave exactly, so the outer note is doubled: that is
+  // a symmetric shape, not a quartal voicing.
+  if (intervals.filter(interval => interval === 6).length > 1) return false;
+  const thirds = intervals.filter(interval => interval === 4).length;
+  if (thirds === 0) return true;
+  // The one major third is the "So What" cap, so it sits on top; lower down, the voicing reads
+  // from its third and the drop rules name it better. Three notes are too few for the cap: a
+  // fourth under a third is a triad in second inversion (D–G–B).
+  return thirds === 1 && intervals[intervals.length - 1] === 4 && sorted.length >= 4;
 }
 
 // Raise the lowest note (or the two lowest) by an octave: if the result is close position,

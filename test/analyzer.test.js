@@ -88,6 +88,18 @@ test('quartal: stacked fourths, one major third tolerated from four notes up', (
   assert.notEqual(type('Dm7', 'D3 F3 A3 C4'), 'quartal');
 });
 
+// The third is the So What cap, so it belongs on top; two augmented fourths in a row span an
+// octave exactly, which doubles the outer note and is no longer a quartal voicing (Edi, 2026-09-20).
+test('quartal: the major third only on top, and at most one augmented fourth', () => {
+  assert.equal(type('D7sus4', 'E3 A3 D4 F#4'), 'quartal');      // 5,5,4 — the third caps it
+  assert.equal(type('C7#11', 'C3 F#3 B3 E4'), 'quartal');       // 6,5,5 — one augmented fourth
+  assert.equal(type('Em7', 'D3 G3 B3 E4'), 'drop-2');           // 5,4,5 — the third in the middle
+  assert.equal(type('Am7', 'C3 E3 A3 D4'), 'drop-2');           // 4,5,5 — the third at the bottom
+  assert.notEqual(type('C7', 'C3 E3 Bb3 E4'), 'quartal');       // 4,6,6
+  assert.notEqual(type('G7', 'F3 B3 F4 B4'), 'quartal');        // 6,6,6 — stacked tritones
+  assert.notEqual(type('Dm7', 'D3 G3 B3'), 'quartal');          // 5,4 — still a triad, three notes
+});
+
 test('upper structure triad: a foreign triad on top of the 3 and 7 of a dominant', () => {
   const a = analyze('G7', 'B3 F4 A4 C#5 E5');
   assert.equal(a.voicing.type, 'upper-structure');
