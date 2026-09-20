@@ -1,4 +1,4 @@
-# Voicing Lab — spec-analyzer.md
+# SideKeys — spec-analyzer.md
 
 Parserul de chord symbol (`theory/chords.js`), tabelul calităților, clasificarea voicing-ului (`theory/analyzer.js`) și voice leading-ul (`theory/voiceLeading.js`). Mutat neschimbat din `CLAUDE.md` pe 2026-09-19; se citește când se lucrează la aceste module sau la `theory/voicings.js`.
 

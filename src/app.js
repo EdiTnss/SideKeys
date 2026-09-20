@@ -35,7 +35,7 @@ import {
 const $ = id => document.getElementById(id);
 
 // Empty on purpose (Edi's decision, 2026-09-20): no Worker is deployed, so the published site
-// makes no AI calls at all and cannot cost anything. Anyone who runs Voicing Lab with a Worker
+// makes no AI calls at all and cannot cost anything. Anyone who runs SideKeys with a Worker
 // of their own — see the README — sets the URL in Settings and Ask Claude appears. Filling this
 // in is what would turn it on for visitors; reharm stays saved-only either way (LIVE_REHARM).
 const PUBLISHED_PROXY_URL = '';
@@ -79,7 +79,7 @@ const tape = createTape({ settings: { debounceMs: settings.debounceMs, nextNote:
 
 // The on-screen keyboard and the browser synth are always here, as MIDI ports beside the real
 // ones: someone with no keyboard plays the app, and the Genos joins them when it arrives.
-// "Virtual output" stays a recording port, which is what the harness and voicingLab.midi.sent read.
+// "Virtual output" stays a recording port, which is what the harness and sideKeys.midi.sent read.
 const params = new URLSearchParams(location.search);
 const synth = createSynth();
 const virtualMidi = createVirtualMidi({ inputs: ['On-screen keyboard'], outputs: [synth, 'Virtual output'] });
@@ -300,11 +300,11 @@ async function showSavedReharm(target) {
     const sameGrid = target && saved.result.originalGrid === formatGrid(target.bars);
     renderAiStatus($('reharm-saved'), `Saved answer: ${saved.title}, ${saved.result.model}, prompt ${saved.result.promptVersion}, ${saved.savedAt}.`
       + (sameGrid ? '' : ' It is the demo piece, not the grid on screen.')
-      + ' Reharm runs live when you run Voicing Lab yourself, with your own API key.', 'hint');
+      + ' Reharm runs live when you run SideKeys yourself, with your own API key.', 'hint');
   } catch (error) {
     reharmResult = null;
     $('play-reharm').disabled = true;
-    renderAiStatus($('reharm-saved'), 'Reharm runs live only when you run Voicing Lab yourself, with your own API key — see the README. No saved answer is published here.', 'warn');
+    renderAiStatus($('reharm-saved'), 'Reharm runs live only when you run SideKeys yourself, with your own API key — see the README. No saved answer is published here.', 'warn');
     console.error(error);
   } finally {
     $('reharm-run').disabled = false;
@@ -677,7 +677,7 @@ function exportPiece() {
 
 /**
  * The reharmonization on screen, as the file the demo serves (demo/reharm.json): run it once
- * locally against your own Worker, then voicingLab.saveReharm() writes what the page needs.
+ * locally against your own Worker, then sideKeys.saveReharm() writes what the page needs.
  * The candidate menu and the raw calls stay out — they are the input and the transcript, not
  * the answer, and they make the file ten times bigger.
  */
@@ -701,7 +701,7 @@ function saveSession() {
   const stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
   const blob = new Blob([formatSession(tape.toJSON())], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
-  const link = Object.assign(document.createElement('a'), { href: url, download: `voicing-lab-session-${stamp}.json` });
+  const link = Object.assign(document.createElement('a'), { href: url, download: `sidekeys-session-${stamp}.json` });
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
@@ -974,10 +974,10 @@ connectMidi({
 setMode('drill');
 
 // Debug hook, for the DevTools console when no keyboard is connected:
-// voicingLab.play(60, 64, 67, 71) then voicingLab.release(). These skip the MIDI input, so they
-// never reach the tape; with ?midi=virtual, voicingLab.midi.send([0x90, 60, 80]) goes the whole
-// way, and voicingLab.midi.sent holds what the app sent out.
-window.voicingLab = {
+// sideKeys.play(60, 64, 67, 71) then sideKeys.release(). These skip the MIDI input, so they
+// never reach the tape; with ?midi=virtual, sideKeys.midi.send([0x90, 60, 80]) goes the whole
+// way, and sideKeys.midi.sent holds what the app sent out.
+window.sideKeys = {
   capture,
   play: (...notes) => notes.forEach(note => onMidiNoteOn(note, 80)),
   release: () => [...capture.held, ...heldWhileRecording].forEach(note => onMidiNoteOff(note)),

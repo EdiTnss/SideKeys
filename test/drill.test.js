@@ -6,7 +6,7 @@ import { parseChord } from '../src/theory/chords.js';
 // A stand-in for localStorage: same getItem / setItem, no browser.
 const fakeStorage = () => {
   const map = new Map();
-  return { getItem: key => map.get(key) ?? null, setItem: (key, value) => map.set(key, String(value)) };
+  return { getItem: key => map.get(key) ?? null, setItem: (key, value) => map.set(key, String(value)), removeItem: key => map.delete(key) };
 };
 
 test('every drill symbol parses with every root', () => {
@@ -19,7 +19,7 @@ test('diminished chords use their symbols in the drill (ø7, bare °); old saved
   assert.ok(DRILL_SYMBOLS.includes('ø7') && DRILL_SYMBOLS.includes('°'));
   for (const old of ['m7b5', 'dim7', 'ø', '°7']) assert.ok(!DRILL_SYMBOLS.includes(old), old);
   const storage = fakeStorage();
-  storage.setItem('voicing-lab.settings', JSON.stringify({ qualities: ['m7b5', 'dim7', 'ø', '°7', 'm7'] }));
+  storage.setItem('sidekeys.settings', JSON.stringify({ qualities: ['m7b5', 'dim7', 'ø', '°7', 'm7'] }));
   assert.deepEqual(loadSettings(storage).qualities, ['ø7', '°', 'm7']);
 });
 
@@ -41,14 +41,14 @@ test('nextChord never repeats the previous chord, unless it is the only one', ()
 
 test('settings survive a save/load round trip and fall back to defaults on garbage', () => {
   const storage = fakeStorage();
-  const settings = { ...DEFAULT_SETTINGS, qualities: ['7alt'], roots: ['Db'], debounceMs: 450, nextNote: 36, outputId: 'out-1', channel: 3, proxyUrl: 'https://voicing-lab-proxy.example.workers.dev/' };
+  const settings = { ...DEFAULT_SETTINGS, qualities: ['7alt'], roots: ['Db'], debounceMs: 450, nextNote: 36, outputId: 'out-1', channel: 3, proxyUrl: 'https://sidekeys-proxy.example.workers.dev/' };
   assert.equal(saveSettings(settings, storage), true);
   assert.deepEqual(loadSettings(storage), settings);
 
-  storage.setItem('voicing-lab.settings', '{not json');
+  storage.setItem('sidekeys.settings', '{not json');
   assert.deepEqual(loadSettings(storage), DEFAULT_SETTINGS);
 
-  storage.setItem('voicing-lab.settings', JSON.stringify({ qualities: ['nope', 'm7'], roots: ['H'], debounceMs: 'x', channel: 99, outputId: 7, proxyUrl: 'javascript:alert(1)' }));
+  storage.setItem('sidekeys.settings', JSON.stringify({ qualities: ['nope', 'm7'], roots: ['H'], debounceMs: 'x', channel: 99, outputId: 7, proxyUrl: 'javascript:alert(1)' }));
   const cleaned = loadSettings(storage);
   assert.deepEqual(cleaned.qualities, ['m7']);
   assert.deepEqual(cleaned.roots, DEFAULT_SETTINGS.roots);   // an empty list would block the drill
@@ -57,7 +57,7 @@ test('settings survive a save/load round trip and fall back to defaults on garba
   assert.equal(cleaned.outputId, null);
   assert.equal(cleaned.proxyUrl, '');                          // only http(s) URLs are kept
   assert.equal(DEFAULT_SETTINGS.proxyUrl, '');
-  storage.setItem('voicing-lab.settings', JSON.stringify({ proxyUrl: '  http://localhost:8787/  ' }));
+  storage.setItem('sidekeys.settings', JSON.stringify({ proxyUrl: '  http://localhost:8787/  ' }));
   assert.equal(loadSettings(storage).proxyUrl, 'http://localhost:8787/');
 
   assert.deepEqual(loadSettings(undefined), DEFAULT_SETTINGS);     // no storage at all
@@ -73,7 +73,7 @@ test('arrangement channels and parts: defaults, a round trip, and bad values fal
   assert.deepEqual(loadSettings(storage).channels, custom.channels);
   assert.deepEqual(loadSettings(storage).parts, custom.parts);
 
-  storage.setItem('voicing-lab.settings', JSON.stringify({ channels: { melody: 0, lh: 17, bass: 'x' }, parts: { lh: 'no' } }));
+  storage.setItem('sidekeys.settings', JSON.stringify({ channels: { melody: 0, lh: 17, bass: 'x' }, parts: { lh: 'no' } }));
   const cleaned = loadSettings(storage);
   assert.deepEqual(cleaned.channels, { melody: 1, lh: 2, bass: 3 });
   assert.deepEqual(cleaned.parts, { melody: true, lh: true, bass: true });
@@ -88,7 +88,7 @@ test('plan & review is on by default and remembered; anything but a boolean fall
   const storage = fakeStorage();
   saveSettings({ ...DEFAULT_SETTINGS, planReview: false }, storage);
   assert.equal(loadSettings(storage).planReview, false);
-  storage.setItem('voicing-lab.settings', JSON.stringify({ planReview: 'no' }));
+  storage.setItem('sidekeys.settings', JSON.stringify({ planReview: 'no' }));
   assert.equal(loadSettings(storage).planReview, true);
 });
 
@@ -97,6 +97,17 @@ test('the bass register is one of the named ones, low by default', () => {
   const storage = fakeStorage();
   saveSettings({ ...DEFAULT_SETTINGS, bassRegister: 'middle' }, storage);
   assert.equal(loadSettings(storage).bassRegister, 'middle');
-  storage.setItem('voicing-lab.settings', JSON.stringify({ bassRegister: 'subsonic' }));
+  storage.setItem('sidekeys.settings', JSON.stringify({ bassRegister: 'subsonic' }));
   assert.equal(loadSettings(storage).bassRegister, 'low');
+});
+
+// The wiring, not the helper: drill.js must ask storage.js for its key, or a browser that
+// practised under the old app name loses its settings at the rename.
+test('settings saved under the old app name are still there after the rename', () => {
+  const storage = fakeStorage();
+  storage.setItem('voicing-lab.settings', JSON.stringify({ debounceMs: 450, channel: 3 }));
+  const settings = loadSettings(storage);
+  assert.equal(settings.debounceMs, 450);
+  assert.equal(settings.channel, 3);
+  assert.equal(storage.getItem('voicing-lab.settings'), null, 'moved across, not left as a second copy');
 });

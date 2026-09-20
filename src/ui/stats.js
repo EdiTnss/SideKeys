@@ -2,8 +2,8 @@
 // Stats objects are never mutated; recordAttempt returns a new one.
 
 import { spellDegree } from '../theory/notes.js';
+import { storageKey } from '../storage.js';
 
-const STORAGE_KEY = 'voicing-lab.stats';
 
 export function emptyStats() {
   return { attempts: 0, clean: 0, byKey: {} };
@@ -49,7 +49,7 @@ export function summaryLine(stats) {
 
 export function loadStats(storage = globalThis.localStorage) {
   try {
-    const raw = storage?.getItem(STORAGE_KEY);
+    const raw = storage?.getItem(storageKey('stats', storage));
     if (!raw) return emptyStats();
     const data = JSON.parse(raw);
     if (!data || typeof data !== 'object' || !Number.isInteger(data.attempts) || typeof data.byKey !== 'object') return emptyStats();
@@ -62,7 +62,7 @@ export function loadStats(storage = globalThis.localStorage) {
 export function saveStats(stats, storage = globalThis.localStorage) {
   try {
     if (!storage) return false;
-    storage.setItem(STORAGE_KEY, JSON.stringify(stats));
+    storage.setItem(storageKey('stats', storage), JSON.stringify(stats));
     return true;
   } catch {
     return false;

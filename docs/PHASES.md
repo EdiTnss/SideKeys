@@ -1,4 +1,4 @@
-# Voicing Lab — PHASES.md
+# SideKeys — PHASES.md
 
 Planul inițial pe faze (Faza 0–5), cu Definition of Done, și scope guard-ul lui. Mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Scopul, ordinea și regulile de scop de acum sunt în `docs/PRODUCT.md` (fazele P0–P4); fazele de aici rămân referința pentru DoD-urile la care trimite P0 (Faza 3b, Faza 4). Unde scope guard-ul de mai jos contrazice „Reguli de scop" din `PRODUCT.md` (conturi, backend, TypeScript, bundler, intrare audio), câștigă `PRODUCT.md`.
 

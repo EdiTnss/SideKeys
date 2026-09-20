@@ -85,7 +85,7 @@ export function createTape({ settings = {}, now = () => globalThis.performance?.
     const context = CONTEXT.map(key => before[key]).filter(Boolean).map(old => ({ ...old, t: start }));
     return {
       format: TAPE_FORMAT,
-      app: 'voicing-lab',
+      app: 'sidekeys',
       savedAt: date().toISOString(),
       settings: { ...before.settings },
       events: [...context, ...events.map(entry => ({ ...entry }))],

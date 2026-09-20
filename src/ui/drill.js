@@ -2,6 +2,7 @@
 
 import { DEFAULT_CHANNELS } from '../midi/player.js';
 import { BASS_REGISTERS } from '../theory/realize.js';
+import { storageKey } from '../storage.js';
 
 // Half-diminished is shown as ø7, diminished as a bare ° (the symbol already implies the
 // diminished seventh). The parser accepts every alias.
@@ -23,7 +24,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   planReview: true,      // Reharm: plan and review around execute (off = execute alone, as in Phase 3a)
 });
 
-const STORAGE_KEY = 'voicing-lab.settings';
+
 const PARTS = ['melody', 'lh', 'bass'];
 
 // A fresh copy every time, so a loaded settings object can be edited without touching the defaults.
@@ -49,7 +50,7 @@ export function nextChord(settings, previous = null, random = Math.random) {
 /** Settings from storage, cleaned; defaults when storage is missing, empty or broken. */
 export function loadSettings(storage = globalThis.localStorage) {
   try {
-    const raw = storage?.getItem(STORAGE_KEY);
+    const raw = storage?.getItem(storageKey('settings', storage));
     if (!raw) return defaults();
     return sanitize(JSON.parse(raw));
   } catch {
@@ -61,7 +62,7 @@ export function loadSettings(storage = globalThis.localStorage) {
 export function saveSettings(settings, storage = globalThis.localStorage) {
   try {
     if (!storage) return false;
-    storage.setItem(STORAGE_KEY, JSON.stringify(settings));
+    storage.setItem(storageKey('settings', storage), JSON.stringify(settings));
     return true;
   } catch {
     return false;

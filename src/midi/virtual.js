@@ -15,7 +15,7 @@ export function createVirtualMidi({
   now = () => globalThis.performance?.now() ?? Date.now(),
 } = {}) {
   const sent = [];
-  const port = (type, name, i) => ({ id: `${idPrefix}-${type}-${i + 1}`, name, manufacturer: 'Voicing Lab', type, state: 'connected', connection: 'open' });
+  const port = (type, name, i) => ({ id: `${idPrefix}-${type}-${i + 1}`, name, manufacturer: 'SideKeys', type, state: 'connected', connection: 'open' });
 
   const inputPorts = inputs.map((name, i) => ({ ...port('input', name, i), onmidimessage: null }));
   const outputPorts = outputs.map((name, i) => {

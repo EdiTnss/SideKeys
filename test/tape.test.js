@@ -37,7 +37,7 @@ test('a tape records MIDI and the app\'s events in milliseconds from its start, 
   tape.event('snapshot', { startedAt: tape.at(5100.123), notes: [60, 64] });
   assert.deepEqual(tape.toJSON(), {
     format: TAPE_FORMAT,
-    app: 'voicing-lab',
+    app: 'sidekeys',
     savedAt: '2026-09-20T10:00:00.000Z',
     settings: { debounceMs: 300, nextNote: 28 },
     events: [

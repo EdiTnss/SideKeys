@@ -161,7 +161,7 @@ export function createSynth({ context = null, name = 'Browser synth', maxVoices 
   return {
     id: SYNTH_ID,
     name,
-    manufacturer: 'Voicing Lab',
+    manufacturer: 'SideKeys',
     type: 'output',
     state: 'connected',
     connection: 'open',

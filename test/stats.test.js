@@ -11,7 +11,7 @@ const attempt = (stats, symbol, notes) => {
 };
 const fakeStorage = () => {
   const map = new Map();
-  return { getItem: key => map.get(key) ?? null, setItem: (key, value) => map.set(key, String(value)) };
+  return { getItem: key => map.get(key) ?? null, setItem: (key, value) => map.set(key, String(value)), removeItem: key => map.delete(key) };
 };
 
 test('attempts and clean attempts are counted per quality and overall', () => {
@@ -58,8 +58,17 @@ test('stats survive a save/load round trip and fall back to empty on garbage', (
   const stats = attempt(attempt(emptyStats(), 'G7alt', 'B3 F4 A4'), 'Cmaj7', 'E3 G3 B3 D4');
   assert.equal(saveStats(stats, storage), true);
   assert.deepEqual(loadStats(storage), stats);
-  storage.setItem('voicing-lab.stats', '{nope');
+  storage.setItem('sidekeys.stats', '{nope');
   assert.deepEqual(loadStats(storage), emptyStats());
   assert.deepEqual(loadStats(undefined), emptyStats());
   assert.equal(saveStats(stats, undefined), false);
+});
+
+test('statistics saved under the old app name are still there after the rename', () => {
+  const storage = fakeStorage();
+  storage.setItem('voicing-lab.stats', JSON.stringify({ attempts: 12, clean: 7, byKey: {} }));
+  const stats = loadStats(storage);
+  assert.equal(stats.attempts, 12);
+  assert.equal(stats.clean, 7);
+  assert.equal(storage.getItem('voicing-lab.stats'), null);
 });

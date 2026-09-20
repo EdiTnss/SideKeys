@@ -1,4 +1,4 @@
-# Voicing Lab — spec-reharm.md
+# SideKeys — spec-reharm.md
 
 Modelul piesei, înregistrarea melodiei, analiza armonică, candidații, pipeline-ul AI (Worker, client, prompturi, `plan` / `execute` / `review`), scorurile, validarea, realizarea ca aranjament, partenerul de studiu și evaluarea. Mutat neschimbat din `CLAUDE.md` pe 2026-09-19; se citește când se lucrează la `theory/piece.js`, `midi/recorder.js`, `theory/analysis.js`, `theory/candidates.js`, `theory/scoring.js`, `theory/realize.js`, `midi/player.js`, `ai/`, `worker/` sau `eval/`. Reharm-ul a ieșit din produs (vezi `docs/PRODUCT.md`): rămâne în repo și în demo, fără lucru nou. „Tabelul analizorului" la care trimite textul e în `docs/spec-analyzer.md`.
 

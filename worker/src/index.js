@@ -1,4 +1,4 @@
-// Voicing Lab AI proxy (Cloudflare Worker). It adds the Anthropic key, checks the Origin and
+// SideKeys AI proxy (Cloudflare Worker). It adds the Anthropic key, checks the Origin and
 // limits requests per client IP. No music logic and no prompts live here: those are in
 // src/ai/ and visible in the repo. The handler takes its upstream `fetch` as an option so the
 // whole Worker runs under node --test with a fake env (see test/worker.test.js).

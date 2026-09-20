@@ -1,16 +1,16 @@
-# Voicing Lab
+# SideKeys
 
-[![tests](https://github.com/EdiTnss/Voicing-Lab/actions/workflows/test.yml/badge.svg)](https://github.com/EdiTnss/Voicing-Lab/actions/workflows/test.yml)
+[![tests](https://github.com/EdiTnss/SideKeys/actions/workflows/test.yml/badge.svg)](https://github.com/EdiTnss/SideKeys/actions/workflows/test.yml)
 
 **The teacher who sits next to you and tells you what your hands got wrong.**
 
-Voicing Lab listens to what you play on a MIDI keyboard and answers in under 100 ms: which
+SideKeys listens to what you play on a MIDI keyboard and answers in under 100 ms: which
 voicing you used, which chord tones are missing, which notes are wrong, where the left hand is
 too low to sound clear, and how smoothly you moved from the chord before.
 
 Everything in that answer is computed, not guessed. No model is asked what a Dm7 is.
 
-**[Try it →](https://editnss.github.io/Voicing-Lab/)** — no MIDI keyboard needed: click the
+**[Try it →](https://editnss.github.io/SideKeys/)** — no MIDI keyboard needed: click the
 drawn keys to build a voicing and press <kbd>Enter</kbd>, or hold <kbd>A</kbd> <kbd>S</kbd>
 <kbd>D</kbd> <kbd>F</kbd> like a piano. Chrome or Edge; Web MIDI does not exist in Safari.
 
@@ -110,7 +110,7 @@ npm test          # full report
 npm run test:quiet  # one line when green
 ```
 
-229 tests, Node 22+, **no dependencies**. The music theory in `src/theory/` is pure JavaScript
+237 tests, Node 22+, **no dependencies**. The music theory in `src/theory/` is pure JavaScript
 with no DOM, which is why the same code runs in the browser, in the Worker and under
 `node --test`.
 

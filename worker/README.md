@@ -1,4 +1,4 @@
-# Voicing Lab AI proxy
+# SideKeys AI proxy
 
 A Cloudflare Worker that stands between the browser app and the Anthropic API. It adds the API
 key, checks the `Origin`, limits requests per IP and caps `max_tokens`. It holds no music logic
@@ -47,7 +47,7 @@ npm run deploy
 ```
 
 Deploy prints the public address, something like
-`https://voicing-lab-proxy.<account>.workers.dev`. Then store the key in Cloudflare, which
+`https://sidekeys-proxy.<account>.workers.dev`. Then store the key in Cloudflare, which
 redeploys the Worker with it:
 
 ```

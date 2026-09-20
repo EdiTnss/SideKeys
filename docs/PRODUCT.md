@@ -1,14 +1,14 @@
-# Voicing Lab — PRODUCT.md
+# SideKeys — PRODUCT.md
 
 Ce construim, pentru cine, și în ce ordine. Deciziile de teorie și de implementare stau în
 `CLAUDE.md` și în `docs/spec-*.md`; aici stă doar scopul produsului.
 
 Analiza completă de piață, economia și partea juridică nu sunt în repo (repo-ul devine public
-în Faza 4). Trăiesc în documentul „Voicing Lab ca produs" din Claude.
+în Faza 4). Trăiesc în documentul „SideKeys ca produs" din Claude.
 
 ## Poziționare
 
-**Voicing Lab e profesorul care stă lângă tine și îți spune ce ai greșit la mâini.**
+**SideKeys e profesorul care stă lângă tine și îți spune ce ai greșit la mâini.**
 
 Nu „te învață acorduri" — asta fac zece aplicații. Te ascultă și te corectează: tipul de
 voicing, note lipsă, note greșite, low interval limits, voice leading, dublări, puncte slabe

@@ -1,7 +1,7 @@
 {
-  "name": "voicing-lab-proxy",
+  "name": "sidekeys-proxy",
   "version": "0.1.0",
-  "description": "Cloudflare Worker proxy for Voicing Lab: adds the Anthropic key, checks the Origin, limits requests per IP.",
+  "description": "Cloudflare Worker proxy for SideKeys: adds the Anthropic key, checks the Origin, limits requests per IP.",
   "private": true,
   "type": "module",
   "scripts": {

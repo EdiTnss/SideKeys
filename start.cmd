@@ -1,19 +1,19 @@
 @echo off
-rem Double-click this (or the desktop shortcut) to open Voicing Lab.
+rem Double-click this (or the desktop shortcut) to open SideKeys.
 rem It starts the page server, starts the AI proxy, then opens the app in Chrome.
 rem Two console windows stay open: closing them stops the servers.
 setlocal
-title Voicing Lab
+title SideKeys
 cd /d "%~dp0"
 
-echo Starting Voicing Lab...
+echo Starting SideKeys...
 echo.
 
 rem The page needs a server: ES modules do not load from file:// .
 netstat -ano | findstr /c:":3000" | findstr /c:"LISTENING" >nul
 if errorlevel 1 (
   echo   page server     : starting on port 3000
-  start "Voicing Lab page - close this window to stop" cmd /k npx --yes serve . -l 3000
+  start "SideKeys page - close this window to stop" cmd /k npx --yes serve . -l 3000
 ) else (
   echo   page server     : already running on port 3000
 )
@@ -22,7 +22,7 @@ rem The proxy is only needed for Ask Claude and Reharmonize.
 netstat -ano | findstr /c:":8787" | findstr /c:"LISTENING" >nul
 if errorlevel 1 (
   echo   AI proxy        : starting on port 8787
-  start "Voicing Lab AI proxy - close this window to stop" cmd /k npm --prefix worker run dev
+  start "SideKeys AI proxy - close this window to stop" cmd /k npm --prefix worker run dev
 ) else (
   echo   AI proxy        : already running on port 8787
 )
@@ -41,7 +41,7 @@ if exist "%BROWSER%" (
 )
 
 echo.
-echo Voicing Lab is open at http://localhost:3000
+echo SideKeys is open at http://localhost:3000
 echo Close the two server windows when you are done.
 ping -n 4 127.0.0.1 >nul
 endlocal

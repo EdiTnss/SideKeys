@@ -210,7 +210,7 @@ export function renderSettings(container, settings, { symbols, roots, onChange, 
   const ai = h('fieldset', {},
     h('legend', {}, 'AI (Ask Claude)'),
     h('label', { class: 'wide' }, 'Proxy URL ',
-      h('input', { type: 'url', name: 'proxyUrl', value: settings.proxyUrl ?? '', placeholder: 'https://voicing-lab-proxy.<account>.workers.dev/', spellcheck: 'false' })),
+      h('input', { type: 'url', name: 'proxyUrl', value: settings.proxyUrl ?? '', placeholder: 'https://sidekeys-proxy.<account>.workers.dev/', spellcheck: 'false' })),
     h('span', { class: 'note-name' }, 'The Cloudflare Worker from worker/; empty = off. The key never leaves the Worker.'),
   );
 

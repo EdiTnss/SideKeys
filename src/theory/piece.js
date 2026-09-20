@@ -9,8 +9,9 @@ import { parseGrid } from './progressions.js';
 import { parseChord, classifyPc } from './chords.js';
 import { midiToName } from './notes.js';
 import { quantizePosition } from './timing.js';
+import { storageKey } from '../storage.js';
 
-const STORAGE_KEY = 'voicing-lab.pieces';
+
 const EPSILON = 1e-9;
 const BEAT_EPSILON = 1e-6;
 
@@ -191,7 +192,7 @@ export function fromJSON(text) {
 
 function readAll(storage) {
   try {
-    const raw = storage?.getItem(STORAGE_KEY);
+    const raw = storage?.getItem(storageKey('pieces', storage));
     const data = raw ? JSON.parse(raw) : {};
     return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
   } catch {
@@ -202,7 +203,7 @@ function readAll(storage) {
 function writeAll(all, storage) {
   try {
     if (!storage) return false;
-    storage.setItem(STORAGE_KEY, JSON.stringify(all));
+    storage.setItem(storageKey('pieces', storage), JSON.stringify(all));
     return true;
   } catch {
     return false;

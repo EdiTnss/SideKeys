@@ -1,9 +1,9 @@
-// Cloudflare Worker config for the Voicing Lab AI proxy. Non-secret values only: the Anthropic
+// Cloudflare Worker config for the SideKeys AI proxy. Non-secret values only: the Anthropic
 // key is a Wrangler secret (`npx wrangler secret put ANTHROPIC_API_KEY`) and, locally, a line in
 // `.dev.vars` (git-ignored; see `.dev.vars.example`).
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "voicing-lab-proxy",
+  "name": "sidekeys-proxy",
   "main": "src/index.js",
   "compatibility_date": "2026-09-17",
   // Declared, never stored here: Wrangler warns in local dev and on deploy when it is missing.

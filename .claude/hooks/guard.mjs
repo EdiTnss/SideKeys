@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Voicing Lab — garda de sesiune.
+// SideKeys — garda de sesiune.
 // Rulează la Stop: testele plus invariantele din CLAUDE.md și docs/PRODUCT.md.
 // Ieșire 2 = blocant, mesajul ajunge înapoi la Claude Code.
 // Fără dependențe, rulează pe Windows și pe Linux deopotrivă.
@@ -120,10 +120,10 @@ for (const folder of SEARCH) {
 // ------------------------------------------------------------------ raport
 
 if (problems.length > 0) {
-  console.error('\nGarda Voicing Lab a oprit sesiunea:\n')
+  console.error('\nGarda SideKeys a oprit sesiunea:\n')
   for (const p of problems) console.error(`  ✗ ${p}\n`)
   console.error('Repară astea înainte să închei. Dacă vreuna e intenționată, întreabă-l pe Edi.\n')
   process.exit(2)
 }
 
-console.log(`Garda Voicing Lab: ${notes.join(', ')}.`)
+console.log(`Garda SideKeys: ${notes.join(', ')}.`)

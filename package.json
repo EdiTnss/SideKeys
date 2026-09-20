@@ -1,5 +1,5 @@
 {
-  "name": "voicing-lab",
+  "name": "sidekeys",
   "version": "0.1.0",
   "description": "Voicing and reharmonization trainer for jazz pianists, with Web MIDI and Claude.",
   "private": true,

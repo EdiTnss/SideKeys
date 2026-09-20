@@ -19,7 +19,7 @@ standards. The one here is Edi's own study.
 { "title": "…", "savedAt": "YYYY-MM-DD", "result": { … } }
 ```
 
-`result` is one answer Claude gave, saved as it came: `voicingLab.saveReharm()` in the console
+`result` is one answer Claude gave, saved as it came: `sideKeys.saveReharm()` in the console
 writes this file from the reharmonization on screen, minus the candidate menu and the raw calls.
 The page shows the model, the prompt version and the date beside it, so nobody has to take it on
 trust.
