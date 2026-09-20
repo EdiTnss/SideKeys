@@ -59,7 +59,8 @@ src/
   app.js                   singurul loc care leagă theory, midi și ui
   midi/capture.js          regulile de snapshot (debounce, staccato, „next"), logică pură, testată
   midi/input.js            requestMIDIAccess (sau accesul primit), toate intrările/canalele, parseMidiMessage
-  midi/virtual.js          acces MIDI fără hardware (?midi=virtual, harness; claviatura și synth-ul din Faza 4)
+  midi/virtual.js          acces MIDI fără hardware (?midi=virtual, harness) și mergeAccess:
+                           porturile virtuale lângă cele reale
   midi/recorder.js         înregistrează melodia cântată în timp muzical (bar, beat, durată în timpi), pozițiile vin din metronom; testat
   midi/output.js           trimite voicings spre Genos (Faza 2), mesaje programate în timp și oprire curată (Faza 3b)
   midi/player.js           evenimentele aranjamentului → mesaje MIDI cu timp, un canal pe voce (Faza 3b)
@@ -70,6 +71,7 @@ src/
   theory/progressions.js   biblioteca de progresii generice + parser de grilă text
   theory/timing.js         timp ↔ (bar, beat), cuantizare; folosit de metronom, recorder și player
   theory/voicings.js       sugestii de voicing din șabloane, în registru, ordonate după voice leading (Faza 2; sămânța lui realize.js)
+  audio/context.js         AudioContext-ul paginii și conversiile de ceas (pure, testate)
   audio/metronome.js       metronom Web Audio cu lookahead, count-in, onBeat, positionOf(performance.now)
   ui/session.js            o trecere prin progresie: sloturi, locate(bar, beat), record, summary (testat)
   ui/stats.js              statistici: încercări, curate, probleme pe calitate; sesiune + cumulativ în localStorage (testat)
@@ -80,13 +82,15 @@ src/
   theory/scoring.js        scoruri pentru un reharm: clash, bas, densitate, coerență (Faza 3a)
   theory/realize.js        simboluri → voicings cu voice leading, bas și melodie (Faza 3b)
   ui/drill.js              starea drill-ului: setări, acordul următor, localStorage
-  ui/keyboard.js           claviatura SVG, colorată pe rol
+  ui/keyboard.js           claviatura SVG, colorată pe rol, cu taste care răspund la click
+  ui/onscreen.js           clapa de ecran ca intrare: armare + Enter, literele ca pian, ecou spre synth
   ui/render.js             randare DOM, fără logică de teorie aici
   ai/client.js             apel spre proxy (Faza 3a)
   ai/prompts.js            toate prompturile, versionate (Faza 3a)
   ai/explain.js            explain & suggest din drill: input, validarea sugestiilor prin analizor (Faza 3a)
   ai/pipeline.js           execute: candidați → apel → validare → scoruri (Faza 3a); plan și review (Faza 3b)
-  audio/synth.js           fallback Web Audio pentru demo mode (Faza 4)
+  audio/synth.js           synth Web Audio în forma unui port MIDI out (demo mode)
+demo/piece.json            piesa demo (grilă + melodie); demo/reharm.json, răspunsul salvat
 styles/*.json              profiluri de stil ca date (Faza 5)
 eval/pieces/*.json         piese de test din domeniul public (Faza 5)
 eval/run.js                rulează pipeline-ul pe piesele de test și raportează metrici (Faza 5)
@@ -112,19 +116,20 @@ Regula de dependență: `theory/` nu importă nimic din `midi/`, `ui/` sau `ai/`
 
 ## Starea curentă
 
-La 2026-09-19:
+La 2026-09-20:
 
 - **Fazele 0, 1, 2 și 3a sunt bifate** (DoD-urile în [docs/PHASES.md](docs/PHASES.md)). **Faza 3b**: aranjamentul (`realize.js`, `player.js`) a fost ascultat de Edi pe Genos; `plan` și `review` sunt implementate, cu DoD-ul măsurat îndeplinit pe piesa de 16 măsuri (bas 0,85 față de 0,80, mix de tehnici 4,67 față de 3,67; `eval/reports/compare-2026-09-19T13-59-52-398Z.json`). **Execuția pe bucăți** (piesele peste 32 de sloturi) e implementată și măsurată pe un studiu de 64 de măsuri (bas 0,90 față de 0,84, mix 4,67 față de 3,67, 0 clash-uri, densitatea în țintă în toate 6 rulările; `eval/reports/compare-2026-09-19T16-37-52-096Z.json`). Toate punctele Fazei 3b sunt făcute; din DoD rămâne ca Edi să asculte pe Genos o piesă proprie cu „plan & review".
 - **Harness-ul de verificare** e implementat (spec în [docs/spec-capture.md](docs/spec-capture.md)): portul MIDI virtual (`?midi=virtual`), banda sesiunii cu „Save session", reluarea în Node și CI (`node harness/replay.js`). Se reiau în CI o sesiune înregistrată de aplicație pe portul virtual (13 snapshot-uri) și prima sesiune reală a lui Edi pe Genos (11 minute, 93 de snapshot-uri), toate la fel: **DoD-ul harness-ului din P0 e îndeplinit**. **Găsit de harness și rezolvat**: în timed, un acord anticipat peste bara de măsură nu primea verdict; acum, de la „și"-ul timpului dinaintea unei schimbări, un voicing contează pentru acordul următor (decizie Edi: „de la «și»-ul lui 4"; generalizarea la schimbările din mijlocul măsurii, la 3/4, la numărătoare și la ultimul acord e a mea și așteaptă confirmarea lui), iar schimbarea de slot nu mai anulează captura.
-- **211 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
-- **Planul de produs** e în [docs/PRODUCT.md](docs/PRODUCT.md); suntem în **P0**. Din P0 sunt făcute spargerea lui `CLAUDE.md`, execuția pe fraze și harness-ul. Reharm-ul a ieșit din produs: rămâne în repo și în demo, iar `pipeline.js` nu mai primește lucru nou.
-- **Rămas din P0**, în ordinea aprobată de Edi: **demo mode** (claviatură pe ecran, `audio/synth.js`, piesa demo, pe intrarea virtuală a harness-ului; reharm-ul din demo, propunere: rezultat pre-calculat, nu apel live), apoi **publicarea** (istoric verificat pentru secrete, licență, repo public, Pages, Worker publicat, README, GIF, video), apoi **prototipul de microfon** cu `basic-pitch-ts`, în afara lui `src/` (prag: peste 90% din 20 de voicings identificate corect, cu octava exactă). De la Edi, separat: o piesă proprie cu „plan & review" ascultată pe Genos (ultima jumătate a DoD-ului Fazei 3b).
+- **Demo mode** e implementat (design aprobat de Edi pe 2026-09-20, spec în [docs/spec-capture.md](docs/spec-capture.md)): clapa desenată e o intrare MIDI virtuală (click = armare, `Enter` = acordul, literele `A S D F…` ca pian), `audio/synth.js` e o ieșire în forma unui port MIDI out, iar `mergeAccess` le ține **lângă** porturile reale — nu e un mod separat și nu există nicio ramură „dacă e demo". Web MIDI se cere automat doar pe `localhost`, în rest la buton. Verdictul scrie acum acordul judecat și marchează anticiparea (cerința fermă 2), iar reharm-ul din demo servește un răspuns salvat: apel live doar pe `localhost` sau cu `?reharm=live` (cerința fermă 1). **Verificat în browser**: 4 clicuri pe ecran → acord → analiză, synth-ul sună (8 oscilatoare pe 4 note), sugestiile ies pe synth, o anticipare la 60 bpm primește „Cmaj7, anticipated" și rămâne pe ecran peste bara de măsură.
+- **228 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`. Cele trei sesiuni înregistrate se reiau neschimbate.
+- **Planul de produs** e în [docs/PRODUCT.md](docs/PRODUCT.md); suntem în **P0**. Din P0 sunt făcute spargerea lui `CLAUDE.md`, execuția pe fraze, harness-ul și demo mode (fără piesa demo). Reharm-ul a ieșit din produs: rămâne în repo și în demo, iar `pipeline.js` nu mai primește lucru nou.
+- **Rămas din P0**, în ordinea aprobată de Edi: **piesa demo** — un studiu original de 16 măsuri scris de Edi, înregistrat în aplicație („Record melody" → „Export JSON" → `demo/piece.json`), plus o rulare locală de reharm pe el salvată cu `voicingLab.saveReharm()` în `demo/reharm.json` (formatul în [demo/README.md](demo/README.md)); apoi **publicarea** (istoric verificat pentru secrete, licență, repo public, Pages, Worker publicat + `PUBLISHED_PROXY_URL` completat în `app.js`, README, GIF, video), apoi **prototipul de microfon** cu `basic-pitch-ts`, în afara lui `src/` (prag: peste 90% din 20 de voicings identificate corect, cu octava exactă). De la Edi, separat: o piesă proprie cu „plan & review" ascultată pe Genos (ultima jumătate a DoD-ului Fazei 3b).
 - **Worker-ul** rulează doar local (`start.cmd`); nu e publicat în cloud (`npx wrangler login`, `npm --prefix worker run deploy`, `npm --prefix worker run secret`). Publicarea face parte din Faza 4, deci din P0.
-- Repo-ul e privat. Necommise: `assets/` (logo, favicon, imagine OG, `BRAND.md`, ale lui Edi, pentru Faza 4), `Voicing Lab ca produs.pdf`, care nu intră în repo (analiza de piață stă în afara lui, vezi `PRODUCT.md`), și `docs/claude-setup/` (apărut în sesiunea din 2026-09-19, neatins).
+- Repo-ul e privat. Necommise: `assets/` (logo, favicon, imagine OG, `BRAND.md`, ale lui Edi, pentru Faza 4) și `Voicing Lab ca produs.pdf`, care nu intră în repo (analiza de piață stă în afara lui, vezi `PRODUCT.md`).
 
 ## Următorul pas
 
-Propune-i lui Edi designul pentru demo mode (claviatura de pe ecran ca intrare prin `createVirtualMidi` din `src/midi/virtual.js`, `audio/synth.js` ca ieșire virtuală, o piesă demo din domeniul public verificată, reharm-ul din demo ca rezultat pre-calculat în loc de apel live) și așteaptă aprobarea înainte de orice cod.
+Cere-i lui Edi studiul original de 16 măsuri pentru demo (îl scrie el, îl înregistrează în aplicație și îl exportă în `demo/piece.json`), rulează local un reharm pe el și salvează-l în `demo/reharm.json`; apoi treci la publicare.
 
 ## Documentație
 
