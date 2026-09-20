@@ -34,9 +34,10 @@ import {
 
 const $ = id => document.getElementById(id);
 
-// The published Worker, filled in when it is deployed (Phase 4): then Ask Claude works on the
-// published site without anyone pasting a URL. It is the only AI call the product makes — one
-// answer, under a cent, limited per IP in the Worker. Reharm never runs live there; see LIVE_REHARM.
+// Empty on purpose (Edi's decision, 2026-09-20): no Worker is deployed, so the published site
+// makes no AI calls at all and cannot cost anything. Anyone who runs Voicing Lab with a Worker
+// of their own — see the README — sets the URL in Settings and Ask Claude appears. Filling this
+// in is what would turn it on for visitors; reharm stays saved-only either way (LIVE_REHARM).
 const PUBLISHED_PROXY_URL = '';
 const LOCAL = ['localhost', '127.0.0.1'].includes(location.hostname);
 
@@ -768,6 +769,17 @@ function onNext() {
 
 // ---- Mode switch, settings, wiring ------------------------------------------------------
 
+/**
+ * Ask Claude needs a proxy with a key behind it, and the published site has none: the button
+ * appears only where it can answer — a Worker of your own, local or deployed, set in Settings.
+ * Same rule as the Reharm tab: nothing on screen that does nothing.
+ */
+const canAsk = () => mode === 'drill' && Boolean(settings.proxyUrl);
+
+function showAskButton() {
+  $('ask').hidden = !canAsk();
+}
+
 function setMode(next) {
   if (playback) stopArrangement();
   if (recorder) stopRecording();
@@ -779,7 +791,7 @@ function setMode(next) {
   $('reharm-panel').hidden = mode !== 'reharm';
   $('drill-panel').hidden = mode === 'reharm';
   $('next').hidden = mode !== 'drill';
-  $('ask').hidden = mode !== 'drill';
+  showAskButton();
   if (mode === 'drill') advance();
   else if (mode === 'progression') buildSession();
   else showReharmSource();
@@ -809,6 +821,7 @@ function applySettings(next) {
   capture.nextNote = settings.nextNote;
   selectOutput();
   if (ai.baseUrl !== settings.proxyUrl) ai = createClient({ baseUrl: settings.proxyUrl });
+  showAskButton();                          // a proxy pasted in Settings brings the button back
   if (mode !== 'drill') return;
   const stillValid = chord && settings.roots.includes(chord.root) && settings.qualities.includes(symbol.slice(chord.root.length));
   if (!stillValid) advance();
@@ -887,7 +900,7 @@ document.addEventListener('keydown', event => {
     onNext();
   } else if (event.code === 'KeyP' && !recorder) {
     playSuggestion();
-  } else if (event.code === 'KeyA' && mode === 'drill' && !recorder) {
+  } else if (event.code === 'KeyA' && canAsk() && !recorder) {
     askClaude();
   } else if ((event.code === 'Digit1' || event.code === 'Digit2') && mode === 'drill') {
     playAiByIndex(event.code === 'Digit1' ? 0 : 1);
