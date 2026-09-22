@@ -37,8 +37,20 @@
   }
 }
 
-/* Sora is the brand face; until its files are self-hosted, system-ui stands in, which the
-   brand allows for (BRAND.md: the lockup reflows when the font fails). */
+/* Sora, the brand face, self-hosted with its licence beside it (assets/fonts/OFL.txt): no request
+   to a font CDN on every visit, and it works offline. One variable file, latin subset, the whole
+   weight axis — the interface uses 400 to 700, and a file cut to 400–600 would fake the 700 of
+   the chord symbol. `swap` keeps the text readable in system-ui while it loads. */
+@font-face {
+  font-family: Sora;
+  src: url("./assets/fonts/sora-latin.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 body {
   margin: 0 auto;
   padding: 1.5rem 1.25rem 3rem;
@@ -101,7 +113,9 @@ kbd {
 .onscreen { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-top: .5rem; font-size: .9rem; }
 .onscreen .spacer { flex: 1; }
 .onscreen button { padding: .3rem .6rem; }
-.onscreen .hint { font-size: .9rem; }
+/* Sora is wider than system-ui: the hint is the one item allowed to give way (its text wraps),
+   so the controls around it stay on one row instead of the octave group dropping to a second. */
+.onscreen .hint { font-size: .9rem; flex: 1 1 12rem; }
 .octave { white-space: nowrap; color: var(--muted); }
 #octave-label { font-weight: 600; color: inherit; }
 #connect-midi { padding: .3rem .7rem; font-size: .85rem; }
