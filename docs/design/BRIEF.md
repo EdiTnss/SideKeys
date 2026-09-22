@@ -1,8 +1,8 @@
 # SideKeys — brand brief
 
 > **Done, 2026-09-22.** The result is in `assets/`, specified in `assets/BRAND.md` and wired into the page.
-> One open item: the keyboard strip in `og-image.png` paints a verdict the app would never give
-> (see `docs/JOURNAL.md`, 2026-09-22) and is to be repainted with a real one.
+> The keyboard strip in `og-image.png` was repainted the same day so that every coloured key is
+> the verdict the app itself gives (see `docs/JOURNAL.md`, 2026-09-22).
 
 Paste this into claude.ai/design. It is in English, unlike the rest of `docs/`, because the
 assets it produces carry English text and land in an English repository.
