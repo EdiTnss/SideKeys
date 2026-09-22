@@ -1,4 +1,9 @@
-# SideKeys
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo-lockup.png">
+    <img src="assets/logo-lockup-light.png" alt="SideKeys" width="420">
+  </picture>
+</h1>
 
 [![tests](https://github.com/EdiTnss/SideKeys/actions/workflows/test.yml/badge.svg)](https://github.com/EdiTnss/SideKeys/actions/workflows/test.yml)
 

@@ -1,10 +1,21 @@
+/* Two kinds of colour live here, and they must not be confused (assets/BRAND.md).
+   Theory tokens mean something: they paint keys and verdicts, and a player reads them at speed.
+   Brand tokens are furniture: background, ink, and one accent for the chrome — the header
+   lockup, the active tab, links, focus rings. The accent never touches a key or a verdict: under
+   deuteranopia the dark accent sits 6.5 ΔE from --held, so that rule is load-bearing. */
 :root {
   color-scheme: light dark;
+  --bg: #0a0b0c;
+  --surface: #101214;
+  --border: #23272b;
+  --ink: #f4f2ee;
+  --ink-muted: #8c949b;
+  --accent: #e0489e;
   --ok: #2e9e5b;
   --warn: #d97706;
   --bad: #dc2626;
-  --muted: color-mix(in srgb, currentColor 55%, transparent);
-  --line: color-mix(in srgb, currentColor 25%, transparent);
+  --muted: var(--ink-muted);
+  --line: var(--border);
   --chord-tone: #2e9e5b;
   --tension: #3b82f6;
   --altered: #8b5cf6;
@@ -14,15 +25,44 @@
   --armed: #60a5fa;
 }
 
+/* Light: the neutrals and the accent change, the theory tokens do not. */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --border: #e6e2da;
+    --ink: #14171a;
+    --ink-muted: #5c646b;
+    --accent: #c41e7f;
+  }
+}
+
+/* Sora is the brand face; until its files are self-hosted, system-ui stands in, which the
+   brand allows for (BRAND.md: the lockup reflows when the font fails). */
 body {
   margin: 0 auto;
   padding: 1.5rem 1.25rem 3rem;
   max-width: 64rem;
-  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.5 Sora, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
+
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 header { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
 h1 { font-size: 1.3rem; margin: 0; }
+
+/* The lockup: live text plus the mark, not a picture of text. Not a link — on a one-page
+   practice app, a click on the logo would reload the page and lose the session. */
+.logo {
+  display: flex; align-items: center; gap: 11px; align-self: center;
+  font-family: Sora, system-ui, sans-serif; font-weight: 600; font-size: 17px;
+  letter-spacing: -0.03em; color: var(--ink);
+}
+.logo img { display: block; }
+.logo-accent { color: var(--accent); }
 #status { margin: 0; font-size: .9rem; color: var(--muted); }
 #status.ok { color: var(--ok); }
 #status.warn { color: var(--warn); }
@@ -98,11 +138,11 @@ input[type="number"] { width: 5.5rem; font: inherit; padding: .2rem .4rem; borde
 .note-name { color: var(--muted); }
 
 footer { margin-top: 2rem; color: var(--muted); }
-footer a { color: inherit; }
+footer a { color: var(--accent); }
 
 /* Tabs and progression mode */
 .tabs { display: flex; gap: .25rem; }
-.tabs button[aria-selected="true"] { background: color-mix(in srgb, currentColor 14%, transparent); font-weight: 600; }
+.tabs button[aria-selected="true"] { background: color-mix(in srgb, currentColor 14%, transparent); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent); }
 .progression { display: grid; gap: .75rem; margin-bottom: 1rem; }
 .progression .row { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
 .progression label { display: inline-flex; align-items: center; gap: .35rem; }
