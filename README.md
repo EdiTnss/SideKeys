@@ -115,7 +115,7 @@ npm test          # full report
 npm run test:quiet  # one line when green
 ```
 
-237 tests, Node 22+, **no dependencies**. The music theory in `src/theory/` is pure JavaScript
+239 tests, Node 22+, **no dependencies**. The music theory in `src/theory/` is pure JavaScript
 with no DOM, which is why the same code runs in the browser, in the Worker and under
 `node --test`.
 

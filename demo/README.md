@@ -24,7 +24,7 @@ own storage on first load, so they can change or delete it; a browser that alrea
 its own never sees it.
 
 It must be original material or verified public domain (`PRODUCT.md`): no Real Book grids, no
-standards. The one here is Edi's own study.
+standards. None is published yet; when one is, it will be Edi's own study.
 
 ## `reharm.json`
 
@@ -37,7 +37,7 @@ writes this file from the reharmonization on screen, minus the candidate menu an
 The page shows the model, the prompt version and the date beside it, so nobody has to take it on
 trust.
 
-Fără el — adică atâta timp cât `manifest.json` are `"reharm": null` — tab-ul Reharm nu apare pe site-ul publicat.
+Without it — that is, for as long as `manifest.json` holds `"reharm": null` — the Reharm tab does not appear on the published site.
 
 Why saved and not live: an `execute` costs around 25 cents and the Worker limits per IP without
 telling the actions apart, so one visitor could empty the key. A live call happens only where the
