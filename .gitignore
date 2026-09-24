@@ -1,4 +1,4 @@
-# Dependencies (only worker/ ever has any)
+# Dependencies (only worker/ and mic-proto/ ever have any)
 node_modules/
 
 # Secrets and local state (Wrangler reads .dev.vars or .env, with per-environment variants)

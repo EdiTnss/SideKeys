@@ -1,0 +1,7546 @@
+{
+ "ranAt": "2026-09-24T13:45:21.552Z",
+ "options": {
+  "sets": [
+   "gate"
+  ],
+  "chains": [
+   "direct",
+   "laptop",
+   "harsh"
+  ],
+  "thresholds": [
+   0.4
+  ],
+  "floors": [
+   0.12
+  ],
+  "limit": 0,
+  "out": "report-gate.json",
+  "wav": false
+ },
+ "chains": {
+  "direct": {
+   "flat @0.4": {
+    "voicings": 20,
+    "exact": 6,
+    "exactRate": 0.3,
+    "sameVerdict": 9,
+    "verdictRate": 0.45,
+    "precision": 1,
+    "recall": 0.8476190476190476,
+    "octaveErrors": 0,
+    "ghosts": 0,
+    "missed": 18,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 5,
+      "recall": 5.75
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 4.035714285714286
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 1,
+      "recall": 7.166666666666666
+     }
+    }
+   },
+   "gap 0.12": {
+    "voicings": 20,
+    "exact": 5,
+    "exactRate": 0.25,
+    "sameVerdict": 9,
+    "verdictRate": 0.45,
+    "precision": 0.96875,
+    "recall": 0.8702380952380953,
+    "octaveErrors": 0,
+    "ghosts": 4,
+    "missed": 15,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 4,
+      "recall": 5.75
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 4.321428571428571
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 1,
+      "recall": 7.333333333333333
+     }
+    }
+   },
+   "cliff 0.12": {
+    "voicings": 20,
+    "exact": 5,
+    "exactRate": 0.25,
+    "sameVerdict": 8,
+    "verdictRate": 0.4,
+    "precision": 0.9916666666666666,
+    "recall": 0.8221428571428572,
+    "octaveErrors": 0,
+    "ghosts": 1,
+    "missed": 21,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 5,
+      "recall": 5.75
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 3.8928571428571432
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 0,
+      "recall": 6.8
+     }
+    }
+   },
+   "tracker": {
+    "voicings": 20,
+    "exact": 6,
+    "exactRate": 0.3,
+    "sameVerdict": 10,
+    "verdictRate": 0.5,
+    "precision": 0.9691666666666666,
+    "recall": 0.844345238095238,
+    "octaveErrors": 1,
+    "ghosts": 2,
+    "missed": 18,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 4,
+      "recall": 5.5
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 1,
+      "recall": 4.053571428571429
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 1,
+      "recall": 7.333333333333333
+     }
+    }
+   },
+   "oracle": {
+    "voicings": 20,
+    "exact": 12,
+    "exactRate": 0.6,
+    "sameVerdict": 12,
+    "verdictRate": 0.6,
+    "precision": 0.6,
+    "recall": 0.6,
+    "octaveErrors": 0,
+    "ghosts": 0,
+    "missed": 48,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 5,
+      "recall": 5
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 2,
+      "recall": 2
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 5,
+      "recall": 5
+     }
+    }
+   },
+   "best": "flat @0.4"
+  },
+  "laptop": {
+   "flat @0.4": {
+    "voicings": 20,
+    "exact": 9,
+    "exactRate": 0.45,
+    "sameVerdict": 10,
+    "verdictRate": 0.5,
+    "precision": 0.9775,
+    "recall": 0.8926190476190478,
+    "octaveErrors": 0,
+    "ghosts": 2,
+    "missed": 13,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 4,
+      "recall": 5.75
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 4.035714285714286
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 5,
+      "recall": 8.066666666666666
+     }
+    }
+   },
+   "gap 0.12": {
+    "voicings": 20,
+    "exact": 8,
+    "exactRate": 0.4,
+    "sameVerdict": 8,
+    "verdictRate": 0.4,
+    "precision": 0.9495238095238095,
+    "recall": 0.9113690476190477,
+    "octaveErrors": 0,
+    "ghosts": 6,
+    "missed": 11,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 4,
+      "recall": 6
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 4.160714285714286
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 4,
+      "recall": 8.066666666666666
+     }
+    }
+   },
+   "cliff 0.12": {
+    "voicings": 20,
+    "exact": 9,
+    "exactRate": 0.45,
+    "sameVerdict": 9,
+    "verdictRate": 0.45,
+    "precision": 0.9427777777777779,
+    "recall": 0.9122619047619048,
+    "octaveErrors": 0,
+    "ghosts": 14,
+    "missed": 11,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 4,
+      "recall": 6
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 4.178571428571429
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 5,
+      "recall": 8.066666666666666
+     }
+    }
+   },
+   "tracker": {
+    "voicings": 20,
+    "exact": 6,
+    "exactRate": 0.3,
+    "sameVerdict": 9,
+    "verdictRate": 0.45,
+    "precision": 0.9490476190476193,
+    "recall": 0.8880357142857143,
+    "octaveErrors": 0,
+    "ghosts": 6,
+    "missed": 14,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 3,
+      "recall": 5.75
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 3.910714285714286
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 3,
+      "recall": 8.1
+     }
+    }
+   },
+   "oracle": {
+    "voicings": 20,
+    "exact": 12,
+    "exactRate": 0.6,
+    "sameVerdict": 12,
+    "verdictRate": 0.6,
+    "precision": 0.6,
+    "recall": 0.6,
+    "octaveErrors": 0,
+    "ghosts": 0,
+    "missed": 50,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 5,
+      "recall": 5
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 1,
+      "recall": 1
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 6,
+      "recall": 6
+     }
+    }
+   },
+   "best": "flat @0.4"
+  },
+  "harsh": {
+   "flat @0.4": {
+    "voicings": 20,
+    "exact": 9,
+    "exactRate": 0.45,
+    "sameVerdict": 10,
+    "verdictRate": 0.5,
+    "precision": 0.9816666666666667,
+    "recall": 0.8863690476190478,
+    "octaveErrors": 0,
+    "ghosts": 2,
+    "missed": 14,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 4,
+      "recall": 5.75
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 3.910714285714286
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 5,
+      "recall": 8.066666666666666
+     }
+    }
+   },
+   "gap 0.12": {
+    "voicings": 20,
+    "exact": 8,
+    "exactRate": 0.4,
+    "sameVerdict": 9,
+    "verdictRate": 0.45,
+    "precision": 0.9420833333333334,
+    "recall": 0.9385119047619049,
+    "octaveErrors": 0,
+    "ghosts": 7,
+    "missed": 8,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 4,
+      "recall": 6
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 4.303571428571429
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 4,
+      "recall": 8.466666666666667
+     }
+    }
+   },
+   "cliff 0.12": {
+    "voicings": 20,
+    "exact": 9,
+    "exactRate": 0.45,
+    "sameVerdict": 9,
+    "verdictRate": 0.45,
+    "precision": 0.9348863636363637,
+    "recall": 0.9018452380952382,
+    "octaveErrors": 0,
+    "ghosts": 19,
+    "missed": 12,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 4,
+      "recall": 5.75
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 4.053571428571429
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 5,
+      "recall": 8.233333333333334
+     }
+    }
+   },
+   "tracker": {
+    "voicings": 20,
+    "exact": 3,
+    "exactRate": 0.15,
+    "sameVerdict": 4,
+    "verdictRate": 0.2,
+    "precision": 0.8923214285714286,
+    "recall": 0.8764285714285716,
+    "octaveErrors": 0,
+    "ghosts": 13,
+    "missed": 15,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 2,
+      "recall": 5.5
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 0,
+      "recall": 3.928571428571429
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 1,
+      "recall": 8.1
+     }
+    }
+   },
+   "oracle": {
+    "voicings": 20,
+    "exact": 10,
+    "exactRate": 0.5,
+    "sameVerdict": 10,
+    "verdictRate": 0.5,
+    "precision": 0.5,
+    "recall": 0.5,
+    "octaveErrors": 0,
+    "ghosts": 0,
+    "missed": 59,
+    "bySize": {
+     "3-4 notes": {
+      "n": 6,
+      "exact": 4,
+      "recall": 4
+     },
+     "7+ notes": {
+      "n": 5,
+      "exact": 1,
+      "recall": 1
+     },
+     "5-6 notes": {
+      "n": 9,
+      "exact": 5,
+      "recall": 5
+     }
+    }
+   },
+   "best": "flat @0.4"
+  }
+ },
+ "rows": [
+  {
+   "id": "g02",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "E7",
+   "size": 4,
+   "lowest": 52,
+   "highest": 62,
+   "truth": [
+    52,
+    56,
+    59,
+    62
+   ],
+   "window": {
+    "fromSec": 0.5539000000000087,
+    "toSec": 1.5539000000000087
+   },
+   "ms": 11007,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g07",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "Cmaj7",
+   "size": 4,
+   "lowest": 55,
+   "highest": 64,
+   "truth": [
+    55,
+    59,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 0.3937999999999884,
+    "toSec": 0.5937999999999883
+   },
+   "ms": 3302,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      55,
+      59,
+      64,
+      98
+     ],
+     "exact": false,
+     "missing": [
+      60
+     ],
+     "extra": [
+      98
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      98
+     ],
+     "precision": 0.75,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g34",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "F7",
+   "size": 8,
+   "lowest": 41,
+   "highest": 69,
+   "truth": [
+    41,
+    50,
+    51,
+    55,
+    57,
+    62,
+    63,
+    69
+   ],
+   "window": {
+    "fromSec": 1.864899999999965,
+    "toSec": 2.864899999999965
+   },
+   "ms": 13602,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      41,
+      50,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      51,
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.625,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      62,
+      63,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g40",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "Cmaj7",
+   "size": 5,
+   "lowest": 47,
+   "highest": 67,
+   "truth": [
+    47,
+    59,
+    62,
+    64,
+    67
+   ],
+   "window": {
+    "fromSec": 0.39920000000001166,
+    "toSec": 1.3992000000000115
+   },
+   "ms": 7078,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      47,
+      62,
+      64,
+      67
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      47,
+      62,
+      64,
+      67
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      47,
+      62,
+      64,
+      67
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      47,
+      62,
+      64,
+      67
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g43",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "F7",
+   "size": 5,
+   "lowest": 41,
+   "highest": 69,
+   "truth": [
+    41,
+    57,
+    62,
+    63,
+    69
+   ],
+   "window": {
+    "fromSec": 0.38109999999997674,
+    "toSec": 1.3810999999999767
+   },
+   "ms": 6586,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      41,
+      57,
+      60,
+      62,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      60
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      60
+     ],
+     "precision": 0.833,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      41,
+      57,
+      60,
+      62,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      60
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      60
+     ],
+     "precision": 0.833,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      41,
+      57,
+      60,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [
+      60
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      60
+     ],
+     "precision": 0.8,
+     "recall": 0.8,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g50",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "F#°",
+   "size": 4,
+   "lowest": 42,
+   "highest": 60,
+   "truth": [
+    42,
+    54,
+    57,
+    60
+   ],
+   "window": {
+    "fromSec": 0.3931999999999534,
+    "toSec": 1.3931999999999534
+   },
+   "ms": 6803,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      42,
+      57,
+      60
+     ],
+     "exact": false,
+     "missing": [
+      54
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      42,
+      57,
+      60
+     ],
+     "exact": false,
+     "missing": [
+      54
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      42,
+      57,
+      60
+     ],
+     "exact": false,
+     "missing": [
+      54
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      42,
+      57,
+      60
+     ],
+     "exact": false,
+     "missing": [
+      54
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g51",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "F#°",
+   "size": 5,
+   "lowest": 42,
+   "highest": 63,
+   "truth": [
+    42,
+    54,
+    57,
+    60,
+    63
+   ],
+   "window": {
+    "fromSec": 0.9394000000000233,
+    "toSec": 1.9394000000000233
+   },
+   "ms": 6972,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      42,
+      57,
+      60,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      54
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      42,
+      57,
+      60,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      54
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      42,
+      57,
+      60,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      54
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      42,
+      57,
+      60,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      54
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      42,
+      54,
+      57,
+      60,
+      63
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g54",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "Em7",
+   "size": 7,
+   "lowest": 40,
+   "highest": 64,
+   "truth": [
+    40,
+    52,
+    55,
+    57,
+    59,
+    62,
+    64
+   ],
+   "window": {
+    "fromSec": 0.43809999999997673,
+    "toSec": 1.2027999999999301
+   },
+   "ms": 6852,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      40,
+      55,
+      57,
+      59,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      52
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      40,
+      55,
+      57,
+      59,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      52
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      40,
+      55,
+      57,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      52,
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      40,
+      55,
+      57,
+      59,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      52
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      40,
+      52,
+      55,
+      57,
+      59,
+      62,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g55",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "A7",
+   "size": 5,
+   "lowest": 45,
+   "highest": 64,
+   "truth": [
+    45,
+    55,
+    57,
+    61,
+    64
+   ],
+   "window": {
+    "fromSec": 0.3826999999999534,
+    "toSec": 1.059
+   },
+   "ms": 6974,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      45,
+      55,
+      61,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      57
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      45,
+      55,
+      61,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      57
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      45,
+      55,
+      61
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.6,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      45,
+      55,
+      61,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      57
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      45,
+      55,
+      57,
+      61,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g58",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "G7",
+   "size": 5,
+   "lowest": 43,
+   "highest": 64,
+   "truth": [
+    43,
+    53,
+    57,
+    59,
+    64
+   ],
+   "window": {
+    "fromSec": 2.322,
+    "toSec": 3.322
+   },
+   "ms": 13922,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      53,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.6,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      53,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.6,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      53,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.6,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      53,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      43,
+      53,
+      57,
+      59,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g59",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "G7",
+   "size": 6,
+   "lowest": 43,
+   "highest": 64,
+   "truth": [
+    43,
+    53,
+    57,
+    59,
+    62,
+    64
+   ],
+   "window": {
+    "fromSec": 3.16270000000007,
+    "toSec": 3.92870000000007
+   },
+   "ms": 14232,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      53,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.667,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      53,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.667,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      53,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.667,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      53,
+      57,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      43,
+      53,
+      57,
+      59,
+      62,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g62",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "Dm7",
+   "size": 6,
+   "lowest": 38,
+   "highest": 64,
+   "truth": [
+    38,
+    50,
+    53,
+    57,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 0.41070000000006984,
+    "toSec": 1.1623000000000465
+   },
+   "ms": 6775,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      38,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      50
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      38,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      50
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      38,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      50
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      38,
+      53,
+      57,
+      60,
+      64,
+      98
+     ],
+     "exact": false,
+     "missing": [
+      50
+     ],
+     "extra": [
+      98
+     ],
+     "octaveErrors": [
+      [
+       50,
+       98
+      ]
+     ],
+     "ghosts": [],
+     "precision": 0.833,
+     "recall": 0.833,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g66",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "A7",
+   "size": 6,
+   "lowest": 33,
+   "highest": 67,
+   "truth": [
+    33,
+    45,
+    55,
+    58,
+    61,
+    67
+   ],
+   "window": {
+    "fromSec": 0.3989000000000233,
+    "toSec": 1.3989000000000233
+   },
+   "ms": 7064,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      33,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": false,
+     "missing": [
+      45
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      33,
+      55,
+      58,
+      61
+     ],
+     "exact": false,
+     "missing": [
+      45,
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.667,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g70",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "A7",
+   "size": 7,
+   "lowest": 45,
+   "highest": 72,
+   "truth": [
+    45,
+    55,
+    61,
+    64,
+    67,
+    69,
+    72
+   ],
+   "window": {
+    "fromSec": 0.3904000000000233,
+    "toSec": 1.3904000000000232
+   },
+   "ms": 16738,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      67,
+      69,
+      72
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g76",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "Gm7",
+   "size": 6,
+   "lowest": 43,
+   "highest": 70,
+   "truth": [
+    43,
+    50,
+    57,
+    58,
+    62,
+    70
+   ],
+   "window": {
+    "fromSec": 0.8181999999999534,
+    "toSec": 1.8181999999999534
+   },
+   "ms": 12139,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      50,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      50,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      50,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      50,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.667,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      43,
+      50,
+      57,
+      58,
+      62,
+      70
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g77",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "Gm7",
+   "size": 7,
+   "lowest": 43,
+   "highest": 70,
+   "truth": [
+    43,
+    50,
+    55,
+    57,
+    58,
+    62,
+    70
+   ],
+   "window": {
+    "fromSec": 1.1289000000000233,
+    "toSec": 2.1289000000000233
+   },
+   "ms": 8635,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      50,
+      55,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      62,
+      70
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g84",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "Fmaj7",
+   "size": 7,
+   "lowest": 41,
+   "highest": 64,
+   "truth": [
+    41,
+    48,
+    53,
+    55,
+    57,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 1.489900000000023,
+    "toSec": 2.3024999999999998
+   },
+   "ms": 8456,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      41,
+      48,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      53,
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      41,
+      48,
+      53,
+      55,
+      57,
+      60,
+      64,
+      98
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      98
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      98
+     ],
+     "precision": 0.875,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      41,
+      48,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      53,
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      41,
+      48,
+      53,
+      55,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      41,
+      48,
+      53,
+      55,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g86",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "F#°",
+   "size": 4,
+   "lowest": 29,
+   "highest": 63,
+   "truth": [
+    29,
+    57,
+    60,
+    63
+   ],
+   "window": {
+    "fromSec": 2.138,
+    "toSec": 2.338
+   },
+   "ms": 5655,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      29,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      29,
+      41,
+      48,
+      57,
+      60,
+      63
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      41,
+      48
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      41,
+      48
+     ],
+     "precision": 0.667,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      29,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      29,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      29,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g91",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "A7",
+   "size": 3,
+   "lowest": 55,
+   "highest": 64,
+   "truth": [
+    55,
+    61,
+    64
+   ],
+   "window": {
+    "fromSec": 0.37279999999993013,
+    "toSec": 1.37279999999993
+   },
+   "ms": 8604,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g92",
+   "set": "gate",
+   "chain": "direct",
+   "symbol": "Dm7",
+   "size": 4,
+   "lowest": 53,
+   "highest": 64,
+   "truth": [
+    53,
+    57,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 0.3785,
+    "toSec": 1.3785
+   },
+   "ms": 9553,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g02",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "E7",
+   "size": 4,
+   "lowest": 52,
+   "highest": 62,
+   "truth": [
+    52,
+    56,
+    59,
+    62
+   ],
+   "window": {
+    "fromSec": 0.5539000000000087,
+    "toSec": 1.5539000000000087
+   },
+   "ms": 9631,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      40,
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      40
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      40
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      40,
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      40
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      40
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      40,
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      40
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      40
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      40,
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      40
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      40
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g07",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "Cmaj7",
+   "size": 4,
+   "lowest": 55,
+   "highest": 64,
+   "truth": [
+    55,
+    59,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 0.3937999999999884,
+    "toSec": 0.5937999999999883
+   },
+   "ms": 2635,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      55,
+      59,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g34",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "F7",
+   "size": 8,
+   "lowest": 41,
+   "highest": 69,
+   "truth": [
+    41,
+    50,
+    51,
+    55,
+    57,
+    62,
+    63,
+    69
+   ],
+   "window": {
+    "fromSec": 1.864899999999965,
+    "toSec": 2.864899999999965
+   },
+   "ms": 12207,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.875,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      41,
+      50,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      51,
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.625,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      62,
+      63,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g40",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "Cmaj7",
+   "size": 5,
+   "lowest": 47,
+   "highest": 67,
+   "truth": [
+    47,
+    59,
+    62,
+    64,
+    67
+   ],
+   "window": {
+    "fromSec": 0.39920000000001166,
+    "toSec": 1.3992000000000115
+   },
+   "ms": 5863,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g43",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "F7",
+   "size": 5,
+   "lowest": 41,
+   "highest": 69,
+   "truth": [
+    41,
+    57,
+    62,
+    63,
+    69
+   ],
+   "window": {
+    "fromSec": 0.38109999999997674,
+    "toSec": 1.3810999999999767
+   },
+   "ms": 6529,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      41,
+      57,
+      62,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      63
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g50",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "F#°",
+   "size": 4,
+   "lowest": 42,
+   "highest": 60,
+   "truth": [
+    42,
+    54,
+    57,
+    60
+   ],
+   "window": {
+    "fromSec": 0.3931999999999534,
+    "toSec": 1.3931999999999534
+   },
+   "ms": 6725,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g51",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "F#°",
+   "size": 5,
+   "lowest": 42,
+   "highest": 63,
+   "truth": [
+    42,
+    54,
+    57,
+    60,
+    63
+   ],
+   "window": {
+    "fromSec": 0.9394000000000233,
+    "toSec": 1.9394000000000233
+   },
+   "ms": 6683,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.833,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g54",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "Em7",
+   "size": 7,
+   "lowest": 40,
+   "highest": 64,
+   "truth": [
+    40,
+    52,
+    55,
+    57,
+    59,
+    62,
+    64
+   ],
+   "window": {
+    "fromSec": 0.43809999999997673,
+    "toSec": 1.2027999999999301
+   },
+   "ms": 6172,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      40,
+      55,
+      57,
+      59,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      52
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      40,
+      55,
+      57,
+      59,
+      62,
+      64,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      52
+     ],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.857,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      40,
+      43,
+      50,
+      52,
+      55,
+      57,
+      59,
+      62,
+      64,
+      67,
+      68,
+      69,
+      74,
+      76,
+      81,
+      86,
+      88,
+      91
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      43,
+      50,
+      67,
+      68,
+      69,
+      74,
+      76,
+      81,
+      86,
+      88,
+      91
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      43,
+      50,
+      67,
+      68,
+      69,
+      74,
+      76,
+      81,
+      86,
+      88,
+      91
+     ],
+     "precision": 0.389,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      40,
+      55,
+      57,
+      59,
+      62,
+      64,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      52
+     ],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.857,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      40,
+      52,
+      55,
+      57,
+      59,
+      62,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g55",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "A7",
+   "size": 5,
+   "lowest": 45,
+   "highest": 64,
+   "truth": [
+    45,
+    55,
+    57,
+    61,
+    64
+   ],
+   "window": {
+    "fromSec": 0.3826999999999534,
+    "toSec": 1.059
+   },
+   "ms": 6661,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      45,
+      55,
+      61
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.6,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      45,
+      55,
+      61
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.6,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      45,
+      55,
+      61
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.6,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      45,
+      55,
+      57,
+      61,
+      64,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.833,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      45,
+      55,
+      57,
+      61,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g58",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "G7",
+   "size": 5,
+   "lowest": 43,
+   "highest": 64,
+   "truth": [
+    43,
+    53,
+    57,
+    59,
+    64
+   ],
+   "window": {
+    "fromSec": 2.322,
+    "toSec": 3.322
+   },
+   "ms": 12004,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      53,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      53,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      53,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      53,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      43,
+      53,
+      57,
+      59,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g59",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "G7",
+   "size": 6,
+   "lowest": 43,
+   "highest": 64,
+   "truth": [
+    43,
+    53,
+    57,
+    59,
+    62,
+    64
+   ],
+   "window": {
+    "fromSec": 3.16270000000007,
+    "toSec": 3.92870000000007
+   },
+   "ms": 11664,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      53,
+      57,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      53,
+      57,
+      62,
+      64,
+      74
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [
+      74
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      74
+     ],
+     "precision": 0.833,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      53,
+      57,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      53,
+      57,
+      62,
+      64,
+      74
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [
+      74
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      74
+     ],
+     "precision": 0.833,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      43,
+      53,
+      57,
+      59,
+      62,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g62",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "Dm7",
+   "size": 6,
+   "lowest": 38,
+   "highest": 64,
+   "truth": [
+    38,
+    50,
+    53,
+    57,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 0.41070000000006984,
+    "toSec": 1.1623000000000465
+   },
+   "ms": 5442,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64,
+      91
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      91
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      91
+     ],
+     "precision": 0.857,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g66",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "A7",
+   "size": 6,
+   "lowest": 33,
+   "highest": 67,
+   "truth": [
+    33,
+    45,
+    55,
+    58,
+    61,
+    67
+   ],
+   "window": {
+    "fromSec": 0.3989000000000233,
+    "toSec": 1.3989000000000233
+   },
+   "ms": 6124,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g70",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "A7",
+   "size": 7,
+   "lowest": 45,
+   "highest": 72,
+   "truth": [
+    45,
+    55,
+    61,
+    64,
+    67,
+    69,
+    72
+   ],
+   "window": {
+    "fromSec": 0.3904000000000233,
+    "toSec": 1.3904000000000232
+   },
+   "ms": 12585,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      67,
+      69,
+      72
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g76",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "Gm7",
+   "size": 6,
+   "lowest": 43,
+   "highest": 70,
+   "truth": [
+    43,
+    50,
+    57,
+    58,
+    62,
+    70
+   ],
+   "window": {
+    "fromSec": 0.8181999999999534,
+    "toSec": 1.8181999999999534
+   },
+   "ms": 8333,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      50,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      50,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      50,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      50,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.667,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      43,
+      50,
+      57,
+      58,
+      62,
+      70
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g77",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "Gm7",
+   "size": 7,
+   "lowest": 43,
+   "highest": 70,
+   "truth": [
+    43,
+    50,
+    55,
+    57,
+    58,
+    62,
+    70
+   ],
+   "window": {
+    "fromSec": 1.1289000000000233,
+    "toSec": 2.1289000000000233
+   },
+   "ms": 9051,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      58,
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      62,
+      70
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g84",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "Fmaj7",
+   "size": 7,
+   "lowest": 41,
+   "highest": 64,
+   "truth": [
+    41,
+    48,
+    53,
+    55,
+    57,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 1.489900000000023,
+    "toSec": 2.3024999999999998
+   },
+   "ms": 9475,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      41,
+      48,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      53,
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      41,
+      48,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      53,
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      41,
+      48,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      53,
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      41,
+      48,
+      53,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      41,
+      48,
+      53,
+      55,
+      57,
+      60,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g86",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "F#°",
+   "size": 4,
+   "lowest": 29,
+   "highest": 63,
+   "truth": [
+    29,
+    57,
+    60,
+    63
+   ],
+   "window": {
+    "fromSec": 2.138,
+    "toSec": 2.338
+   },
+   "ms": 6043,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      29,
+      57,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      60
+     ],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.75,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      29,
+      48,
+      57,
+      60,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      48,
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      48,
+      69
+     ],
+     "precision": 0.667,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      29,
+      48,
+      57,
+      60,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      48,
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      48,
+      69
+     ],
+     "precision": 0.667,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      29,
+      57,
+      60,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      29,
+      57,
+      60,
+      63
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g91",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "A7",
+   "size": 3,
+   "lowest": 55,
+   "highest": 64,
+   "truth": [
+    55,
+    61,
+    64
+   ],
+   "window": {
+    "fromSec": 0.37279999999993013,
+    "toSec": 1.37279999999993
+   },
+   "ms": 9170,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g92",
+   "set": "gate",
+   "chain": "laptop",
+   "symbol": "Dm7",
+   "size": 4,
+   "lowest": 53,
+   "highest": 64,
+   "truth": [
+    53,
+    57,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 0.3785,
+    "toSec": 1.3785
+   },
+   "ms": 9134,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g02",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "E7",
+   "size": 4,
+   "lowest": 52,
+   "highest": 62,
+   "truth": [
+    52,
+    56,
+    59,
+    62
+   ],
+   "window": {
+    "fromSec": 0.5539000000000087,
+    "toSec": 1.5539000000000087
+   },
+   "ms": 8501,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      40,
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      40
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      40
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      40,
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      40
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      40
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      40,
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      40
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      40
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      40,
+      52,
+      56,
+      59,
+      62
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      40
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      40
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      52,
+      56,
+      59,
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g07",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "Cmaj7",
+   "size": 4,
+   "lowest": 55,
+   "highest": 64,
+   "truth": [
+    55,
+    59,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 0.3937999999999884,
+    "toSec": 0.5937999999999883
+   },
+   "ms": 2945,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      55,
+      60,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      55,
+      59,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g34",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "F7",
+   "size": 8,
+   "lowest": 41,
+   "highest": 69,
+   "truth": [
+    41,
+    50,
+    51,
+    55,
+    57,
+    62,
+    63,
+    69
+   ],
+   "window": {
+    "fromSec": 1.864899999999965,
+    "toSec": 2.864899999999965
+   },
+   "ms": 10918,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      50,
+      51,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      41,
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.625,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.875,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      50,
+      51,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      41,
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.625,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      50,
+      55,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      41,
+      51,
+      62,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.5,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      41,
+      50,
+      51,
+      55,
+      57,
+      62,
+      63,
+      69
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g40",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "Cmaj7",
+   "size": 5,
+   "lowest": 47,
+   "highest": 67,
+   "truth": [
+    47,
+    59,
+    62,
+    64,
+    67
+   ],
+   "window": {
+    "fromSec": 0.39920000000001166,
+    "toSec": 1.3992000000000115
+   },
+   "ms": 5320,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      47,
+      55,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      55
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      55
+     ],
+     "precision": 0.833,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      47,
+      59,
+      62,
+      64,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g43",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "F7",
+   "size": 5,
+   "lowest": 41,
+   "highest": 69,
+   "truth": [
+    41,
+    57,
+    62,
+    63,
+    69
+   ],
+   "window": {
+    "fromSec": 0.38109999999997674,
+    "toSec": 1.3810999999999767
+   },
+   "ms": 5293,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      41,
+      57,
+      62,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      63
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      41,
+      57,
+      62,
+      63,
+      69
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g50",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "F#°",
+   "size": 4,
+   "lowest": 42,
+   "highest": 60,
+   "truth": [
+    42,
+    54,
+    57,
+    60
+   ],
+   "window": {
+    "fromSec": 0.3931999999999534,
+    "toSec": 1.3931999999999534
+   },
+   "ms": 6221,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      42,
+      54,
+      57,
+      60
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g51",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "F#°",
+   "size": 5,
+   "lowest": 42,
+   "highest": 63,
+   "truth": [
+    42,
+    54,
+    57,
+    60,
+    63
+   ],
+   "window": {
+    "fromSec": 0.9394000000000233,
+    "toSec": 1.9394000000000233
+   },
+   "ms": 6459,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.833,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.833,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      42,
+      54,
+      57,
+      60,
+      63
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g54",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "Em7",
+   "size": 7,
+   "lowest": 40,
+   "highest": 64,
+   "truth": [
+    40,
+    52,
+    55,
+    57,
+    59,
+    62,
+    64
+   ],
+   "window": {
+    "fromSec": 0.43809999999997673,
+    "toSec": 1.2027999999999301
+   },
+   "ms": 7038,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      40,
+      55,
+      57,
+      59,
+      62,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      52
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      40,
+      52,
+      55,
+      57,
+      59,
+      62,
+      64,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.875,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      40,
+      52,
+      55,
+      57,
+      59,
+      62,
+      64,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.875,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      40,
+      52,
+      55,
+      57,
+      59,
+      62,
+      64,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.875,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      40,
+      52,
+      55,
+      57,
+      59,
+      62,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g55",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "A7",
+   "size": 5,
+   "lowest": 45,
+   "highest": 64,
+   "truth": [
+    45,
+    55,
+    57,
+    61,
+    64
+   ],
+   "window": {
+    "fromSec": 0.3826999999999534,
+    "toSec": 1.059
+   },
+   "ms": 6166,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      45,
+      55,
+      61
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.6,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      45,
+      55,
+      57,
+      61,
+      64,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.833,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      45,
+      55,
+      61
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.6,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      45,
+      55,
+      57,
+      61,
+      64,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.833,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      45,
+      55,
+      57,
+      61,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g58",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "G7",
+   "size": 5,
+   "lowest": 43,
+   "highest": 64,
+   "truth": [
+    43,
+    53,
+    57,
+    59,
+    64
+   ],
+   "window": {
+    "fromSec": 2.322,
+    "toSec": 3.322
+   },
+   "ms": 11765,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      53,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      53,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      53,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      31,
+      43,
+      53,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [
+      31
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      31
+     ],
+     "precision": 0.8,
+     "recall": 0.8,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      43,
+      53,
+      57,
+      59,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g59",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "G7",
+   "size": 6,
+   "lowest": 43,
+   "highest": 64,
+   "truth": [
+    43,
+    53,
+    57,
+    59,
+    62,
+    64
+   ],
+   "window": {
+    "fromSec": 3.16270000000007,
+    "toSec": 3.92870000000007
+   },
+   "ms": 12024,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      53,
+      57,
+      62,
+      64,
+      74
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [
+      74
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      74
+     ],
+     "precision": 0.833,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      53,
+      57,
+      62,
+      64,
+      74
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [
+      74
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      74
+     ],
+     "precision": 0.833,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      29,
+      31,
+      41,
+      43,
+      45,
+      50,
+      53,
+      55,
+      57,
+      59,
+      62,
+      64,
+      67,
+      69,
+      71,
+      74,
+      76,
+      77,
+      81,
+      83,
+      86,
+      88
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      29,
+      31,
+      41,
+      45,
+      50,
+      55,
+      67,
+      69,
+      71,
+      74,
+      76,
+      77,
+      81,
+      83,
+      86,
+      88
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      29,
+      31,
+      41,
+      45,
+      50,
+      55,
+      67,
+      69,
+      71,
+      74,
+      76,
+      77,
+      81,
+      83,
+      86,
+      88
+     ],
+     "precision": 0.273,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      31,
+      43,
+      53,
+      57,
+      62,
+      64,
+      74
+     ],
+     "exact": false,
+     "missing": [
+      59
+     ],
+     "extra": [
+      31,
+      74
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      31,
+      74
+     ],
+     "precision": 0.714,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      43,
+      53,
+      57,
+      59,
+      62,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g62",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "Dm7",
+   "size": 6,
+   "lowest": 38,
+   "highest": 64,
+   "truth": [
+    38,
+    50,
+    53,
+    57,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 0.41070000000006984,
+    "toSec": 1.1623000000000465
+   },
+   "ms": 5704,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      38,
+      41,
+      45,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      41,
+      45
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      41,
+      45
+     ],
+     "precision": 0.75,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      38,
+      50,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g66",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "A7",
+   "size": 6,
+   "lowest": 33,
+   "highest": 67,
+   "truth": [
+    33,
+    45,
+    55,
+    58,
+    61,
+    67
+   ],
+   "window": {
+    "fromSec": 0.3989000000000233,
+    "toSec": 1.3989000000000233
+   },
+   "ms": 5960,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      33,
+      45,
+      55,
+      58,
+      61,
+      67
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g70",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "A7",
+   "size": 7,
+   "lowest": 45,
+   "highest": 72,
+   "truth": [
+    45,
+    55,
+    61,
+    64,
+    67,
+    69,
+    72
+   ],
+   "window": {
+    "fromSec": 0.3904000000000233,
+    "toSec": 1.3904000000000232
+   },
+   "ms": 11860,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      69,
+      72
+     ],
+     "exact": false,
+     "missing": [
+      67
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      45,
+      55,
+      61,
+      64,
+      67,
+      69,
+      72
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g76",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "Gm7",
+   "size": 6,
+   "lowest": 43,
+   "highest": 70,
+   "truth": [
+    43,
+    50,
+    57,
+    58,
+    62,
+    70
+   ],
+   "window": {
+    "fromSec": 0.8181999999999534,
+    "toSec": 1.8181999999999534
+   },
+   "ms": 8657,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      50,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      50,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      50,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.833,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      50,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.667,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      43,
+      50,
+      57,
+      58,
+      62,
+      70
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g77",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "Gm7",
+   "size": 7,
+   "lowest": 43,
+   "highest": 70,
+   "truth": [
+    43,
+    50,
+    55,
+    57,
+    58,
+    62,
+    70
+   ],
+   "window": {
+    "fromSec": 1.1289000000000233,
+    "toSec": 2.1289000000000233
+   },
+   "ms": 8789,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      43,
+      50,
+      55,
+      58,
+      70
+     ],
+     "exact": false,
+     "missing": [
+      57,
+      62
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      43,
+      50,
+      55,
+      57,
+      58,
+      62,
+      70
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g84",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "Fmaj7",
+   "size": 7,
+   "lowest": 41,
+   "highest": 64,
+   "truth": [
+    41,
+    48,
+    53,
+    55,
+    57,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 1.489900000000023,
+    "toSec": 2.3024999999999998
+   },
+   "ms": 8779,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      41,
+      48,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      53,
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      41,
+      48,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      53,
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      41,
+      48,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      53,
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.714,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      29,
+      41,
+      48,
+      53,
+      55,
+      57,
+      64
+     ],
+     "exact": false,
+     "missing": [
+      60
+     ],
+     "extra": [
+      29
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      29
+     ],
+     "precision": 0.857,
+     "recall": 0.857,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      41,
+      48,
+      53,
+      55,
+      57,
+      60,
+      64
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g86",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "F#°",
+   "size": 4,
+   "lowest": 29,
+   "highest": 63,
+   "truth": [
+    29,
+    57,
+    60,
+    63
+   ],
+   "window": {
+    "fromSec": 2.138,
+    "toSec": 2.338
+   },
+   "ms": 6013,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      29,
+      57,
+      63
+     ],
+     "exact": false,
+     "missing": [
+      60
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "gap 0.12": {
+     "heard": [
+      29,
+      48,
+      57,
+      60,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      48,
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      48,
+      69
+     ],
+     "precision": 0.667,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "cliff 0.12": {
+     "heard": [
+      29,
+      57,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      60
+     ],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.75,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "tracker": {
+     "heard": [
+      29,
+      57,
+      63,
+      69
+     ],
+     "exact": false,
+     "missing": [
+      60
+     ],
+     "extra": [
+      69
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      69
+     ],
+     "precision": 0.75,
+     "recall": 0.75,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [],
+     "exact": false,
+     "missing": [
+      29,
+      57,
+      60,
+      63
+     ],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 0,
+     "recall": 0,
+     "sameVerdict": false
+    }
+   }
+  },
+  {
+   "id": "g91",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "A7",
+   "size": 3,
+   "lowest": 55,
+   "highest": 64,
+   "truth": [
+    55,
+    61,
+    64
+   ],
+   "window": {
+    "fromSec": 0.37279999999993013,
+    "toSec": 1.37279999999993
+   },
+   "ms": 8906,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "oracle": {
+     "heard": [
+      55,
+      61,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  },
+  {
+   "id": "g92",
+   "set": "gate",
+   "chain": "harsh",
+   "symbol": "Dm7",
+   "size": 4,
+   "lowest": 53,
+   "highest": 64,
+   "truth": [
+    53,
+    57,
+    60,
+    64
+   ],
+   "window": {
+    "fromSec": 0.3785,
+    "toSec": 1.3785
+   },
+   "ms": 9446,
+   "readings": {
+    "flat @0.4": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "gap 0.12": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "cliff 0.12": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    },
+    "tracker": {
+     "heard": [
+      41,
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": false,
+     "missing": [],
+     "extra": [
+      41
+     ],
+     "octaveErrors": [],
+     "ghosts": [
+      41
+     ],
+     "precision": 0.8,
+     "recall": 1,
+     "sameVerdict": false
+    },
+    "oracle": {
+     "heard": [
+      53,
+      57,
+      60,
+      64
+     ],
+     "exact": true,
+     "missing": [],
+     "extra": [],
+     "octaveErrors": [],
+     "ghosts": [],
+     "precision": 1,
+     "recall": 1,
+     "sameVerdict": true
+    }
+   }
+  }
+ ]
+}

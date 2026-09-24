@@ -52,8 +52,10 @@ mult cod — se repară ipoteza.
 - [x] Spargerea lui `CLAUDE.md` în reguli / jurnal / specificații.
 - [ ] Faza 4 integral: demo mode, claviatură pe ecran, `audio/synth.js`, repo public, Pages,
   Worker publicat.
-- [ ] Prototip de intrare pe microfon cu `basic-pitch-ts`, măsurat pe 20 de voicings.
-  Prag de acceptare: peste 90% identificate corect **cu octava exactă**.
+- [x] Prototip de intrare pe microfon cu `basic-pitch-ts`, măsurat pe 20 de voicings.
+  Prag de acceptare: peste 90% identificate corect **cu octava exactă**. **Măsurat 2026-09-24:
+  45%**, cu tavan de 72% pe 93 de voicings — pragul nu trece, modul microfon din P4 rămâne
+  închis. Verdictul și metoda: [docs/spec-mic.md](spec-mic.md).
 
 **DoD:** demo-ul public merge fără clapă; harness-ul reia o sesiune înregistrată și raportează;
 verdictul microfonului e scris în jurnal.

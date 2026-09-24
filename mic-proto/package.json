@@ -1,0 +1,14 @@
+{
+  "name": "sidekeys-mic-proto",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Throwaway measuring instrument: can basic-pitch read a held piano voicing with the exact octave? Lives outside src/ and ships nothing to the app.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "measure": "node measure.js"
+  },
+  "devDependencies": {
+    "@spotify/basic-pitch": "1.0.1"
+  }
+}

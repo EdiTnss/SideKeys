@@ -1,0 +1,6077 @@
+[
+ {
+  "id": "g01",
+  "symbol": "E7",
+  "notes": [
+   40,
+   44,
+   47,
+   50
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [
+    [
+     40,
+     44
+    ],
+    [
+     44,
+     47
+    ],
+    [
+     47,
+     50
+    ]
+   ],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 40,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 3.5110999999999915
+   },
+   {
+    "note": 44,
+    "velocity": 51,
+    "onSec": 0.1656999999999971,
+    "offSec": 3.550300000000003
+   },
+   {
+    "note": 47,
+    "velocity": 52,
+    "onSec": 0.32,
+    "offSec": 3.555300000000003
+   },
+   {
+    "note": 50,
+    "velocity": 55,
+    "onSec": 0.4638999999999942,
+    "offSec": 3.608
+   }
+  ],
+  "judgedAtSec": 0.7668000000000029,
+  "spreadSec": 0.4638999999999942,
+  "lowest": 40,
+  "highest": 50,
+  "size": 4,
+  "hasProblem": false,
+  "set": "tune"
+ },
+ {
+  "id": "g02",
+  "symbol": "E7",
+  "notes": [
+   52,
+   56,
+   59,
+   62
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 52,
+    "velocity": 47,
+    "onSec": 0,
+    "offSec": 3.4689000000000085
+   },
+   {
+    "note": 56,
+    "velocity": 50,
+    "onSec": 0.08540000000000873,
+    "offSec": 3.3759000000000086
+   },
+   {
+    "note": 59,
+    "velocity": 47,
+    "onSec": 0.14290000000000874,
+    "offSec": 3.345600000000006
+   },
+   {
+    "note": 62,
+    "velocity": 43,
+    "onSec": 0.18390000000000872,
+    "offSec": 3.32
+   }
+  ],
+  "judgedAtSec": 0.4854000000000087,
+  "spreadSec": 0.18390000000000872,
+  "lowest": 52,
+  "highest": 62,
+  "size": 4,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g03",
+  "symbol": "E7",
+  "notes": [
+   50,
+   52,
+   56,
+   59
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 50,
+    "velocity": 42,
+    "onSec": 0.007900000000008732,
+    "offSec": 1.6271000000000058
+   },
+   {
+    "note": 52,
+    "velocity": 50,
+    "onSec": 0.00610000000000582,
+    "offSec": 1.5741000000000058
+   },
+   {
+    "note": 56,
+    "velocity": 47,
+    "onSec": 0.012900000000008731,
+    "offSec": 1.597
+   },
+   {
+    "note": 59,
+    "velocity": 39,
+    "onSec": 0,
+    "offSec": 1.622
+   }
+  ],
+  "judgedAtSec": 0.3138000000000029,
+  "spreadSec": 0.012900000000008731,
+  "lowest": 50,
+  "highest": 59,
+  "size": 4,
+  "hasProblem": false,
+  "set": "tune"
+ },
+ {
+  "id": "g04",
+  "symbol": "Cmaj7",
+  "notes": [
+   43,
+   47,
+   48,
+   52
+  ],
+  "verdict": {
+   "type": "shell",
+   "bass": "5",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [
+    [
+     47,
+     48
+    ]
+   ],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 47,
+    "onSec": 0.0028999999999941794,
+    "offSec": 1.996699999999997
+   },
+   {
+    "note": 47,
+    "velocity": 49,
+    "onSec": 0.0015,
+    "offSec": 1.9538000000000029
+   },
+   {
+    "note": 48,
+    "velocity": 52,
+    "onSec": 0.0001999999999970896,
+    "offSec": 1.940899999999994
+   },
+   {
+    "note": 52,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 1.906
+   }
+  ],
+  "judgedAtSec": 0.3041999999999971,
+  "spreadSec": 0.0028999999999941794,
+  "lowest": 43,
+  "highest": 52,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g05",
+  "symbol": "Cmaj7",
+  "notes": [
+   43,
+   47,
+   48,
+   52
+  ],
+  "verdict": {
+   "type": "shell",
+   "bass": "5",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [
+    [
+     47,
+     48
+    ]
+   ],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 51,
+    "onSec": 0,
+    "offSec": 0.8
+   },
+   {
+    "note": 47,
+    "velocity": 52,
+    "onSec": 0.1281999999999971,
+    "offSec": 0.7773000000000029
+   },
+   {
+    "note": 48,
+    "velocity": 46,
+    "onSec": 0.22630000000000292,
+    "offSec": 0.8200999999999913
+   },
+   {
+    "note": 52,
+    "velocity": 42,
+    "onSec": 0.3280999999999913,
+    "offSec": 0.7773999999999942
+   }
+  ],
+  "judgedAtSec": 0.6295,
+  "spreadSec": 0.3280999999999913,
+  "lowest": 43,
+  "highest": 52,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g06",
+  "symbol": "Cmaj7",
+  "notes": [
+   43,
+   47,
+   48,
+   52
+  ],
+  "verdict": {
+   "type": "shell",
+   "bass": "5",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [
+    [
+     47,
+     48
+    ]
+   ],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 40,
+    "onSec": 0.0038999999999941794,
+    "offSec": 1.065
+   },
+   {
+    "note": 47,
+    "velocity": 45,
+    "onSec": 0.007,
+    "offSec": 1.0078999999999942
+   },
+   {
+    "note": 48,
+    "velocity": 47,
+    "onSec": 0.00910000000000582,
+    "offSec": 1.0068999999999941
+   },
+   {
+    "note": 52,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 0.8968999999999941
+   }
+  ],
+  "judgedAtSec": 0.3113999999999942,
+  "spreadSec": 0.00910000000000582,
+  "lowest": 43,
+  "highest": 52,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g07",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   59,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "shell",
+   "bass": "5",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 22,
+    "onSec": 0,
+    "offSec": 0.28779999999998834
+   },
+   {
+    "note": 59,
+    "velocity": 23,
+    "onSec": 0.008,
+    "offSec": 0.2718999999999942
+   },
+   {
+    "note": 60,
+    "velocity": 26,
+    "onSec": 0.010799999999988359,
+    "offSec": 0.2836999999999825
+   },
+   {
+    "note": 64,
+    "velocity": 24,
+    "onSec": 0.023799999999988358,
+    "offSec": 0.30979999999998836
+   }
+  ],
+  "judgedAtSec": 0.3258999999999942,
+  "spreadSec": 0.023799999999988358,
+  "lowest": 55,
+  "highest": 64,
+  "size": 4,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g08",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   59,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "shell",
+   "bass": "5",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 41,
+    "onSec": 0.0008999999999941792,
+    "offSec": 0.308
+   },
+   {
+    "note": 59,
+    "velocity": 40,
+    "onSec": 0,
+    "offSec": 0.28010000000000584
+   },
+   {
+    "note": 60,
+    "velocity": 48,
+    "onSec": 0.0017999999999883584,
+    "offSec": 0.2706999999999825
+   },
+   {
+    "note": 64,
+    "velocity": 45,
+    "onSec": 0.0027999999999883587,
+    "offSec": 0.30129999999998835
+   }
+  ],
+  "judgedAtSec": 0.30469999999998254,
+  "spreadSec": 0.0027999999999883587,
+  "lowest": 55,
+  "highest": 64,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g09",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   59,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "shell",
+   "bass": "5",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 41,
+    "onSec": 0.0026000000000058207,
+    "offSec": 0.8187000000000116
+   },
+   {
+    "note": 59,
+    "velocity": 37,
+    "onSec": 0,
+    "offSec": 0.8997000000000116
+   },
+   {
+    "note": 60,
+    "velocity": 45,
+    "onSec": 0.0033999999999941794,
+    "offSec": 0.9127000000000116
+   },
+   {
+    "note": 64,
+    "velocity": 46,
+    "onSec": 0.0017000000000116416,
+    "offSec": 0.8566000000000058
+   }
+  ],
+  "judgedAtSec": 0.3048999999999942,
+  "spreadSec": 0.0033999999999941794,
+  "lowest": 55,
+  "highest": 64,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g10",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   59,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "shell",
+   "bass": "5",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 53,
+    "onSec": 0,
+    "offSec": 0.544
+   },
+   {
+    "note": 59,
+    "velocity": 46,
+    "onSec": 0.079,
+    "offSec": 0.764
+   },
+   {
+    "note": 60,
+    "velocity": 53,
+    "onSec": 0.08510000000000582,
+    "offSec": 0.777
+   },
+   {
+    "note": 64,
+    "velocity": 51,
+    "onSec": 0.16010000000000582,
+    "offSec": 0.5448999999999942
+   }
+  ],
+  "judgedAtSec": 0.46110000000000584,
+  "spreadSec": 0.16010000000000582,
+  "lowest": 55,
+  "highest": 64,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g11",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   59,
+   60,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 59,
+    "onSec": 0,
+    "offSec": 2.173100000000006
+   },
+   {
+    "note": 59,
+    "velocity": 69,
+    "onSec": 0.152,
+    "offSec": 2.1748999999999943
+   },
+   {
+    "note": 60,
+    "velocity": 72,
+    "onSec": 0.2728999999999942,
+    "offSec": 2.193899999999994
+   },
+   {
+    "note": 62,
+    "velocity": 47,
+    "onSec": 0.403,
+    "offSec": 2.190299999999988
+   },
+   {
+    "note": 64,
+    "velocity": 62,
+    "onSec": 0.5497999999999884,
+    "offSec": 2.1921000000000057
+   }
+  ],
+  "judgedAtSec": 0.8507999999999883,
+  "spreadSec": 0.5497999999999884,
+  "lowest": 55,
+  "highest": 64,
+  "size": 5,
+  "hasProblem": false,
+  "set": "tune"
+ },
+ {
+  "id": "g12",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   59,
+   60,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 46,
+    "onSec": 0.0045,
+    "offSec": 1.4605
+   },
+   {
+    "note": 59,
+    "velocity": 40,
+    "onSec": 0,
+    "offSec": 1.418399999999994
+   },
+   {
+    "note": 60,
+    "velocity": 45,
+    "onSec": 0.011600000000005821,
+    "offSec": 1.3933999999999942
+   },
+   {
+    "note": 62,
+    "velocity": 41,
+    "onSec": 0.01260000000000582,
+    "offSec": 1.4473999999999942
+   },
+   {
+    "note": 64,
+    "velocity": 43,
+    "onSec": 0.01060000000000582,
+    "offSec": 1.4403999999999941
+   }
+  ],
+  "judgedAtSec": 0.3138999999999942,
+  "spreadSec": 0.01260000000000582,
+  "lowest": 55,
+  "highest": 64,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g13",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   57,
+   59,
+   60,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 24,
+    "onSec": 0.012099999999976716,
+    "offSec": 1.6457999999999884
+   },
+   {
+    "note": 57,
+    "velocity": 23,
+    "onSec": 0.012,
+    "offSec": 1.596
+   },
+   {
+    "note": 59,
+    "velocity": 19,
+    "onSec": 0.08389999999999417,
+    "offSec": 1.579
+   },
+   {
+    "note": 60,
+    "velocity": 45,
+    "onSec": 0.017899999999994178,
+    "offSec": 1.597899999999994
+   },
+   {
+    "note": 62,
+    "velocity": 20,
+    "onSec": 0,
+    "offSec": 1.605899999999994
+   },
+   {
+    "note": 64,
+    "velocity": 23,
+    "onSec": 0.001099999999976717,
+    "offSec": 1.6008999999999942
+   }
+  ],
+  "judgedAtSec": 0.38559999999997674,
+  "spreadSec": 0.08389999999999417,
+  "lowest": 55,
+  "highest": 64,
+  "size": 6,
+  "hasProblem": false,
+  "set": "tune"
+ },
+ {
+  "id": "g14",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   57,
+   59,
+   60,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 23,
+    "onSec": 0.003,
+    "offSec": 1.08
+   },
+   {
+    "note": 57,
+    "velocity": 32,
+    "onSec": 0.016,
+    "offSec": 1.0706999999999824
+   },
+   {
+    "note": 59,
+    "velocity": 46,
+    "onSec": 0.02079999999998836,
+    "offSec": 1.0690999999999766
+   },
+   {
+    "note": 60,
+    "velocity": 38,
+    "onSec": 0.006699999999982538,
+    "offSec": 1.0807999999999884
+   },
+   {
+    "note": 62,
+    "velocity": 25,
+    "onSec": 0,
+    "offSec": 1.098
+   },
+   {
+    "note": 64,
+    "velocity": 34,
+    "onSec": 0.004799999999988359,
+    "offSec": 1.093899999999994
+   }
+  ],
+  "judgedAtSec": 0.32219999999998256,
+  "spreadSec": 0.02079999999998836,
+  "lowest": 55,
+  "highest": 64,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g15",
+  "symbol": "Cmaj7",
+  "notes": [
+   31,
+   33
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [
+    4,
+    11
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [
+    [
+     31,
+     33
+    ]
+   ],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 31,
+    "velocity": 50,
+    "onSec": 0.005800000000017462,
+    "offSec": 0.153
+   },
+   {
+    "note": 33,
+    "velocity": 40,
+    "onSec": 0,
+    "offSec": 0.15810000000000582
+   }
+  ],
+  "judgedAtSec": 0.31470000000001164,
+  "spreadSec": 0.005800000000017462,
+  "lowest": 31,
+  "highest": 33,
+  "size": 2,
+  "hasProblem": true,
+  "set": "tune"
+ },
+ {
+  "id": "g16",
+  "symbol": "Cmaj7",
+  "notes": [
+   43,
+   47,
+   48,
+   50,
+   52
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [
+    [
+     47,
+     48
+    ]
+   ],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 40,
+    "onSec": 0,
+    "offSec": 0.6249000000000233
+   },
+   {
+    "note": 47,
+    "velocity": 37,
+    "onSec": 0.04390000000002328,
+    "offSec": 0.6116000000000058
+   },
+   {
+    "note": 48,
+    "velocity": 29,
+    "onSec": 0.02930000000001746,
+    "offSec": 0.6234000000000233
+   },
+   {
+    "note": 50,
+    "velocity": 32,
+    "onSec": 0.135,
+    "offSec": 0.6309000000000233
+   },
+   {
+    "note": 52,
+    "velocity": 26,
+    "onSec": 0.038900000000023284,
+    "offSec": 0.6366000000000058
+   }
+  ],
+  "judgedAtSec": 0.43670000000001163,
+  "spreadSec": 0.135,
+  "lowest": 43,
+  "highest": 52,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g17",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   59,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "shell",
+   "bass": "5",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 35,
+    "onSec": 0.01780000000001746,
+    "offSec": 0.19070000000001164
+   },
+   {
+    "note": 59,
+    "velocity": 33,
+    "onSec": 0.026800000000017463,
+    "offSec": 0.18680000000001745
+   },
+   {
+    "note": 60,
+    "velocity": 38,
+    "onSec": 0.03489999999999418,
+    "offSec": 0.1831000000000058
+   },
+   {
+    "note": 64,
+    "velocity": 38,
+    "onSec": 0,
+    "offSec": 0.19980000000001746
+   }
+  ],
+  "judgedAtSec": 0.33660000000000584,
+  "spreadSec": 0.03489999999999418,
+  "lowest": 55,
+  "highest": 64,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g18",
+  "symbol": "Ebm7",
+  "notes": [
+   51,
+   54,
+   58,
+   61
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 51,
+    "velocity": 39,
+    "onSec": 0,
+    "offSec": 3.548
+   },
+   {
+    "note": 54,
+    "velocity": 45,
+    "onSec": 0.321,
+    "offSec": 3.5690999999999766
+   },
+   {
+    "note": 58,
+    "velocity": 33,
+    "onSec": 0.5378999999999651,
+    "offSec": 3.550799999999988
+   },
+   {
+    "note": 61,
+    "velocity": 43,
+    "onSec": 0.7517999999999884,
+    "offSec": 3.519
+   }
+  ],
+  "judgedAtSec": 1.0535,
+  "spreadSec": 0.7517999999999884,
+  "lowest": 51,
+  "highest": 61,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g19",
+  "symbol": "Ebm7",
+  "notes": [
+   51,
+   54,
+   58,
+   61,
+   63
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 51,
+    "velocity": 39,
+    "onSec": 0,
+    "offSec": 3.548
+   },
+   {
+    "note": 54,
+    "velocity": 45,
+    "onSec": 0.321,
+    "offSec": 3.5690999999999766
+   },
+   {
+    "note": 58,
+    "velocity": 33,
+    "onSec": 0.5378999999999651,
+    "offSec": 3.550799999999988
+   },
+   {
+    "note": 61,
+    "velocity": 43,
+    "onSec": 0.7517999999999884,
+    "offSec": 3.519
+   },
+   {
+    "note": 63,
+    "velocity": 50,
+    "onSec": 1.126,
+    "offSec": 3.51
+   }
+  ],
+  "judgedAtSec": 1.4273999999999651,
+  "spreadSec": 1.126,
+  "lowest": 51,
+  "highest": 63,
+  "size": 5,
+  "hasProblem": false,
+  "set": "tune"
+ },
+ {
+  "id": "g20",
+  "symbol": "Ebm7",
+  "notes": [
+   51,
+   54,
+   58,
+   61,
+   63
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 51,
+    "velocity": 41,
+    "onSec": 0,
+    "offSec": 1.4640999999999766
+   },
+   {
+    "note": 54,
+    "velocity": 34,
+    "onSec": 0.055,
+    "offSec": 1.458399999999965
+   },
+   {
+    "note": 58,
+    "velocity": 31,
+    "onSec": 0.082,
+    "offSec": 1.4430999999999767
+   },
+   {
+    "note": 61,
+    "velocity": 43,
+    "onSec": 0.10120000000001164,
+    "offSec": 1.4312000000000116
+   },
+   {
+    "note": 63,
+    "velocity": 53,
+    "onSec": 0.12670000000001164,
+    "offSec": 1.4042000000000117
+   }
+  ],
+  "judgedAtSec": 0.4285,
+  "spreadSec": 0.12670000000001164,
+  "lowest": 51,
+  "highest": 63,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g21",
+  "symbol": "Amaj7",
+  "notes": [
+   45,
+   52,
+   56,
+   57,
+   61,
+   64,
+   68,
+   71
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    4,
+    8
+   ]
+  },
+  "voices": [
+   {
+    "note": 45,
+    "velocity": 46,
+    "onSec": 0,
+    "offSec": 3.013
+   },
+   {
+    "note": 52,
+    "velocity": 41,
+    "onSec": 0.13579999999998835,
+    "offSec": 2.9150999999999767
+   },
+   {
+    "note": 56,
+    "velocity": 45,
+    "onSec": 0.223,
+    "offSec": 2.8915
+   },
+   {
+    "note": 57,
+    "velocity": 26,
+    "onSec": 0.068,
+    "offSec": 3.313899999999965
+   },
+   {
+    "note": 61,
+    "velocity": 39,
+    "onSec": 0.11189999999996507,
+    "offSec": 3.176
+   },
+   {
+    "note": 64,
+    "velocity": 22,
+    "onSec": 0.11979999999998836,
+    "offSec": 3.172099999999977
+   },
+   {
+    "note": 68,
+    "velocity": 49,
+    "onSec": 0.16089999999996507,
+    "offSec": 3.191899999999965
+   },
+   {
+    "note": 71,
+    "velocity": 48,
+    "onSec": 0.4278999999999651,
+    "offSec": 3.1587999999999883
+   }
+  ],
+  "judgedAtSec": 0.7293999999999651,
+  "spreadSec": 0.4278999999999651,
+  "lowest": 45,
+  "highest": 71,
+  "size": 8,
+  "hasProblem": false,
+  "set": "tune"
+ },
+ {
+  "id": "g22",
+  "symbol": "Fm7",
+  "notes": [
+   41,
+   48,
+   55,
+   56,
+   60,
+   63,
+   68
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    0,
+    8
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 44,
+    "onSec": 0,
+    "offSec": 4.003099999999977
+   },
+   {
+    "note": 48,
+    "velocity": 38,
+    "onSec": 0.2890999999999767,
+    "offSec": 3.9430999999999767
+   },
+   {
+    "note": 55,
+    "velocity": 40,
+    "onSec": 0.5228999999999651,
+    "offSec": 3.867899999999965
+   },
+   {
+    "note": 56,
+    "velocity": 38,
+    "onSec": 0.7120999999999768,
+    "offSec": 4.168099999999977
+   },
+   {
+    "note": 60,
+    "velocity": 46,
+    "onSec": 0.885,
+    "offSec": 4.085799999999988
+   },
+   {
+    "note": 63,
+    "velocity": 48,
+    "onSec": 1.04,
+    "offSec": 4.087
+   },
+   {
+    "note": 68,
+    "velocity": 56,
+    "onSec": 1.248899999999965,
+    "offSec": 4.0980999999999765
+   }
+  ],
+  "judgedAtSec": 1.5496999999999534,
+  "spreadSec": 1.248899999999965,
+  "lowest": 41,
+  "highest": 68,
+  "size": 7,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g23",
+  "symbol": "Cm7",
+  "notes": [
+   55,
+   58,
+   60,
+   62,
+   63,
+   67,
+   70
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    10
+   ]
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 24,
+    "onSec": 0,
+    "offSec": 1.2180999999999766
+   },
+   {
+    "note": 58,
+    "velocity": 26,
+    "onSec": 0.0068999999999650756,
+    "offSec": 1.1840999999999766
+   },
+   {
+    "note": 60,
+    "velocity": 32,
+    "onSec": 0.016,
+    "offSec": 1.164
+   },
+   {
+    "note": 62,
+    "velocity": 22,
+    "onSec": 0.008799999999988359,
+    "offSec": 1.237
+   },
+   {
+    "note": 63,
+    "velocity": 26,
+    "onSec": 0.015099999999976717,
+    "offSec": 1.1867999999999883
+   },
+   {
+    "note": 67,
+    "velocity": 33,
+    "onSec": 0.017899999999965076,
+    "offSec": 1.1857999999999884
+   },
+   {
+    "note": 70,
+    "velocity": 34,
+    "onSec": 0.012799999999988359,
+    "offSec": 1.1866999999999535
+   }
+  ],
+  "judgedAtSec": 0.31959999999997674,
+  "spreadSec": 0.017899999999965076,
+  "lowest": 55,
+  "highest": 70,
+  "size": 7,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g24",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   57,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 40,
+    "onSec": 0,
+    "offSec": 4.270900000000023
+   },
+   {
+    "note": 51,
+    "velocity": 46,
+    "onSec": 0.207,
+    "offSec": 4.345900000000023
+   },
+   {
+    "note": 57,
+    "velocity": 46,
+    "onSec": 0.219,
+    "offSec": 4.391599999999976
+   },
+   {
+    "note": 62,
+    "velocity": 47,
+    "onSec": 0.22829999999998835,
+    "offSec": 4.3585
+   },
+   {
+    "note": 63,
+    "velocity": 50,
+    "onSec": 0.22490000000002328,
+    "offSec": 4.388
+   },
+   {
+    "note": 69,
+    "velocity": 55,
+    "onSec": 0.21379999999998836,
+    "offSec": 4.329
+   }
+  ],
+  "judgedAtSec": 0.5295,
+  "spreadSec": 0.22829999999998835,
+  "lowest": 41,
+  "highest": 69,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g25",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   57,
+   62,
+   63,
+   68,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 40,
+    "onSec": 0,
+    "offSec": 4.270900000000023
+   },
+   {
+    "note": 51,
+    "velocity": 46,
+    "onSec": 0.207,
+    "offSec": 4.345900000000023
+   },
+   {
+    "note": 57,
+    "velocity": 46,
+    "onSec": 0.219,
+    "offSec": 4.391599999999976
+   },
+   {
+    "note": 62,
+    "velocity": 47,
+    "onSec": 0.22829999999998835,
+    "offSec": 4.3585
+   },
+   {
+    "note": 63,
+    "velocity": 50,
+    "onSec": 0.22490000000002328,
+    "offSec": 4.388
+   },
+   {
+    "note": 68,
+    "velocity": 50,
+    "onSec": 3.109,
+    "offSec": 4.320900000000023
+   },
+   {
+    "note": 69,
+    "velocity": 55,
+    "onSec": 0.21379999999998836,
+    "offSec": 4.329
+   }
+  ],
+  "judgedAtSec": 3.4102999999999883,
+  "spreadSec": 3.109,
+  "lowest": 41,
+  "highest": 69,
+  "size": 7,
+  "hasProblem": false,
+  "set": "tune"
+ },
+ {
+  "id": "g26",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   57,
+   62,
+   63,
+   68,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 49,
+    "onSec": 0,
+    "offSec": 1.5820999999999767
+   },
+   {
+    "note": 51,
+    "velocity": 49,
+    "onSec": 0.1370999999999767,
+    "offSec": 1.591
+   },
+   {
+    "note": 57,
+    "velocity": 37,
+    "onSec": 0.146,
+    "offSec": 1.5941999999999534
+   },
+   {
+    "note": 62,
+    "velocity": 29,
+    "onSec": 0.1980999999999767,
+    "offSec": 1.5845
+   },
+   {
+    "note": 63,
+    "velocity": 40,
+    "onSec": 0.1940999999999767,
+    "offSec": 1.585899999999965
+   },
+   {
+    "note": 68,
+    "velocity": 43,
+    "onSec": 0.21409999999997673,
+    "offSec": 1.535
+   },
+   {
+    "note": 69,
+    "velocity": 46,
+    "onSec": 0.22129999999998837,
+    "offSec": 1.7010999999999767
+   }
+  ],
+  "judgedAtSec": 0.523,
+  "spreadSec": 0.22129999999998837,
+  "lowest": 41,
+  "highest": 69,
+  "size": 7,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g27",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   57,
+   62,
+   63,
+   66,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 41,
+    "onSec": 0,
+    "offSec": 1.9123000000000465
+   },
+   {
+    "note": 51,
+    "velocity": 37,
+    "onSec": 0.11720000000001164,
+    "offSec": 1.9621000000000348
+   },
+   {
+    "note": 57,
+    "velocity": 35,
+    "onSec": 0.2405,
+    "offSec": 2.0563000000000464
+   },
+   {
+    "note": 62,
+    "velocity": 34,
+    "onSec": 0.3924000000000233,
+    "offSec": 2.0313000000000465
+   },
+   {
+    "note": 63,
+    "velocity": 51,
+    "onSec": 0.5345,
+    "offSec": 2.0525
+   },
+   {
+    "note": 66,
+    "velocity": 52,
+    "onSec": 0.9134000000000233,
+    "offSec": 2.0243000000000464
+   },
+   {
+    "note": 69,
+    "velocity": 51,
+    "onSec": 0.6625,
+    "offSec": 2.0393000000000465
+   }
+  ],
+  "judgedAtSec": 1.215,
+  "spreadSec": 0.9134000000000233,
+  "lowest": 41,
+  "highest": 69,
+  "size": 7,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g28",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   57,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 1.3490999999999767
+   },
+   {
+    "note": 51,
+    "velocity": 47,
+    "onSec": 0.126,
+    "offSec": 1.5811999999999535
+   },
+   {
+    "note": 57,
+    "velocity": 53,
+    "onSec": 0.202,
+    "offSec": 1.7871999999999535
+   },
+   {
+    "note": 62,
+    "velocity": 35,
+    "onSec": 0.2210999999999767,
+    "offSec": 3.297
+   },
+   {
+    "note": 63,
+    "velocity": 41,
+    "onSec": 0.23609999999997672,
+    "offSec": 1.6850999999999767
+   },
+   {
+    "note": 69,
+    "velocity": 57,
+    "onSec": 0.28,
+    "offSec": 1.904
+   }
+  ],
+  "judgedAtSec": 0.5825,
+  "spreadSec": 0.28,
+  "lowest": 41,
+  "highest": 69,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g29",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   57,
+   62,
+   63,
+   66,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 1.3490999999999767
+   },
+   {
+    "note": 51,
+    "velocity": 47,
+    "onSec": 0.126,
+    "offSec": 1.5811999999999535
+   },
+   {
+    "note": 57,
+    "velocity": 53,
+    "onSec": 0.202,
+    "offSec": 1.7871999999999535
+   },
+   {
+    "note": 62,
+    "velocity": 35,
+    "onSec": 0.2210999999999767,
+    "offSec": 3.297
+   },
+   {
+    "note": 63,
+    "velocity": 41,
+    "onSec": 0.23609999999997672,
+    "offSec": 1.6850999999999767
+   },
+   {
+    "note": 66,
+    "velocity": 49,
+    "onSec": 0.7020999999999767,
+    "offSec": 1.7173999999999652
+   },
+   {
+    "note": 69,
+    "velocity": 57,
+    "onSec": 0.28,
+    "offSec": 1.904
+   }
+  ],
+  "judgedAtSec": 1.0036999999999534,
+  "spreadSec": 0.7020999999999767,
+  "lowest": 41,
+  "highest": 69,
+  "size": 7,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g30",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   57,
+   62,
+   65,
+   69
+  ],
+  "verdict": {
+   "type": "upper-structure",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 36,
+    "onSec": 1.317,
+    "offSec": 3.0469000000000235
+   },
+   {
+    "note": 51,
+    "velocity": 41,
+    "onSec": 1.4469000000000234,
+    "offSec": 3.072
+   },
+   {
+    "note": 57,
+    "velocity": 42,
+    "onSec": 1.5770999999999766,
+    "offSec": 3.123799999999988
+   },
+   {
+    "note": 62,
+    "velocity": 35,
+    "onSec": 0,
+    "offSec": 3.0759000000000234
+   },
+   {
+    "note": 65,
+    "velocity": 50,
+    "onSec": 1.7180999999999766,
+    "offSec": 2.9730999999999765
+   },
+   {
+    "note": 69,
+    "velocity": 40,
+    "onSec": 1.7760999999999767,
+    "offSec": 3.0892000000000115
+   }
+  ],
+  "judgedAtSec": 2.077599999999977,
+  "spreadSec": 1.7760999999999767,
+  "lowest": 41,
+  "highest": 69,
+  "size": 6,
+  "hasProblem": false,
+  "set": "tune"
+ },
+ {
+  "id": "g31",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   57,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 1.512399999999965
+   },
+   {
+    "note": 51,
+    "velocity": 45,
+    "onSec": 0.10029999999998836,
+    "offSec": 1.5263999999999651
+   },
+   {
+    "note": 57,
+    "velocity": 47,
+    "onSec": 0.15670000000001164,
+    "offSec": 1.6235999999999766
+   },
+   {
+    "note": 62,
+    "velocity": 38,
+    "onSec": 0.23279999999998835,
+    "offSec": 1.6752000000000116
+   },
+   {
+    "note": 63,
+    "velocity": 64,
+    "onSec": 0.31829999999998837,
+    "offSec": 1.6902999999999884
+   },
+   {
+    "note": 69,
+    "velocity": 85,
+    "onSec": 0.2943999999999651,
+    "offSec": 1.6867999999999883
+   }
+  ],
+  "judgedAtSec": 0.6192999999999883,
+  "spreadSec": 0.31829999999998837,
+  "lowest": 41,
+  "highest": 69,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g32",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   55,
+   57,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 2.327
+   },
+   {
+    "note": 51,
+    "velocity": 35,
+    "onSec": 0.19620000000001164,
+    "offSec": 2.3760999999999766
+   },
+   {
+    "note": 55,
+    "velocity": 43,
+    "onSec": 0.658,
+    "offSec": 2.2630999999999766
+   },
+   {
+    "note": 57,
+    "velocity": 64,
+    "onSec": 0.9050999999999767,
+    "offSec": 2.4362000000000115
+   },
+   {
+    "note": 62,
+    "velocity": 36,
+    "onSec": 1.0992000000000117,
+    "offSec": 2.542099999999977
+   },
+   {
+    "note": 63,
+    "velocity": 65,
+    "onSec": 1.2882000000000116,
+    "offSec": 2.5609000000000233
+   },
+   {
+    "note": 69,
+    "velocity": 68,
+    "onSec": 1.4785999999999768,
+    "offSec": 2.4670999999999768
+   }
+  ],
+  "judgedAtSec": 1.78,
+  "spreadSec": 1.4785999999999768,
+  "lowest": 41,
+  "highest": 69,
+  "size": 7,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g33",
+  "symbol": "F7",
+  "notes": [
+   41,
+   51,
+   55,
+   57,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 4.971099999999977
+   },
+   {
+    "note": 51,
+    "velocity": 46,
+    "onSec": 0.11270000000001164,
+    "offSec": 4.7455999999999765
+   },
+   {
+    "note": 55,
+    "velocity": 52,
+    "onSec": 0.24979999999998836,
+    "offSec": 4.868899999999965
+   },
+   {
+    "note": 57,
+    "velocity": 47,
+    "onSec": 0.39789999999996506,
+    "offSec": 4.19
+   },
+   {
+    "note": 62,
+    "velocity": 41,
+    "onSec": 0.5858999999999651,
+    "offSec": 4.771899999999965
+   },
+   {
+    "note": 63,
+    "velocity": 50,
+    "onSec": 0.7627999999999884,
+    "offSec": 4.816
+   },
+   {
+    "note": 69,
+    "velocity": 55,
+    "onSec": 0.756,
+    "offSec": 4.816899999999965
+   }
+  ],
+  "judgedAtSec": 1.0637000000000116,
+  "spreadSec": 0.7627999999999884,
+  "lowest": 41,
+  "highest": 69,
+  "size": 7,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g34",
+  "symbol": "F7",
+  "notes": [
+   41,
+   50,
+   51,
+   55,
+   57,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2,
+    3,
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 4.971099999999977
+   },
+   {
+    "note": 50,
+    "velocity": 57,
+    "onSec": 1.494899999999965,
+    "offSec": 4.764799999999989
+   },
+   {
+    "note": 51,
+    "velocity": 46,
+    "onSec": 0.11270000000001164,
+    "offSec": 4.7455999999999765
+   },
+   {
+    "note": 55,
+    "velocity": 52,
+    "onSec": 0.24979999999998836,
+    "offSec": 4.868899999999965
+   },
+   {
+    "note": 57,
+    "velocity": 47,
+    "onSec": 0.39789999999996506,
+    "offSec": 4.19
+   },
+   {
+    "note": 62,
+    "velocity": 41,
+    "onSec": 0.5858999999999651,
+    "offSec": 4.771899999999965
+   },
+   {
+    "note": 63,
+    "velocity": 50,
+    "onSec": 0.7627999999999884,
+    "offSec": 4.816
+   },
+   {
+    "note": 69,
+    "velocity": 55,
+    "onSec": 0.756,
+    "offSec": 4.816899999999965
+   }
+  ],
+  "judgedAtSec": 1.7963999999999651,
+  "spreadSec": 1.494899999999965,
+  "lowest": 41,
+  "highest": 69,
+  "size": 8,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g35",
+  "symbol": "F7",
+  "notes": [
+   41,
+   50,
+   51,
+   55,
+   59,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2,
+    3
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 4.971099999999977
+   },
+   {
+    "note": 50,
+    "velocity": 57,
+    "onSec": 1.494899999999965,
+    "offSec": 4.764799999999989
+   },
+   {
+    "note": 51,
+    "velocity": 46,
+    "onSec": 0.11270000000001164,
+    "offSec": 4.7455999999999765
+   },
+   {
+    "note": 55,
+    "velocity": 52,
+    "onSec": 0.24979999999998836,
+    "offSec": 4.868899999999965
+   },
+   {
+    "note": 59,
+    "velocity": 73,
+    "onSec": 4.241399999999965,
+    "offSec": 4.803
+   },
+   {
+    "note": 62,
+    "velocity": 41,
+    "onSec": 0.5858999999999651,
+    "offSec": 4.771899999999965
+   },
+   {
+    "note": 63,
+    "velocity": 50,
+    "onSec": 0.7627999999999884,
+    "offSec": 4.816
+   },
+   {
+    "note": 69,
+    "velocity": 55,
+    "onSec": 0.756,
+    "offSec": 4.816899999999965
+   }
+  ],
+  "judgedAtSec": 4.543099999999977,
+  "spreadSec": 4.241399999999965,
+  "lowest": 41,
+  "highest": 69,
+  "size": 8,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g36",
+  "symbol": "F7",
+  "notes": [
+   41,
+   50,
+   51,
+   55,
+   59,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2,
+    3
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 22,
+    "onSec": 0,
+    "offSec": 1.488
+   },
+   {
+    "note": 50,
+    "velocity": 33,
+    "onSec": 0.0037999999999883583,
+    "offSec": 1.464399999999965
+   },
+   {
+    "note": 51,
+    "velocity": 36,
+    "onSec": 0.07979999999998835,
+    "offSec": 1.455
+   },
+   {
+    "note": 55,
+    "velocity": 28,
+    "onSec": 0.09279999999998836,
+    "offSec": 1.4598999999999651
+   },
+   {
+    "note": 59,
+    "velocity": 45,
+    "onSec": 0.08279999999998836,
+    "offSec": 0.8478999999999651
+   },
+   {
+    "note": 62,
+    "velocity": 38,
+    "onSec": 0.118,
+    "offSec": 1.5617000000000116
+   },
+   {
+    "note": 63,
+    "velocity": 41,
+    "onSec": 0.11659999999997672,
+    "offSec": 1.7137999999999884
+   },
+   {
+    "note": 69,
+    "velocity": 62,
+    "onSec": 0.15389999999996506,
+    "offSec": 1.5357999999999883
+   }
+  ],
+  "judgedAtSec": 0.46339999999996506,
+  "spreadSec": 0.15389999999996506,
+  "lowest": 41,
+  "highest": 69,
+  "size": 8,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g37",
+  "symbol": "F7",
+  "notes": [
+   41,
+   50,
+   51,
+   55,
+   59,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2,
+    3
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 22,
+    "onSec": 0,
+    "offSec": 1.488
+   },
+   {
+    "note": 50,
+    "velocity": 33,
+    "onSec": 0.0037999999999883583,
+    "offSec": 1.464399999999965
+   },
+   {
+    "note": 51,
+    "velocity": 36,
+    "onSec": 0.07979999999998835,
+    "offSec": 1.455
+   },
+   {
+    "note": 55,
+    "velocity": 28,
+    "onSec": 0.09279999999998836,
+    "offSec": 1.4598999999999651
+   },
+   {
+    "note": 59,
+    "velocity": 74,
+    "onSec": 0.855,
+    "offSec": 1.5117999999999883
+   },
+   {
+    "note": 62,
+    "velocity": 38,
+    "onSec": 0.118,
+    "offSec": 1.5617000000000116
+   },
+   {
+    "note": 63,
+    "velocity": 41,
+    "onSec": 0.11659999999997672,
+    "offSec": 1.7137999999999884
+   },
+   {
+    "note": 69,
+    "velocity": 62,
+    "onSec": 0.15389999999996506,
+    "offSec": 1.5357999999999883
+   }
+  ],
+  "judgedAtSec": 1.1567000000000116,
+  "spreadSec": 0.855,
+  "lowest": 41,
+  "highest": 69,
+  "size": 8,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g38",
+  "symbol": "F7",
+  "notes": [
+   41,
+   43,
+   50,
+   51,
+   55,
+   59,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [
+    [
+     41,
+     43
+    ]
+   ],
+   "doublings": [
+    7,
+    2,
+    3
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 33,
+    "onSec": 0,
+    "offSec": 1.3022000000000116
+   },
+   {
+    "note": 43,
+    "velocity": 27,
+    "onSec": 0.04629999999998836,
+    "offSec": 1.2842999999999885
+   },
+   {
+    "note": 50,
+    "velocity": 34,
+    "onSec": 0.044600000000034924,
+    "offSec": 1.2694000000000232
+   },
+   {
+    "note": 51,
+    "velocity": 34,
+    "onSec": 0.11029999999998835,
+    "offSec": 1.2802999999999884
+   },
+   {
+    "note": 55,
+    "velocity": 30,
+    "onSec": 0.17140000000002328,
+    "offSec": 1.2604000000000233
+   },
+   {
+    "note": 59,
+    "velocity": 37,
+    "onSec": 0.16640000000002328,
+    "offSec": 1.4332999999999883
+   },
+   {
+    "note": 62,
+    "velocity": 33,
+    "onSec": 0.22629999999998837,
+    "offSec": 1.3822000000000116
+   },
+   {
+    "note": 63,
+    "velocity": 51,
+    "onSec": 0.24810000000003493,
+    "offSec": 1.3902999999999883
+   },
+   {
+    "note": 69,
+    "velocity": 73,
+    "onSec": 0.26620000000001165,
+    "offSec": 1.4242999999999884
+   }
+  ],
+  "judgedAtSec": 0.567600000000035,
+  "spreadSec": 0.26620000000001165,
+  "lowest": 41,
+  "highest": 69,
+  "size": 9,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g39",
+  "symbol": "Cmaj7",
+  "notes": [
+   43,
+   48,
+   62,
+   64,
+   67
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    11
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 26,
+    "onSec": 0,
+    "offSec": 0.5427999999999884
+   },
+   {
+    "note": 48,
+    "velocity": 24,
+    "onSec": 0.116,
+    "offSec": 0.533
+   },
+   {
+    "note": 62,
+    "velocity": 29,
+    "onSec": 0.08689999999996507,
+    "offSec": 0.5305
+   },
+   {
+    "note": 64,
+    "velocity": 35,
+    "onSec": 0.089,
+    "offSec": 0.5417999999999884
+   },
+   {
+    "note": 67,
+    "velocity": 45,
+    "onSec": 0.14909999999997672,
+    "offSec": 0.5410999999999767
+   }
+  ],
+  "judgedAtSec": 0.4502999999999884,
+  "spreadSec": 0.14909999999997672,
+  "lowest": 43,
+  "highest": 67,
+  "size": 5,
+  "hasProblem": true,
+  "set": "extra"
+ },
+ {
+  "id": "g40",
+  "symbol": "Cmaj7",
+  "notes": [
+   47,
+   59,
+   62,
+   64,
+   67
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    11
+   ]
+  },
+  "voices": [
+   {
+    "note": 47,
+    "velocity": 41,
+    "onSec": 0,
+    "offSec": 1.4462000000000117
+   },
+   {
+    "note": 59,
+    "velocity": 39,
+    "onSec": 0.01629999999998836,
+    "offSec": 1.6512999999999884
+   },
+   {
+    "note": 62,
+    "velocity": 31,
+    "onSec": 0.02920000000001164,
+    "offSec": 1.6132999999999884
+   },
+   {
+    "note": 64,
+    "velocity": 43,
+    "onSec": 0.02520000000001164,
+    "offSec": 1.6140999999999768
+   },
+   {
+    "note": 67,
+    "velocity": 44,
+    "onSec": 0.009200000000011642,
+    "offSec": 1.5902000000000116
+   }
+  ],
+  "judgedAtSec": 0.3307999999999884,
+  "spreadSec": 0.02920000000001164,
+  "lowest": 47,
+  "highest": 67,
+  "size": 5,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g41",
+  "symbol": "C7",
+  "notes": [
+   48,
+   58,
+   62,
+   64,
+   69
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 51,
+    "onSec": 0.005900000000023283,
+    "offSec": 0.15990000000002327
+   },
+   {
+    "note": 58,
+    "velocity": 38,
+    "onSec": 0.009799999999988358,
+    "offSec": 0.1775
+   },
+   {
+    "note": 62,
+    "velocity": 32,
+    "onSec": 0.02870000000001164,
+    "offSec": 0.16370000000001164
+   },
+   {
+    "note": 64,
+    "velocity": 43,
+    "onSec": 0.0215,
+    "offSec": 0.16570000000001164
+   },
+   {
+    "note": 69,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 0.18690000000002327
+   }
+  ],
+  "judgedAtSec": 0.34520000000001166,
+  "spreadSec": 0.02870000000001164,
+  "lowest": 48,
+  "highest": 69,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g42",
+  "symbol": "C7",
+  "notes": [
+   48,
+   58,
+   62,
+   64,
+   69
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 47,
+    "onSec": 0.023899999999965074,
+    "offSec": 0.765
+   },
+   {
+    "note": 58,
+    "velocity": 45,
+    "onSec": 0.008399999999965076,
+    "offSec": 0.7777999999999884
+   },
+   {
+    "note": 62,
+    "velocity": 38,
+    "onSec": 0.0085,
+    "offSec": 0.8337999999999883
+   },
+   {
+    "note": 64,
+    "velocity": 46,
+    "onSec": 0.013899999999965076,
+    "offSec": 0.7797999999999884
+   },
+   {
+    "note": 69,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 0.85
+   }
+  ],
+  "judgedAtSec": 0.3251999999999534,
+  "spreadSec": 0.023899999999965074,
+  "lowest": 48,
+  "highest": 69,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g43",
+  "symbol": "F7",
+  "notes": [
+   41,
+   57,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 46,
+    "onSec": 0.004799999999988359,
+    "offSec": 1.719
+   },
+   {
+    "note": 57,
+    "velocity": 48,
+    "onSec": 0.0015999999999767168,
+    "offSec": 1.6870999999999767
+   },
+   {
+    "note": 62,
+    "velocity": 41,
+    "onSec": 0.011099999999976717,
+    "offSec": 1.6990999999999767
+   },
+   {
+    "note": 63,
+    "velocity": 50,
+    "onSec": 0.009099999999976717,
+    "offSec": 1.680399999999965
+   },
+   {
+    "note": 69,
+    "velocity": 50,
+    "onSec": 0,
+    "offSec": 1.781
+   }
+  ],
+  "judgedAtSec": 0.31319999999995346,
+  "spreadSec": 0.011099999999976717,
+  "lowest": 41,
+  "highest": 69,
+  "size": 5,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g44",
+  "symbol": "C7",
+  "notes": [
+   48,
+   58,
+   62,
+   64,
+   69
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 42,
+    "onSec": 0.008900000000023283,
+    "offSec": 0.794600000000035
+   },
+   {
+    "note": 58,
+    "velocity": 34,
+    "onSec": 0.02179999999998836,
+    "offSec": 0.7901000000000349
+   },
+   {
+    "note": 62,
+    "velocity": 24,
+    "onSec": 0.017100000000034924,
+    "offSec": 0.828
+   },
+   {
+    "note": 64,
+    "velocity": 36,
+    "onSec": 0.020600000000034924,
+    "offSec": 0.817
+   },
+   {
+    "note": 69,
+    "velocity": 41,
+    "onSec": 0,
+    "offSec": 0.7689000000000232
+   }
+  ],
+  "judgedAtSec": 0.3385,
+  "spreadSec": 0.02179999999998836,
+  "lowest": 48,
+  "highest": 69,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g45",
+  "symbol": "C7",
+  "notes": [
+   48,
+   58,
+   62,
+   64,
+   69
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 46,
+    "onSec": 0.023,
+    "offSec": 0.194
+   },
+   {
+    "note": 58,
+    "velocity": 33,
+    "onSec": 0.003,
+    "offSec": 0.19010000000003494
+   },
+   {
+    "note": 62,
+    "velocity": 29,
+    "onSec": 0.011,
+    "offSec": 0.18
+   },
+   {
+    "note": 64,
+    "velocity": 36,
+    "onSec": 0.008900000000023283,
+    "offSec": 0.17810000000003492
+   },
+   {
+    "note": 69,
+    "velocity": 39,
+    "onSec": 0,
+    "offSec": 0.22120000000001164
+   }
+  ],
+  "judgedAtSec": 0.33920000000001166,
+  "spreadSec": 0.023,
+  "lowest": 48,
+  "highest": 69,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g46",
+  "symbol": "C7",
+  "notes": [
+   48,
+   58,
+   62,
+   64,
+   69
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 46,
+    "onSec": 0.006699999999953434,
+    "offSec": 0.23389999999996508
+   },
+   {
+    "note": 58,
+    "velocity": 36,
+    "onSec": 0.016899999999965075,
+    "offSec": 0.22679999999998837
+   },
+   {
+    "note": 62,
+    "velocity": 32,
+    "onSec": 0.024099999999976716,
+    "offSec": 0.22489999999996507
+   },
+   {
+    "note": 64,
+    "velocity": 39,
+    "onSec": 0.019599999999976716,
+    "offSec": 0.22989999999996508
+   },
+   {
+    "note": 69,
+    "velocity": 40,
+    "onSec": 0,
+    "offSec": 0.212
+   }
+  ],
+  "judgedAtSec": 0.3370999999999767,
+  "spreadSec": 0.024099999999976716,
+  "lowest": 48,
+  "highest": 69,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g47",
+  "symbol": "Gm7",
+  "notes": [
+   43,
+   58,
+   62,
+   67,
+   70
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    5
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    10
+   ]
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 61,
+    "onSec": 0.01720000000001164,
+    "offSec": 1.4592000000000116
+   },
+   {
+    "note": 58,
+    "velocity": 49,
+    "onSec": 0.014099999999976716,
+    "offSec": 1.3437000000000117
+   },
+   {
+    "note": 62,
+    "velocity": 41,
+    "onSec": 0.019899999999965074,
+    "offSec": 1.3392000000000117
+   },
+   {
+    "note": 67,
+    "velocity": 47,
+    "onSec": 0.034,
+    "offSec": 1.3702000000000116
+   },
+   {
+    "note": 70,
+    "velocity": 64,
+    "onSec": 0,
+    "offSec": 1.3222999999999883
+   }
+  ],
+  "judgedAtSec": 0.33539999999996506,
+  "spreadSec": 0.034,
+  "lowest": 43,
+  "highest": 70,
+  "size": 5,
+  "hasProblem": true,
+  "set": "extra"
+ },
+ {
+  "id": "g48",
+  "symbol": "C7",
+  "notes": [
+   48,
+   58,
+   62,
+   64,
+   69
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 53,
+    "onSec": 0.017199999999953433,
+    "offSec": 0.8140999999999767
+   },
+   {
+    "note": 58,
+    "velocity": 36,
+    "onSec": 0.012099999999976716,
+    "offSec": 0.49489999999990686
+   },
+   {
+    "note": 62,
+    "velocity": 27,
+    "onSec": 0.014899999999906868,
+    "offSec": 0.6632999999999302
+   },
+   {
+    "note": 64,
+    "velocity": 36,
+    "onSec": 0.02,
+    "offSec": 0.4740999999999767
+   },
+   {
+    "note": 69,
+    "velocity": 50,
+    "onSec": 0,
+    "offSec": 0.668
+   }
+  ],
+  "judgedAtSec": 0.32179999999993014,
+  "spreadSec": 0.02,
+  "lowest": 48,
+  "highest": 69,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g49",
+  "symbol": "F7",
+  "notes": [
+   41,
+   57,
+   62,
+   63,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    9
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 49,
+    "onSec": 0.002,
+    "offSec": 1.6697999999999302
+   },
+   {
+    "note": 57,
+    "velocity": 35,
+    "onSec": 0.009799999999930151,
+    "offSec": 1.872
+   },
+   {
+    "note": 62,
+    "velocity": 37,
+    "onSec": 0.011699999999953433,
+    "offSec": 1.6747999999999301
+   },
+   {
+    "note": 63,
+    "velocity": 45,
+    "onSec": 0.012599999999976717,
+    "offSec": 1.975
+   },
+   {
+    "note": 69,
+    "velocity": 49,
+    "onSec": 0,
+    "offSec": 1.8264000000000233
+   }
+  ],
+  "judgedAtSec": 0.3169000000000233,
+  "spreadSec": 0.012599999999976717,
+  "lowest": 41,
+  "highest": 69,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g50",
+  "symbol": "F#°",
+  "notes": [
+   42,
+   54,
+   57,
+   60
+  ],
+  "verdict": {
+   "type": "drop-3",
+   "bass": null,
+   "missing": [
+    3
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 42,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 1.812
+   },
+   {
+    "note": 54,
+    "velocity": 41,
+    "onSec": 0.023199999999953435,
+    "offSec": 1.664
+   },
+   {
+    "note": 57,
+    "velocity": 42,
+    "onSec": 0.015900000000023284,
+    "offSec": 1.783
+   },
+   {
+    "note": 60,
+    "velocity": 53,
+    "onSec": 0.015,
+    "offSec": 1.6617999999999302
+   }
+  ],
+  "judgedAtSec": 0.3246999999999534,
+  "spreadSec": 0.023199999999953435,
+  "lowest": 42,
+  "highest": 60,
+  "size": 4,
+  "hasProblem": true,
+  "set": "gate"
+ },
+ {
+  "id": "g51",
+  "symbol": "F#°",
+  "notes": [
+   42,
+   54,
+   57,
+   60,
+   63
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 42,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 1.812
+   },
+   {
+    "note": 54,
+    "velocity": 41,
+    "onSec": 0.023199999999953435,
+    "offSec": 1.664
+   },
+   {
+    "note": 57,
+    "velocity": 42,
+    "onSec": 0.015900000000023284,
+    "offSec": 1.783
+   },
+   {
+    "note": 60,
+    "velocity": 53,
+    "onSec": 0.015,
+    "offSec": 1.6617999999999302
+   },
+   {
+    "note": 63,
+    "velocity": 49,
+    "onSec": 0.5694000000000233,
+    "offSec": 1.725
+   }
+  ],
+  "judgedAtSec": 0.8705999999999767,
+  "spreadSec": 0.5694000000000233,
+  "lowest": 42,
+  "highest": 63,
+  "size": 5,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g52",
+  "symbol": "C7",
+  "notes": [
+   48,
+   58,
+   62,
+   64,
+   69
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 48,
+    "onSec": 0.011900000000023283,
+    "offSec": 1.3229000000000233
+   },
+   {
+    "note": 58,
+    "velocity": 40,
+    "onSec": 0.0075999999999767165,
+    "offSec": 1.265
+   },
+   {
+    "note": 62,
+    "velocity": 38,
+    "onSec": 0.005099999999976717,
+    "offSec": 1.404
+   },
+   {
+    "note": 64,
+    "velocity": 41,
+    "onSec": 0.019800000000046565,
+    "offSec": 1.5719000000000234
+   },
+   {
+    "note": 69,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 1.4146999999999534
+   }
+  ],
+  "judgedAtSec": 0.3325,
+  "spreadSec": 0.019800000000046565,
+  "lowest": 48,
+  "highest": 69,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g53",
+  "symbol": "C7",
+  "notes": [
+   48,
+   58,
+   62,
+   64,
+   67
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 46,
+    "onSec": 1.3572999999999302,
+    "offSec": 1.5546999999999533
+   },
+   {
+    "note": 58,
+    "velocity": 41,
+    "onSec": 1.3498999999999068,
+    "offSec": 1.5918999999999068
+   },
+   {
+    "note": 62,
+    "velocity": 27,
+    "onSec": 1.3431999999999535,
+    "offSec": 1.5506999999999533
+   },
+   {
+    "note": 64,
+    "velocity": 41,
+    "onSec": 0,
+    "offSec": 1.5520999999999767
+   },
+   {
+    "note": 67,
+    "velocity": 40,
+    "onSec": 1.335,
+    "offSec": 1.556
+   }
+  ],
+  "judgedAtSec": 1.659399999999907,
+  "spreadSec": 1.3572999999999302,
+  "lowest": 48,
+  "highest": 67,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g54",
+  "symbol": "Em7",
+  "notes": [
+   40,
+   52,
+   55,
+   57,
+   59,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 40,
+    "velocity": 38,
+    "onSec": 0.046,
+    "offSec": 1.1880999999999766
+   },
+   {
+    "note": 52,
+    "velocity": 23,
+    "onSec": 0.06809999999997672,
+    "offSec": 1.112
+   },
+   {
+    "note": 55,
+    "velocity": 49,
+    "onSec": 0.004099999999976717,
+    "offSec": 0.9735999999999767
+   },
+   {
+    "note": 57,
+    "velocity": 38,
+    "onSec": 0.005199999999953434,
+    "offSec": 0.946
+   },
+   {
+    "note": 59,
+    "velocity": 40,
+    "onSec": 0.006799999999930151,
+    "offSec": 0.9027999999999301
+   },
+   {
+    "note": 62,
+    "velocity": 38,
+    "onSec": 0.005699999999953434,
+    "offSec": 1.004
+   },
+   {
+    "note": 64,
+    "velocity": 51,
+    "onSec": 0,
+    "offSec": 1.044
+   }
+  ],
+  "judgedAtSec": 0.38079999999993014,
+  "spreadSec": 0.06809999999997672,
+  "lowest": 40,
+  "highest": 64,
+  "size": 7,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g55",
+  "symbol": "A7",
+  "notes": [
+   45,
+   55,
+   57,
+   61,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 45,
+    "velocity": 55,
+    "onSec": 0.012699999999953434,
+    "offSec": 0.8619000000000233
+   },
+   {
+    "note": 55,
+    "velocity": 46,
+    "onSec": 0.0075999999999767165,
+    "offSec": 0.8630999999999767
+   },
+   {
+    "note": 57,
+    "velocity": 40,
+    "onSec": 0.011699999999953433,
+    "offSec": 0.7970999999999767
+   },
+   {
+    "note": 61,
+    "velocity": 53,
+    "onSec": 0.007,
+    "offSec": 0.759
+   },
+   {
+    "note": 64,
+    "velocity": 47,
+    "onSec": 0,
+    "offSec": 0.9345
+   }
+  ],
+  "judgedAtSec": 0.31440000000002327,
+  "spreadSec": 0.012699999999953434,
+  "lowest": 45,
+  "highest": 64,
+  "size": 5,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g56",
+  "symbol": "Dm7",
+  "notes": [
+   38,
+   50,
+   53,
+   57,
+   62
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    0
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 38,
+    "velocity": 34,
+    "onSec": 0.0039000000000232833,
+    "offSec": 2.127
+   },
+   {
+    "note": 50,
+    "velocity": 36,
+    "onSec": 0.03219999999995343,
+    "offSec": 1.9688000000000465
+   },
+   {
+    "note": 53,
+    "velocity": 51,
+    "onSec": 0.0058000000000465665,
+    "offSec": 1.9149000000000234
+   },
+   {
+    "note": 57,
+    "velocity": 42,
+    "onSec": 0.006099999999976717,
+    "offSec": 3.6348000000000464
+   },
+   {
+    "note": 62,
+    "velocity": 42,
+    "onSec": 0,
+    "offSec": 2.110900000000023
+   }
+  ],
+  "judgedAtSec": 0.3513000000000466,
+  "spreadSec": 0.03219999999995343,
+  "lowest": 38,
+  "highest": 62,
+  "size": 5,
+  "hasProblem": true,
+  "set": "extra"
+ },
+ {
+  "id": "g57",
+  "symbol": "Dm7",
+  "notes": [
+   38,
+   50,
+   53,
+   57,
+   60,
+   62
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 38,
+    "velocity": 34,
+    "onSec": 0.0039000000000232833,
+    "offSec": 2.127
+   },
+   {
+    "note": 50,
+    "velocity": 36,
+    "onSec": 0.03219999999995343,
+    "offSec": 1.9688000000000465
+   },
+   {
+    "note": 53,
+    "velocity": 51,
+    "onSec": 0.0058000000000465665,
+    "offSec": 1.9149000000000234
+   },
+   {
+    "note": 57,
+    "velocity": 42,
+    "onSec": 0.006099999999976717,
+    "offSec": 3.6348000000000464
+   },
+   {
+    "note": 60,
+    "velocity": 57,
+    "onSec": 0.7829000000000232,
+    "offSec": 1.768
+   },
+   {
+    "note": 62,
+    "velocity": 42,
+    "onSec": 0,
+    "offSec": 2.110900000000023
+   }
+  ],
+  "judgedAtSec": 1.0868000000000466,
+  "spreadSec": 0.7829000000000232,
+  "lowest": 38,
+  "highest": 62,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g58",
+  "symbol": "G7",
+  "notes": [
+   43,
+   53,
+   57,
+   59,
+   64
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 51,
+    "onSec": 1.9328000000000465,
+    "offSec": 4.072300000000046
+   },
+   {
+    "note": 53,
+    "velocity": 48,
+    "onSec": 1.952,
+    "offSec": 3.8500999999999768
+   },
+   {
+    "note": 57,
+    "velocity": 42,
+    "onSec": 0,
+    "offSec": 3.62870000000007
+   },
+   {
+    "note": 59,
+    "velocity": 13,
+    "onSec": 1.9394000000000233,
+    "offSec": 3.6348000000000464
+   },
+   {
+    "note": 64,
+    "velocity": 53,
+    "onSec": 1.9468000000000465,
+    "offSec": 3.697
+   }
+  ],
+  "judgedAtSec": 2.2643000000000466,
+  "spreadSec": 1.952,
+  "lowest": 43,
+  "highest": 64,
+  "size": 5,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g59",
+  "symbol": "G7",
+  "notes": [
+   43,
+   53,
+   57,
+   59,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 51,
+    "onSec": 1.9328000000000465,
+    "offSec": 4.072300000000046
+   },
+   {
+    "note": 53,
+    "velocity": 48,
+    "onSec": 1.952,
+    "offSec": 3.8500999999999768
+   },
+   {
+    "note": 57,
+    "velocity": 42,
+    "onSec": 0,
+    "offSec": 3.62870000000007
+   },
+   {
+    "note": 59,
+    "velocity": 13,
+    "onSec": 1.9394000000000233,
+    "offSec": 3.6348000000000464
+   },
+   {
+    "note": 62,
+    "velocity": 39,
+    "onSec": 2.7927000000000697,
+    "offSec": 3.64070000000007
+   },
+   {
+    "note": 64,
+    "velocity": 53,
+    "onSec": 1.9468000000000465,
+    "offSec": 3.697
+   }
+  ],
+  "judgedAtSec": 3.0948000000000464,
+  "spreadSec": 2.7927000000000697,
+  "lowest": 43,
+  "highest": 64,
+  "size": 6,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g60",
+  "symbol": "C7",
+  "notes": [
+   36,
+   48,
+   58,
+   62,
+   64,
+   69
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 36,
+    "velocity": 53,
+    "onSec": 0.0058000000000465665,
+    "offSec": 1.185600000000093
+   },
+   {
+    "note": 48,
+    "velocity": 43,
+    "onSec": 0.01640000000002328,
+    "offSec": 1.1648000000000465
+   },
+   {
+    "note": 58,
+    "velocity": 28,
+    "onSec": 0.012800000000046566,
+    "offSec": 0.8897000000000699
+   },
+   {
+    "note": 62,
+    "velocity": 34,
+    "onSec": 0.04170000000006985,
+    "offSec": 0.8807000000000699
+   },
+   {
+    "note": 64,
+    "velocity": 30,
+    "onSec": 0.06880000000004656,
+    "offSec": 0.8718000000000465
+   },
+   {
+    "note": 69,
+    "velocity": 41,
+    "onSec": 0,
+    "offSec": 0.9696000000000932
+   }
+  ],
+  "judgedAtSec": 0.37710000000009314,
+  "spreadSec": 0.06880000000004656,
+  "lowest": 36,
+  "highest": 69,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g61",
+  "symbol": "A7",
+  "notes": [
+   45,
+   55,
+   67
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    1
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    7
+   ]
+  },
+  "voices": [
+   {
+    "note": 45,
+    "velocity": 46,
+    "onSec": 0.062099999999976715,
+    "offSec": 1.008
+   },
+   {
+    "note": 55,
+    "velocity": 19,
+    "onSec": 0,
+    "offSec": 0.9021999999999535
+   },
+   {
+    "note": 67,
+    "velocity": 43,
+    "onSec": 0.012900000000023283,
+    "offSec": 0.779
+   }
+  ],
+  "judgedAtSec": 0.36740000000002326,
+  "spreadSec": 0.062099999999976715,
+  "lowest": 45,
+  "highest": 67,
+  "size": 3,
+  "hasProblem": true,
+  "set": "tune"
+ },
+ {
+  "id": "g62",
+  "symbol": "Dm7",
+  "notes": [
+   38,
+   50,
+   53,
+   57,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 38,
+    "velocity": 19,
+    "onSec": 0.03880000000004657,
+    "offSec": 1.2168000000000465
+   },
+   {
+    "note": 50,
+    "velocity": 31,
+    "onSec": 0.04070000000006985,
+    "offSec": 1.1538000000000466
+   },
+   {
+    "note": 53,
+    "velocity": 36,
+    "onSec": 0.004,
+    "offSec": 0.9618000000000466
+   },
+   {
+    "note": 57,
+    "velocity": 31,
+    "onSec": 0.012800000000046566,
+    "offSec": 1.0029000000000232
+   },
+   {
+    "note": 60,
+    "velocity": 41,
+    "onSec": 0.003300000000046566,
+    "offSec": 0.8623000000000466
+   },
+   {
+    "note": 64,
+    "velocity": 45,
+    "onSec": 0,
+    "offSec": 1.004100000000093
+   }
+  ],
+  "judgedAtSec": 0.355,
+  "spreadSec": 0.04070000000006985,
+  "lowest": 38,
+  "highest": 64,
+  "size": 6,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g63",
+  "symbol": "G7",
+  "notes": [
+   43,
+   53,
+   57,
+   59,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 45,
+    "onSec": 0.019099999999976715,
+    "offSec": 0.9316999999999535
+   },
+   {
+    "note": 53,
+    "velocity": 53,
+    "onSec": 0.016800000000046566,
+    "offSec": 1.012
+   },
+   {
+    "note": 57,
+    "velocity": 39,
+    "onSec": 0.018,
+    "offSec": 0.8159000000000233
+   },
+   {
+    "note": 59,
+    "velocity": 43,
+    "onSec": 0.015800000000046565,
+    "offSec": 0.8143000000000465
+   },
+   {
+    "note": 62,
+    "velocity": 38,
+    "onSec": 0.014800000000046566,
+    "offSec": 0.7945
+   },
+   {
+    "note": 64,
+    "velocity": 46,
+    "onSec": 0,
+    "offSec": 0.8039000000000233
+   }
+  ],
+  "judgedAtSec": 0.3360999999999767,
+  "spreadSec": 0.019099999999976715,
+  "lowest": 43,
+  "highest": 64,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g64",
+  "symbol": "C7",
+  "notes": [
+   36,
+   52,
+   55,
+   60
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    10
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 36,
+    "velocity": 39,
+    "onSec": 0.015699999999953435,
+    "offSec": 0.5240999999999767
+   },
+   {
+    "note": 52,
+    "velocity": 25,
+    "onSec": 0,
+    "offSec": 0.613
+   },
+   {
+    "note": 55,
+    "velocity": 39,
+    "onSec": 0.029099999999976717,
+    "offSec": 0.6143000000000466
+   },
+   {
+    "note": 60,
+    "velocity": 30,
+    "onSec": 0.014199999999953434,
+    "offSec": 0.6239000000000233
+   }
+  ],
+  "judgedAtSec": 0.34080000000004657,
+  "spreadSec": 0.029099999999976717,
+  "lowest": 36,
+  "highest": 60,
+  "size": 4,
+  "hasProblem": true,
+  "set": "extra"
+ },
+ {
+  "id": "g65",
+  "symbol": "Cmaj7",
+  "notes": [
+   48,
+   55,
+   59,
+   60,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 53,
+    "onSec": 0.008800000000046566,
+    "offSec": 2.22820000000007
+   },
+   {
+    "note": 55,
+    "velocity": 46,
+    "onSec": 0.007,
+    "offSec": 2.2942000000000697
+   },
+   {
+    "note": 59,
+    "velocity": 46,
+    "onSec": 0.006099999999976717,
+    "offSec": 2.25220000000007
+   },
+   {
+    "note": 60,
+    "velocity": 48,
+    "onSec": 0.013,
+    "offSec": 2.25620000000007
+   },
+   {
+    "note": 62,
+    "velocity": 43,
+    "onSec": 0.002099999999976717,
+    "offSec": 2.2710999999999766
+   },
+   {
+    "note": 64,
+    "velocity": 50,
+    "onSec": 0,
+    "offSec": 2.2633000000000467
+   }
+  ],
+  "judgedAtSec": 0.31420000000006987,
+  "spreadSec": 0.013,
+  "lowest": 48,
+  "highest": 64,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g66",
+  "symbol": "A7",
+  "notes": [
+   33,
+   45,
+   55,
+   58,
+   61,
+   67
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    7
+   ]
+  },
+  "voices": [
+   {
+    "note": 33,
+    "velocity": 49,
+    "onSec": 0.018,
+    "offSec": 1.229
+   },
+   {
+    "note": 45,
+    "velocity": 47,
+    "onSec": 0.02279999999993015,
+    "offSec": 1.169
+   },
+   {
+    "note": 55,
+    "velocity": 29,
+    "onSec": 0.028900000000023282,
+    "offSec": 1.73
+   },
+   {
+    "note": 58,
+    "velocity": 40,
+    "onSec": 0.022,
+    "offSec": 1.6840999999999766
+   },
+   {
+    "note": 61,
+    "velocity": 51,
+    "onSec": 0.01979999999993015,
+    "offSec": 1.6859000000000233
+   },
+   {
+    "note": 67,
+    "velocity": 42,
+    "onSec": 0,
+    "offSec": 1.64479999999993
+   }
+  ],
+  "judgedAtSec": 0.332,
+  "spreadSec": 0.028900000000023282,
+  "lowest": 33,
+  "highest": 67,
+  "size": 6,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g67",
+  "symbol": "Dm7",
+  "notes": [
+   38,
+   50,
+   52,
+   53,
+   57,
+   60,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    4
+   ]
+  },
+  "voices": [
+   {
+    "note": 38,
+    "velocity": 37,
+    "onSec": 0,
+    "offSec": 2.2009000000000234
+   },
+   {
+    "note": 50,
+    "velocity": 31,
+    "onSec": 0.03769999999995343,
+    "offSec": 2.1499000000000232
+   },
+   {
+    "note": 52,
+    "velocity": 32,
+    "onSec": 0.029800000000046567,
+    "offSec": 2.1419000000000232
+   },
+   {
+    "note": 53,
+    "velocity": 41,
+    "onSec": 0.024900000000023282,
+    "offSec": 2.3419000000000234
+   },
+   {
+    "note": 57,
+    "velocity": 36,
+    "onSec": 0.028599999999976717,
+    "offSec": 2.2949000000000233
+   },
+   {
+    "note": 60,
+    "velocity": 45,
+    "onSec": 0.023900000000023285,
+    "offSec": 2.2569000000000234
+   },
+   {
+    "note": 62,
+    "velocity": 39,
+    "onSec": 0.022099999999976718,
+    "offSec": 2.2609000000000234
+   },
+   {
+    "note": 64,
+    "velocity": 44,
+    "onSec": 0.022800000000046568,
+    "offSec": 2.2869000000000232
+   }
+  ],
+  "judgedAtSec": 0.3389000000000233,
+  "spreadSec": 0.03769999999995343,
+  "lowest": 38,
+  "highest": 64,
+  "size": 8,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g68",
+  "symbol": "G7",
+  "notes": [
+   43,
+   53,
+   57,
+   59,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 60,
+    "onSec": 0,
+    "offSec": 1.3893000000000466
+   },
+   {
+    "note": 53,
+    "velocity": 51,
+    "onSec": 0.028100000000093134,
+    "offSec": 1.9709000000000232
+   },
+   {
+    "note": 57,
+    "velocity": 46,
+    "onSec": 0.02920000000006985,
+    "offSec": 1.9402000000000699
+   },
+   {
+    "note": 59,
+    "velocity": 50,
+    "onSec": 0.024100000000093134,
+    "offSec": 1.9582000000000699
+   },
+   {
+    "note": 62,
+    "velocity": 13,
+    "onSec": 0.26230000000004655,
+    "offSec": 1.9833000000000465
+   },
+   {
+    "note": 64,
+    "velocity": 57,
+    "onSec": 0.015200000000069849,
+    "offSec": 1.9983000000000466
+   }
+  ],
+  "judgedAtSec": 0.5642000000000699,
+  "spreadSec": 0.26230000000004655,
+  "lowest": 43,
+  "highest": 64,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g69",
+  "symbol": "Em7",
+  "notes": [
+   40,
+   47,
+   52,
+   55,
+   57,
+   59,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    11
+   ]
+  },
+  "voices": [
+   {
+    "note": 40,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 1.8368000000000466
+   },
+   {
+    "note": 47,
+    "velocity": 47,
+    "onSec": 0.11690000000002328,
+    "offSec": 1.7838000000000465
+   },
+   {
+    "note": 52,
+    "velocity": 49,
+    "onSec": 0.19790000000002328,
+    "offSec": 1.746
+   },
+   {
+    "note": 55,
+    "velocity": 37,
+    "onSec": 0.235,
+    "offSec": 1.9368000000000465
+   },
+   {
+    "note": 57,
+    "velocity": 35,
+    "onSec": 0.2609000000000233,
+    "offSec": 1.8748000000000467
+   },
+   {
+    "note": 59,
+    "velocity": 36,
+    "onSec": 0.2639000000000233,
+    "offSec": 1.8908000000000467
+   },
+   {
+    "note": 62,
+    "velocity": 35,
+    "onSec": 0.2809000000000233,
+    "offSec": 1.9068000000000465
+   },
+   {
+    "note": 64,
+    "velocity": 27,
+    "onSec": 0.377,
+    "offSec": 1.9218000000000466
+   }
+  ],
+  "judgedAtSec": 0.6789000000000233,
+  "spreadSec": 0.377,
+  "lowest": 40,
+  "highest": 64,
+  "size": 8,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g70",
+  "symbol": "A7",
+  "notes": [
+   45,
+   55,
+   61,
+   64,
+   67,
+   69,
+   72
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    7
+   ]
+  },
+  "voices": [
+   {
+    "note": 45,
+    "velocity": 45,
+    "onSec": 0.002599999999976717,
+    "offSec": 4.640400000000024
+   },
+   {
+    "note": 55,
+    "velocity": 40,
+    "onSec": 0.0015,
+    "offSec": 4.556300000000046
+   },
+   {
+    "note": 61,
+    "velocity": 46,
+    "onSec": 0.017,
+    "offSec": 4.7645
+   },
+   {
+    "note": 64,
+    "velocity": 43,
+    "onSec": 0.019400000000023284,
+    "offSec": 4.724400000000023
+   },
+   {
+    "note": 67,
+    "velocity": 44,
+    "onSec": 0.02040000000002328,
+    "offSec": 4.742400000000023
+   },
+   {
+    "note": 69,
+    "velocity": 45,
+    "onSec": 0.018,
+    "offSec": 4.735300000000047
+   },
+   {
+    "note": 72,
+    "velocity": 41,
+    "onSec": 0,
+    "offSec": 4.771400000000023
+   }
+  ],
+  "judgedAtSec": 0.322,
+  "spreadSec": 0.02040000000002328,
+  "lowest": 45,
+  "highest": 72,
+  "size": 7,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g71",
+  "symbol": "Dm7",
+  "notes": [
+   38,
+   53,
+   57,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "rootless-A",
+   "bass": "root",
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 38,
+    "velocity": 45,
+    "onSec": 0.0175,
+    "offSec": 1.8100999999999767
+   },
+   {
+    "note": 53,
+    "velocity": 40,
+    "onSec": 0.012699999999953434,
+    "offSec": 2.3420999999999768
+   },
+   {
+    "note": 57,
+    "velocity": 39,
+    "onSec": 0.011,
+    "offSec": 2.2750999999999766
+   },
+   {
+    "note": 60,
+    "velocity": 46,
+    "onSec": 0.004,
+    "offSec": 2.2195999999999767
+   },
+   {
+    "note": 64,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 2.2790999999999766
+   }
+  ],
+  "judgedAtSec": 0.3195,
+  "spreadSec": 0.0175,
+  "lowest": 38,
+  "highest": 64,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g72",
+  "symbol": "G7",
+  "notes": [
+   31,
+   43,
+   53,
+   57,
+   59,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 31,
+    "velocity": 35,
+    "onSec": 0.042800000000046565,
+    "offSec": 2.30820000000007
+   },
+   {
+    "note": 43,
+    "velocity": 24,
+    "onSec": 0.05890000000002328,
+    "offSec": 2.235900000000023
+   },
+   {
+    "note": 53,
+    "velocity": 40,
+    "onSec": 0.016800000000046566,
+    "offSec": 3.099
+   },
+   {
+    "note": 57,
+    "velocity": 37,
+    "onSec": 0.019800000000046565,
+    "offSec": 2.899
+   },
+   {
+    "note": 59,
+    "velocity": 43,
+    "onSec": 0.015300000000046566,
+    "offSec": 2.9008000000000465
+   },
+   {
+    "note": 62,
+    "velocity": 18,
+    "onSec": 0.31190000000002327,
+    "offSec": 2.9189000000000234
+   },
+   {
+    "note": 64,
+    "velocity": 50,
+    "onSec": 0,
+    "offSec": 2.992
+   }
+  ],
+  "judgedAtSec": 0.6139000000000233,
+  "spreadSec": 0.31190000000002327,
+  "lowest": 31,
+  "highest": 64,
+  "size": 7,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g73",
+  "symbol": "Gm7",
+  "notes": [
+   43,
+   50,
+   53,
+   55,
+   58,
+   62
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2
+   ]
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 57,
+    "onSec": 0.006200000000069849,
+    "offSec": 1.2775
+   },
+   {
+    "note": 50,
+    "velocity": 44,
+    "onSec": 0.02659999999997672,
+    "offSec": 1.2645
+   },
+   {
+    "note": 53,
+    "velocity": 40,
+    "onSec": 0.0165,
+    "offSec": 1.2634000000000234
+   },
+   {
+    "note": 55,
+    "velocity": 41,
+    "onSec": 0.018400000000023283,
+    "offSec": 1.2735
+   },
+   {
+    "note": 58,
+    "velocity": 1,
+    "onSec": 0,
+    "offSec": 1.2754000000000232
+   },
+   {
+    "note": 62,
+    "velocity": 37,
+    "onSec": 0.002300000000046566,
+    "offSec": 1.2484000000000233
+   }
+  ],
+  "judgedAtSec": 0.32809999999997674,
+  "spreadSec": 0.02659999999997672,
+  "lowest": 43,
+  "highest": 62,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g74",
+  "symbol": "Gm7",
+  "notes": [
+   43,
+   50,
+   53,
+   55,
+   58,
+   62
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2
+   ]
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 51,
+    "onSec": 0.01570000000006985,
+    "offSec": 2.5799000000000234
+   },
+   {
+    "note": 50,
+    "velocity": 41,
+    "onSec": 0.004900000000023283,
+    "offSec": 2.3567000000000697
+   },
+   {
+    "note": 53,
+    "velocity": 39,
+    "onSec": 0,
+    "offSec": 2.1305
+   },
+   {
+    "note": 55,
+    "velocity": 45,
+    "onSec": 0.008800000000046566,
+    "offSec": 2.3946000000000933
+   },
+   {
+    "note": 58,
+    "velocity": 40,
+    "onSec": 0.0017000000000698492,
+    "offSec": 2.3647000000000697
+   },
+   {
+    "note": 62,
+    "velocity": 41,
+    "onSec": 0.013,
+    "offSec": 2.3487000000000697
+   }
+  ],
+  "judgedAtSec": 0.318,
+  "spreadSec": 0.01570000000006985,
+  "lowest": 43,
+  "highest": 62,
+  "size": 6,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g75",
+  "symbol": "Gm7",
+  "notes": [
+   36,
+   48,
+   50,
+   52,
+   55,
+   58,
+   62
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    5
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    0,
+    2
+   ]
+  },
+  "voices": [
+   {
+    "note": 36,
+    "velocity": 40,
+    "onSec": 0.032,
+    "offSec": 4.49
+   },
+   {
+    "note": 48,
+    "velocity": 29,
+    "onSec": 0.03570000000006985,
+    "offSec": 4.453
+   },
+   {
+    "note": 50,
+    "velocity": 45,
+    "onSec": 0.01770000000006985,
+    "offSec": 4.443
+   },
+   {
+    "note": 52,
+    "velocity": 50,
+    "onSec": 0.011800000000046567,
+    "offSec": 4.434
+   },
+   {
+    "note": 55,
+    "velocity": 35,
+    "onSec": 0.010099999999976716,
+    "offSec": 4.448
+   },
+   {
+    "note": 58,
+    "velocity": 32,
+    "onSec": 0,
+    "offSec": 4.483900000000023
+   },
+   {
+    "note": 62,
+    "velocity": 38,
+    "onSec": 0.019,
+    "offSec": 4.4730999999999765
+   }
+  ],
+  "judgedAtSec": 0.3379000000000233,
+  "spreadSec": 0.03570000000006985,
+  "lowest": 36,
+  "highest": 62,
+  "size": 7,
+  "hasProblem": true,
+  "set": "extra"
+ },
+ {
+  "id": "g76",
+  "symbol": "Gm7",
+  "notes": [
+   43,
+   50,
+   57,
+   58,
+   62,
+   70
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    5
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2,
+    10
+   ]
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 40,
+    "onSec": 0,
+    "offSec": 2.557
+   },
+   {
+    "note": 50,
+    "velocity": 22,
+    "onSec": 0.4481999999999534,
+    "offSec": 2.561900000000023
+   },
+   {
+    "note": 57,
+    "velocity": 32,
+    "onSec": 0.17309999999997672,
+    "offSec": 2.59
+   },
+   {
+    "note": 58,
+    "velocity": 20,
+    "onSec": 0.2561999999999534,
+    "offSec": 2.529
+   },
+   {
+    "note": 62,
+    "velocity": 26,
+    "onSec": 0.2681999999999534,
+    "offSec": 2.482099999999977
+   },
+   {
+    "note": 70,
+    "velocity": 71,
+    "onSec": 0.33030000000004656,
+    "offSec": 2.4531999999999536
+   }
+  ],
+  "judgedAtSec": 0.75,
+  "spreadSec": 0.4481999999999534,
+  "lowest": 43,
+  "highest": 70,
+  "size": 6,
+  "hasProblem": true,
+  "set": "gate"
+ },
+ {
+  "id": "g77",
+  "symbol": "Gm7",
+  "notes": [
+   43,
+   50,
+   55,
+   57,
+   58,
+   62,
+   70
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    5
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2,
+    10
+   ]
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 40,
+    "onSec": 0,
+    "offSec": 2.557
+   },
+   {
+    "note": 50,
+    "velocity": 22,
+    "onSec": 0.4481999999999534,
+    "offSec": 2.561900000000023
+   },
+   {
+    "note": 55,
+    "velocity": 36,
+    "onSec": 0.7589000000000233,
+    "offSec": 2.4761999999999533
+   },
+   {
+    "note": 57,
+    "velocity": 32,
+    "onSec": 0.17309999999997672,
+    "offSec": 2.59
+   },
+   {
+    "note": 58,
+    "velocity": 20,
+    "onSec": 0.2561999999999534,
+    "offSec": 2.529
+   },
+   {
+    "note": 62,
+    "velocity": 26,
+    "onSec": 0.2681999999999534,
+    "offSec": 2.482099999999977
+   },
+   {
+    "note": 70,
+    "velocity": 71,
+    "onSec": 0.33030000000004656,
+    "offSec": 2.4531999999999536
+   }
+  ],
+  "judgedAtSec": 1.0615999999999768,
+  "spreadSec": 0.7589000000000233,
+  "lowest": 43,
+  "highest": 70,
+  "size": 7,
+  "hasProblem": true,
+  "set": "gate"
+ },
+ {
+  "id": "g78",
+  "symbol": "Gm7",
+  "notes": [
+   43,
+   46,
+   55,
+   57,
+   58,
+   62
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    5
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [
+    [
+     43,
+     46
+    ]
+   ],
+   "doublings": [
+    10
+   ]
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 39,
+    "onSec": 0,
+    "offSec": 0.7316999999999534
+   },
+   {
+    "note": 46,
+    "velocity": 51,
+    "onSec": 0.028899999999906868,
+    "offSec": 0.7008999999999068
+   },
+   {
+    "note": 55,
+    "velocity": 46,
+    "onSec": 0.024699999999953433,
+    "offSec": 0.8808999999999069
+   },
+   {
+    "note": 57,
+    "velocity": 41,
+    "onSec": 0.027899999999906867,
+    "offSec": 0.856
+   },
+   {
+    "note": 58,
+    "velocity": 50,
+    "onSec": 0.02589999999990687,
+    "offSec": 0.8907999999999302
+   },
+   {
+    "note": 62,
+    "velocity": 47,
+    "onSec": 0.016899999999906868,
+    "offSec": 0.936
+   }
+  ],
+  "judgedAtSec": 0.3298999999999069,
+  "spreadSec": 0.028899999999906868,
+  "lowest": 43,
+  "highest": 62,
+  "size": 6,
+  "hasProblem": true,
+  "set": "extra"
+ },
+ {
+  "id": "g79",
+  "symbol": "Gm7",
+  "notes": [
+   43,
+   50,
+   55,
+   57,
+   58,
+   62,
+   67
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    5
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2
+   ]
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 3.0403999999999067
+   },
+   {
+    "note": 50,
+    "velocity": 33,
+    "onSec": 0.7463999999999069,
+    "offSec": 3.1250999999999767
+   },
+   {
+    "note": 55,
+    "velocity": 32,
+    "onSec": 0.7423999999999069,
+    "offSec": 3.114399999999907
+   },
+   {
+    "note": 57,
+    "velocity": 39,
+    "onSec": 0.723,
+    "offSec": 3.1983999999999067
+   },
+   {
+    "note": 58,
+    "velocity": 39,
+    "onSec": 0.7240999999999768,
+    "offSec": 3.2185
+   },
+   {
+    "note": 62,
+    "velocity": 43,
+    "onSec": 0.7181999999999534,
+    "offSec": 3.217399999999907
+   },
+   {
+    "note": 67,
+    "velocity": 56,
+    "onSec": 0.7115,
+    "offSec": 3.2863999999999067
+   }
+  ],
+  "judgedAtSec": 1.04829999999993,
+  "spreadSec": 0.7463999999999069,
+  "lowest": 43,
+  "highest": 67,
+  "size": 7,
+  "hasProblem": true,
+  "set": "extra"
+ },
+ {
+  "id": "g80",
+  "symbol": "Gm7",
+  "notes": [
+   43,
+   50,
+   55,
+   57,
+   58,
+   62,
+   65,
+   67
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2
+   ]
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 3.0403999999999067
+   },
+   {
+    "note": 50,
+    "velocity": 33,
+    "onSec": 0.7463999999999069,
+    "offSec": 3.1250999999999767
+   },
+   {
+    "note": 55,
+    "velocity": 32,
+    "onSec": 0.7423999999999069,
+    "offSec": 3.114399999999907
+   },
+   {
+    "note": 57,
+    "velocity": 39,
+    "onSec": 0.723,
+    "offSec": 3.1983999999999067
+   },
+   {
+    "note": 58,
+    "velocity": 39,
+    "onSec": 0.7240999999999768,
+    "offSec": 3.2185
+   },
+   {
+    "note": 62,
+    "velocity": 43,
+    "onSec": 0.7181999999999534,
+    "offSec": 3.217399999999907
+   },
+   {
+    "note": 65,
+    "velocity": 44,
+    "onSec": 2.2775,
+    "offSec": 3.25729999999993
+   },
+   {
+    "note": 67,
+    "velocity": 56,
+    "onSec": 0.7115,
+    "offSec": 3.2863999999999067
+   }
+  ],
+  "judgedAtSec": 2.579399999999907,
+  "spreadSec": 2.2775,
+  "lowest": 43,
+  "highest": 67,
+  "size": 8,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g81",
+  "symbol": "Gm7",
+  "notes": [
+   43,
+   50,
+   55,
+   57,
+   58,
+   62,
+   65,
+   67
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    2
+   ]
+  },
+  "voices": [
+   {
+    "note": 43,
+    "velocity": 46,
+    "onSec": 0,
+    "offSec": 1.5443000000000466
+   },
+   {
+    "note": 50,
+    "velocity": 37,
+    "onSec": 0.104,
+    "offSec": 1.5011999999999535
+   },
+   {
+    "note": 55,
+    "velocity": 43,
+    "onSec": 0.1905999999999767,
+    "offSec": 1.4573000000000467
+   },
+   {
+    "note": 57,
+    "velocity": 57,
+    "onSec": 0.16519999999995344,
+    "offSec": 1.9634000000000233
+   },
+   {
+    "note": 58,
+    "velocity": 38,
+    "onSec": 0.18319999999995343,
+    "offSec": 1.9443000000000465
+   },
+   {
+    "note": 62,
+    "velocity": 33,
+    "onSec": 0.1915,
+    "offSec": 1.9031999999999534
+   },
+   {
+    "note": 65,
+    "velocity": 35,
+    "onSec": 0.20619999999995342,
+    "offSec": 1.9061999999999535
+   },
+   {
+    "note": 67,
+    "velocity": 60,
+    "onSec": 0.21219999999995343,
+    "offSec": 1.9231999999999534
+   }
+  ],
+  "judgedAtSec": 0.5135999999999767,
+  "spreadSec": 0.21219999999995343,
+  "lowest": 43,
+  "highest": 67,
+  "size": 8,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g82",
+  "symbol": "C7",
+  "notes": [
+   48,
+   55,
+   58,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 57,
+    "onSec": 0.011900000000023283,
+    "offSec": 1.7989000000000233
+   },
+   {
+    "note": 55,
+    "velocity": 49,
+    "onSec": 0.009900000000023283,
+    "offSec": 2.2315
+   },
+   {
+    "note": 58,
+    "velocity": 43,
+    "onSec": 0.008699999999953434,
+    "offSec": 2.1619000000000232
+   },
+   {
+    "note": 60,
+    "velocity": 58,
+    "onSec": 0.006799999999930151,
+    "offSec": 2.19979999999993
+   },
+   {
+    "note": 64,
+    "velocity": 58,
+    "onSec": 0,
+    "offSec": 2.1916999999999534
+   }
+  ],
+  "judgedAtSec": 0.31440000000002327,
+  "spreadSec": 0.011900000000023283,
+  "lowest": 48,
+  "highest": 64,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g83",
+  "symbol": "Fmaj7",
+  "notes": [
+   41,
+   55,
+   57,
+   60,
+   65
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    4
+   ],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 51,
+    "onSec": 0,
+    "offSec": 2.11420000000007
+   },
+   {
+    "note": 55,
+    "velocity": 32,
+    "onSec": 0.103,
+    "offSec": 0.967
+   },
+   {
+    "note": 57,
+    "velocity": 38,
+    "onSec": 0.12290000000002328,
+    "offSec": 2.5528000000000466
+   },
+   {
+    "note": 60,
+    "velocity": 50,
+    "onSec": 0.138,
+    "offSec": 2.5598000000000467
+   },
+   {
+    "note": 65,
+    "velocity": 58,
+    "onSec": 0.17190000000002328,
+    "offSec": 1.1171000000000932
+   }
+  ],
+  "judgedAtSec": 0.4968000000000466,
+  "spreadSec": 0.17190000000002328,
+  "lowest": 41,
+  "highest": 65,
+  "size": 5,
+  "hasProblem": true,
+  "set": "extra"
+ },
+ {
+  "id": "g84",
+  "symbol": "Fmaj7",
+  "notes": [
+   41,
+   48,
+   53,
+   55,
+   57,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": [
+    0
+   ]
+  },
+  "voices": [
+   {
+    "note": 41,
+    "velocity": 51,
+    "onSec": 0,
+    "offSec": 2.11420000000007
+   },
+   {
+    "note": 48,
+    "velocity": 49,
+    "onSec": 0.5851000000000931,
+    "offSec": 2.056100000000093
+   },
+   {
+    "note": 53,
+    "velocity": 45,
+    "onSec": 0.8049000000000233,
+    "offSec": 2.0025
+   },
+   {
+    "note": 55,
+    "velocity": 38,
+    "onSec": 0.9601000000000931,
+    "offSec": 2.557900000000023
+   },
+   {
+    "note": 57,
+    "velocity": 38,
+    "onSec": 0.12290000000002328,
+    "offSec": 2.5528000000000466
+   },
+   {
+    "note": 60,
+    "velocity": 50,
+    "onSec": 0.138,
+    "offSec": 2.5598000000000467
+   },
+   {
+    "note": 64,
+    "velocity": 77,
+    "onSec": 1.1199000000000232,
+    "offSec": 2.6412000000000697
+   }
+  ],
+  "judgedAtSec": 1.4212000000000697,
+  "spreadSec": 1.1199000000000232,
+  "lowest": 41,
+  "highest": 64,
+  "size": 7,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g85",
+  "symbol": "F#°",
+  "notes": [
+   42,
+   54,
+   57,
+   60,
+   63
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 42,
+    "velocity": 54,
+    "onSec": 0,
+    "offSec": 1.4764000000000232
+   },
+   {
+    "note": 54,
+    "velocity": 70,
+    "onSec": 0.007199999999953434,
+    "offSec": 1.3924000000000232
+   },
+   {
+    "note": 57,
+    "velocity": 64,
+    "onSec": 0.013400000000023284,
+    "offSec": 2.0044000000000235
+   },
+   {
+    "note": 60,
+    "velocity": 68,
+    "onSec": 0.0125,
+    "offSec": 1.9214000000000233
+   },
+   {
+    "note": 63,
+    "velocity": 83,
+    "onSec": 0.01829999999993015,
+    "offSec": 1.8984000000000232
+   }
+  ],
+  "judgedAtSec": 0.3286999999999534,
+  "spreadSec": 0.01829999999993015,
+  "lowest": 42,
+  "highest": 63,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g86",
+  "symbol": "F#°",
+  "notes": [
+   29,
+   57,
+   60,
+   63
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 29,
+    "velocity": 53,
+    "onSec": 1.768,
+    "offSec": 1.943
+   },
+   {
+    "note": 57,
+    "velocity": 64,
+    "onSec": 0.0009000000000232831,
+    "offSec": 1.9919000000000233
+   },
+   {
+    "note": 60,
+    "velocity": 68,
+    "onSec": 0,
+    "offSec": 1.9089000000000234
+   },
+   {
+    "note": 63,
+    "velocity": 83,
+    "onSec": 0.005799999999930151,
+    "offSec": 1.8859000000000232
+   }
+  ],
+  "judgedAtSec": 2.0705,
+  "spreadSec": 1.768,
+  "lowest": 29,
+  "highest": 63,
+  "size": 4,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g87",
+  "symbol": "F#°",
+  "notes": [
+   48,
+   55,
+   59,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [
+    9,
+    3
+   ],
+   "wrong": [
+    7,
+    4
+   ],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 48,
+    "velocity": 55,
+    "onSec": 0.017699999999953434,
+    "offSec": 1.8445
+   },
+   {
+    "note": 55,
+    "velocity": 55,
+    "onSec": 0.020699999999953433,
+    "offSec": 2.005900000000023
+   },
+   {
+    "note": 59,
+    "velocity": 43,
+    "onSec": 0.016699999999953433,
+    "offSec": 1.9688000000000465
+   },
+   {
+    "note": 60,
+    "velocity": 48,
+    "onSec": 0.013900000000023283,
+    "offSec": 1.9818000000000466
+   },
+   {
+    "note": 64,
+    "velocity": 47,
+    "onSec": 0,
+    "offSec": 1.989
+   }
+  ],
+  "judgedAtSec": 0.32209999999997674,
+  "spreadSec": 0.020699999999953433,
+  "lowest": 48,
+  "highest": 64,
+  "size": 5,
+  "hasProblem": true,
+  "set": "extra"
+ },
+ {
+  "id": "g88",
+  "symbol": "F#°",
+  "notes": [
+   42,
+   45,
+   48,
+   51,
+   54,
+   57,
+   60,
+   63
+  ],
+  "verdict": {
+   "type": "spread",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [
+    [
+     42,
+     45
+    ],
+    [
+     45,
+     48
+    ]
+   ],
+   "doublings": [
+    9,
+    0,
+    3
+   ]
+  },
+  "voices": [
+   {
+    "note": 42,
+    "velocity": 54,
+    "onSec": 0,
+    "offSec": 1.963
+   },
+   {
+    "note": 45,
+    "velocity": 46,
+    "onSec": 0.11090000000002329,
+    "offSec": 1.97979999999993
+   },
+   {
+    "note": 48,
+    "velocity": 43,
+    "onSec": 0.18159999999997672,
+    "offSec": 1.9749000000000232
+   },
+   {
+    "note": 51,
+    "velocity": 48,
+    "onSec": 0.2810999999999767,
+    "offSec": 1.9539000000000233
+   },
+   {
+    "note": 54,
+    "velocity": 36,
+    "onSec": 0.2389000000000233,
+    "offSec": 2.23179999999993
+   },
+   {
+    "note": 57,
+    "velocity": 40,
+    "onSec": 0.275,
+    "offSec": 2.293699999999953
+   },
+   {
+    "note": 60,
+    "velocity": 54,
+    "onSec": 0.29990000000002326,
+    "offSec": 2.3629000000000233
+   },
+   {
+    "note": 63,
+    "velocity": 57,
+    "onSec": 0.316,
+    "offSec": 2.2949000000000233
+   }
+  ],
+  "judgedAtSec": 0.6177999999999302,
+  "spreadSec": 0.316,
+  "lowest": 42,
+  "highest": 63,
+  "size": 8,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g89",
+  "symbol": "F#°",
+  "notes": [
+   54,
+   57,
+   60,
+   63
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 54,
+    "velocity": 93,
+    "onSec": 0,
+    "offSec": 3.280099999999977
+   },
+   {
+    "note": 57,
+    "velocity": 59,
+    "onSec": 0.2913000000000466,
+    "offSec": 3.29320000000007
+   },
+   {
+    "note": 60,
+    "velocity": 65,
+    "onSec": 0.5503000000000465,
+    "offSec": 3.3100999999999767
+   },
+   {
+    "note": 63,
+    "velocity": 77,
+    "onSec": 0.8243000000000466,
+    "offSec": 3.323
+   }
+  ],
+  "judgedAtSec": 1.1263000000000465,
+  "spreadSec": 0.8243000000000466,
+  "lowest": 54,
+  "highest": 63,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g90",
+  "symbol": "Cmaj7",
+  "notes": [
+   55,
+   59,
+   60,
+   62,
+   64
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 57,
+    "onSec": 0.0012999999999301509,
+    "offSec": 1.48779999999993
+   },
+   {
+    "note": 59,
+    "velocity": 50,
+    "onSec": 0.001900000000023283,
+    "offSec": 1.4509000000000234
+   },
+   {
+    "note": 60,
+    "velocity": 54,
+    "onSec": 0.004799999999930151,
+    "offSec": 1.4439000000000233
+   },
+   {
+    "note": 62,
+    "velocity": 50,
+    "onSec": 0.003299999999930151,
+    "offSec": 1.4587999999999302
+   },
+   {
+    "note": 64,
+    "velocity": 55,
+    "onSec": 0,
+    "offSec": 1.3539000000000232
+   }
+  ],
+  "judgedAtSec": 0.306,
+  "spreadSec": 0.004799999999930151,
+  "lowest": 55,
+  "highest": 64,
+  "size": 5,
+  "hasProblem": false,
+  "set": "extra"
+ },
+ {
+  "id": "g91",
+  "symbol": "A7",
+  "notes": [
+   55,
+   61,
+   64
+  ],
+  "verdict": {
+   "type": "close",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 55,
+    "velocity": 52,
+    "onSec": 0.002799999999930151,
+    "offSec": 2.273099999999977
+   },
+   {
+    "note": 61,
+    "velocity": 67,
+    "onSec": 0.0016999999999534339,
+    "offSec": 2.226900000000023
+   },
+   {
+    "note": 64,
+    "velocity": 57,
+    "onSec": 0,
+    "offSec": 2.203
+   }
+  ],
+  "judgedAtSec": 0.30390000000002326,
+  "spreadSec": 0.002799999999930151,
+  "lowest": 55,
+  "highest": 64,
+  "size": 3,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g92",
+  "symbol": "Dm7",
+  "notes": [
+   53,
+   57,
+   60,
+   64
+  ],
+  "verdict": {
+   "type": "rootless-A",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 53,
+    "velocity": 73,
+    "onSec": 0.0018000000000465662,
+    "offSec": 2.2608000000000468
+   },
+   {
+    "note": 57,
+    "velocity": 45,
+    "onSec": 0.0085,
+    "offSec": 2.1718000000000464
+   },
+   {
+    "note": 60,
+    "velocity": 51,
+    "onSec": 0.0011999999999534338,
+    "offSec": 2.122900000000023
+   },
+   {
+    "note": 64,
+    "velocity": 48,
+    "onSec": 0,
+    "offSec": 2.2288000000000467
+   }
+  ],
+  "judgedAtSec": 0.31069999999995346,
+  "spreadSec": 0.0085,
+  "lowest": 53,
+  "highest": 64,
+  "size": 4,
+  "hasProblem": false,
+  "set": "gate"
+ },
+ {
+  "id": "g93",
+  "symbol": "G7",
+  "notes": [
+   53,
+   57,
+   59,
+   64
+  ],
+  "verdict": {
+   "type": "rootless-B",
+   "bass": null,
+   "missing": [],
+   "wrong": [],
+   "avoid": [],
+   "muddy": [],
+   "doublings": []
+  },
+  "voices": [
+   {
+    "note": 53,
+    "velocity": 64,
+    "onSec": 0.008099999999976716,
+    "offSec": 1.4175999999999767
+   },
+   {
+    "note": 57,
+    "velocity": 48,
+    "onSec": 0.009,
+    "offSec": 1.3940999999999768
+   },
+   {
+    "note": 59,
+    "velocity": 53,
+    "onSec": 0.007,
+    "offSec": 1.4110999999999767
+   },
+   {
+    "note": 64,
+    "velocity": 53,
+    "onSec": 0,
+    "offSec": 1.4241999999999535
+   }
+  ],
+  "judgedAtSec": 0.31119999999995346,
+  "spreadSec": 0.009,
+  "lowest": 53,
+  "highest": 64,
+  "size": 4,
+  "hasProblem": false,
+  "set": "extra"
+ }
+]
