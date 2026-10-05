@@ -63,7 +63,9 @@ export function createOutput(midiAccess, {
   function sendScheduled(messages) {
     if (!port) return false;
     queued = [...messages].sort((a, b) => a.time - b.time);
-    sounding.clear();
+    // `sounding` is deliberately kept: a voice is in it only while its note-off has not gone over,
+    // so anything left from the arrangement before this one is a voice that would hang. The app
+    // stops before it plays again, but the port must not depend on that to let go of a note.
     const generation = ++pacing;
     const hand = () => {
       if (generation !== pacing || !port) return;

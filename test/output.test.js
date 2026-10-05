@@ -96,3 +96,22 @@ test('createOutput: a port without clear() is silenced all the same', () => {
   assert.doesNotThrow(() => output.silence([4]));
   assert.deepEqual(sent, [[0xb3, 123, 0], [0xb3, 123, 0]]);
 });
+
+test('createOutput: a new arrangement replaces the one still waiting, and nothing is left hanging', () => {
+  // Play, Stop, Play is what the app does (it stops before it plays), but a port must not need
+  // that: a voice whose note-off never went over stays known, so the next silence() releases it.
+  const { sent, output, tick } = timedPort();
+  output.select('out-1');
+  output.sendScheduled([{ time: 0, data: [0x90, 60, 90] }, { time: 1000, data: [0x80, 60, 0] }]);
+  output.sendScheduled([{ time: 0, data: [0x90, 67, 90] }, { time: 1000, data: [0x80, 67, 0] }]);
+  assert.deepEqual(sent.map(([bytes]) => bytes), [[0x90, 60, 90], [0x90, 67, 90]], 'both note-ons went over');
+
+  tick(2000);
+  assert.deepEqual(sent.slice(2).map(([bytes]) => bytes), [[0x80, 67, 0]],
+    'only the second arrangement is still being handed over; the first was dropped with its note-off');
+
+  const before = sent.length;
+  output.silence([1]);
+  assert.deepEqual(sent.slice(before, before + 1).map(([bytes]) => bytes), [[0x80, 60, 0]],
+    'the note left sounding by the replaced arrangement is released, not forgotten');
+});
