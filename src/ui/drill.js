@@ -50,7 +50,7 @@ export function nextChord(settings, previous = null, random = Math.random) {
 /** Settings from storage, cleaned; defaults when storage is missing, empty or broken. */
 export function loadSettings(storage = globalThis.localStorage) {
   try {
-    const raw = storage?.getItem(storageKey('settings', storage));
+    const raw = storage?.getItem(storageKey('settings'));
     if (!raw) return defaults();
     return sanitize(JSON.parse(raw));
   } catch {
@@ -62,7 +62,7 @@ export function loadSettings(storage = globalThis.localStorage) {
 export function saveSettings(settings, storage = globalThis.localStorage) {
   try {
     if (!storage) return false;
-    storage.setItem(storageKey('settings', storage), JSON.stringify(settings));
+    storage.setItem(storageKey('settings'), JSON.stringify(settings));
     return true;
   } catch {
     return false;

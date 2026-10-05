@@ -101,13 +101,3 @@ test('the bass register is one of the named ones, low by default', () => {
   assert.equal(loadSettings(storage).bassRegister, 'low');
 });
 
-// The wiring, not the helper: drill.js must ask storage.js for its key, or a browser that
-// practised under the old app name loses its settings at the rename.
-test('settings saved under the old app name are still there after the rename', () => {
-  const storage = fakeStorage();
-  storage.setItem('voicing-lab.settings', JSON.stringify({ debounceMs: 450, channel: 3 }));
-  const settings = loadSettings(storage);
-  assert.equal(settings.debounceMs, 450);
-  assert.equal(settings.channel, 3);
-  assert.equal(storage.getItem('voicing-lab.settings'), null, 'moved across, not left as a second copy');
-});

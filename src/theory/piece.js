@@ -192,7 +192,7 @@ export function fromJSON(text) {
 
 function readAll(storage) {
   try {
-    const raw = storage?.getItem(storageKey('pieces', storage));
+    const raw = storage?.getItem(storageKey('pieces'));
     const data = raw ? JSON.parse(raw) : {};
     return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
   } catch {
@@ -203,7 +203,7 @@ function readAll(storage) {
 function writeAll(all, storage) {
   try {
     if (!storage) return false;
-    storage.setItem(storageKey('pieces', storage), JSON.stringify(all));
+    storage.setItem(storageKey('pieces'), JSON.stringify(all));
     return true;
   } catch {
     return false;

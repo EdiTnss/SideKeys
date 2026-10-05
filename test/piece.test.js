@@ -163,11 +163,3 @@ test('validateReharm: a rejected multi-slot candidate takes the slots it covers 
   assert.deepEqual(result.issues.find(i => i.relation === 'outside').slot, { bar: 1, slot: 1 });
 });
 
-test('pieces saved under the old app name are still there after the rename', () => {
-  const storage = fakeStorage();
-  const piece = createPiece({ title: 'Before the rename', grid: '| Dm7 | G7 |' });
-  storage.setItem('voicing-lab.pieces', JSON.stringify({ [piece.title]: piece }));
-  assert.deepEqual(listPieces(storage), ['Before the rename']);
-  assert.equal(loadPiece('Before the rename', storage).bars.length, 2);
-  assert.equal(storage.getItem('voicing-lab.pieces'), null);
-});

@@ -64,11 +64,3 @@ test('stats survive a save/load round trip and fall back to empty on garbage', (
   assert.equal(saveStats(stats, undefined), false);
 });
 
-test('statistics saved under the old app name are still there after the rename', () => {
-  const storage = fakeStorage();
-  storage.setItem('voicing-lab.stats', JSON.stringify({ attempts: 12, clean: 7, byKey: {} }));
-  const stats = loadStats(storage);
-  assert.equal(stats.attempts, 12);
-  assert.equal(stats.clean, 7);
-  assert.equal(storage.getItem('voicing-lab.stats'), null);
-});

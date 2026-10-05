@@ -49,7 +49,7 @@ export function summaryLine(stats) {
 
 export function loadStats(storage = globalThis.localStorage) {
   try {
-    const raw = storage?.getItem(storageKey('stats', storage));
+    const raw = storage?.getItem(storageKey('stats'));
     if (!raw) return emptyStats();
     const data = JSON.parse(raw);
     if (!data || typeof data !== 'object' || !Number.isInteger(data.attempts) || typeof data.byKey !== 'object') return emptyStats();
@@ -62,7 +62,7 @@ export function loadStats(storage = globalThis.localStorage) {
 export function saveStats(stats, storage = globalThis.localStorage) {
   try {
     if (!storage) return false;
-    storage.setItem(storageKey('stats', storage), JSON.stringify(stats));
+    storage.setItem(storageKey('stats'), JSON.stringify(stats));
     return true;
   } catch {
     return false;
