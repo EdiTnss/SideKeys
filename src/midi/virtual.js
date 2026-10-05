@@ -23,7 +23,9 @@ export function createVirtualMidi({
     if (typeof name !== 'string') return name;
     const output = port('output', name, i);
     output.send = (data, time) => { sent.push({ port: output.id, data: [...data], time: time ?? now() }); };
-    // Like the real clear(): what is still queued for later never leaves.
+    // What the spec's clear() does: anything still queued for later never leaves. Chrome does not
+    // implement it on a real MIDIOutput (see the note in midi/output.js), so this is the only port
+    // in the app that has one — kept so a port that does implement it stays covered.
     output.clear = () => {
       const at = now();
       for (let k = sent.length - 1; k >= 0; k--) {

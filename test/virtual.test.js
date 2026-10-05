@@ -38,22 +38,31 @@ test('connectMidi takes the access it is given: devices are listed and messages 
   ]);
 });
 
-test('what the app sends to a virtual output is kept, with its time; clear() drops what was still queued', () => {
-  let now = 0;
-  const midi = createVirtualMidi({ now: () => now });
-  const output = createOutput(midi.access, { channel: 2, setTimer: () => {} });
+test('what the app sends to a virtual output is kept, with its time; a Stop keeps the rest from leaving', () => {
+  let clock = 0;
+  let timers = [];
+  const midi = createVirtualMidi({ now: () => clock });
+  const output = createOutput(midi.access, { channel: 2, now: () => clock, setTimer: fn => { timers.push(fn); } });
+  const wake = () => { const due = timers; timers = []; for (const fn of due) fn(); };
   output.select('virtual-output-1');
-  output.playVoicing([60, 64], { velocity: 90 });
+
   output.sendScheduled([{ time: 500, data: [0x90, 67, 70] }, { time: 900, data: [0x80, 67, 0] }]);
-  assert.deepEqual(midi.sent.map(message => [message.data, message.time]), [
-    [[0x91, 60, 90], 0], [[0x91, 64, 90], 0], [[0x90, 67, 70], 500], [[0x80, 67, 0], 900],
+  assert.deepEqual(midi.sent, [], 'at clock 0 both are beyond the lookahead window');
+  clock = 400;
+  wake();
+  assert.deepEqual(midi.sent.map(m => [m.data, m.time]), [[[0x90, 67, 70], 500]], 'handed over with its own timestamp');
+
+  clock = 600;
+  output.silence([1, 2]);                     // the note-off at 900 never leaves at all
+  assert.deepEqual(midi.sent.map(m => m.data), [
+    [0x90, 67, 70], [0x80, 67, 0], [0xb0, 123, 0], [0xb1, 123, 0], [0xb0, 123, 0], [0xb1, 123, 0],
   ]);
-  now = 600;
-  output.silence([1, 2]);                     // the note-off at 900 never leaves
-  assert.deepEqual(midi.sent.map(message => message.data), [
-    [0x91, 60, 90], [0x91, 64, 90], [0x90, 67, 70], [0xb0, 123, 0], [0xb1, 123, 0],
-  ]);
+  assert.deepEqual(midi.sent.filter(m => m.data[1] === 123).map(m => m.time), [600, 600, 750, 750],
+    'All Notes Off now, and once more after the lookahead window');
   assert.ok(midi.sent.every(message => message.port === 'virtual-output-1'));
+
+  output.playVoicing([60, 64], { velocity: 90 });   // an immediate send is stamped with the clock
+  assert.deepEqual(midi.sent.slice(-2).map(m => [m.data, m.time]), [[[0x91, 60, 90], 600], [[0x91, 64, 90], 600]]);
   midi.clearSent();
   assert.equal(midi.sent.length, 0);
 });
