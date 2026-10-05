@@ -26,6 +26,16 @@ export const BASS_REGISTERS = Object.freeze({
   high: Object.freeze([40, 51]),       // E2–D#3
 });
 export const BASS_REGISTER = BASS_REGISTERS.low;
+
+// An arrangement only works when the melody leaves the chord layer somewhere to live. A four-note
+// voicing spans about eleven semitones and has to start at C3 or above to stay clear of the bass,
+// so the melody has to sing from C4 up. Below that it is lifted by whole octaves for playback —
+// never past C6, which would push it out of its own register. Measured on Edi's 16-bar study,
+// whose melody sang F3–E4 and dipped to C3: without the lift, 6 of 16 bars had no chord layer at
+// all and every voicing that did fit sat under C3.
+export const LH_FLOOR = 48;         // C3: four notes under this are mud, however legal the intervals
+export const MELODY_FLOOR = 60;     // C4: under this there is no room between the bass and the melody
+export const MELODY_CEILING = 84;   // C6: the lift stops rather than push the melody above this
 export const PART_VELOCITY = Object.freeze({ bass: 80, lh: 64, melody: 90 });
 const PART_ORDER = { bass: 0, lh: 1, melody: 2 };
 
@@ -33,15 +43,19 @@ const PART_ORDER = { bass: 0, lh: 1, melody: 2 };
  * realize(piece, { register, bassRegister, melodyGap, velocity }) → {
  *   events: [{ beat, duration, part: 'bass' | 'lh' | 'melody', midi, velocity }],
  *   voicings: [{ bar, beat, symbol, notes, type, doublesMelody, reason }],
- *   totalBeats }
+ *   totalBeats, melodyShift }
  * `melodyGap` is how many semitones the left hand's top note keeps under the melody (1 = it
- * never reaches or crosses it).
+ * never reaches or crosses it). `melodyShift` is how far the melody was lifted to make room for
+ * the chord layer, in semitones (0 when it was already high enough, or too wide to lift): the
+ * caller is expected to say so, since the arrangement then differs from the recording.
  */
 export function realize(piece, { register = DEFAULT_REGISTER, bassRegister = BASS_REGISTER, melodyGap = 1, velocity = PART_VELOCITY } = {}) {
   const beatsPerBar = piece.timeSignature[0];
-  const melody = piece.bars.flatMap((bar, i) => bar.melody.map(note => ({
+  const recorded = piece.bars.flatMap((bar, i) => bar.melody.map(note => ({
     midi: note.midi, start: i * beatsPerBar + (note.beat - 1), duration: note.duration,
   })));
+  const melodyShift = liftFor(recorded);
+  const melody = melodyShift === 0 ? recorded : recorded.map(note => ({ ...note, midi: note.midi + melodyShift }));
   const slots = piece.bars.flatMap((bar, i) => bar.chords.map((chord, j) => {
     const next = bar.chords[j + 1];
     return {
@@ -66,7 +80,7 @@ export function realize(piece, { register = DEFAULT_REGISTER, bassRegister = BAS
     const top = over.length ? Math.min(register[1], Math.min(...over.map(note => note.midi)) - melodyGap) : register[1];
     const floor = Math.max(register[0], bass + 1);
     const options = top >= floor
-      ? fullestFirst(suggestVoicings(chord, { register: [floor, top], previous }).filter(option => !muddyPair(bass, option.notes[0])))
+      ? pickingOrder(suggestVoicings(chord, { register: [floor, top], previous }).filter(option => !muddyPair(bass, option.notes[0])))
       : [];
     const { picked, doubled } = leastDoubling(options, new Set(over.map(note => note.midi % 12)));
     const entry = { bar: slot.bar, beat: slot.beat, symbol: slot.symbol };
@@ -85,17 +99,37 @@ export function realize(piece, { register = DEFAULT_REGISTER, bassRegister = BAS
     events.push({ beat: note.start, duration: note.duration, part: 'melody', midi: note.midi, velocity: velocity.melody });
   }
   events.sort((a, b) => a.beat - b.beat || PART_ORDER[a.part] - PART_ORDER[b.part] || a.midi - b.midi);
-  return { events, voicings, totalBeats: piece.bars.length * beatsPerBar };
+  return { events, voicings, totalBeats: piece.bars.length * beatsPerBar, melodyShift };
+}
+
+// How far the melody has to rise for the chord layer to have a register of its own: whole octaves,
+// as few as possible, and none at all when the melody's own top would pass MELODY_CEILING. A piece
+// with no melody needs no room made for it.
+function liftFor(melody) {
+  if (melody.length === 0) return 0;
+  const low = Math.min(...melody.map(note => note.midi));
+  const high = Math.max(...melody.map(note => note.midi));
+  let shift = 0;
+  while (low + shift < MELODY_FLOOR && high + shift + 12 <= MELODY_CEILING) shift += 12;
+  return shift;
 }
 
 // The drill's suggestions keep the texture of the previous voicing first, which in an
 // arrangement means one forced shell turns every later chord into a shell too. Here the fuller
-// voicing comes first, then the one that moves least, then the drill's own order.
-function fullestFirst(options) {
+// voicing comes first, then the one that moves least, then the drill's own order — but only
+// while it stays at LH_FLOOR or above. A window that forces the chord layer lower thins out
+// instead of crowding four notes down into the bass: fewest notes first, then the highest bottom.
+// (Heard on the Genos: a quartal at Gb2 B2 E3 A3 breaks no low interval limit and is still mud,
+// where the shell B2 E3 is what a pianist plays.)
+function pickingOrder(options) {
+  const deep = option => (option.notes[0] < LH_FLOOR ? 1 : 0);
+  const movement = option => option.comparison?.movement ?? 0;
+  const fuller = (a, b) => b.notes.length - a.notes.length || movement(a) - movement(b);
+  const thinner = (a, b) => a.notes.length - b.notes.length || b.notes[0] - a.notes[0];
   return options
     .map((option, order) => ({ option, order }))
-    .sort((a, b) => b.option.notes.length - a.option.notes.length
-      || (a.option.comparison?.movement ?? 0) - (b.option.comparison?.movement ?? 0)
+    .sort((a, b) => deep(a.option) - deep(b.option)
+      || (deep(a.option) ? thinner(a.option, b.option) : fuller(a.option, b.option))
       || a.order - b.order)
     .map(entry => entry.option);
 }

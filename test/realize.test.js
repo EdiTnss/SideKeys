@@ -79,12 +79,15 @@ test('when every voicing holds the melody note, it is doubled and said so; when 
   assert.ok(third.voicings[0].notes, 'a voicing is still chosen');
   assert.equal(third.voicings[0].doublesMelody, true);
 
-  const buried = realize(piece('| Cmaj7 | Dm7 |', [raw('G2', 1, 1, 4)]));   // nothing fits between E2 and F#2
+  // A low melody alone is lifted instead (see the lift tests below), so the rest is forced with a
+  // melody too wide to lift: G2 stays where it is because its own top would pass C6.
+  const buried = realize(piece('| Cmaj7 | Dm7 |', [raw('G2', 1, 1, 4), raw('C6', 2, 1, 4)]));
+  assert.equal(buried.melodyShift, 0, 'too wide to lift');
   assert.equal(buried.voicings[0].notes, null);
   assert.match(buried.voicings[0].reason, /melody/);
   assert.deepEqual(lhAt(buried, 0), []);
   assert.equal(part(buried, 'bass').length, 2);                          // the bass and the melody still play
-  assert.equal(part(buried, 'melody').length, 1);
+  assert.equal(part(buried, 'melody').length, 2);
   assert.ok(buried.voicings[1].notes, 'the next chord gets its voicing again');
 });
 
@@ -123,4 +126,30 @@ test('registers and velocities can be changed; 3/4 counts three beats a bar', ()
   const waltz = realize(piece('| Fmaj7 | Gm7 C7 C7 |', [], { timeSignature: [3, 4] }));
   assert.equal(waltz.totalBeats, 6);
   assert.deepEqual(part(waltz, 'bass').map(e => [e.beat, e.duration]), [[0, 3], [3, 1], [4, 1], [5, 1]]);
+});
+
+test('a melody singing where the chord layer lives is lifted by an octave, and realize says so', () => {
+  // Legal music, but it sits in the chord layer's own register: between a bass at D2 and a C3 in
+  // the melody there is nothing a voicing can fill. The recording keeps the notes as played.
+  const played = [raw('F3', 1, 1, 4), raw('C3', 2, 1, 4), raw('B3', 3, 1, 4)];
+  const result = realize(piece('| Dm7 | G7 | Cmaj7 |', played));
+  assert.equal(result.melodyShift, 12);
+  assert.deepEqual(part(result, 'melody').map(e => e.midi), ['F4', 'C4', 'B4'].map(nameToMidi));
+  for (const voicing of result.voicings) assert.ok(voicing.notes, `${voicing.symbol} has a chord layer after the lift`);
+});
+
+test('a melody that already sings above C4 plays exactly as recorded', () => {
+  const result = realize(piece('| Dm7 | G7 |', [raw('F4', 1, 1, 4), raw('C4', 2, 1, 4)]));
+  assert.equal(result.melodyShift, 0);
+  assert.deepEqual(part(result, 'melody').map(e => e.midi), ['F4', 'C4'].map(nameToMidi));
+});
+
+test('four notes never start below C3: a window that low thins out instead of crowding', () => {
+  // Under a D4 melody a drop 2 fits at G2 C3 E3 B3 — legal by the low interval limits, and mud
+  // against the bass. The shell that starts above C3 is the pianist's answer.
+  const result = realize(piece('| Cmaj7 |', [raw('D4', 1, 1, 4)]));
+  const [voicing] = result.voicings;
+  assert.ok(voicing.notes[0] >= nameToMidi('C3'), `${voicing.notes} starts under C3`);
+  assert.deepEqual(voicing.notes, ['E3', 'B3'].map(nameToMidi));
+  assert.equal(voicing.type, 'shell');
 });

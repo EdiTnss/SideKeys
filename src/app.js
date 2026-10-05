@@ -438,13 +438,33 @@ function playArrangement(which) {
   }
   stopArrangement();
   const tempo = Number($('prog-tempo').value) || source.tempo || 120;
-  const { events, voicings } = realize(source, { bassRegister: BASS_REGISTERS[settings.bassRegister] });
+  const { events, voicings, melodyShift } = realize(source, { bassRegister: BASS_REGISTERS[settings.bassRegister] });
+  showArrangementNotes(melodyShift, voicings);
   metronome = createMetronome({ tempo, timeSignature: source.timeSignature, onBeat: onPlaybackBeat });
   metronome.start();
   const startMs = metronome.performanceTimeOf(1, 1);
   output.sendScheduled(arrangementMessages(events, { tempo, startMs, channels: settings.channels, parts: settings.parts }));
   playback = { which, bars: source.bars.length, voicings };
   setPlaybackControls(true);
+}
+
+// What the arrangement had to do to the piece, so it never happens silently: the melody lifted to
+// leave the chord layer a register of its own, and the bars where no voicing fitted at all.
+function showArrangementNotes(melodyShift, voicings) {
+  const notes = [];
+  if (melodyShift) {
+    const octaves = melodyShift / 12;
+    notes.push(`Melody played ${octaves === 1 ? 'an octave' : `${octaves} octaves`} up: as recorded it sings under C4, `
+      + 'where the chord layer has to live. The recording keeps your notes.');
+  }
+  const barsByReason = new Map();
+  for (const voicing of voicings.filter(entry => !entry.notes)) {
+    barsByReason.set(voicing.reason, (barsByReason.get(voicing.reason) ?? new Set()).add(voicing.bar));
+  }
+  for (const [reason, bars] of barsByReason) {
+    notes.push(`No chord layer in ${bars.size === 1 ? 'bar' : 'bars'} ${[...bars].join(', ')}: ${reason}.`);
+  }
+  renderStatus($('arrangement-notes'), notes.join(' '), notes.length ? 'warn' : 'hint');
 }
 
 function onPlaybackBeat({ bar, beat, countIn }) {
