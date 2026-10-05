@@ -79,7 +79,16 @@ Nu sunt propuneri; se respectă sau se renegociază explicit cu Edi înainte de 
    fiecărei schimbări de acord, inclusiv când nu anticipezi nimic.
 
 **Poarta P0** nu e „codul funcționează", ci **40 de adrese de email în 4 săptămâni de la primul
-clip**. Ceasul pornește la publicare, deci publicarea nu se amână după microfon.
+clip**.
+
+**Suspendată pe 2026-10-05** (decizie Edi). Poarta cere două lucruri care nu există încă: un
+clip și un loc unde cineva să lase o adresă — în `index.html`, `README.md` și tot `src/` nu e
+niciun formular și niciun `mailto`. O poartă care nu se poate măsura nu e o poartă, iar un ceas
+pornit la publicare (2026-09-20) ar expira pe 18 octombrie fără ca nimeni să fi avut vreodată
+unde să lase un email. Până atunci **ceasul nu curge**, iar prioritatea e studiul, nu poarta.
+
+Se reia când există amândouă: clipul în README și un formular găzduit, legat din pagină și din
+README. Ceasul pornește atunci, de la primul clip, cum spune poarta.
 
 ### P1 — Scheletul de produs (săptămânile 3–6)
 
