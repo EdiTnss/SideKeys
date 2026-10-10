@@ -29,8 +29,17 @@ Consecințe pentru cod:
 - Worker-ul rămâne proxy simplu: `Origin`, cheie, limită pe IP, plus token și un contor pentru
   `explain`. Fără cotă complexă, fără alegere de model, fără job de noapte, fără Batch API.
 - `explain` din drill rămâne singurul apel AI din produs. Sub un cent, ~3 secunde.
-- `pipeline.js`, `candidates.js`, `analysis.js`, `scoring.js`, `realize.js` rămân neatinse și
-  testate. Le folosește demo-ul.
+- `pipeline.js`, `candidates.js`, `analysis.js`, `scoring.js` rămân neatinse și testate. Le folosește
+  demo-ul, ca dovadă a arhitecturii hibride.
+- **Excepție, corectată pe 2026-10-10**: `realize.js` și `player.js` **nu sunt reharm, sunt aranjamentul**
+  — transformă orice piesă (grilă + melodie înregistrată) în bas, strat de acord și melodie, fără niciun
+  apel AI. Asta e unealta de comping din poziționare, deci aparține produsului și poate fi atinsă. Linia
+  de mai sus le trecuse greșit printre fișierele înghețate, iar greșeala s-a văzut când cele două reparații
+  din 2026-10-05 (registrul, și Stop-ul care nu oprea) au atins `realize.js` fără ca nimeni să semnaleze
+  contradicția. Consecința reală era mai gravă decât litera: butoanele de redare stăteau în tab-ul Reharm,
+  care e ascuns pe site-ul publicat, deci unealta de comping era invizibilă pentru orice vizitator. Mutate
+  în tab-ul Progression pe 2026-10-10 (decizie Edi), lângă grilă, melodie și Save/Load. În tab-ul Reharm
+  rămâne doar „Reharmonize" și răspunsul: dovada, adormită.
 
 ## Ce NU se atinge
 

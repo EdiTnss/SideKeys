@@ -64,17 +64,7 @@
       </label>
       <button id="reharm-run" type="button">Reharmonize</button>
     </div>
-    <div class="row play-row">
-      <button id="play-original" type="button">Play original</button>
-      <button id="play-reharm" type="button" disabled>Play reharm</button>
-      <button id="play-stop" type="button" disabled>Stop</button>
-      <span class="parts">
-        <label class="check"><input type="checkbox" name="part" value="bass"> bass</label>
-        <label class="check"><input type="checkbox" name="part" value="lh"> left hand</label>
-        <label class="check"><input type="checkbox" name="part" value="melody"> melody</label>
-      </span>
-    </div>
-    <p id="arrangement-notes"></p>
+    <p class="hint">Hear it in the Progression tab: <b>Play arrangement</b> for the piece as written, <b>Play reharm</b> for this answer.</p>
     <p id="reharm-source" class="hint"></p>
     <p id="reharm-saved"></p>
     <div id="reharm-view"></div>
@@ -121,6 +111,17 @@
       <button id="piece-export" type="button" disabled>Export JSON</button>
       <label class="file-button">Import JSON <input id="piece-import" type="file" accept=".json,application/json"></label>
     </div>
+    <div class="row play-row">
+      <button id="play-original" type="button">Play arrangement</button>
+      <button id="play-reharm" type="button" disabled>Play reharm</button>
+      <button id="play-stop" type="button" disabled>Stop playback</button>
+      <span class="parts">
+        <label class="check"><input type="checkbox" name="part" value="bass"> bass</label>
+        <label class="check"><input type="checkbox" name="part" value="lh"> left hand</label>
+        <label class="check"><input type="checkbox" name="part" value="melody"> melody</label>
+      </span>
+    </div>
+    <p id="arrangement-notes"></p>
     <div id="melody-view" class="melody-view"></div>
   </section>
 
