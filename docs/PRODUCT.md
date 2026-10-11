@@ -118,11 +118,15 @@ poarta se reia acolo, ca **poarta P1**.
 Ordinea e obligatorie și nu se scurtcircuitează: **întâi bucla de bază să fie plăcută în sine,
 apoi structura (drum, unități, nivele), abia apoi meta-jocul (XP, streak).**
 
-- [ ] Shell nou: Vite + TypeScript + Svelte 5, cu `theory/` importat neatins și testele verzi.
-- [ ] Ecranul de joc: sunet de pian din sample-uri, feedback animat pe clape, stele.
-- [ ] Drumul, cu primele 2–3 unități (Triade, Inversiuni, Septacorduri) și boss-ul lor.
-- [ ] Challenge-ul zilei, partajabil, fără cont.
-- [ ] Ecranele Azi și Rezultat; progresul și streak-ul ținute local.
+- [x] Shell nou: Vite + TypeScript + Svelte 5, cu `theory/` importat neatins și testele verzi.
+- [ ] Ecranul de joc: sunet de pian din sample-uri, feedback animat pe clape, stele. **Stelele sunt**
+  (`theory/stars.js`), **pianul e scris dar mut** — pachetul de sample-uri e decizia deschisă 4 a lui
+  Edi, deci pagina rămâne pe synth — iar feedback-ul pe clape colorează, nu animează.
+- [x] Drumul, cu primele 2–3 unități (Triade, Inversiuni, Septacorduri) și boss-ul lor. **Opt unități**,
+  Triade → ii–V–I; lipsește doar Comping, care cere Gig Mode.
+- [x] Challenge-ul zilei, partajabil, fără cont. Rampă de zece acorduri, seed din dată, grilă de
+  pătrățele; regulile și costul fiecărei decizii, în [spec-game.md](spec-game.md).
+- [x] Ecranele Azi și Rezultat; progresul și streak-ul ținute local.
 - [ ] PWA instalabilă (manifest + service worker, offline).
 - [ ] Formular de email găzduit, legat din pagină și din README.
 
