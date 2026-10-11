@@ -1,0 +1,57 @@
+/* The shell's base styles. Brand tokens come from assets/BRAND.md, and the theory colours are
+   the same seven as ../../styles.css — the two files must not drift while the old page is still
+   the Lab. The magenta accent stays on interface furniture only: never on a key, never in a
+   verdict. */
+
+:root {
+  --bg: #0a0b0c;
+  --surface: #101214;
+  --border: #23272b;
+  --ink: #f4f2ee;
+  --ink-muted: #8c949b;
+  --accent: #e0489e;
+
+  --chord-tone: #2e9e5b;
+  --tension: #3b82f6;
+  --altered: #8b5cf6;
+  --avoid: #f59e0b;
+  --wrong: #ef4444;
+  --held: #9ca3af;
+  --armed: #60a5fa;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Sora, system-ui, sans-serif;
+  font-synthesis-weight: none;
+}
+
+@font-face {
+  font-family: Sora;
+  src: url('../../assets/fonts/sora-latin.woff2') format('woff2');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---- The keyboard, drawn by src/ui/keyboard.js ---- */
+
+.keyboard { width: 100%; height: auto; display: block; }
+.key { stroke: #333; stroke-width: 1; }
+.key.white { fill: #fff; }
+.key.black { fill: #222; }
+.key.held { fill: var(--held); }
+.key.role-chordTone { fill: var(--chord-tone); }
+.key.role-tension { fill: var(--tension); }
+.key.role-altered { fill: var(--altered); }
+.key.role-avoid { fill: var(--avoid); }
+.key.role-wrong { fill: var(--wrong); }
+.key.caution { stroke: var(--warn, #d97706); stroke-width: 3; }
+.key.armed { fill: var(--armed); }
+.key.missing { stroke: var(--held); stroke-width: 3; stroke-dasharray: 3 3; }
+.key-label { font-size: 9px; fill: #555; pointer-events: none; }
+.keyboard.playable { cursor: pointer; touch-action: none; }

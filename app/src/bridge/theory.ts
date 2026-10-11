@@ -1,0 +1,17 @@
+// The only door between the shell and the engine.
+//
+// Everything below is imported from ../../../src, untouched: the same files Node runs under
+// `npm test` at the repo root, with no dependencies and no build step. The rule that makes this
+// safe is one-way — the shell imports from src/, and nothing in src/ may ever import from here.
+// Keeping the imports in one file means that rule is visible in one diff instead of scattered
+// through the screens.
+
+export { parseChord, ChordParseError } from '../../../src/theory/chords.js';
+export { analyzeVoicing } from '../../../src/theory/analyzer.js';
+export { isRight, isClean } from '../../../src/theory/stars.js';
+export { compareVoicings } from '../../../src/theory/voiceLeading.js';
+export { midiToName, octave, spellDegree } from '../../../src/theory/notes.js';
+
+// Pure mappers that turn an analysis into keyboard classes. They touch no DOM, and they are
+// tested in test/render.test.js, so the shell reuses them rather than growing a second copy.
+export { roleClasses, missingClasses } from '../../../src/ui/render.js';

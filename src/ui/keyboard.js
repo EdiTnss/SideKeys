@@ -19,6 +19,10 @@ function el(tag, attrs) {
  * Builds the keys inside `svg` (E1–G7 by default, the 76 keys of a Genos). Returns
  * { highlight(classesByMidi) }. With `onKey`, a key answers the mouse and the touchscreen: it
  * reports which note was pressed and leaves what that means to the caller.
+ *
+ * @param {SVGSVGElement} svg
+ * @param {{ from?: number, to?: number, onKey?: ((midi: number) => void) | null }} [options]
+ * @returns {{ highlight: (classesByMidi: Record<number, string>) => void }}
  */
 export function createKeyboard(svg, { from = 28, to = 103, onKey = null } = {}) {
   const keys = new Map();

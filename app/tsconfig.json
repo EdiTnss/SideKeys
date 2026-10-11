@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node", "svelte", "vite/client"],
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+
+    // The engine is JavaScript and stays JavaScript. `allowJs` lets the shell import it and read
+    // the types out of its JSDoc; `checkJs` stays off, because those files are checked by
+    // `node --test` at the repo root, not by this compiler.
+    "allowJs": true,
+    "checkJs": false
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte", "vite.config.ts", "../src/**/*.js"],
+  "exclude": ["node_modules", "dist"]
+}

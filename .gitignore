@@ -1,5 +1,8 @@
-# Dependencies (only worker/ and mic-proto/ ever have any)
+# Dependencies (only app/, worker/ and mic-proto/ ever have any)
 node_modules/
+
+# The shell's build output
+app/dist/
 
 # Secrets and local state (Wrangler reads .dev.vars or .env, with per-environment variants)
 worker/.dev.vars*
