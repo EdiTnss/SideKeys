@@ -5,17 +5,16 @@ s-a hotărât, de ce, și ce rămâne de decis.
 
 ## Cum se citește acest fișier (pentru Claude Code)
 
-- **Prioritatea dintre documente.** Unde acest fișier contrazice `docs/PRODUCT.md` (poziționare,
-  public-țintă, regula „niciun feature nou până la poarta P2", fazele P1–P4) sau `CLAUDE.md`
-  (stack-ul vanilla, „zero dependențe npm în aplicație"), **câștigă acest fișier**. `PRODUCT.md`
-  și `CLAUDE.md` se actualizează ca să reflecte direcția nouă, dar **numai după ce Edi aprobă
-  textul propus**.
+- **Prioritatea dintre documente.** Pe 2026-10-11, după ce Edi a aprobat textul propus, direcția
+  a intrat în `docs/PRODUCT.md` și în `CLAUDE.md`. De atunci **acest fișier nu mai câștigă la
+  contradicție**: `PRODUCT.md` e sursa de adevăr pentru scop, iar aici rămân consemnarea deciziei
+  (de ce arată produsul așa), mecanicile de joc, ecranele și deciziile încă deschise. Dacă găsești
+  o contradicție între ele, e o scăpare de-a noastră: semnaleaz-o, nu alege singur.
 - **Ce rămâne neschimbat.** Regulile de colaborare din `CLAUDE.md` rămân valabile: partener, nu
   aprobare reflexă; întrebare la ambiguitate; confirmare înaintea pașilor mari. La fel rămân
   convențiile de teste, harness, jurnal și commit-uri.
 - **Nicio schimbare în repo fără aprobarea lui Edi.** Se propune conținutul și se așteaptă
   răspunsul.
-- **Ce se citește la începutul sesiunii.** Acest fișier, imediat după `PRODUCT.md`.
 
 ## Decizii luate (2026-10-11)
 
@@ -179,22 +178,22 @@ De aceea prima livrare e mică, publică și măsurabilă.
 
 ## Prima livrare (~2 săptămâni)
 
-Pe web (GitHub Pages / `sidekeys.app`):
-1. Shell-ul nou: Vite + TS + framework-ul ales, cu `theory/` importat neatins și testele verzi.
-2. Ecranul de joc nou, cu sunet de pian din sample-uri, feedback animat și stele.
-3. Drumul, cu primele 2–3 unități (Triade, Inversiuni, Septacorduri) și boss-ul lor.
-4. Challenge-ul zilei, partajabil, fără cont.
-5. Ecranele Azi și Rezultat; progresul și streak-ul ținute local.
-6. PWA instalabilă (manifest + service worker, offline).
-7. Un formular de email găzduit, legat din pagină și din README. Asta repornește poarta P0.
+Lista și DoD-ul au intrat în `PRODUCT.md` ca **P1 — Jocul, prima livrare publică**, cu poarta
+celor 40 de adrese mutată acolo. Se citesc de acolo, ca să nu existe două liste.
 
 **Ce aduce Edi la livrarea asta:** un clip cu el cântând pe aplicația nouă. Clipul plus
 formularul repornesc ceasul porții.
 
 ## Decizii deschise (se întreabă Edi, nu se presupun)
 
-1. **React sau Svelte pentru shell.** Recomandarea lui Claude se dă în prima sesiune, cu
-   argumente.
+1. ~~**React sau Svelte pentru shell.**~~ — **închisă pe 2026-10-11: Svelte 5 + Vite +
+   TypeScript**, la recomandarea lui Claude, acceptată de Edi. Motivele: ce se mișcă la 60 fps
+   vine din afara framework-ului (MIDI, metronom, lookahead audio), iar reactivitatea compilată
+   atinge doar nodul schimbat; animațiile cerute de direcție sunt în limbaj (`transition:`,
+   `animate:`, `svelte/motion`), nu într-o dependență în plus; runtime mai mic pentru „primul
+   acord în sub 30 de secunde" și pentru offline; mai puține concepte de explicat. Contra, asumat:
+   React e bifa din anunțurile de job, iar Svelte 5 cu runes e mai nou în ce știe Claude — se ține
+   în frâu cu versiune fixată, runes only și zero librării de componente.
 2. **Ordinea exactă a unităților** și conținutul testului de plasare. Teoria e a lui Edi.
 3. **Formula de stele**: pragurile pentru „curat" și „elegant" (ex. câte semitonuri înseamnă
    voice leading „strâns"). Se scrie ca specificație, ca tabelul de calități al analizorului,

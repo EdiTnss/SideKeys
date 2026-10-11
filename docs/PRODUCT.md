@@ -10,27 +10,37 @@ Analiza completă de piață, economia și partea juridică nu sunt în repo (re
 
 **SideKeys e profesorul care stă lângă tine și îți spune ce ai greșit la mâini.**
 
-Nu „te învață acorduri" — asta fac zece aplicații. Te ascultă și te corectează: tipul de
-voicing, note lipsă, note greșite, low interval limits, voice leading, dublări, puncte slabe
-în timp. Toate se calculează determinist, în browser, din codul care există deja în `theory/`.
+Nu „te învață cântece" — asta fac zece aplicații. Te ascultă cum cânți din acorduri și te
+corectează: tipul de voicing, note lipsă, note greșite, low interval limits, voice leading,
+dublări, puncte slabe în timp. Toate se calculează determinist, în browser, din codul care
+există deja în `theory/`.
 
-Utilizatorul țintă: pianistul de jazz care studiază serios și are o clapă MIDI lângă un
-calculator. Nu începătorul, nu utilizatorul de iPad (Web MIDI nu există pe Safari).
+Utilizatorul țintă: **oricine cântă din acorduri și are o clapă lângă un calculator** —
+clapiștii de trupă, pianiștii de biserică, cei care acompaniază o voce, cei care vor să cânte
+din lead sheet, până la pianistul de jazz care studiază serios. Un singur produs, un singur
+drum: începătorul intră la nivelul 1 (triade), avansatul face un test de plasare de ~60 de
+secunde și sare la unitatea lui. Nu facem două produse.
+
+Ce rămâne în afară: utilizatorul de iPad, până la shell-ul nativ din livrarea 4 (Safari nu are
+Web MIDI), și cine vrea să învețe partituri notă cu notă — pentru asta există Simply Piano.
 
 ## Ce iese din scopul v1
 
-**Reharm iese din produs.** Rămâne în repo, în demo-ul public și în README, ca dovadă
-tehnică a arhitecturii hibride. Nu intră în tiere, nu intră în roadmap, nu primește lucru nou.
-
-Motivul principal nu e costul, e coerența: era singurul feature care contrazicea poziționarea
-de mai sus. Se reintroduce doar dacă cel puțin 20% dintre abonații activi îl cer explicit.
+**Reharm-ul cu apel AI iese din produs.** `ai/pipeline.js`, `candidates.js`, `analysis.js` și
+`scoring.js` rămân în repo, în demo-ul public și în README, ca dovadă tehnică a arhitecturii
+hibride, și nu primesc lucru nou. **Reharm-ul determinist revine** (2026-10-11), ca nivel avansat
+de joc: „găsește substituția care merge peste melodia asta", validat în `candidates.js` +
+`piece.js`, fără niciun apel AI. Motivul e același de atunci — coerența cu poziționarea: judecăm
+*cum* ai cântat, nu generăm muzică în locul tău.
 
 Consecințe pentru cod:
 - Worker-ul rămâne proxy simplu: `Origin`, cheie, limită pe IP, plus token și un contor pentru
   `explain`. Fără cotă complexă, fără alegere de model, fără job de noapte, fără Batch API.
 - `explain` din drill rămâne singurul apel AI din produs. Sub un cent, ~3 secunde.
-- `pipeline.js`, `candidates.js`, `analysis.js`, `scoring.js` rămân neatinse și testate. Le folosește
-  demo-ul, ca dovadă a arhitecturii hibride.
+- `pipeline.js` rămâne înghețat și testat: el e apelul AI, deci el e dovada adormită din demo.
+  `candidates.js`, `analysis.js` și `scoring.js` **nu** sunt înghețate — sunt cod determinist, iar
+  puzzle-ul de reharm din P3 se sprijină pe ele (corectat pe 2026-10-11, în aceeași capcană ca
+  `realize.js` mai jos: o linie care numea fișiere, nu comportamente).
 - **Excepție, corectată pe 2026-10-10**: `realize.js` și `player.js` **nu sunt reharm, sunt aranjamentul**
   — transformă orice piesă (grilă + melodie înregistrată) în bas, strat de acord și melodie, fără niciun
   apel AI. Asta e unealta de comping din poziționare, deci aparține produsului și poate fi atinsă. Linia
@@ -43,11 +53,14 @@ Consecințe pentru cod:
 
 ## Ce NU se atinge
 
-`src/theory/**` rămâne JS pur, fără DOM, fără dependențe, testat cu `node --test`. Motivele
-sunt acum comerciale, nu doar de portofoliu: același cod rulează în browser, în Worker și în
-teste, iar cele 179 de teste sunt singura garanție că produsul nu strică teoria.
+`src/theory/**` rămâne JS pur, fără DOM, fără dependențe, testat cu `node --test`. Motivele nu
+mai sunt doar comerciale, sunt structurale: pe același cod stau exercițiile generate procedural
+(12 tonalități × calități × tipuri de voicing), scorurile deterministe (stele, XP) și, când va
+exista clasament, verificarea anti-trișat pe server — aceeași funcție, trei locuri. Cele **242
+de teste** sunt singura garanție că produsul nu strică teoria.
 
-Fără migrare în TypeScript pentru `theory/`. TypeScript doar pe codul nou (shell, backend).
+Shell-ul nou importă `theory/` **neatins**: fără TypeScript în `theory/`, fără bundler pentru
+modulele de teorie, fără conturi de utilizator în ele. TypeScript doar pe codul nou.
 
 ## Fazele produsului
 
@@ -97,22 +110,38 @@ pornit la publicare (2026-09-20) ar expira pe 18 octombrie fără ca nimeni să 
 unde să lase un email. Până atunci **ceasul nu curge**, iar prioritatea e studiul, nu poarta.
 
 Se reia când există amândouă: clipul în README și un formular găzduit, legat din pagină și din
-README. Ceasul pornește atunci, de la primul clip, cum spune poarta.
+README. Ceasul pornește atunci, de la primul clip, cum spune poarta. Amândouă sunt pe lista P1, deci
+poarta se reia acolo, ca **poarta P1**.
 
-### P1 — Scheletul de produs (săptămânile 3–6)
+### P1 — Jocul, prima livrare publică (~2 săptămâni)
 
-- Shell nou ca PWA: Vite + React sau Svelte, cu `theory/` importat neatins, mod offline.
-- Supabase: auth, profiluri, istoric de studiu sincronizat, regiune UE.
-- Drill adaptiv: repetiție spațiată (SM-2) peste `weakSpots` din `ui/stats.js`. Logica stă în
-  `theory/` sau alături, ca să fie testabilă cu `node --test`.
-- Puzzle zilnic de voicing, fără cont, cu partajare.
-- Primele 15 studii originale (grilă + melodie), scrise de Edi.
-- Onboarding de 30 de secunde: conectezi clapa, cânți un acord, primești verdictul.
+Ordinea e obligatorie și nu se scurtcircuitează: **întâi bucla de bază să fie plăcută în sine,
+apoi structura (drum, unități, nivele), abia apoi meta-jocul (XP, streak).**
 
-**DoD:** un utilizator nou ajunge de la deschiderea paginii la primul feedback în sub 60 de
-secunde, fără cont; drill-ul adaptiv readuce un acord ratat și îl retrage după 3 reușite.
+- [ ] Shell nou: Vite + TypeScript + Svelte 5, cu `theory/` importat neatins și testele verzi.
+- [ ] Ecranul de joc: sunet de pian din sample-uri, feedback animat pe clape, stele.
+- [ ] Drumul, cu primele 2–3 unități (Triade, Inversiuni, Septacorduri) și boss-ul lor.
+- [ ] Challenge-ul zilei, partajabil, fără cont.
+- [ ] Ecranele Azi și Rezultat; progresul și streak-ul ținute local.
+- [ ] PWA instalabilă (manifest + service worker, offline).
+- [ ] Formular de email găzduit, legat din pagină și din README.
+
+**DoD:** un vizitator nou ajunge de la deschiderea paginii la primul acord cântat în sub 30 de
+secunde, fără cont; un exercițiu ratat se întoarce în „antrenamentul tău" a doua zi și iese după
+3 reușite.
+
+**Poarta P1** (fosta poartă P0, repornită): **40 de adrese de email în 4 săptămâni de la primul
+clip**. Ceasul pornește când există amândouă — clipul în README și formularul legat din pagină.
+Până atunci rămâne suspendată, ca acum.
+
+Ecranele, mecanicile de joc și țintele de fricțiune sunt în [DIRECTION.md](DIRECTION.md).
 
 ### P2 — Monetizare (săptămânile 7–10)
+
+Din fostul P1, mutate aici fiindcă prima livrare nu are nevoie de cont (progresul stă local):
+Supabase (auth, profiluri, istoric de studiu sincronizat, regiune UE), repetiția spațiată
+completă (SM-2) peste `weakSpots`, primele 15 studii originale scrise de Edi. În P1 intră din
+ele doar cât cere DoD-ul: un exercițiu ratat care revine a doua zi.
 
 - **Specificația raportului de comping, ca document, înainte de orice cod.** Ce raportează, în
   ce ordine, cu ce praguri — la fel ca tabelul de calități al analizorului. Fără specificație
@@ -134,10 +163,12 @@ prototipul a trecut, mod profesor. Se detaliază când P2 e bifat.
 
 ## Reguli de scop
 
-- Niciun feature nou până la poarta P2. Dacă nu e pe lista fazei, nu se construiește — oricât
-  de repede s-ar putea.
-- Test întâi pentru orice atinge `analyzer.js`, `chords.js`, raportul de comping sau
-  scheduler-ul de repetiție spațiată.
+- **Niciun feature care nu e pe lista fazei curente.** Oricât de repede s-ar putea, oricât de
+  bună ar fi ideea: intră în faza următoare, nu în asta.
+- **Ordinea gamificării nu se inversează**: buclă → structură → meta-joc. Un streak pus înaintea
+  unei bucle plăcute măsoară doar frecvența cu care oamenii se plictisesc.
+- Test întâi pentru orice atinge `analyzer.js`, `chords.js`, formula de stele/XP, raportul de
+  comping sau scheduler-ul de repetiție spațiată.
 - Fără conturi de utilizator în `theory/`. Logica de teorie rămâne pură și rulabilă offline;
   doar cota și cheia stau pe server.
 - Fără grile sau melodii de standarde în repo. Doar material original sau din domeniul public,
