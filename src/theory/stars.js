@@ -69,7 +69,7 @@ const LABELS = [null, 'Right', 'Clean', 'Smooth'];
  * counts in the denominator, because a chord you did not reach is a chord you did not play.
  *
  * @param {{
- *   attempts: Array<{ symbol: string, notes: number[], analysis: any }>,
+ *   attempts: Array<{ symbol: string, notes: number[], analysis: any, texture?: string | string[] | null }>,
  *   timed?: boolean,
  *   movementThreshold?: number,
  *   texture?: string | string[] | null,
@@ -78,11 +78,14 @@ const LABELS = [null, 'Right', 'Clean', 'Smooth'];
  *             rightShare: number, cleanShare: number, movement: number | null }}
  */
 export function scoreRun({ attempts, timed = false, movementThreshold: limit = DEFAULT_MOVEMENT, texture = null }) {
-  const asked = { texture };
+  // An ask may carry a texture of its own: the daily challenge is a ramp, so the shape it
+  // demands changes from one rung to the next. Falling back to the run's texture leaves a
+  // level, which asks for one shape from start to finish, behaving exactly as it did.
+  const askedOf = attempt => ({ texture: attempt.texture ?? texture });
   const total = attempts.length;
   const answered = attempts.filter(attempt => attempt.analysis);
-  const right = answered.filter(attempt => isRight(attempt.analysis, asked)).length;
-  const clean = answered.filter(attempt => isClean(attempt.analysis, asked)).length;
+  const right = answered.filter(attempt => isRight(attempt.analysis, askedOf(attempt))).length;
+  const clean = answered.filter(attempt => isClean(attempt.analysis, askedOf(attempt))).length;
   const rightShare = total ? right / total : 0;
   const cleanShare = total ? clean / total : 0;
   const movement = meanMovement(attempts);

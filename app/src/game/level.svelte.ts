@@ -15,13 +15,30 @@ import { asksFor, thresholdFor } from '../bridge/game';
 import { createMetronome, createSession, snapshotTarget, isAnticipated } from '../bridge/time';
 
 type Analysis = ReturnType<typeof analyzeVoicing>;
-export type Attempt = { symbol: string; notes: number[]; analysis: Analysis | null };
-export type Answer = { slot: number; symbol: string; anticipated: boolean; analysis: Analysis };
+/**
+ * What the app hands back once a finished run has been priced and filed: the XP it paid and,
+ * for the daily challenge, the grid. A level has no grid and the result screen shows stars.
+ */
+export type Finished = { xp: number; grid: string[] | null; share: string | null; official: boolean };
+
+/** One chord asked for, with the shape that rung demands — null when it demands none. */
+export type Ask = { symbol: string; texture: string | string[] | null };
+export type Attempt = { symbol: string; notes: number[]; analysis: Analysis | null;
+                        texture?: string | string[] | null };
+export type Answer = { slot: number; symbol: string; anticipated: boolean; analysis: Analysis;
+                       texture: string | string[] | null };
 export type LevelPlan = {
   id: string;
   name: string;
   tempo: number;
   boss?: boolean;
+  /**
+   * No clock, by design rather than by omission: the daily challenge is free play so that the
+   * grid people paste compares one thing, accuracy. The screen hides the timed run for it.
+   */
+  free?: boolean;
+  /** Its place on the path, for the XP price. Only levels that stand on their own carry it. */
+  difficulty?: number;
   /** What shape the level demands, when it demands one: 'shell', 'rootless-A', or a list. */
   texture?: string | string[];
   asks: { kind: string; [key: string]: unknown };
@@ -38,10 +55,13 @@ export type Unit = {
 };
 
 export function createLevel(plan: LevelPlan) {
-  const asks = asksFor(plan) as string[];
+  const asks = asksFor(plan) as Ask[];
   const threshold = thresholdFor(plan) as number;
   // One chord per bar, no loop: the pass ends when the metronome walks past the last bar.
-  const progression = { timeSignature: [4, 4], bars: asks.map(symbol => ({ chords: [{ symbol, beat: 1 }] })) };
+  const progression = {
+    timeSignature: [4, 4],
+    bars: asks.map(ask => ({ chords: [{ symbol: ask.symbol, beat: 1 }] })),
+  };
   const session = createSession(progression, { loop: false });
 
   let answers = $state<Array<Attempt | null>>(asks.map(() => null));
@@ -57,7 +77,8 @@ export function createLevel(plan: LevelPlan) {
   let metronome: ReturnType<typeof createMetronome> | null = null;
 
   const ask = $derived(finished ? null : asks[current]);
-  const attempts = $derived(asks.map((symbol, slot) => answers[slot] ?? { symbol, notes: [], analysis: null }));
+  const attempts = $derived(asks.map((item, slot) =>
+    answers[slot] ?? { symbol: item.symbol, notes: [], analysis: null, texture: item.texture }));
   const score = $derived(finished
     ? scoreRun({ attempts, timed, movementThreshold: threshold, texture: plan.texture ?? null })
     : null);
@@ -132,22 +153,26 @@ export function createLevel(plan: LevelPlan) {
       if (finished) return null;
       const target = timed
         ? timedTarget(startedAt)
-        : { slot: current, symbol: asks[current], anticipated: false };
+        : { slot: current, symbol: asks[current].symbol, anticipated: false };
       if (!target) return null;
       if (firstAnswerAt === null) firstAnswerAt = performance.now();
+      // The shape demanded belongs to the rung that was answered, and timed — anticipated —
+      // that need not be the rung on screen.
+      const texture = asks[target.slot]?.texture ?? null;
       const analysis = analyzeVoicing(notes, parseChord(target.symbol));
-      answers[target.slot] = { symbol: target.symbol, notes, analysis };
+      answers[target.slot] = { symbol: target.symbol, notes, analysis, texture };
       if (!timed) {
         if (current + 1 >= asks.length) finish();
         else current += 1;
       }
-      return { ...target, analysis };
+      return { ...target, texture, analysis };
     },
 
     /** Free play only: an ask nobody answered still counts, so it is stored as a miss. */
     skip() {
       if (finished || timed) return;
-      answers[current] = { symbol: asks[current], notes: [], analysis: null };
+      answers[current] = { symbol: asks[current].symbol, notes: [], analysis: null,
+                           texture: asks[current].texture };
       if (current + 1 >= asks.length) finish();
       else current += 1;
     },

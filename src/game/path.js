@@ -126,11 +126,22 @@ export const PATH = [
   },
 ];
 
-/** Every chord a level asks for, in order. `count` keeps a long cross product playable. */
+/**
+ * Every chord a level asks for, in order, each carrying the shape that rung demands, or null
+ * when it demands none. A level asks for one shape from start to finish; the daily challenge
+ * is a ramp and sets one per rung. Both arrive here in the same form, so nothing downstream
+ * has to know which it is reading. `count` keeps a long cross product playable.
+ *
+ * @param {any} level
+ * @returns {Array<{ symbol: string, texture: string | string[] | null }>}
+ */
 export function asksFor(level) {
   const source = level.asks;
-  const asks = buildAsks(source);
-  return source.count ? asks.slice(0, source.count) : asks;
+  // Already drawn, each with its own shape: the daily challenge's ramp comes through here.
+  if (source.kind === 'fixed') return source.asks;
+  const symbols = buildAsks(source);
+  const asked = source.count ? symbols.slice(0, source.count) : symbols;
+  return asked.map(symbol => ({ symbol, texture: level.texture ?? null }));
 }
 
 function buildAsks(source) {

@@ -1,21 +1,40 @@
 <script lang="ts">
   import type { scoreRun } from '../bridge/theory';
+  import { SQUARES } from '../bridge/game';
+  import { copyText } from '../lib/clipboard';
 
   type Score = NonNullable<ReturnType<typeof scoreRun>>;
   type Weakness = { key: string; problem: string; count: number } | null;
 
-  let { name, score, xp, weakness, timed, threshold, onagain, onexit }: {
+  let { name, score, xp, weakness, timed, threshold, grid = null, share = null,
+        official = true, onagain, onexit }: {
     name: string;
     score: Score;
     xp: number;
     weakness: Weakness;
     timed: boolean;
     threshold: number;
+    /** One square per chord, for the daily challenge. A level has none. */
+    grid?: string[] | null;
+    /** The text the button copies — always the official pass, so a replay cannot inflate it. */
+    share?: string | null;
+    /** False on a replay of a challenge already played today. */
+    official?: boolean;
     onagain: () => void;
     onexit: () => void;
   } = $props();
 
-  const percent = (share: number) => `${Math.round(share * 100)}%`;
+  const percent = (ratio: number) => `${Math.round(ratio * 100)}%`;
+
+  let copied = $state(false);
+  let showText = $state(false);
+
+  async function copy() {
+    if (!share) return;
+    copied = await copyText(share);
+    // A clipboard that refuses is nobody's fault, so put the text on screen to copy by hand.
+    showText = !copied;
+  }
 </script>
 
 <section class="result">
@@ -33,6 +52,28 @@
 
   <h2>{score.label ?? 'Not yet'}</h2>
   <p class="sub">{name}</p>
+
+  {#if grid}
+    <div class="share">
+      <p class="squares" role="img"
+         aria-label="{grid.filter(state => state === 'clean').length} of {grid.length} chords clean">
+        {grid.map(state => SQUARES[state as keyof typeof SQUARES] ?? SQUARES.unplayed).join('')}
+      </p>
+      {#if official}
+        <div class="row">
+          <button type="button" onclick={copy}>{copied ? 'Copied' : 'Copy result'}</button>
+        </div>
+      {:else}
+        <p class="note">Practice run. The result you can share stays the one from your first pass today.</p>
+        <div class="row">
+          <button type="button" onclick={copy}>{copied ? 'Copied' : 'Copy first result'}</button>
+        </div>
+      {/if}
+      {#if showText && share}
+        <pre class="text">{share}</pre>
+      {/if}
+    </div>
+  {/if}
 
   <div class="tiles">
     <div class="tile">
@@ -62,7 +103,9 @@
     {/if}
   </div>
 
-  {#if score.stars === 2 && !timed}
+  {#if grid}
+    <p class="locked">No clock on the challenge, on purpose: the grid compares the notes, not the speed.</p>
+  {:else if score.stars === 2 && !timed}
     <p class="locked">The third star needs the timed run — free play tops out here.</p>
   {:else if score.stars === 2 && timed && score.movement !== null}
     <p class="locked">Timed and clean. The third star wants the voices moving less: {score.movement.toFixed(2)} semitones each, and this level asks for {threshold}.</p>
@@ -83,6 +126,16 @@
   .tile { flex: 1 1 150px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 16px; }
   .big { margin: 0 0 4px; font-family: ui-monospace, monospace; font-size: 24px; font-weight: 600; }
   .label { margin: 0; font-size: 13px; color: var(--ink-muted); }
+  .share { margin: -10px 0 26px; }
+  .squares { margin: 0 0 14px; font-size: 30px; line-height: 1.1; letter-spacing: 2px; word-break: break-all; }
+  .row { display: flex; justify-content: center; gap: 12px; }
+  .row button { padding: 10px 20px; font-size: 14px; }
+  .note { margin: 0 0 12px; font-size: 13px; color: var(--ink-muted); }
+  .text {
+    margin: 14px auto 0; max-width: 420px; padding: 12px; border: 1px solid var(--border);
+    border-radius: 10px; background: var(--surface); text-align: left; white-space: pre-wrap;
+    font-family: ui-monospace, monospace; font-size: 13px; user-select: all;
+  }
   .fix { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 20px 22px; text-align: left; }
   .kicker { margin: 0 0 8px; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); }
   .what { margin: 0; font-size: 17px; }

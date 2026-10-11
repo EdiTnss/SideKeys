@@ -10,19 +10,25 @@ test('every ask on the path parses as a chord the analyzer can judge', () => {
     for (const level of unit.levels) {
       const asks = asksFor(level);
       assert.ok(asks.length >= 6, `${level.id} asks for ${asks.length} chords`);
-      for (const symbol of asks) assert.doesNotThrow(() => parseChord(symbol), `${level.id}: ${symbol}`);
+      for (const { symbol } of asks) assert.doesNotThrow(() => parseChord(symbol), `${level.id}: ${symbol}`);
     }
   }
 });
 
 test('asksFor: qualities across keys, and a progression straight from the library', () => {
+  const symbolsOf = level => asksFor(level).map(ask => ask.symbol);
   assert.deepEqual(
-    asksFor({ asks: { kind: 'chords', qualities: ['', 'm'], keys: ['C', 'F'] } }),
+    symbolsOf({ asks: { kind: 'chords', qualities: ['', 'm'], keys: ['C', 'F'] } }),
     ['C', 'Cm', 'F', 'Fm'],
   );
   assert.deepEqual(
-    asksFor({ asks: { kind: 'progression', progressionId: 'ii-V-I', keys: ['C'] } }),
+    symbolsOf({ asks: { kind: 'progression', progressionId: 'ii-V-I', keys: ['C'] } }),
     ['Dm7', 'G7', 'Cmaj7'],   // the library's '| Cmaj7 | % |' repeat is asked once
+  );
+  // The shape travels with the ask, so no screen has to look the level up a second time.
+  assert.deepEqual(
+    asksFor({ texture: 'shell', asks: { kind: 'chords', qualities: ['maj7'], keys: ['C'] } }),
+    [{ symbol: 'Cmaj7', texture: 'shell' }],
   );
 });
 
@@ -75,7 +81,7 @@ test('a level that demands a texture can be answered on every chord it asks for'
     for (const level of unit.levels) {
       if (!level.texture) continue;
       const wanted = [].concat(level.texture);
-      for (const symbol of asksFor(level)) {
+      for (const { symbol } of asksFor(level)) {
         const found = suggestVoicings(parseChord(symbol)).some(candidate => wanted.includes(candidate.type));
         assert.ok(found, `${level.id}: no ${wanted.join(' or ')} voicing for ${symbol}`);
       }
@@ -85,7 +91,7 @@ test('a level that demands a texture can be answered on every chord it asks for'
 
 test('a slash level asks for a bass the analyzer will check, spelled from the chord', () => {
   const inversions = PATH.find(unit => unit.id === 'inversions');
-  const asks = asksFor(inversions.levels[0]);
+  const asks = asksFor(inversions.levels[0]).map(ask => ask.symbol);
   assert.ok(asks.includes('C/E'), `first inversion of C should be C/E, got ${asks[0]}`);
   for (const symbol of asks) {
     const chord = parseChord(symbol);
@@ -108,7 +114,7 @@ test('no level runs longer than a boss, and a boss is the last of its unit', () 
 
 test('reviewLevel: the queue turned into something playable, in every key', () => {
   const level = reviewLevel(['m7b5', '7']);
-  const asks = asksFor(level);
+  const asks = asksFor(level).map(ask => ask.symbol);
   assert.equal(asks.length, 12, 'long enough to be a session, short enough to finish');
   assert.deepEqual(asks.slice(0, 4), ['Cm7b5', 'C7', 'Fm7b5', 'F7']);
   for (const symbol of asks) assert.doesNotThrow(() => parseChord(symbol), symbol);

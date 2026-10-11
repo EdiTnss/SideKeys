@@ -160,3 +160,21 @@ test('isRight: a level may ask for one shape or for any of several', () => {
   assert.equal(isRight(formA, { texture: ['rootless-B', 'drop-2'] }), false);
   assert.equal(isRight(formA, { texture: [] }), true, 'an empty list asks for nothing');
 });
+
+// ---- An ask may carry its own texture (2026-10-11, for the daily challenge) ----------------
+
+test('scoreRun: an ask carrying its own texture overrides the run-level one', () => {
+  // The daily challenge is a ramp — a triad on the first rung, a shell further up, a quartal at
+  // the top — so one texture for the whole run cannot describe it. An ask may carry its own.
+  const attempts = [
+    { symbol: 'C', notes: [60, 64, 67], analysis: on('C', [60, 64, 67]) },
+    { symbol: 'C7', notes: [60, 64, 70], texture: 'shell', analysis: on('C7', [60, 64, 70]) },
+    { symbol: 'Dm7', notes: [65, 69, 72, 76], texture: 'shell', analysis: on('Dm7', [65, 69, 72, 76]) },
+  ];
+  const score = scoreRun({ attempts });
+  assert.equal(score.total, 3);
+  assert.equal(score.right, 2, 'the shell rung passes, the rootless played on a shell rung does not');
+
+  // A run-level texture still covers the asks that carry none, so levels keep working as they did.
+  assert.equal(scoreRun({ attempts, texture: 'shell' }).right, 1, 'now the bare triad fails too');
+});

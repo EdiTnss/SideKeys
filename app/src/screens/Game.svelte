@@ -2,7 +2,7 @@
   import Keyboard from '../lib/Keyboard.svelte';
   import Result from './Result.svelte';
   import { createInstrument } from '../lib/instrument.svelte';
-  import { createLevel, type LevelPlan } from '../game/level.svelte';
+  import { createLevel, type Attempt, type Finished, type LevelPlan } from '../game/level.svelte';
   import {
     analyzeVoicing, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
@@ -11,7 +11,7 @@
   let { unit, plan, onfinish, onexit }: {
     unit: { name: string; difficulty: number };
     plan: LevelPlan;
-    onfinish: (run: { stars: number; attempts: unknown[]; seconds: number }) => number;
+    onfinish: (run: { stars: number; attempts: Attempt[]; seconds: number }) => Finished;
     onexit: () => void;
   } = $props();
 
@@ -22,18 +22,26 @@
   const level = createLevel(plan);
   let recorded = $state(false);
   let xp = $state(0);
+  let grid = $state<string[] | null>(null);
+  let share = $state<string | null>(null);
+  let official = $state(true);
 
   // One run is recorded once: the effect fires again on every change while the result is up.
   $effect(() => {
     if (level.finished && level.score && !recorded) {
       recorded = true;
-      xp = onfinish({ stars: level.score.stars, attempts: level.attempts, seconds: level.seconds });
+      const filed = onfinish({ stars: level.score.stars, attempts: level.attempts, seconds: level.seconds });
+      xp = filed.xp;
+      grid = filed.grid;
+      share = filed.share;
+      official = filed.official;
     }
   });
 
   let analysis = $state<ReturnType<typeof analyzeVoicing> | null>(null);
   let judged = $state<string | null>(null);
   let anticipated = $state(false);
+  let judgedTexture = $state<string | string[] | null>(null);
   let classes = $state<Record<number, string>>({});
 
   const instrument = createInstrument({ onVoicing: judge, onNext: skip });
@@ -46,6 +54,7 @@
     analysis = answered.analysis;
     judged = answered.symbol;
     anticipated = answered.anticipated;
+    judgedTexture = answered.texture;
     classes = { ...roleClasses(answered.analysis), ...missingClasses(answered.analysis) };
   }
 
@@ -63,6 +72,8 @@
     level.restart();
     recorded = false;
     xp = 0;
+    grid = null;
+    share = null;
     clearVerdict();
   }
 
@@ -71,6 +82,7 @@
     analysis = null;
     judged = null;
     anticipated = false;
+    judgedTexture = null;
     classes = {};
   }
 
@@ -96,8 +108,13 @@
     else if (event.code === 'Space' && !level.timed) { event.preventDefault(); skip(); }
   }
 
+  // The path reads "Triads · Major triads"; the challenge and the review have no unit above
+  // them, so they read as themselves instead of saying their own name twice.
+  const title = $derived(unit.name ? `${unit.name} · ${level.plan.name}` : level.plan.name);
   const warnings = $derived(analysis ? analysis.messages.filter((m: { level: string }) => m.level === 'warning') : []);
-  const asked = $derived({ texture: level.texture });
+  // What was demanded of the chord that was judged, not of the one on screen: timed, an
+  // anticipated voicing answers the next rung, which may ask for another shape.
+  const asked = $derived({ texture: judgedTexture });
   const star = $derived(!analysis ? null : isClean(analysis, asked) ? 'Clean' : isRight(analysis, asked) ? 'Right' : null);
   // Right notes in the wrong shape is the one failure with no warning behind it, so the screen
   // has to say it itself: the analyzer was asked about the chord, not about the exercise.
@@ -110,8 +127,9 @@
 <svelte:window onkeydown={onKeyDown} onkeyup={event => instrument.keyUp(event.code)} />
 
 {#if level.finished && level.score}
-  <Result name="{unit.name} · {level.plan.name}" score={level.score} xp={xp} weakness={level.weakness}
-          timed={level.timed} threshold={level.threshold} onagain={again} onexit={onexit} />
+  <Result name={title} score={level.score} xp={xp} weakness={level.weakness}
+          timed={level.timed} threshold={level.threshold} grid={grid} share={share}
+          official={official} onagain={again} onexit={onexit} />
 {:else}
   <section class="game">
     <div class="progress">
@@ -128,12 +146,12 @@
       <p class="ask counting">{level.countIn}</p>
       <p class="hint">Count-in. One chord per bar from the next one.</p>
     {:else}
-      <p class="ask">{level.ask}</p>
+      <p class="ask">{level.ask?.symbol}</p>
       <p class="hint">
         {#if level.timed}
           Bar {level.at?.bar ?? 1}, beat {level.at?.beat ?? 1}. Play it before the bar turns.
-        {:else if level.texture}
-          Play it as {[].concat(level.texture as never).join(' or ')}.
+        {:else if level.ask?.texture}
+          Play it as {[].concat(level.ask.texture as never).join(' or ')}.
         {:else}
           Play it. Any voicing that works counts.
         {/if}
@@ -174,7 +192,7 @@
     <div class="controls">
       {#if level.timed}
         <button type="button" class="stop" onclick={() => level.stop()}>Stop the run</button>
-      {:else}
+      {:else if !level.plan.free}
         <button type="button" class="start" onclick={startTimed}>Start the timed run</button>
       {/if}
       <button type="button" onclick={() => instrument.play()}>Play armed <kbd>Enter</kbd></button>
