@@ -32,6 +32,17 @@ export function noteForKey(code, octave) {
  * `send(data)` delivers one MIDI message on the virtual input and `echo(data)` sounds it through
  * the browser synth, because a drawn keyboard has no strings. onChange fires whenever what is
  * armed, sounding or the octave changes, so the drawn keyboard can follow.
+ *
+ * @param {{
+ *   send: (data: number[]) => void,
+ *   echo?: (data: number[]) => void,
+ *   velocity?: number,
+ *   holdMs?: number,
+ *   octave?: number,
+ *   setTimer?: (fn: () => void, ms: number) => any,
+ *   clearTimer?: (id: any) => void,
+ *   onChange?: (state: { armed: number[], sounding: number[], octave: number }) => void,
+ * }} options
  */
 export function createOnScreen({
   send,

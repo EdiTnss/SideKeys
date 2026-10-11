@@ -14,4 +14,4 @@ export { midiToName, octave, spellDegree } from '../../../src/theory/notes.js';
 
 // Pure mappers that turn an analysis into keyboard classes. They touch no DOM, and they are
 // tested in test/render.test.js, so the shell reuses them rather than growing a second copy.
-export { roleClasses, missingClasses } from '../../../src/ui/render.js';
+export { roleClasses, missingClasses, heldClasses, armedClasses } from '../../../src/ui/render.js';

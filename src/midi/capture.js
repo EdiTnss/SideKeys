@@ -10,6 +10,18 @@
 // - the "next" note is intercepted before it can enter the set.
 
 export class VoicingCapture {
+  /**
+   * @param {{
+   *   debounceMs?: number,
+   *   nextNote?: number | null,
+   *   onVoicing?: (notes: number[], info: { startedAt: number | null }) => void,
+   *   onNext?: () => void,
+   *   onChange?: (held: number[]) => void,
+   *   setTimer?: (fn: () => void, ms: number) => any,
+   *   clearTimer?: (id: any) => void,
+   *   now?: () => number,
+   * }} [options]
+   */
   constructor({
     debounceMs = 300,
     nextNote = 28,                 // E1, the lowest key on a 76-key Genos; null disables it

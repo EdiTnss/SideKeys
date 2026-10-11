@@ -1,5 +1,10 @@
 // Web MIDI wiring: device access, all inputs, all channels. Browser only,
 // except parseMidiMessage, which is pure and tested in Node.
+//
+// A "port" here is the browser's MIDIInput / MIDIOutput or one of the virtual look-alikes from
+// midi/virtual.js, which is why the types below promise only the shape both of them keep.
+/** @typedef {{ id: string, name: string, manufacturer?: string, state?: string }} MidiPortInfo */
+/** @typedef {{ inputs: ReadonlyMap<string, any>, outputs: ReadonlyMap<string, any>, onstatechange: any, sysexEnabled?: boolean }} MidiLikeAccess */
 
 /** [status, data1, data2] → { type: 'noteOn' | 'noteOff' | 'other', channel, note, velocity } */
 export function parseMidiMessage(data) {
@@ -17,6 +22,15 @@ export function parseMidiMessage(data) {
  * devices come and go. Resolves with the MIDIAccess object; rejects with a readable message.
  * `access` replaces the browser's (a virtual one from virtual.js); `onMessage(data, timeStamp)`
  * sees every message before it is parsed, pedals and all.
+ *
+ * @param {{
+ *   onNoteOn: (note: number, velocity: number) => void,
+ *   onNoteOff: (note: number) => void,
+ *   onMessage?: (data: Uint8Array | number[], timeStamp: number) => void,
+ *   onDevices?: (devices: { inputs: MidiPortInfo[], outputs: MidiPortInfo[] }) => void,
+ *   access?: MidiLikeAccess | null,
+ * }} options
+ * @returns {Promise<MidiLikeAccess>}
  */
 export async function connectMidi({ onNoteOn, onNoteOff, onMessage: onRaw = () => {}, onDevices = () => {}, access = null }) {
   if (!access && (typeof navigator === 'undefined' || !navigator.requestMIDIAccess)) {

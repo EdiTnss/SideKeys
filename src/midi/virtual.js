@@ -7,6 +7,11 @@
 /**
  * createVirtualMidi({ inputs, outputs, now }) → { access, send(data, { input, timeStamp }), sent, clearSent() }
  * `sent` holds every message the app sent to an output: { port, data, time }.
+ *
+ * An output given as an object instead of a name goes in as itself, which is how the Web Audio
+ * synth becomes a port.
+ *
+ * @param {{ inputs?: string[], outputs?: Array<string | any>, idPrefix?: string, now?: () => number }} [options]
  */
 export function createVirtualMidi({
   inputs = ['Virtual input'],
@@ -58,6 +63,9 @@ export function createVirtualMidi({
  * replacing them. The app asks for hardware later — on a button, on the published site — and
  * `add` drops it into the same access, which fires onstatechange: connectMidi listens to the new
  * inputs and lists the new outputs on its own, exactly as when a cable is plugged in.
+ *
+ * @param {...any} accesses  a browser MIDIAccess, or a virtual one from createVirtualMidi
+ * @returns {{ access: any, add: (other: any) => void }}
  */
 export function mergeAccess(...accesses) {
   const parts = [...accesses];
