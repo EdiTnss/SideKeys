@@ -9,4 +9,5 @@ export { connectMidi, parseMidiMessage } from '../../../src/midi/input.js';
 export { VoicingCapture } from '../../../src/midi/capture.js';
 export { createVirtualMidi, mergeAccess } from '../../../src/midi/virtual.js';
 export { createSynth } from '../../../src/audio/synth.js';
+export { loadPiano } from '../../../src/audio/piano.js';
 export { createOnScreen } from '../../../src/ui/onscreen.js';

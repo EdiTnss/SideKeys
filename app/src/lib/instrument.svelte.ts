@@ -6,7 +6,7 @@
 // this file owns is when those parts are built and what the screens are allowed to see.
 
 import {
-  connectMidi, VoicingCapture, createVirtualMidi, mergeAccess, createSynth, createOnScreen,
+  connectMidi, VoicingCapture, createVirtualMidi, mergeAccess, createSynth, createOnScreen, loadPiano,
 } from '../bridge/midi';
 
 export type Status = { text: string; level: 'ok' | 'warn' | '' };
@@ -32,6 +32,17 @@ export function createInstrument({
   const virtual = createVirtualMidi({ inputs: ['On-screen keyboard'], outputs: [synth, 'Virtual output'] });
   const ports = mergeAccess(virtual.access);
 
+  // What the drawn keyboard sounds through. The oscillator synth answers from the first click;
+  // if the sample pack is there, the piano takes over as soon as it has decoded. Both are MIDI
+  // output ports, so nothing above this line knows which one it is talking to.
+  let voice: { send: (data: number[], time?: number) => void } = synth;
+  let sound = $state<'synth' | 'piano'>('synth');
+  loadPiano().then(piano => {
+    if (!piano) return;
+    voice = piano;
+    sound = 'piano';
+  });
+
   let held = $state<number[]>([]);
   let armed = $state<number[]>([]);
   let octave = $state(60);
@@ -46,7 +57,7 @@ export function createInstrument({
     send: (data: number[]) => virtual.send(data),
     // The drawn keyboard has no strings, so it sounds through the synth directly rather than
     // through whichever output is selected. One call, so ear and analyser never hear two chords.
-    echo: (data: number[]) => synth.send(data),
+    echo: (data: number[]) => voice.send(data),
     onChange: (state: OnScreenState) => {
       armed = state.armed;
       octave = state.octave;
@@ -102,6 +113,7 @@ export function createInstrument({
     get hardware() { return hardware; },
     get status() { return status; },
     get typeToPlay() { return typeToPlay; },
+    get sound() { return sound; },
     connect,
     toggle: (midi: number) => onscreen.toggle(midi),
     play: () => onscreen.play(),

@@ -188,7 +188,10 @@
       <span class="octave">letters start at {midiToName(instrument.octave)} <kbd>Z</kbd><kbd>X</kbd></span>
     </div>
 
-    <p class="status {instrument.status.level}">{instrument.status.text}</p>
+    <p class="status {instrument.status.level}">
+      {instrument.status.text}
+      <span class="sound">· {instrument.sound === 'piano' ? 'piano samples' : 'browser synth'}</span>
+    </p>
   </section>
 {/if}
 
@@ -230,4 +233,5 @@
   .status { margin: 16px 0 0; font-size: 13px; color: var(--ink-muted); }
   .status.ok { color: var(--chord-tone); }
   .status.warn { color: var(--avoid); }
+  .sound { color: #5c646b; }
 </style>

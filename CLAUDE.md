@@ -71,6 +71,7 @@ app/                       shell-ul (Vite + TS + Svelte 5), cu package.json prop
   src/app.css              tokenii de brand și culorile de teorie (aceleași șapte ca styles.css)
   src/game/                [de scris, restul] drumul, unitățile, streak-ul
   src/sound/               [de scris] pianul din sample-uri, în locul lui audio/synth.js
+  public/piano/manifest.json  ce înregistrări de pian există, sau null (fără 404, ca demo/manifest.json)
   public/                  [de scris] manifest PWA, service worker, iconuri
 index.html                 pagina veche: rămâne Laboratorul până e refăcută în shell
 styles.css                 stilurile paginii (folderul styles/ e pentru profilurile JSON, Faza 5)
@@ -115,6 +116,7 @@ src/
   ai/explain.js            explain & suggest din drill: input, validarea sugestiilor prin analizor (Faza 3a)
   ai/pipeline.js           execute: candidați → apel → validare → scoruri (Faza 3a); plan și review (Faza 3b)
   audio/synth.js           synth Web Audio în forma unui port MIDI out (demo mode)
+  audio/piano.js           pian din sample-uri, același fel de port; fără înregistrări, apelantul rămâne pe synth
 demo/manifest.json         mereu publicat: numește fișierele demo care există, sau null (fără 404 în consolă)
 demo/piece.json            piesa demo (grilă + melodie); demo/reharm.json, răspunsul salvat — nepublicate încă
 styles/*.json              profiluri de stil ca date (Faza 5)
