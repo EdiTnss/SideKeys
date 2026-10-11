@@ -70,6 +70,14 @@ Textura nu intră în analizor, fiindcă nu e o proprietate a acordului: `analyz
 invers — **acolo** e o proprietate a acordului, deci stă în analizor
 ([spec-analyzer.md](spec-analyzer.md), punctul 1b).
 
+**Forma cerută călătorește cu cererea, nu cu nivelul** (2026-10-11, cerut de challenge-ul zilei).
+`asksFor(level)` întoarce `{ symbol, texture }` pentru fiecare acord, iar `scoreRun` citește
+textura cererii și cade pe cea a trecerii doar când cererea nu are una. Un nivel cere o formă
+de la cap la coadă, deci pentru el nu se schimbă nimic; challenge-ul e o **rampă**, unde forma
+cerută diferă de la o treaptă la alta, și fără asta nu se putea exprima. Consecința se vede și
+în verdictul de pe ecran: ce s-a cerut e al treptei care a fost **răspunsă**, care în timed, la
+o anticipare, nu e treapta de pe ecran.
+
 **Un nivel trebuie să fie jucabil, nu doar parsabil.** Un test merge prin fiecare cerere a
 fiecărui nivel cu textură și verifică, prin `suggestVoicings`, că există măcar un voicing fără
 avertismente de forma cerută. Oracolul e conservator: o textură pe care un om ar putea-o cânta
@@ -171,10 +179,102 @@ Streak-ul numără zilele consecutive în care s-a cântat ceva, iar o zi în ca
 **nu** îl rupe — ziua nu s-a terminat. Obiectivul zilnic e în minute (15 implicit) și numără
 **timpul cântat**: ceasul pornește la primul răspuns dintr-o trecere, nu când se deschide ecranul.
 
+## Challenge-ul zilei (2026-10-11)
+
+Același exercițiu pentru toți, în fiecare zi, fără cont și fără server. E singurul mecanism de
+creștere organică din P1 (`DIRECTION.md`), deci forma lui e aleasă ca să **circule**, nu ca să
+măsoare cât mai exact. Cele trei decizii de mai jos sunt ale lui Edi, iar fiecare costă ceva.
+
+### Rampa de zece acorduri
+
+Zece trepte, în ordinea în care drumul le predă, fiecare un bazin din care ziua trage un acord:
+
+| # | Cere | Formă cerută |
+|---|---|---|
+| 1 | triadă majoră sau minoră | — |
+| 2 | triadă majoră, minoră sau sus4 | — |
+| 3 | inversiune (slash), majoră sau minoră | — |
+| 4 | maj7 sau m7 | — |
+| 5 | 7 sau m7b5 | — |
+| 6 | dim7 sau m6 | — |
+| 7 | maj7, m7 sau 7 | **shell** |
+| 8 | m7, 7 sau maj7 | **rootless A sau B** |
+| 9 | maj7, m7 sau 7 | **drop 2** |
+| 10 | m7 sau maj7 | **quartal** |
+
+Toate în douăsprezece tonalități. **De ce urcă**: un începător care a ajuns la unitatea doi
+câștigă primele pătrățele în loc să primească o grilă goală, iar un avansat le câștigă pe toate —
+adică și un rezultat parțial rămâne ceva ce are rost să fie arătat. Alternativa (douăsprezece
+acorduri amestecate din tot drumul) a fost respinsă exact aici: un începător ar fi luat 2 din 12.
+
+Quartal e treapta de sus și **nu ia nicio dominantă**: cu regula strânsă din 2026-09-20 (cel mult
+o cvartă mărită), generatorul nu construiește niciun voicing quartal pe o dominantă, în nicio
+tonalitate. **Jucabilitatea se verifică pe produsul cartezian întreg** — fiecare tonalitate contra
+fiecărei calități din bazin — nu pe un eșantion de zile: un seed nu e conținut citit de cineva.
+Plimbarea pe un an de zile verifică altceva (determinismul și regula de nerepetare).
+
+### Seed-ul
+
+Data (`YYYY-MM-DD`, ziua locală a jucătorului) e singura intrare: hash `xmur3` → generator
+`mulberry32`, amândouă scrise în fișier, nu instalate. Aceeași zi dă aceleași zece acorduri în
+orice browser, fără nimic la mijloc. Numerotarea pleacă de la **2026-10-11 = #1**; un ceas dat
+înapoi înaintea epocii primește #1, nu #0. O treaptă retrage dacă ar repeta acordul de sub ea.
+
+### Fără ceas
+
+Challenge-ul e **free play**, iar `plan.free` e absența ceasului scrisă explicit: ecranul de joc
+ascunde butonul de timed. Motivul e că grila compară o singură variabilă, acuratețea — cu metronom,
+două secunde pe acord ar decide rezultatul unui începător înaintea muzicii. Consecința asumată:
+**steaua a treia nu se poate câștiga pe challenge**, iar ecranul de rezultat o spune în locul
+liniei despre trecerea în timp („No clock on the challenge, on purpose").
+
+### Grila și textul partajat
+
+Patru stări, una pe acord:
+
+| Stare | Pătrățel | Ce înseamnă |
+|---|---|---|
+| `clean` | 🟩 | niciun avertisment, în forma cerută |
+| `right` | 🟨 | acordul cerut, dar cu ceva de reproșat |
+| `missed` | ⬛ | cântat și greșit |
+| `unplayed` | ⬜ | niciodată ajuns (sărit, sau rămas la final) |
+
+`missed` și `unplayed` se deosebesc fiindcă într-o grilă citită de altcineva diferența dintre
+„am greșit" și „n-am ajuns" e informație. Niciun pătrățel nu e o culoare de teorie, deci grila nu
+se dă drept verdictul de pe claviatură. Scorul din text numără **doar** pătrățelele verzi, fiindcă
+curat e ce măsoară aplicația:
+
+```
+SideKeys #1 · 8/10 clean
+🟩🟩🟩🟩⬛🟩🟩🟩🟩⬜
+https://editnss.github.io/SideKeys/
+```
+
+Link-ul e constanta `SHARE_URL` și arată pagina publicată. **Deocamdată pagina aceea servește
+Laboratorul vechi, nu shell-ul**, deci cine urmărește link-ul azi nu găsește challenge-ul: se
+schimbă într-un loc când shell-ul se publică (sau când `sidekeys.app` e viu).
+
+### O trecere oficială pe zi
+
+Prima trecere a zilei e cea care contează: ea intră în `progress.challenge` și ea e textul pe care
+butonul copiază, oricâte treceri urmează. Un replay **se poate juca oricând** — e unealtă de studiu,
+nu concurs — dar plătește **0 XP** și nu schimbă grila; ecranul o spune pe față („Practice run"), iar
+butonul devine „Copy first result". Plafonul ăsta e separat de cel al nivelelor (a doua trecere dă
+jumătate, a treia zero): acolo repetiția e studiu plătit, aici ar fi retușarea unui rezultat public.
+
+Se păstrează **numai ziua curentă**. Un istoric de grile n-a cerut nimic, iar când va cere, locul
+lui e într-un cont, nu în browserul ăsta.
+
+**XP**: dificultate **4**, fiindcă rampa merge de la triade la quartal — nu poate fi plătită nici ca
+un nivel de triade, nici ca unul de quartal. Altfel e aceeași formulă: `stele × dificultate`.
+
+Challenge-ul **numără ca orice trecere** în restul: minutele zilei, streak-ul și punctele slabe pe
+care le-a scos (o calitate ratată pe challenge revine mâine în antrenament, ca de oriunde).
+
 ## Ce nu intră aici
 
-- Challenge-ul zilei (stil Wordle, cu grilă partajabilă) — e punct separat în P1 și cere un seed
-  zilnic determinist plus partajarea; nu e în ecranul Azi deocamdată.
+- Clasamentul challenge-ului zilei — singura excepție admisă la „fără clasamente" (`DIRECTION.md`),
+  dar cere server și verificare anti-trișat, deci nu e în P1.
 - Formula completă de repetiție spațiată (SM-2 peste `weakSpots`) — ce există acum e regula
   simplă de mai sus, cerută de DoD; SM-2 rămâne pentru P2.
 - Conținutul testului de plasare — teoria e a lui Edi, decizia deschisă 2.
