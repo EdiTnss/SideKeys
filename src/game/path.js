@@ -188,6 +188,21 @@ export function pathState(stars = {}) {
   });
 }
 
+/**
+ * The level behind "your training": the qualities due for review, across all twelve keys. It is
+ * not on the path and has no stars to unlock — it is the queue, turned into something playable.
+ * Difficulty 2, because a review is easier than new ground but should still pay something.
+ */
+export function reviewLevel(qualities) {
+  return {
+    id: 'review',
+    name: 'Your training',
+    tempo: TEMPO,
+    difficulty: 2,
+    asks: { kind: 'chords', qualities, keys: TWELVE, count: 12 },
+  };
+}
+
 /** → { unit, level } or null. */
 export function levelById(id) {
   for (const unit of PATH) {

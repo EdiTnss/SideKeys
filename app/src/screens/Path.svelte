@@ -1,20 +1,19 @@
 <script lang="ts">
   import { pathState } from '../bridge/game';
+  import type { LevelPlan, Unit } from '../game/level.svelte';
 
-  type Level = { id: string; name: string; tempo: number; boss?: boolean };
-  type Unit = { id: string; name: string; blurb: string; difficulty: number; levels: Level[] };
   type Entry = {
     unit: Unit;
     unlocked: boolean;
     stars: number;
     maxStars: number;
-    levels: Array<{ level: Level; stars: number; unlocked: boolean }>;
+    levels: Array<{ level: LevelPlan; stars: number; unlocked: boolean }>;
   };
 
   let { stars, xp, onplay }: {
     stars: Record<string, number>;
     xp: number;
-    onplay: (unit: Unit, level: Level) => void;
+    onplay: (unit: Unit, level: LevelPlan) => void;
   } = $props();
 
   const units = $derived(pathState(stars) as Entry[]);

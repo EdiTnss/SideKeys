@@ -11,7 +11,7 @@
   let { unit, plan, onfinish, onexit }: {
     unit: { name: string; difficulty: number };
     plan: LevelPlan;
-    onfinish: (stars: number) => number;
+    onfinish: (run: { stars: number; attempts: unknown[]; seconds: number }) => number;
     onexit: () => void;
   } = $props();
 
@@ -27,7 +27,7 @@
   $effect(() => {
     if (level.finished && level.score && !recorded) {
       recorded = true;
-      xp = onfinish(level.score.stars);
+      xp = onfinish({ stars: level.score.stars, attempts: level.attempts, seconds: level.seconds });
     }
   });
 
@@ -118,7 +118,7 @@
       <span class="count">{level.index + 1} / {level.total}</span>
       <span class="track"><span class="fill" style="width: {(100 * level.answered) / level.total}%"></span></span>
       <span class="level">
-        <button type="button" class="exit" onclick={onexit}>← Path</button>
+        <button type="button" class="exit" onclick={onexit}>← Back</button>
         {level.plan.name}
         {#if level.timed}<span class="timed">· timed, {level.plan.tempo} bpm</span>{/if}
       </span>

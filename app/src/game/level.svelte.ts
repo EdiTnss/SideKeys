@@ -27,6 +27,16 @@ export type LevelPlan = {
   asks: { kind: string; [key: string]: unknown };
 };
 
+/** A unit on the path: a handful of levels ending on a boss. */
+export type Unit = {
+  id: string;
+  name: string;
+  blurb: string;
+  /** Its place on the path, which is what XP multiplies by. */
+  difficulty: number;
+  levels: LevelPlan[];
+};
+
 export function createLevel(plan: LevelPlan) {
   const asks = asksFor(plan) as string[];
   const threshold = thresholdFor(plan) as number;
@@ -35,6 +45,10 @@ export function createLevel(plan: LevelPlan) {
   const session = createSession(progression, { loop: false });
 
   let answers = $state<Array<Attempt | null>>(asks.map(() => null));
+  // Minutes practised count playing, not the screen being open: the clock starts on the first
+  // answer and stops when the run ends.
+  let firstAnswerAt: number | null = null;
+  let seconds = $state(0);
   let current = $state(0);
   let finished = $state(false);
   let timed = $state(false);
@@ -69,6 +83,7 @@ export function createLevel(plan: LevelPlan) {
   }
 
   function finish() {
+    seconds = firstAnswerAt === null ? 0 : Math.round((performance.now() - firstAnswerAt) / 1000);
     metronome?.stop();
     metronome = null;
     countIn = null;
@@ -104,6 +119,8 @@ export function createLevel(plan: LevelPlan) {
     get countIn() { return countIn; },
     get at() { return at; },
     get score() { return score; },
+    get attempts() { return attempts; },
+    get seconds() { return seconds; },
     get weakness() { return weakness; },
 
     /**
@@ -117,6 +134,7 @@ export function createLevel(plan: LevelPlan) {
         ? timedTarget(startedAt)
         : { slot: current, symbol: asks[current], anticipated: false };
       if (!target) return null;
+      if (firstAnswerAt === null) firstAnswerAt = performance.now();
       const analysis = analyzeVoicing(notes, parseChord(target.symbol));
       answers[target.slot] = { symbol: target.symbol, notes, analysis };
       if (!timed) {
@@ -148,6 +166,8 @@ export function createLevel(plan: LevelPlan) {
       metronome?.stop();
       metronome = null;
       answers = asks.map(() => null);
+      firstAnswerAt = null;
+      seconds = 0;
       current = 0;
       finished = false;
       timed = false;

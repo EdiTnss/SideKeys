@@ -155,9 +155,28 @@ Edi a cerut stelele; XP-ul de mai jos e propunerea mea, de aprobat separat.
   mai profitabil să spamezi triade decât să mergi mai departe.
 - **Nimic pentru timp petrecut.** Obiectivul zilnic în minute e pentru streak, nu pentru XP.
 
+## Antrenamentul zilnic (2026-10-11)
+
+Coada de recapitulare e ținută pe **calități de acord**, nu pe acorduri: un punct slab e „m7b5",
+nu „Abm7b5, atunci". Regula, exact cum o cere DoD-ul P1:
+
+- un acord care n-a ieșit curat pune calitatea lui în coadă, **scadentă mâine** — nu azi, fiindcă
+  spațierea e tot rostul;
+- un răspuns curat la o calitate din coadă urcă numărul de reușite; **la trei, iese**;
+- **o ratare pune numărul înapoi la zero**, deci cele trei trebuie să fie consecutive;
+- o calitate ratată măcar o dată într-o trecere **nu** se consideră curată în trecerea aia,
+  oricâte alte acorduri de felul ei au ieșit bine.
+
+Streak-ul numără zilele consecutive în care s-a cântat ceva, iar o zi în care încă nu s-a cântat
+**nu** îl rupe — ziua nu s-a terminat. Obiectivul zilnic e în minute (15 implicit) și numără
+**timpul cântat**: ceasul pornește la primul răspuns dintr-o trecere, nu când se deschide ecranul.
+
 ## Ce nu intră aici
 
-- Formula de repetiție spațiată (SM-2 peste `weakSpots`) — specificație separată, la P1/P2.
+- Challenge-ul zilei (stil Wordle, cu grilă partajabilă) — e punct separat în P1 și cere un seed
+  zilnic determinist plus partajarea; nu e în ecranul Azi deocamdată.
+- Formula completă de repetiție spațiată (SM-2 peste `weakSpots`) — ce există acum e regula
+  simplă de mai sus, cerută de DoD; SM-2 rămâne pentru P2.
 - Conținutul testului de plasare — teoria e a lui Edi, decizia deschisă 2.
 - Cum arată stelele pe ecran: în prototip sunt albe, tocmai ca să nu intre o culoare de teorie
   într-un verdict (vezi `assets/BRAND.md`).

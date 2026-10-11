@@ -2,7 +2,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PATH, asksFor, pathState, levelById } from '../src/game/path.js';
+import { PATH, asksFor, pathState, levelById, reviewLevel } from '../src/game/path.js';
 import { parseChord } from '../src/theory/chords.js';
 
 test('every ask on the path parses as a chord the analyzer can judge', () => {
@@ -104,4 +104,13 @@ test('no level runs longer than a boss, and a boss is the last of its unit', () 
       assert.equal(Boolean(level.boss), at === unit.levels.length - 1, `${level.id}: boss in the wrong place`);
     });
   }
+});
+
+test('reviewLevel: the queue turned into something playable, in every key', () => {
+  const level = reviewLevel(['m7b5', '7']);
+  const asks = asksFor(level);
+  assert.equal(asks.length, 12, 'long enough to be a session, short enough to finish');
+  assert.deepEqual(asks.slice(0, 4), ['Cm7b5', 'C7', 'Fm7b5', 'F7']);
+  for (const symbol of asks) assert.doesNotThrow(() => parseChord(symbol), symbol);
+  assert.equal(asksFor(reviewLevel([])).length, 0, 'nothing due is nothing to play');
 });
