@@ -13,7 +13,7 @@ import { pathState } from './path.js';
 export const REVIEW_HITS = 3;
 
 export function emptyProgress() {
-  return { stars: {}, xp: 0, plays: {}, days: {}, review: {} };
+  return { stars: {}, xp: 0, plays: {}, days: {}, review: {}, challenge: null };
 }
 
 /**
@@ -46,12 +46,35 @@ export function recordRun(progress, { levelId, stars, xp, today, seconds = 0, mi
   }
 
   return {
+    // Spread first: this used to list the fields it kept, which silently dropped the daily
+    // challenge the day that field was added.
+    ...progress,
     stars: { ...progress.stars, [levelId]: Math.max(progress.stars[levelId] ?? 0, stars) },
     xp: progress.xp + xp,
     plays: { ...progress.plays, [levelId]: { date: today, count } },
     days: { ...(progress.days ?? {}), [today]: (progress.days?.[today] ?? 0) + Math.max(0, Math.round(seconds)) },
     review,
   };
+}
+
+/**
+ * The day's challenge, filed once. Only the first pass of the day is the official one: the
+ * grid someone pastes is the one they played cold, and a second run is practice (Edi,
+ * 2026-10-11). Only the latest day is kept — a history of grids is not something anything
+ * asks for yet, and the day it does it belongs in an account, not in this browser.
+ *
+ * @param {any} progress
+ * @param {{ date: string, number: number, states: string[], stars: number, xp: number }} result
+ */
+export function recordChallenge(progress, result) {
+  if (progress.challenge?.date === result.date) return progress;
+  return { ...progress, challenge: { ...result } };
+}
+
+/** The official result for a day, or null when that day has not been played. */
+export function challengeResult(progress, date) {
+  const record = progress.challenge;
+  return record && record.date === date ? record : null;
 }
 
 /** The day after a 'YYYY-MM-DD' stamp, in local time. */
@@ -148,9 +171,10 @@ export function loadProgress(storage = globalThis.localStorage) {
       stars: data.stars,
       xp: data.xp,
       plays: (typeof data.plays === 'object' && data.plays) || {},
-      // Added after the first saves went out, so an older file simply starts these two empty.
+      // Added after the first saves went out, so an older file simply starts these empty.
       days: (typeof data.days === 'object' && data.days) || {},
       review: (typeof data.review === 'object' && data.review) || {},
+      challenge: (typeof data.challenge === 'object' && data.challenge) || null,
     };
   } catch {
     return emptyProgress();

@@ -60,6 +60,7 @@ test('loadProgress: a round trip, and anything unreadable starts over instead of
 // ---- The day: streak, the minutes goal, and what comes back tomorrow (2026-10-11) --------
 
 import { streak, secondsOn, outcomesFor, dueReviews, nextLevel } from '../src/game/progress.js';
+import { recordChallenge, challengeResult } from '../src/game/progress.js';
 import { parseChord } from '../src/theory/chords.js';
 import { analyzeVoicing } from '../src/theory/analyzer.js';
 
@@ -137,4 +138,46 @@ test('nextLevel: the first open level that is not yet three stars', () => {
   assert.equal(after?.level.id, 'triads-minor', 'a finished level is behind you');
   const partial = nextLevel({ 'triads-major': 2 });
   assert.equal(partial?.level.id, 'triads-major', 'two stars still has one to get');
+});
+
+// ---- The daily challenge, filed once (2026-10-11) -----------------------------------------
+
+test('recordChallenge: the official pass is the first one of the day', () => {
+  const official = { date: '2026-10-11', number: 1, states: ['clean', 'missed'], stars: 1, xp: 4 };
+  let p = recordChallenge(emptyProgress(), official);
+  assert.deepEqual(challengeResult(p, '2026-10-11'), official);
+
+  // Playing it again is practice: the grid someone pastes is the one they played cold.
+  p = recordChallenge(p, { ...official, states: ['clean', 'clean'], stars: 2, xp: 8 });
+  assert.deepEqual(challengeResult(p, '2026-10-11'), official, 'the replay did not overwrite it');
+});
+
+test('a finished run leaves the day\'s challenge grid alone', () => {
+  // recordRun used to list the fields it returned, so a run after the challenge wiped it.
+  const played = recordChallenge(emptyProgress(), { date: '2026-10-11', number: 1, states: ['clean'], stars: 1, xp: 4 });
+  const after = recordRun(played, { levelId: 'triads-major', stars: 2, xp: 2, today: '2026-10-11' });
+  assert.deepEqual(challengeResult(after, '2026-10-11').states, ['clean']);
+});
+
+test('challengeResult: yesterday\'s grid is not today\'s', () => {
+  const p = recordChallenge(emptyProgress(), { date: '2026-10-11', number: 1, states: ['clean'], stars: 1, xp: 4 });
+  assert.equal(challengeResult(p, '2026-10-12'), null, 'a new day has no result yet');
+  const next = recordChallenge(p, { date: '2026-10-12', number: 2, states: ['missed'], stars: 0, xp: 0 });
+  assert.equal(challengeResult(next, '2026-10-12').number, 2);
+  assert.equal(challengeResult(next, '2026-10-11'), null, 'only the latest day is kept');
+});
+
+test('the challenge record survives a save and a load', () => {
+  const storage = fakeStorage();
+  const p = recordChallenge(emptyProgress(), { date: '2026-10-11', number: 1, states: ['clean', 'right'], stars: 1, xp: 4 });
+  saveProgress(p, storage);
+  const back = loadProgress(storage);
+  assert.deepEqual(challengeResult(back, '2026-10-11').states, ['clean', 'right']);
+});
+
+test('a progress file written before the challenge existed simply has none', () => {
+  const storage = fakeStorage({ 'sidekeys.progress': JSON.stringify({ stars: {}, xp: 7 }) });
+  const back = loadProgress(storage);
+  assert.equal(back.xp, 7);
+  assert.equal(challengeResult(back, '2026-10-11'), null);
 });

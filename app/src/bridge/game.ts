@@ -8,4 +8,12 @@ export { PATH, asksFor, thresholdFor, pathState, levelById, reviewLevel } from '
 export {
   emptyProgress, recordRun, playsToday, dayStamp, loadProgress, saveProgress,
   streak, secondsOn, outcomesFor, dueReviews, nextLevel,
+  recordChallenge, challengeResult,
 } from '../../../src/game/progress.js';
+
+// The daily challenge: the same ten chords for everyone, drawn from the date. Deterministic,
+// so no server and no account — and testable in Node like everything else here.
+export {
+  EPOCH, RUNGS, CHALLENGE_DIFFICULTY, SQUARES, SHARE_URL,
+  challengeNumber, dailyChallenge, challengeLevel, challengeStates, shareText,
+} from '../../../src/game/challenge.js';
