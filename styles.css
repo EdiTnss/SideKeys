@@ -106,6 +106,10 @@ kbd {
 .key.role-wrong { fill: var(--wrong); }
 .key.caution { stroke: var(--warn); stroke-width: 3; }
 .key.armed { fill: var(--armed); }
+/* A missing note was never pressed, so it is outlined and never filled: the hole in the chord.
+   It borrows --held's grey as a dashed stroke, which is why it cannot be read as a held note —
+   held is a fill, missing is an outline. Dashed differently from .suggested, which is blue. */
+.key.missing { stroke: var(--held); stroke-width: 3; stroke-dasharray: 3 3; }
 .key-label { font-size: 9px; fill: #555; pointer-events: none; }
 .keyboard.playable { cursor: pointer; touch-action: none; }
 

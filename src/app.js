@@ -28,7 +28,7 @@ import { realize, BASS_REGISTERS } from './theory/realize.js';
 import { arrangementMessages } from './midi/player.js';
 import {
   renderChord, renderStatus, renderAnalysis, renderComparison, clearFeedback, renderSettings,
-  roleClasses, heldClasses, armedClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
+  roleClasses, heldClasses, armedClasses, missingClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
   renderStats, useStatsSummary, renderAiStatus, renderAiSuggestions, renderReharm,
 } from './ui/render.js';
 
@@ -159,7 +159,9 @@ function analyse(notes) {
 }
 
 function showAnalysis(analysis, notes) {
-  currentClasses = roleClasses(analysis);
+  // The holes in the chord go on the keyboard beside the notes that were played. The two sets
+  // never collide: a missing pitch class is by definition one nobody pressed.
+  currentClasses = { ...roleClasses(analysis), ...missingClasses(analysis) };
   showKeys(currentClasses);
   lastVoicing = notes;
   suggestions = null;                 // the next suggestion starts from what was just played

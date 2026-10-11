@@ -110,3 +110,22 @@ analyzeVoicing(notes, chord, { limits = LOW_INTERVAL_LIMITS } = {}) → {
 ```
 
 `LOW_INTERVAL_LIMITS` e o listă de date `{ below, semitones }`, configurabilă prin opțiuni. Voice leading-ul (Faza 2) va fi o funcție separată, `compareVoicings(previous, next)`, ca analiza unui acord izolat să rămână pură.
+
+### Ce arată clapa (`ui/keyboard.js`, `ui/render.js`)
+
+Clapa colorează ce s-a cântat, pe rol (`roleClasses`): `chordTone` verde, `tension` albastru,
+`altered` violet, `avoid` ambră, `wrong` roșu, plus conturul `caution`. Două stări nu vin din
+note cântate:
+
+- **`suggested`** — contur albastru punctat: notele unei sugestii, ale analizorului sau ale lui
+  Claude, puse peste culorile curente (`withSuggestion`).
+- **`missing`** (2026-10-11, cerut de Edi după prototipul celor patru ecrane) — contur **gri
+  punctat**: notele pe care acordul le cerea și nu le-a primit, adică `analysis.missing`
+  (`chord.required` minus ce s-a cântat). O notă lipsă n-are octavă, fiindcă n-a fost apăsată,
+  deci se desenează în registrul voicing-ului cântat: **instanța clasei de înălțime cea mai
+  apropiată de mijlocul intervalului cântat** ((cea mai joasă + cea mai înaltă) / 2), iar la
+  egalitate cea de jos. Exemplu măsurat în pagină: D7 cântat D4 F#4, fără septimă, aprinde C4
+  (60), nu C5. Starea e **numai contur, niciodată umplere**: `--held` e tot gri, dar e umplere,
+  deci cele două nu se pot confunda, iar `BRAND.md` rămâne cu șapte culori de teorie, fără token
+  nou. Cele două stări nu se pot ciocni cu rolurile: o clasă de înălțime lipsă e, prin definiție,
+  una pe care nimeni n-a apăsat-o. Testat în `test/render.test.js`.

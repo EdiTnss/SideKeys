@@ -68,6 +68,29 @@ export function armedClasses(notes) {
   return Object.fromEntries(notes.map(midi => [midi, 'armed']));
 }
 
+/**
+ * midi -> 'missing' for the keyboard: the notes the chord needed and did not get. A missing note
+ * has no octave of its own, because it was never pressed, so it is drawn in the register of the
+ * voicing that was played: the instance of that pitch class nearest the middle of what sounded,
+ * the lower one when two are equally near. Only outlined, never filled - the key is a hole in
+ * the chord, not something the player did.
+ */
+export function missingClasses(analysis) {
+  const notes = analysis?.notes ?? [];
+  const missing = analysis?.missing ?? [];
+  if (!notes.length || !missing.length) return {};
+  const middle = (notes[0] + notes.at(-1)) / 2;
+  const classes = {};
+  for (const pc of missing) {
+    let best = null;
+    for (let midi = pc; midi <= 127; midi += 12) {
+      if (best === null || Math.abs(midi - middle) < Math.abs(best - middle)) best = midi;
+    }
+    classes[best] = 'missing';
+  }
+  return classes;
+}
+
 /** One line under the analysis: how the played chord moved from the previous one. */
 export function renderComparison(el, comparison) {
   if (!comparison) return;
