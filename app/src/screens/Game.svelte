@@ -1,36 +1,49 @@
 <script lang="ts">
   import Keyboard from '../lib/Keyboard.svelte';
+  import Result from './Result.svelte';
   import { createInstrument } from '../lib/instrument.svelte';
+  import { createLevel, ROOTLESS_II_V_I } from '../game/level.svelte';
   import {
     parseChord, analyzeVoicing, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
 
-  // A fixed ii–V–I while the loop is being built; the real sequence comes from the level.
-  const ASK = ['Dm7', 'G7', 'Cmaj7'];
+  const level = createLevel(ROOTLESS_II_V_I);
 
-  let index = $state(0);
   let analysis = $state<ReturnType<typeof analyzeVoicing> | null>(null);
-  let played = $state<number[]>([]);
+  let judged = $state<string | null>(null);
   let classes = $state<Record<number, string>>({});
 
-  const chord = $derived(parseChord(ASK[index]));
+  const chord = $derived(level.ask ? parseChord(level.ask) : null);
 
-  // The lowest key on a 76-key Genos moves to the next chord, so a hand never leaves the
-  // keyboard to click anything. That interception lives in the capture, not here.
-  const instrument = createInstrument({ onVoicing: judge, onNext: next });
+  // The lowest key on a 76-key Genos moves on, so a hand never leaves the keyboard to click.
+  const instrument = createInstrument({ onVoicing: judge, onNext: skip });
 
   function judge(notes: number[]) {
-    played = notes;
-    analysis = analyzeVoicing(notes, chord);
+    const asked = chord;
+    if (!asked) return;
+    // Analysed against the chord that was on screen when the voicing started, then recorded:
+    // recording advances the queue, so the order here is not cosmetic.
+    analysis = analyzeVoicing(notes, asked);
+    judged = asked.symbol;
     classes = { ...roleClasses(analysis), ...missingClasses(analysis) };
+    level.record(notes, analysis);
   }
 
-  function next() {
-    index = (index + 1) % ASK.length;
+  function skip() {
+    level.skip();
+    clearVerdict();
+  }
+
+  function again() {
+    level.restart();
+    clearVerdict();
+  }
+
+  function clearVerdict() {
     instrument.cancelCapture();
     analysis = null;
-    played = [];
+    judged = null;
     classes = {};
   }
 
@@ -53,7 +66,7 @@
     else if (event.code === 'Escape') instrument.clear();
     else if (event.code === 'KeyZ') instrument.octaveDown();
     else if (event.code === 'KeyX') instrument.octaveUp();
-    else if (event.code === 'Space') { event.preventDefault(); next(); }
+    else if (event.code === 'Space') { event.preventDefault(); skip(); }
   }
 
   const warnings = $derived(analysis ? analysis.messages.filter((m: { level: string }) => m.level === 'warning') : []);
@@ -62,55 +75,68 @@
 
 <svelte:window onkeydown={onKeyDown} onkeyup={event => instrument.keyUp(event.code)} />
 
-<section class="game">
-  <p class="ask">{ASK[index]}</p>
-  <p class="hint">Play it. Any voicing that works counts.</p>
+{#if level.done && level.score}
+  <Result name={level.plan.name} score={level.score} xp={level.xp} weakness={level.weakness} onagain={again} />
+{:else}
+  <section class="game">
+    <div class="progress">
+      <span class="count">{level.index + 1} / {level.total}</span>
+      <span class="track"><span class="fill" style="width: {(100 * level.index) / level.total}%"></span></span>
+      <span class="level">{level.plan.name}</span>
+    </div>
 
-  <div class="verdict" aria-live="polite">
-    {#if !analysis}
-      <p class="waiting">—</p>
-    {:else if star}
-      <p class="star {star.toLowerCase()}">{star}{analysis.voicing.type ? ` — ${analysis.voicing.type}` : ''}</p>
-    {:else}
-      <p class="star none">{warnings[0].text}</p>
-    {/if}
+    <p class="ask">{level.ask}</p>
+    <p class="hint">Play it. Any voicing that works counts.</p>
 
-    {#if analysis && warnings.length}
-      <ul class="messages">
-        {#each warnings as message (message.text)}
-          <li>{message.text}</li>
-        {/each}
-      </ul>
-    {/if}
-  </div>
+    <div class="verdict" aria-live="polite">
+      {#if !analysis}
+        <p class="waiting">—</p>
+      {:else if star}
+        <p class="star {star.toLowerCase()}"><span class="judged">{judged}</span> {star}{analysis.voicing.type ? ` — ${analysis.voicing.type}` : ''}</p>
+      {:else}
+        <p class="star none"><span class="judged">{judged}</span> {warnings[0].text}</p>
+      {/if}
 
-  <Keyboard classes={{ ...classes, ...armedClasses(instrument.armed) }} onkey={instrument.toggle} />
+      {#if analysis && warnings.length}
+        <ul class="messages">
+          {#each warnings as message (message.text)}
+            <li>{message.text}</li>
+          {/each}
+        </ul>
+      {/if}
+    </div>
 
-  <div class="controls">
-    <button type="button" onclick={() => instrument.play()}>Play armed <kbd>Enter</kbd></button>
-    <button type="button" onclick={() => instrument.clear()}>Clear <kbd>Esc</kbd></button>
-    <button type="button" onclick={next}>Next chord <kbd>Space</kbd></button>
-    {#if !instrument.hardware.length}
-      <button type="button" class="connect" onclick={() => instrument.connect()}>Connect a MIDI keyboard</button>
-    {/if}
-    <span class="octave">letters start at {midiToName(instrument.octave)} <kbd>Z</kbd><kbd>X</kbd></span>
-  </div>
+    <Keyboard classes={{ ...classes, ...armedClasses(instrument.armed) }} onkey={instrument.toggle} />
 
-  <p class="status {instrument.status.level}">{instrument.status.text}</p>
-  {#if played.length}
-    <p class="played">Captured: {played.map(midi => midiToName(midi)).join(' ')}</p>
-  {/if}
-</section>
+    <div class="controls">
+      <button type="button" onclick={() => instrument.play()}>Play armed <kbd>Enter</kbd></button>
+      <button type="button" onclick={() => instrument.clear()}>Clear <kbd>Esc</kbd></button>
+      <button type="button" onclick={skip}>Skip <kbd>Space</kbd></button>
+      {#if !instrument.hardware.length}
+        <button type="button" class="connect" onclick={() => instrument.connect()}>Connect a MIDI keyboard</button>
+      {/if}
+      <span class="octave">letters start at {midiToName(instrument.octave)} <kbd>Z</kbd><kbd>X</kbd></span>
+    </div>
+
+    <p class="status {instrument.status.level}">{instrument.status.text}</p>
+  </section>
+{/if}
 
 <style>
   .game { max-width: 1100px; margin: 0 auto; padding: 24px 32px 48px; }
-  .ask { margin: 24px 0 6px; font-size: 96px; line-height: 1; font-weight: 600; letter-spacing: -0.05em; }
-  .hint { margin: 0 0 28px; color: var(--ink-muted); font-size: 15px; }
-  .verdict { min-height: 96px; }
+  .progress { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .count { font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
+  .track { flex-grow: 1; height: 4px; border-radius: 999px; background: var(--border); overflow: hidden; }
+  .fill { display: block; height: 4px; border-radius: 999px; background: var(--ink); }
+  .level { font-size: 13px; color: var(--ink-muted); }
+  .ask { margin: 18px 0 6px; font-size: 96px; line-height: 1; font-weight: 600; letter-spacing: -0.05em; }
+  .hint { margin: 0 0 24px; color: var(--ink-muted); font-size: 15px; }
+  .verdict { min-height: 92px; }
   .star { margin: 0 0 8px; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
   .star.clean { color: var(--chord-tone); }
   .star.right { color: var(--ink); }
   .star.none { color: var(--avoid); }
+  .judged { font-family: ui-monospace, monospace; font-size: 15px; color: var(--ink-muted); margin-right: 6px; }
   .waiting { margin: 0; font-size: 24px; color: var(--ink-muted); }
   .messages { margin: 0; padding-left: 20px; color: var(--ink-muted); font-size: 14px; }
   .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
@@ -130,5 +156,4 @@
   .status { margin: 16px 0 0; font-size: 13px; color: var(--ink-muted); }
   .status.ok { color: var(--chord-tone); }
   .status.warn { color: var(--avoid); }
-  .played { margin: 6px 0 0; font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
 </style>

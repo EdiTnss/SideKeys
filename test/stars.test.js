@@ -48,3 +48,75 @@ test('isClean implies isRight, so a star never skips the one below it', () => {
     if (isClean(analysis)) assert.equal(isRight(analysis), true, `${symbol} is clean but not right`);
   }
 });
+
+// ---- The run: how a whole pass turns into stars (docs/spec-game.md) ----------------------
+
+import { scoreRun, movementThreshold, xpFor } from '../src/theory/stars.js';
+
+const attempt = (symbol, notes) => ({ symbol, notes, analysis: notes.length ? on(symbol, notes) : null });
+
+// Chained by suggestVoicings, so the numbers are the engine's own, not invented: 0.25 then 1.25
+// semitones per voice, 0.75 on average.
+const SMOOTH = [attempt('Dm7', [53, 57, 60, 64]), attempt('G7', [53, 57, 59, 64]), attempt('Cmaj7', [52, 55, 59, 62])];
+// The same three chords, all clean, with the middle one thrown an octave and a half up.
+const JUMPY = [attempt('Dm7', [53, 57, 60, 64]), attempt('G7', [77, 81, 83, 88]), attempt('Cmaj7', [52, 55, 59, 62])];
+
+test('scoreRun: the third star needs timed and the progression threshold, both', () => {
+  const smooth = scoreRun({ attempts: SMOOTH, timed: true, movementThreshold: 1.25 });
+  assert.equal(smooth.stars, 3);
+  assert.equal(smooth.label, 'Smooth');
+  assert.equal(smooth.movement, 0.75);
+
+  assert.equal(scoreRun({ attempts: SMOOTH, timed: false, movementThreshold: 1.25 }).stars, 2, 'free play tops out at Clean');
+  const jumpy = scoreRun({ attempts: JUMPY, timed: true, movementThreshold: 1.25 });
+  assert.equal(jumpy.stars, 2, 'clean but jumpy is two stars');
+  assert.equal(jumpy.movement, 24.5);
+});
+
+test('scoreRun: the shares are over the chords asked, not over the ones answered', () => {
+  const run = [...SMOOTH, attempt('Dm7', []), attempt('G7', [])];     // two asks that never came
+  const score = scoreRun({ attempts: run, timed: true, movementThreshold: 1.25 });
+  assert.equal(score.total, 5);
+  assert.equal(score.clean, 3);
+  assert.equal(score.cleanShare, 0.6);
+  assert.equal(score.stars, 1, '60% clean is past Right but short of Clean');
+});
+
+test('scoreRun: 60% right earns the first star, less earns none', () => {
+  const rightNotClean = attempt('Cmaj7', [60, 64, 67, 71, 77]);       // the 11 is an avoid note
+  const notRight = attempt('Dm7b5', [62, 65, 72]);                    // the b5 never arrived
+  const three = [rightNotClean, rightNotClean, rightNotClean, notRight, notRight];
+  assert.equal(scoreRun({ attempts: three }).stars, 1);
+  assert.equal(scoreRun({ attempts: three }).label, 'Right');
+  const two = [rightNotClean, rightNotClean, notRight, notRight, notRight];
+  assert.equal(scoreRun({ attempts: two }).stars, 0);
+  assert.equal(scoreRun({ attempts: two }).label, null);
+});
+
+test('scoreRun: a repeated chord is not a change, so it cannot flatter the voice leading', () => {
+  const held = [...SMOOTH, attempt('Cmaj7', [52, 55, 59, 62])];       // | Cmaj7 | % |
+  assert.equal(scoreRun({ attempts: held, timed: true, movementThreshold: 1.25 }).movement, 0.75);
+});
+
+test('scoreRun: with no chord change there is nothing to judge, so no third star', () => {
+  const one = [attempt('Dm7', [53, 57, 60, 64]), attempt('Dm7', [53, 57, 60, 64])];
+  const score = scoreRun({ attempts: one, timed: true, movementThreshold: 1.5 });
+  assert.equal(score.movement, null);
+  assert.equal(score.stars, 2);
+});
+
+test('movementThreshold: measured per progression, 1.5 where the library says nothing else', () => {
+  assert.equal(movementThreshold('ii-V-I'), 1.25);
+  assert.equal(movementThreshold('turnaround'), 1.75);
+  assert.equal(movementThreshold('blues'), 1.5);
+  assert.equal(movementThreshold('drill'), 1.5);
+  assert.equal(movementThreshold(null), 1.5);
+});
+
+test('xpFor: quality times difficulty, halved the second time today and nothing after', () => {
+  assert.equal(xpFor({ stars: 3, difficulty: 5 }), 15);
+  assert.equal(xpFor({ stars: 1, difficulty: 1 }), 1);
+  assert.equal(xpFor({ stars: 3, difficulty: 5, playsToday: 1 }), 8);
+  assert.equal(xpFor({ stars: 3, difficulty: 5, playsToday: 2 }), 0, 'no farming the easy level');
+  assert.equal(xpFor({ stars: 0, difficulty: 9 }), 0, 'a level you did not clear pays nothing');
+});

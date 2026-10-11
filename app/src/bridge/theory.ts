@@ -8,7 +8,12 @@
 
 export { parseChord, ChordParseError } from '../../../src/theory/chords.js';
 export { analyzeVoicing } from '../../../src/theory/analyzer.js';
-export { isRight, isClean } from '../../../src/theory/stars.js';
+export { isRight, isClean, scoreRun, movementThreshold, xpFor } from '../../../src/theory/stars.js';
+export { getProgression, PROGRESSIONS } from '../../../src/theory/progressions.js';
+
+// Practice statistics: the same recorder the old page uses, so "one thing to fix" on the result
+// screen is counted exactly like the weak spots in the Lab, not by a second rule.
+export { emptyStats, recordAttempt, weakSpots } from '../../../src/ui/stats.js';
 export { compareVoicings } from '../../../src/theory/voiceLeading.js';
 export { midiToName, octave, spellDegree } from '../../../src/theory/notes.js';
 
