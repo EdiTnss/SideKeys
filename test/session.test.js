@@ -92,15 +92,20 @@ test('snapshotTarget: which chord a captured voicing answers, the one rule the a
   assert.equal(timed({ bar: 4, beat: 1 }), null);                                // past the end, no loop
 });
 
-test('snapshotTarget, timed: from the "and" of the beat before a change, a voicing counts for the next chord (Edi\'s rule)', () => {
+test('snapshotTarget, timed: from the "and" of the last beat, a voicing counts for the next bar (Edi\'s rule)', () => {
   assert.equal(ANTICIPATION_BEATS, 0.5);
   const session = createSession(grid(), { loop: false });                        // | Dm7 G7 | Cmaj7 | % |
   const timed = (position, on = session) => snapshotTarget({ mode: 'progression', session: on, started: true, timed: true, position })?.symbol ?? null;
+  // Only over a bar line. A chord change inside the bar is not anticipated: Edi turned that
+  // generalisation down on 2026-10-11, so the "and" of 2 before a G7 on beat 3 still answers Dm7.
   assert.equal(timed({ bar: 1, beat: 2.49 }), 'Dm7');
-  assert.equal(timed({ bar: 1, beat: 2.5 }), 'G7');                              // the "and" of 2, before G7 on 3
+  assert.equal(timed({ bar: 1, beat: 2.5 }), 'Dm7');                             // the "and" of 2, before G7 on 3
+  assert.equal(timed({ bar: 1, beat: 2.9 }), 'Dm7');                             // and deeper inside the bar, still Dm7
   assert.equal(timed({ bar: 1, beat: 4.49 }), 'G7');
   assert.equal(timed({ bar: 1, beat: 4.5 }), 'Cmaj7');                           // the "and" of 4
-  assert.equal(timed({ bar: 0, beat: 4.6 }), 'Dm7');                             // the first chord, pushed from the count-in
+  // Nor from the count-in: there is no chord before the first one, so a voicing played there
+  // answers nothing at all (Edi, 2026-10-11, turning down the other generalisation).
+  assert.equal(timed({ bar: 0, beat: 4.6 }), null);                              // pushed from the count-in: no chord at all
   assert.equal(timed({ bar: 3, beat: 4.8 }), 'Cmaj7');                           // nothing follows without a loop: the last chord keeps it
   assert.equal(timed({ bar: 3, beat: 4.8 }, createSession(grid(), { loop: true })), 'Dm7');   // looped: the next chorus
   const waltz = createSession(parseGrid('| Dm7 | G7 |', { timeSignature: [3, 4] }), { loop: false });
@@ -114,10 +119,10 @@ test('isAnticipated: whether the verdict is for a chord the screen has not reach
   const anticipated = position => isAnticipated(session, position, target(position)?.slot ?? null);
   assert.equal(anticipated({ bar: 1, beat: 1 }), false);
   assert.equal(anticipated({ bar: 1, beat: 2.49 }), false);
-  assert.equal(anticipated({ bar: 1, beat: 2.5 }), true);                        // judged as G7 while Dm7 is on screen
+  assert.equal(anticipated({ bar: 1, beat: 2.5 }), false);                       // inside the bar: nothing anticipated
   assert.equal(anticipated({ bar: 1, beat: 3 }), false);                         // G7 on its own beat
   assert.equal(anticipated({ bar: 1, beat: 4.5 }), true);                        // pushed over the bar line
-  assert.equal(anticipated({ bar: 0, beat: 4.6 }), true);                        // from the count-in, before bar 1
+  assert.equal(anticipated({ bar: 0, beat: 4.6 }), false);                       // the count-in answers nothing
   assert.equal(anticipated({ bar: 3, beat: 4.8 }), false);                       // nothing follows: the last chord keeps it
   assert.equal(isAnticipated(session, null, 0), false, 'a free pass has no position, so nothing is anticipated');
   assert.equal(isAnticipated(null, { bar: 1, beat: 2.5 }, 1), false);

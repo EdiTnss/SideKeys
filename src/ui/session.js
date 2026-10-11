@@ -113,18 +113,20 @@ export function snapshotTarget({ mode, symbol = null, session = null, started = 
   return slot === null ? null : { symbol: session.slots[slot].symbol, slot };
 }
 
-// Where the voicing started, looked at an eighth note later: inside the last eighth before a
-// change that is the next chord. Past the end of a pass without a loop nothing follows, so the
-// last chord keeps it; from the count-in, the first chord is the one anticipated.
+// Where the voicing started, looked at an eighth note later — but only across a bar line. Inside
+// the last eighth of a bar, the chord of the next bar is the one answered; anywhere else in the
+// bar the voicing answers the chord it falls on, even when a change is half a beat away. Past the
+// end of a pass without a loop nothing follows, so the last chord keeps it, and the count-in
+// answers nothing: there is no chord before the first one.
+// (Edi, 2026-09-19: "from the «and» of 4". The window is half a beat of musical time, so it
+// follows the last beat of the bar — the "and" of 3 in 3/4 — and it scales with the tempo. Edi
+// turned down two generalisations on 2026-10-11: changes inside the bar, and the count-in.)
 function timedSlot(session, { bar, beat }) {
-  let aheadBar = bar;
-  let aheadBeat = beat + ANTICIPATION_BEATS;
-  if (aheadBeat >= session.beatsPerBar + 1 - EPSILON) {
-    aheadBar += 1;
-    aheadBeat -= session.beatsPerBar;
-  }
-  const location = session.locate(aheadBar, aheadBeat) ?? session.locate(bar, beat);
-  return location?.index ?? null;
+  const here = session.locate(bar, beat);
+  if (!here) return null;
+  const ahead = beat + ANTICIPATION_BEATS;
+  if (ahead < session.beatsPerBar + 1 - EPSILON) return here.index;
+  return (session.locate(bar + 1, ahead - session.beatsPerBar) ?? here).index;
 }
 
 /**

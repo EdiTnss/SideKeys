@@ -17,7 +17,7 @@
     {"t":24414.3,"type":"midi","data":[144,57,80]},
     {"t":24426.2,"type":"midi","data":[144,60,80]},
     {"t":24453,"type":"midi","data":[144,64,80]},
-    {"t":24769.8,"type":"snapshot","startedAt":24407.2,"notes":[53,57,60,64],"target":{"symbol":"Dm7","slot":0},"position":{"bar":0,"beat":4.62248},"verdict":{"type":"rootless-A","bass":null,"missing":[],"wrong":[],"avoid":[],"muddy":[],"doublings":[]}},
+    {"t":24769.8,"type":"snapshot","startedAt":24407.2,"notes":[53,57,60,64],"target":null,"position":{"bar":0,"beat":4.62248},"verdict":null},
     {"t":25782.1,"type":"midi","data":[128,53,0]},
     {"t":25782.3,"type":"midi","data":[128,57,0]},
     {"t":25782.4,"type":"midi","data":[128,60,0]},
