@@ -125,3 +125,34 @@ test('messages follow the importance order: required, wrong notes, muddy interva
   assert.deepEqual(a.messages.map(m => m.code), ['missing', 'wrong', 'muddy', 'type']);
   assert.deepEqual(a.messages.map(m => m.level), ['warning', 'warning', 'warning', 'info']);
 });
+
+// ---- The slash bass (2026-10-11, so an Inversions unit can be graded) --------------------
+
+test('a slash chord asks for its bass, and the analyzer checks the lowest note', () => {
+  const inversion = analyze('C/E', 'E4 G4 C5');
+  assert.deepEqual(inversion.slash, { wanted: 4, played: 4, ok: true });
+  assert.equal(inversion.messages.some(m => m.code === 'bass'), false);
+
+  const rootPosition = analyze('C/E', 'C4 E4 G4');
+  assert.deepEqual(rootPosition.slash, { wanted: 4, played: 0, ok: false });
+  const warning = rootPosition.messages.find(m => m.code === 'bass');
+  assert.equal(warning.level, 'warning');
+  assert.equal(warning.text, 'Bass should be E, not C');
+});
+
+test('the slash bass is a pitch class, so any octave of it will do', () => {
+  assert.equal(analyze('C/G', 'G2 C4 E4').slash.ok, true);
+  assert.equal(analyze('C/G', 'G4 C5 E5').slash.ok, true);
+});
+
+test('a chord without a slash has no bass to check, and no message about one', () => {
+  assert.equal(analyze('Cmaj7', 'C4 E4 G4 B4').slash, null);
+  assert.equal(analyze('Cmaj7', 'E4 G4 B4 C5').slash, null, 'an inversion nobody asked for is not a fault');
+});
+
+test('the bass warning comes before the wrong notes, after the missing ones', () => {
+  // C E Db on Cmaj7/E: the 7th is missing, the bass is C instead of E, and the Db belongs to
+  // no Cmaj7 — one of each, so the order is the whole point of the assertion.
+  const a = analyze('Cmaj7/E', 'C4 E4 Db5');
+  assert.deepEqual(a.messages.map(m => m.code), ['missing', 'bass', 'wrong', 'type']);
+});

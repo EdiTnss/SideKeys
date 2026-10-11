@@ -9,19 +9,36 @@ import { compareVoicings } from './voiceLeading.js';
 /**
  * Right (★): the chord that was asked for is there, and nothing foreign is. Avoid notes, a muddy
  * register and doublings do not spoil it — those are what Clean adds.
+ *
+ * Two things a level may also ask for, both of them part of being right rather than extra
+ * verdicts of their own: the bass of a slash chord (checked by the analyzer, because the chord
+ * carries it) and a texture, which no chord carries — "play a shell" is the exercise's demand,
+ * not the chord's, so it arrives here as an option.
+ *
+ * @param {any} analysis
+ * A level may name one texture or several — "form A or form B" is one exercise, not two.
+ *
+ * @param {{ texture?: string | string[] | null }} [asked]
  */
-export function isRight(analysis) {
-  return analysis.missing.length === 0 && analysis.wrong.length === 0;
+export function isRight(analysis, { texture = null } = {}) {
+  if (analysis.missing.length > 0 || analysis.wrong.length > 0) return false;
+  if (analysis.slash && !analysis.slash.ok) return false;
+  // An empty list asks for nothing, rather than for the impossible: a level whose texture list
+  // came out empty should be loose, not unclearable.
+  const wanted = [].concat(texture ?? []);
+  if (wanted.length > 0 && !wanted.includes(analysis.voicing.type)) return false;
+  return true;
 }
 
 /**
- * Clean (★★): nothing to reproach at all. Warnings are `missing`, `wrong`, `avoid` and `muddy`;
+ * Clean (★★): right, and nothing to reproach on top. Warnings are `missing`, `wrong`, `avoid`,
+ * `bass` and `muddy`;
  * `rootless`, `caution`, `doubling` and `type` are info, so a doubled root an octave down — the
  * ordinary thing to play with two hands — stays clean. Clean implies Right, because the first
  * two warnings are exactly what Right tests.
  */
-export function isClean(analysis) {
-  return analysis.messages.every(message => message.level !== 'warning');
+export function isClean(analysis, asked = {}) {
+  return isRight(analysis, asked) && analysis.messages.every(message => message.level !== 'warning');
 }
 
 // ---- The run ------------------------------------------------------------------------------
@@ -55,15 +72,17 @@ const LABELS = [null, 'Right', 'Clean', 'Smooth'];
  *   attempts: Array<{ symbol: string, notes: number[], analysis: any }>,
  *   timed?: boolean,
  *   movementThreshold?: number,
+ *   texture?: string | string[] | null,
  * }} run
  * @returns {{ stars: number, label: string | null, total: number, right: number, clean: number,
  *             rightShare: number, cleanShare: number, movement: number | null }}
  */
-export function scoreRun({ attempts, timed = false, movementThreshold: limit = DEFAULT_MOVEMENT }) {
+export function scoreRun({ attempts, timed = false, movementThreshold: limit = DEFAULT_MOVEMENT, texture = null }) {
+  const asked = { texture };
   const total = attempts.length;
   const answered = attempts.filter(attempt => attempt.analysis);
-  const right = answered.filter(attempt => isRight(attempt.analysis)).length;
-  const clean = answered.filter(attempt => isClean(attempt.analysis)).length;
+  const right = answered.filter(attempt => isRight(attempt.analysis, asked)).length;
+  const clean = answered.filter(attempt => isClean(attempt.analysis, asked)).length;
   const rightShare = total ? right / total : 0;
   const cleanShare = total ? clean / total : 0;
   const movement = meanMovement(attempts);

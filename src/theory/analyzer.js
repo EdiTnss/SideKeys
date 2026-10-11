@@ -27,7 +27,8 @@ const isClose = sorted => span(sorted) <= 12;
 const unique = list => [...new Set(list)];
 
 /**
- * → { notes, roles, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing, messages }
+ * → { notes, roles, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing, slash,
+ *      messages }
  * Lists of notes are pitch classes; `voicing` is { type, bass, detail }; `messages` are
  * { level: 'warning' | 'info', code, text } in order of importance.
  */
@@ -40,6 +41,12 @@ export function analyzeVoicing(notes, chord, { limits = LOW_INTERVAL_LIMITS } = 
   const pcs = new Set(roles.map(r => r.pc));
 
   const missing = chord.required.filter(pc => !pcs.has(pc));
+  // A slash chord names its own bass, and that is the one thing a plain inversion cannot fake:
+  // the lowest note's pitch class has to be it. Without a slash there is nothing to ask for, so
+  // an inversion nobody requested is not a fault.
+  const slash = chord.bassPc === null || chord.bassPc === undefined
+    ? null
+    : { wanted: chord.bassPc, played: sorted.length ? pitchClass(sorted[0]) : null, ok: sorted.length ? pitchClass(sorted[0]) === chord.bassPc : false };
   const hasRoot = pcs.has(chord.rootPc);
   const wrong = unique(roles.filter(r => r.role === 'wrong').map(r => r.pc));
   const avoid = unique(roles.filter(r => r.role === 'avoid').map(r => r.pc));
@@ -47,9 +54,9 @@ export function analyzeVoicing(notes, chord, { limits = LOW_INTERVAL_LIMITS } = 
   const muddy = findMuddyIntervals(sorted, limits);
   const doublings = findDoublings(roles, chord);
   const voicing = classifyVoicing(sorted, chord);
-  const messages = buildMessages({ chord, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing });
+  const messages = buildMessages({ chord, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing, slash });
 
-  return { notes: sorted, roles, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing, messages };
+  return { notes: sorted, roles, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing, slash, messages };
 }
 
 function findMuddyIntervals(sorted, limits) {
@@ -197,10 +204,14 @@ function pcName(pc, chord) {
 
 const noteName = (midi, chord) => pcName(pitchClass(midi), chord) + octave(midi);
 
-function buildMessages({ chord, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing }) {
+function buildMessages({ chord, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing, slash = null }) {
   const withDegree = pc => `${pcName(pc, chord)} (${chord.degrees[pc]})`;
   const messages = [];
   for (const pc of missing) messages.push({ level: 'warning', code: 'missing', text: `Missing ${withDegree(pc)}` });
+  if (slash && !slash.ok) {
+    const played = slash.played === null ? 'nothing' : pcName(slash.played, chord);
+    messages.push({ level: 'warning', code: 'bass', text: `Bass should be ${chord.bass}, not ${played}` });
+  }
   if (!hasRoot) messages.push({ level: 'info', code: 'rootless', text: `Rootless voicing (no ${chord.root})` });
   for (const pc of wrong) messages.push({ level: 'warning', code: 'wrong', text: `Wrong note: ${pcName(pc, chord)} is not in ${chord.symbol}` });
   for (const pc of avoid) messages.push({ level: 'warning', code: 'avoid', text: `Avoid note: ${withDegree(pc)}` });

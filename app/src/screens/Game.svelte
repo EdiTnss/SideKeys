@@ -97,7 +97,14 @@
   }
 
   const warnings = $derived(analysis ? analysis.messages.filter((m: { level: string }) => m.level === 'warning') : []);
-  const star = $derived(!analysis ? null : isClean(analysis) ? 'Clean' : isRight(analysis) ? 'Right' : null);
+  const asked = $derived({ texture: level.texture });
+  const star = $derived(!analysis ? null : isClean(analysis, asked) ? 'Clean' : isRight(analysis, asked) ? 'Right' : null);
+  // Right notes in the wrong shape is the one failure with no warning behind it, so the screen
+  // has to say it itself: the analyzer was asked about the chord, not about the exercise.
+  const shapeMiss = $derived(
+    analysis && !star && !warnings.length
+      ? analysis.messages.find((m: { code: string }) => m.code === 'type')?.text ?? 'another shape'
+      : null);
 </script>
 
 <svelte:window onkeydown={onKeyDown} onkeyup={event => instrument.keyUp(event.code)} />
@@ -125,6 +132,8 @@
       <p class="hint">
         {#if level.timed}
           Bar {level.at?.bar ?? 1}, beat {level.at?.beat ?? 1}. Play it before the bar turns.
+        {:else if level.texture}
+          Play it as {[].concat(level.texture as never).join(' or ')}.
         {:else}
           Play it. Any voicing that works counts.
         {/if}
@@ -138,6 +147,11 @@
         <p class="star {star.toLowerCase()}">
           <span class="judged">{judged}{anticipated ? ', anticipated' : ''}</span>
           {star}{analysis.voicing.type ? ` — ${analysis.voicing.type}` : ''}
+        </p>
+      {:else if shapeMiss}
+        <p class="star none">
+          <span class="judged">{judged}</span>
+          Right notes, wrong shape — that is {shapeMiss}.
         </p>
       {:else}
         <p class="star none">

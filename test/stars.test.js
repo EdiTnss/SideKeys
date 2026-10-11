@@ -120,3 +120,43 @@ test('xpFor: quality times difficulty, halved the second time today and nothing 
   assert.equal(xpFor({ stars: 3, difficulty: 5, playsToday: 2 }), 0, 'no farming the easy level');
   assert.equal(xpFor({ stars: 0, difficulty: 9 }), 0, 'a level you did not clear pays nothing');
 });
+
+// ---- A level that asks for a texture (2026-10-11) ----------------------------------------
+
+test('isRight: a required texture is part of being right, not a separate verdict', () => {
+  const shell = on('C7', [60, 64, 70]);                    // root, 3, b7
+  assert.equal(shell.voicing.type, 'shell');
+  assert.equal(isRight(shell, { texture: 'shell' }), true);
+  assert.equal(isClean(shell, { texture: 'shell' }), true);
+
+  const close = on('C7', [60, 64, 67, 70]);                // the right chord, the wrong shape
+  assert.equal(close.voicing.type, 'close');
+  assert.equal(isRight(close), true, 'with nothing asked for, it is simply right');
+  assert.equal(isRight(close, { texture: 'shell' }), false);
+  assert.equal(isClean(close, { texture: 'shell' }), false, 'clean still implies right');
+});
+
+test('isRight: a wrong bass on a slash chord is not right either', () => {
+  const asked = on('C/E', [64, 67, 72]);
+  const rootPosition = on('C/E', [60, 64, 67]);
+  assert.equal(isRight(asked), true);
+  assert.equal(isRight(rootPosition), false);
+  assert.equal(isClean(rootPosition), false);
+});
+
+test('scoreRun: the texture a level asks for travels with the run', () => {
+  const shells = [
+    { symbol: 'C7', notes: [60, 64, 70], analysis: on('C7', [60, 64, 70]) },
+    { symbol: 'F7', notes: [53, 57, 63], analysis: on('F7', [53, 57, 63]) },
+  ];
+  assert.equal(scoreRun({ attempts: shells, texture: 'shell' }).right, 2);
+  assert.equal(scoreRun({ attempts: shells, texture: 'rootless-A' }).right, 0, 'right chords, wrong shape');
+});
+
+test('isRight: a level may ask for one shape or for any of several', () => {
+  const formA = on('Dm7', [65, 69, 72, 76]);
+  assert.equal(formA.voicing.type, 'rootless-A');
+  assert.equal(isRight(formA, { texture: ['rootless-A', 'rootless-B'] }), true);
+  assert.equal(isRight(formA, { texture: ['rootless-B', 'drop-2'] }), false);
+  assert.equal(isRight(formA, { texture: [] }), true, 'an empty list asks for nothing');
+});

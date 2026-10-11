@@ -60,3 +60,48 @@ test('levelById: finds a level and the unit it belongs to, or nothing', () => {
   assert.equal(found?.level.id, PATH[1].levels[0].id);
   assert.equal(levelById('no-such-level'), null);
 });
+
+// ---- Every level has to be answerable, not just parseable (2026-10-11) -------------------
+
+import { suggestVoicings } from '../src/theory/voicings.js';
+import { isRight } from '../src/theory/stars.js';
+import { analyzeVoicing } from '../src/theory/analyzer.js';
+
+test('a level that demands a texture can be answered on every chord it asks for', () => {
+  // The oracle is the engine's own generator, which only offers warning-free voicings. It is a
+  // conservative oracle: a texture a human could play but the generator never builds would keep
+  // a level out of the path. Better that than a level nobody can clear.
+  for (const unit of PATH) {
+    for (const level of unit.levels) {
+      if (!level.texture) continue;
+      const wanted = [].concat(level.texture);
+      for (const symbol of asksFor(level)) {
+        const found = suggestVoicings(parseChord(symbol)).some(candidate => wanted.includes(candidate.type));
+        assert.ok(found, `${level.id}: no ${wanted.join(' or ')} voicing for ${symbol}`);
+      }
+    }
+  }
+});
+
+test('a slash level asks for a bass the analyzer will check, spelled from the chord', () => {
+  const inversions = PATH.find(unit => unit.id === 'inversions');
+  const asks = asksFor(inversions.levels[0]);
+  assert.ok(asks.includes('C/E'), `first inversion of C should be C/E, got ${asks[0]}`);
+  for (const symbol of asks) {
+    const chord = parseChord(symbol);
+    assert.notEqual(chord.bassPc, null, `${symbol} carries no bass`);
+    // Root position must fail the level, or the unit would be teaching nothing.
+    const root = [60 + chord.rootPc, 60 + chord.rootPc + 4, 60 + chord.rootPc + 7];
+    assert.equal(isRight(analyzeVoicing(root, chord)), false, `${symbol} accepted root position`);
+  }
+});
+
+test('no level runs longer than a boss, and a boss is the last of its unit', () => {
+  for (const unit of PATH) {
+    unit.levels.forEach((level, at) => {
+      const asks = asksFor(level);
+      assert.ok(asks.length <= 36, `${level.id} asks for ${asks.length} chords`);
+      assert.equal(Boolean(level.boss), at === unit.levels.length - 1, `${level.id}: boss in the wrong place`);
+    });
+  }
+});

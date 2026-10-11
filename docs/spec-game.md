@@ -55,6 +55,32 @@ o implică pe prima, și nu trebuie verificate amândouă.
 e aspru pentru un nivel de mijloc — o singură notă de evitat ar șterge steaua — iar 80% lasă două
 scăpări din zece.
 
+### Ce mai poate cere un nivel
+
+Pe lângă acord, un nivel poate cere **o textură**: `texture: 'shell'`, `'rootless-A'`, `'drop-2'`,
+`'quartal'` — sau o listă, când „forma A sau forma B" e același exercițiu. Verificarea nu e un
+verdict separat, e **parte din Right**: notele corecte în forma greșită nu trec nivelul, iar
+ecranul o spune cu propriile cuvinte („Right notes, wrong shape — that is Close position"),
+pentru că e singurul eșec fără avertisment în spatele lui — analizorul a fost întrebat despre
+acord, nu despre exercițiu. O listă goală nu cere nimic, ca un nivel cu date incomplete să fie
+lax, nu imposibil.
+
+Textura nu intră în analizor, fiindcă nu e o proprietate a acordului: `analyzeVoicing` raportează
+`voicing.type`, iar `isRight(analysis, { texture })` din `stars.js` compară. Basul de slash e
+invers — **acolo** e o proprietate a acordului, deci stă în analizor
+([spec-analyzer.md](spec-analyzer.md), punctul 1b).
+
+**Un nivel trebuie să fie jucabil, nu doar parsabil.** Un test merge prin fiecare cerere a
+fiecărui nivel cu textură și verifică, prin `suggestVoicings`, că există măcar un voicing fără
+avertismente de forma cerută. Oracolul e conservator: o textură pe care un om ar putea-o cânta
+dar generatorul n-o construiește ține nivelul afară din drum. Mai bine așa decât un nivel pe care
+nimeni nu-l poate trece. Ce a tăiat oracolul, măsurat pe 2026-10-11: **shell** nu există pe
+m7b5, dim7 sau m6; **quartal** nu există pe nicio dominantă (regula strânsă din 2026-09-20 —
+cel mult o cvartă mărită); **rootless A** lipsește pe Abm7b5, o margine de registru.
+
+**Tempoul**: 120 bpm, un acord pe măsură — două secunde ca să-l auzi, să-l găsești și să-l cânți
+(decizie Edi, 2026-10-11).
+
 ### ★★★ Smooth — „legat, la tempo"
 
 Trei condiții, toate obligatorii:

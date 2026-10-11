@@ -22,6 +22,8 @@ export type LevelPlan = {
   name: string;
   tempo: number;
   boss?: boolean;
+  /** What shape the level demands, when it demands one: 'shell', 'rootless-A', or a list. */
+  texture?: string | string[];
   asks: { kind: string; [key: string]: unknown };
 };
 
@@ -42,7 +44,9 @@ export function createLevel(plan: LevelPlan) {
 
   const ask = $derived(finished ? null : asks[current]);
   const attempts = $derived(asks.map((symbol, slot) => answers[slot] ?? { symbol, notes: [], analysis: null }));
-  const score = $derived(finished ? scoreRun({ attempts, timed, movementThreshold: threshold }) : null);
+  const score = $derived(finished
+    ? scoreRun({ attempts, timed, movementThreshold: threshold, texture: plan.texture ?? null })
+    : null);
 
   // The one thing to fix, counted by the engine's own weak-spot rule over this run alone.
   const weakness = $derived.by(() => {
@@ -90,6 +94,7 @@ export function createLevel(plan: LevelPlan) {
   return {
     get plan() { return plan; },
     get threshold() { return threshold; },
+    get texture() { return plan.texture ?? null; },
     get ask() { return ask; },
     get index() { return current; },
     get total() { return asks.length; },

@@ -76,6 +76,8 @@ Regulile tabelului:
 Intrare: notele cântate (MIDI, sortate) + acordul parsat. Ieșire ordonată după importanță:
 
 1. **Corectitudine**: lipsește o notă din `required` (3 și 7 sau echivalentele din tabel: 6 pe `6`, 4 pe `7sus4`, bb7 pe `dim7`, plus extensiile obligatorii, ca b9 din `C7b9`) → avertisment principal. Root lipsă e OK (rootless e un scop), se raportează doar ca informație.
+1b. **Basul cerut** (2026-10-11, ca unitatea de Inversiuni să poată fi notată): dacă simbolul are bas de slash (`C/E`), **clasa de înălțime a notei celei mai de jos trebuie să fie acel bas**. `analyzeVoicing` întoarce `slash: { wanted, played, ok }` și, când nu se potrivește, un avertisment `bass`: „Bass should be E, not C". E clasă de înălțime, nu notă exactă, deci orice octavă a basului e bună. Fără slash, `slash` e `null` și nu se spune nimic: **o inversiune pe care n-a cerut-o nimeni nu e o greșeală**. Avertismentul stă după `missing` și înaintea lui `wrong`, fiindcă basul greșit e tot o problemă de identitate a acordului, nu o notă străină. Înainte de regula asta, `C/E` cântat în poziție fundamentală ieșea „clean", deci unitatea de inversiuni n-ar fi predat nimic.
+
 2. **Note străine**: pitch class-uri care nu sunt nici chord tones, nici tensiuni → „wrong note". Note în listele de avoid → „avoid note". „Caution" → nivel informativ.
 3. **Low interval limits**: pentru fiecare pereche de note adiacente se compară **nota de jos** a perechii cu pragul, strict `<`: sub C3 (MIDI 48), 2m, 2M și 3m sunt semnalate ca „muddy"; sub G2 (43) și 3M. Pragurile stau într-un tabel de date pe interval (configurabil), ca valorile clasice să poată fi puse mai târziu fără să schimbăm codul.
 4. **Dublări**: același pitch class de mai multe ori (excepție root/5 în bas) → informativ.
