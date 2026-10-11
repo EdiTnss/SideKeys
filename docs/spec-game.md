@@ -92,6 +92,15 @@ obții dacă joci curat dar nu te gândești deloc la voice leading.
 | Turnaround I–VI–ii–V | 1,25 | 2,92 | **1,75** |
 | Coltrane changes | 0,83 | 3,08 | **1,50** |
 | Drill (12 acorduri la întâmplare, 40 de rulări) | 0,80 | 4,01 | **1,50** |
+| Nivel: ii–V–I în C, F, Bb, Eb (12 cereri) | 0,82 | 4,14 | **1,25** |
+| Nivel: ii–V–I în toate cele 12 tonalități | 0,86 | 4,55 | **1,25** |
+
+**Un nivel cu mai multe tonalități păstrează pragul progresiei** (măsurat 2026-10-11, întrebarea
+rămasă de la nivele): schimbarea de tonalitate costă ~1,00 semitonuri pe voce, dar pașii dinăuntrul
+lui ii–V–I sunt aproape gratis (0,25), deci media abia urcă — 0,82 pe patru tonalități și 0,86 pe
+douăsprezece, față de 0,75 într-una singură. Pe douăsprezece tonalități cel mai scump pas urcă la
+2,50, dar media rămâne sub prag, ceea ce e exact ce măsoară regula: un salt scump e iertat dacă
+restul e strâns.
 
 Ce spun cifrele: **distanța dintre „condus" și „la întâmplare" e de patru ori**, deci pragul nu e
 o chestiune de reglaj fin — orice valoare între 1,25 și 2 separă corect. De aceea regula e simplă

@@ -1,15 +1,22 @@
-// One level: a fixed list of chords to answer, the attempts that came back, and what they earn.
+// One level: the chords to answer, the attempts that came back, and what they earn.
 //
-// The scoring itself is not here — `scoreRun`, `xpFor` and `weakSpots` live in the engine, where
-// `node --test` can reach them and where a leaderboard check could one day run the same code on
-// a server. This file only keeps the place in the queue.
+// The level owns one question the screen must not answer for itself — *which* chord a voicing
+// answers. Free, that is the chord on screen. Timed, it is the slot the voicing started on,
+// pushed to the next bar when it started inside the anticipation window, and that decision is
+// `snapshotTarget`'s, shared with the harness so the game and the replay cannot disagree.
+//
+// The scoring is not here either: `scoreRun`, `xpFor` and `weakSpots` live in the engine, where
+// `node --test` reaches them and where a server could one day run the same code.
 
 import {
-  getProgression, parseChord, scoreRun, movementThreshold, xpFor,
+  getProgression, parseChord, analyzeVoicing, scoreRun, movementThreshold, xpFor,
   emptyStats, recordAttempt, weakSpots,
 } from '../bridge/theory';
+import { createMetronome, createSession, snapshotTarget, isAnticipated } from '../bridge/time';
 
-export type Attempt = { symbol: string; notes: number[]; analysis: ReturnType<typeof import('../bridge/theory').analyzeVoicing> | null };
+type Analysis = ReturnType<typeof analyzeVoicing>;
+export type Attempt = { symbol: string; notes: number[]; analysis: Analysis | null };
+export type Answer = { slot: number; symbol: string; anticipated: boolean; analysis: Analysis };
 
 export type LevelPlan = {
   id: string;
@@ -18,6 +25,8 @@ export type LevelPlan = {
   keys: string[];
   /** The unit's place on the path, which is what XP multiplies by. Rootless is unit 5. */
   difficulty: number;
+  /** One chord per bar, so the tempo is also how long you get to think. */
+  tempo: number;
 };
 
 export const ROOTLESS_II_V_I: LevelPlan = {
@@ -26,6 +35,7 @@ export const ROOTLESS_II_V_I: LevelPlan = {
   progressionId: 'ii-V-I',
   keys: ['C', 'F', 'Bb', 'Eb'],
   difficulty: 5,
+  tempo: 80,
 };
 
 type Bar = { chords: Array<{ symbol: string }> };
@@ -40,22 +50,28 @@ function asksFor(plan: LevelPlan): string[] {
 
 export function createLevel(plan: LevelPlan) {
   const asks = asksFor(plan);
-  let attempts = $state<Attempt[]>([]);
+  // One chord per bar, no loop: the pass ends when the metronome walks past the last bar.
+  const progression = { timeSignature: [4, 4], bars: asks.map(symbol => ({ chords: [{ symbol, beat: 1 }] })) };
+  const session = createSession(progression, { loop: false });
 
-  const index = $derived(attempts.length);
-  const done = $derived(attempts.length >= asks.length);
-  const ask = $derived(done ? null : asks[index]);
+  let answers = $state<Array<Attempt | null>>(asks.map(() => null));
+  let current = $state(0);
+  let finished = $state(false);
+  let timed = $state(false);
+  let countIn = $state<number | null>(null);
+  let at = $state<{ bar: number; beat: number } | null>(null);
+  let metronome: ReturnType<typeof createMetronome> | null = null;
 
-  // Timed is still false everywhere: the metronome is not in the shell yet, so the third star
-  // cannot be earned here. The result screen says so rather than letting it look broken.
-  const score = $derived(done
-    ? scoreRun({ attempts, timed: false, movementThreshold: movementThreshold(plan.progressionId) })
+  const ask = $derived(finished ? null : asks[current]);
+  const attempts = $derived(asks.map((symbol, slot) => answers[slot] ?? { symbol, notes: [], analysis: null }));
+  const score = $derived(finished
+    ? scoreRun({ attempts, timed, movementThreshold: movementThreshold(plan.progressionId) })
     : null);
   const xp = $derived(score ? xpFor({ stars: score.stars, difficulty: plan.difficulty }) : 0);
 
   // The one thing to fix, counted by the engine's own weak-spot rule over this run alone.
   const weakness = $derived.by(() => {
-    if (!done) return null;
+    if (!finished) return null;
     let stats = emptyStats();
     for (const attempt of attempts) {
       if (!attempt.analysis) continue;
@@ -65,26 +81,99 @@ export function createLevel(plan: LevelPlan) {
     return weakSpots(stats, { limit: 1 })[0] ?? null;
   });
 
+  function timedTarget(startedAt: number | null) {
+    if (!metronome) return null;
+    const position = metronome.positionOf(startedAt ?? performance.now());
+    const target = snapshotTarget({ mode: 'progression', session, started: true, timed: true, position });
+    if (!target) return null;     // the count-in, or past the last bar: nothing to answer
+    return { slot: target.slot, symbol: target.symbol, anticipated: isAnticipated(session, position, target.slot) };
+  }
+
+  function finish() {
+    metronome?.stop();
+    metronome = null;
+    countIn = null;
+    at = null;
+    finished = true;
+  }
+
+  function onBeat({ bar, beat, countIn: counting }: { bar: number; beat: number; countIn: boolean }) {
+    if (counting) {
+      countIn = beat;
+      return;
+    }
+    countIn = null;
+    const location = session.locate(bar, beat);
+    if (!location) {              // walked past the last bar
+      finish();
+      return;
+    }
+    at = { bar, beat };
+    current = location.index;
+  }
+
   return {
     get plan() { return plan; },
     get ask() { return ask; },
-    get index() { return index; },
+    get index() { return current; },
     get total() { return asks.length; },
-    get done() { return done; },
+    get answered() { return answers.filter(Boolean).length; },
+    get finished() { return finished; },
+    get timed() { return timed; },
+    get countIn() { return countIn; },
+    get at() { return at; },
     get score() { return score; },
     get xp() { return xp; },
     get weakness() { return weakness; },
-    record(notes: number[], analysis: Attempt['analysis']) {
-      if (done) return;
-      attempts = [...attempts, { symbol: asks[attempts.length], notes, analysis }];
+
+    /**
+     * A captured voicing: analysed against the chord it answers, stored in that slot, and in
+     * free play followed by the next chord. Returns what was judged, for the screen to show, or
+     * null when the voicing answers nothing (played during the count-in, or after the end).
+     */
+    answer(notes: number[], startedAt: number | null = null): Answer | null {
+      if (finished) return null;
+      const target = timed
+        ? timedTarget(startedAt)
+        : { slot: current, symbol: asks[current], anticipated: false };
+      if (!target) return null;
+      const analysis = analyzeVoicing(notes, parseChord(target.symbol));
+      answers[target.slot] = { symbol: target.symbol, notes, analysis };
+      if (!timed) {
+        if (current + 1 >= asks.length) finish();
+        else current += 1;
+      }
+      return { ...target, analysis };
     },
-    /** An ask nobody answered still counts, which is why it is kept rather than dropped. */
+
+    /** Free play only: an ask nobody answered still counts, so it is stored as a miss. */
     skip() {
-      if (done) return;
-      attempts = [...attempts, { symbol: asks[attempts.length], notes: [], analysis: null }];
+      if (finished || timed) return;
+      answers[current] = { symbol: asks[current], notes: [], analysis: null };
+      if (current + 1 >= asks.length) finish();
+      else current += 1;
     },
+
+    /** Starts the timed pass: a bar of count-in, then one chord per bar at the level's tempo. */
+    start() {
+      this.restart();
+      timed = true;
+      metronome = createMetronome({ tempo: plan.tempo, timeSignature: [4, 4], countInBars: 1, onBeat });
+      metronome.start();
+    },
+
+    stop: finish,
+
     restart() {
-      attempts = [];
+      metronome?.stop();
+      metronome = null;
+      answers = asks.map(() => null);
+      current = 0;
+      finished = false;
+      timed = false;
+      countIn = null;
+      at = null;
+      session.reset?.();
     },
   };
 }

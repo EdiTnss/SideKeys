@@ -23,7 +23,7 @@ export function createInstrument({
   debounceMs = 300,
   nextNote = 28,
 }: {
-  onVoicing: (notes: number[]) => void;
+  onVoicing: (notes: number[], info: { startedAt: number | null }) => void;
   onNext?: () => void;
   debounceMs?: number;
   nextNote?: number | null;
@@ -56,7 +56,9 @@ export function createInstrument({
   const capture = new VoicingCapture({
     debounceMs,
     nextNote,
-    onVoicing: (notes: number[]) => onVoicing(notes),
+    // startedAt rides along because timed play needs where the voicing *began*, not where it
+    // was captured: half a beat of debounce is the difference between two chords.
+    onVoicing: (notes: number[], info: { startedAt: number | null }) => onVoicing(notes, info),
     onNext,
     onChange: (notes: number[]) => { held = notes; },
   });

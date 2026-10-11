@@ -10,6 +10,20 @@ import { audioContext, clockStamp, toContextTime, toPerformanceTime } from './co
 const LOOKAHEAD_S = 0.12;   // schedule clicks this far ahead
 const TICK_MS = 25;         // scheduler wake-up interval
 
+/**
+ * @param {{
+ *   tempo?: number,
+ *   timeSignature?: number[],
+ *   countInBars?: number,
+ *   onBeat?: (beat: { bar: number, beat: number, time: number, countIn: boolean }) => void,
+ * }} [options]
+ * @returns {{
+ *   start: () => void, stop: () => void,
+ *   positionOf: (performanceMs: number) => { bar: number, beat: number },
+ *   performanceTimeOf: (bar: number, beat: number) => number,
+ *   running: boolean, tempo: number, timeSignature: number[],
+ * }}
+ */
 export function createMetronome({ tempo = 120, timeSignature = [4, 4], countInBars = 1, onBeat = () => {} } = {}) {
   let context = null;
   let running = false;

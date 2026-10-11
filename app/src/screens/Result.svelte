@@ -4,11 +4,12 @@
   type Score = NonNullable<ReturnType<typeof scoreRun>>;
   type Weakness = { key: string; problem: string; count: number } | null;
 
-  let { name, score, xp, weakness, onagain }: {
+  let { name, score, xp, weakness, timed, onagain }: {
     name: string;
     score: Score;
     xp: number;
     weakness: Weakness;
+    timed: boolean;
     onagain: () => void;
   } = $props();
 
@@ -59,8 +60,10 @@
     {/if}
   </div>
 
-  {#if score.stars === 2}
-    <p class="locked">The third star needs timed mode. The metronome is the next thing to arrive.</p>
+  {#if score.stars === 2 && !timed}
+    <p class="locked">The third star needs the timed run — free play tops out here.</p>
+  {:else if score.stars === 2 && timed && score.movement !== null}
+    <p class="locked">Timed and clean. The third star wants the voices moving less: {score.movement.toFixed(2)} semitones each, and this level asks for 1.25.</p>
   {/if}
 
   <button type="button" onclick={onagain}>Once more</button>
