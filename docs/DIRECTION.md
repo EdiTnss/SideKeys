@@ -195,9 +195,9 @@ formularul repornesc ceasul porții.
    React e bifa din anunțurile de job, iar Svelte 5 cu runes e mai nou în ce știe Claude — se ține
    în frâu cu versiune fixată, runes only și zero librării de componente.
 2. **Ordinea exactă a unităților** și conținutul testului de plasare. Teoria e a lui Edi.
-3. **Formula de stele**: pragurile pentru „curat" și „elegant" (ex. câte semitonuri înseamnă
-   voice leading „strâns"). Se scrie ca specificație, ca tabelul de calități al analizorului,
-   înainte de cod.
+3. ~~**Formula de stele**~~ — **închisă pe 2026-10-11**: Right (≥60% corecte) · Clean (≥80% fără
+   avertismente) · Smooth (timed, plus mișcare medie pe voce sub pragul măsurat al progresiei).
+   Specificația, cu pragurile măsurate și metoda: [spec-game.md](spec-game.md).
 4. **Sursa de sample-uri de pian**: licența (ex. Salamander Grand, CC-BY) și dimensiunea
    descărcării.
 5. **Ce se întâmplă cu UI-ul vechi**: rămâne ca „Laborator" în shell-ul nou sau se reface
