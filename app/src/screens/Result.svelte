@@ -4,13 +4,15 @@
   type Score = NonNullable<ReturnType<typeof scoreRun>>;
   type Weakness = { key: string; problem: string; count: number } | null;
 
-  let { name, score, xp, weakness, timed, onagain }: {
+  let { name, score, xp, weakness, timed, threshold, onagain, onexit }: {
     name: string;
     score: Score;
     xp: number;
     weakness: Weakness;
     timed: boolean;
+    threshold: number;
     onagain: () => void;
+    onexit: () => void;
   } = $props();
 
   const percent = (share: number) => `${Math.round(share * 100)}%`;
@@ -63,10 +65,13 @@
   {#if score.stars === 2 && !timed}
     <p class="locked">The third star needs the timed run — free play tops out here.</p>
   {:else if score.stars === 2 && timed && score.movement !== null}
-    <p class="locked">Timed and clean. The third star wants the voices moving less: {score.movement.toFixed(2)} semitones each, and this level asks for 1.25.</p>
+    <p class="locked">Timed and clean. The third star wants the voices moving less: {score.movement.toFixed(2)} semitones each, and this level asks for {threshold}.</p>
   {/if}
 
-  <button type="button" onclick={onagain}>Once more</button>
+  <div class="buttons">
+    <button type="button" class="again" onclick={onagain}>Once more</button>
+    <button type="button" onclick={onexit}>Back to the path</button>
+  </div>
 </section>
 
 <style>
@@ -83,9 +88,11 @@
   .what { margin: 0; font-size: 17px; }
   code { font-family: ui-monospace, monospace; }
   .locked { margin: 18px 0 0; font-size: 13px; color: var(--ink-muted); }
+  .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 28px; }
   button {
-    margin-top: 28px; padding: 14px 28px; border: none; border-radius: 12px;
-    background: var(--ink); color: #14171a; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
+    padding: 14px 28px; border: 1px solid var(--border); border-radius: 12px;
+    background: var(--surface); color: var(--ink); font: inherit; font-size: 16px; cursor: pointer;
   }
+  button.again { background: var(--ink); color: #14171a; border-color: var(--ink); font-weight: 600; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>

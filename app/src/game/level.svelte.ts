@@ -1,55 +1,33 @@
-// One level: the chords to answer, the attempts that came back, and what they earn.
+// One run of one level: the chords to answer, the attempts that came back, and the clock.
 //
 // The level owns one question the screen must not answer for itself — *which* chord a voicing
 // answers. Free, that is the chord on screen. Timed, it is the slot the voicing started on,
 // pushed to the next bar when it started inside the anticipation window, and that decision is
 // `snapshotTarget`'s, shared with the harness so the game and the replay cannot disagree.
 //
-// The scoring is not here either: `scoreRun`, `xpFor` and `weakSpots` live in the engine, where
-// `node --test` reaches them and where a server could one day run the same code.
+// What a run is worth is not decided here either: `scoreRun` and `weakSpots` live in the
+// engine, and the XP needs the player's progress, which belongs to the app above.
 
 import {
-  getProgression, parseChord, analyzeVoicing, scoreRun, movementThreshold, xpFor,
-  emptyStats, recordAttempt, weakSpots,
+  parseChord, analyzeVoicing, scoreRun, emptyStats, recordAttempt, weakSpots,
 } from '../bridge/theory';
+import { asksFor, thresholdFor } from '../bridge/game';
 import { createMetronome, createSession, snapshotTarget, isAnticipated } from '../bridge/time';
 
 type Analysis = ReturnType<typeof analyzeVoicing>;
 export type Attempt = { symbol: string; notes: number[]; analysis: Analysis | null };
 export type Answer = { slot: number; symbol: string; anticipated: boolean; analysis: Analysis };
-
 export type LevelPlan = {
   id: string;
   name: string;
-  progressionId: string;
-  keys: string[];
-  /** The unit's place on the path, which is what XP multiplies by. Rootless is unit 5. */
-  difficulty: number;
-  /** One chord per bar, so the tempo is also how long you get to think. */
   tempo: number;
+  boss?: boolean;
+  asks: { kind: string; [key: string]: unknown };
 };
-
-export const ROOTLESS_II_V_I: LevelPlan = {
-  id: 'rootless-ii-V-I',
-  name: 'Rootless voicings over ii–V–I',
-  progressionId: 'ii-V-I',
-  keys: ['C', 'F', 'Bb', 'Eb'],
-  difficulty: 5,
-  tempo: 80,
-};
-
-type Bar = { chords: Array<{ symbol: string }> };
-
-function asksFor(plan: LevelPlan): string[] {
-  const symbols = plan.keys.flatMap(key =>
-    (getProgression(plan.progressionId, key).bars as Bar[]).flatMap(bar => bar.chords.map(chord => chord.symbol)));
-  // The library writes ii–V–I as '| Dm7 | G7 | Cmaj7 | % |', because a tune holds the I for two
-  // bars. A drill asks for it once: a repeat here would be a chord you already answered.
-  return symbols.filter((symbol, at) => symbol !== symbols[at - 1]);
-}
 
 export function createLevel(plan: LevelPlan) {
-  const asks = asksFor(plan);
+  const asks = asksFor(plan) as string[];
+  const threshold = thresholdFor(plan) as number;
   // One chord per bar, no loop: the pass ends when the metronome walks past the last bar.
   const progression = { timeSignature: [4, 4], bars: asks.map(symbol => ({ chords: [{ symbol, beat: 1 }] })) };
   const session = createSession(progression, { loop: false });
@@ -64,10 +42,7 @@ export function createLevel(plan: LevelPlan) {
 
   const ask = $derived(finished ? null : asks[current]);
   const attempts = $derived(asks.map((symbol, slot) => answers[slot] ?? { symbol, notes: [], analysis: null }));
-  const score = $derived(finished
-    ? scoreRun({ attempts, timed, movementThreshold: movementThreshold(plan.progressionId) })
-    : null);
-  const xp = $derived(score ? xpFor({ stars: score.stars, difficulty: plan.difficulty }) : 0);
+  const score = $derived(finished ? scoreRun({ attempts, timed, movementThreshold: threshold }) : null);
 
   // The one thing to fix, counted by the engine's own weak-spot rule over this run alone.
   const weakness = $derived.by(() => {
@@ -114,6 +89,7 @@ export function createLevel(plan: LevelPlan) {
 
   return {
     get plan() { return plan; },
+    get threshold() { return threshold; },
     get ask() { return ask; },
     get index() { return current; },
     get total() { return asks.length; },
@@ -123,7 +99,6 @@ export function createLevel(plan: LevelPlan) {
     get countIn() { return countIn; },
     get at() { return at; },
     get score() { return score; },
-    get xp() { return xp; },
     get weakness() { return weakness; },
 
     /**

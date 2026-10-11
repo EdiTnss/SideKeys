@@ -1,5 +1,32 @@
 <script lang="ts">
   import Game from './screens/Game.svelte';
+  import Path from './screens/Path.svelte';
+  import type { LevelPlan } from './game/level.svelte';
+  import { xpFor } from './bridge/theory';
+  import { loadProgress, saveProgress, recordRun, playsToday, dayStamp } from './bridge/game';
+
+  type Unit = { id: string; name: string; blurb: string; difficulty: number; levels: LevelPlan[] };
+
+  // Progress lives in this browser and nowhere else for now: no account, nothing to sign up to.
+  let progress = $state(loadProgress());
+  let playing = $state<{ unit: Unit; plan: LevelPlan } | null>(null);
+
+  /**
+   * A finished run, priced and filed. The XP has to be worked out *before* the run is recorded,
+   * because the price depends on how many times this level already paid out today.
+   */
+  function finish(stars: number) {
+    if (!playing) return 0;
+    const today = dayStamp();
+    const xp = xpFor({
+      stars,
+      difficulty: playing.unit.difficulty,
+      playsToday: playsToday(progress, playing.plan.id, today),
+    });
+    progress = recordRun(progress, { levelId: playing.plan.id, stars, xp, today });
+    saveProgress(progress);
+    return xp;
+  }
 </script>
 
 <header>
@@ -12,11 +39,18 @@
     </svg>
     Side<span class="accent">Keys</span>
   </span>
-  <span class="tag">shell · the loop, first</span>
+  <span class="tag">{progress.xp} XP</span>
 </header>
 
 <main>
-  <Game />
+  {#if playing}
+    {#key playing.plan.id}
+      <Game unit={playing.unit} plan={playing.plan} onfinish={finish} onexit={() => (playing = null)} />
+    {/key}
+  {:else}
+    <Path stars={progress.stars} xp={progress.xp}
+          onplay={(unit, plan) => (playing = { unit: unit as Unit, plan: plan as LevelPlan })} />
+  {/if}
 </main>
 
 <style>
@@ -29,5 +63,5 @@
     font-weight: 600; font-size: 17px; letter-spacing: -0.03em; color: var(--ink);
   }
   .accent { color: var(--accent); }
-  .tag { margin-left: auto; font-size: 13px; color: var(--ink-muted); }
+  .tag { margin-left: auto; font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
 </style>

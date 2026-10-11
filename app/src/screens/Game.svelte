@@ -2,13 +2,34 @@
   import Keyboard from '../lib/Keyboard.svelte';
   import Result from './Result.svelte';
   import { createInstrument } from '../lib/instrument.svelte';
-  import { createLevel, ROOTLESS_II_V_I } from '../game/level.svelte';
+  import { createLevel, type LevelPlan } from '../game/level.svelte';
   import {
     analyzeVoicing, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
 
-  const level = createLevel(ROOTLESS_II_V_I);
+  let { unit, plan, onfinish, onexit }: {
+    unit: { name: string; difficulty: number };
+    plan: LevelPlan;
+    onfinish: (stars: number) => number;
+    onexit: () => void;
+  } = $props();
+
+  // A level is built once, from the plan this screen was mounted with. App.svelte wraps the
+  // screen in {#key plan.id}, so picking another level remounts it rather than swapping the
+  // plan underneath a run in progress — which is what the warning below would be about.
+  // svelte-ignore state_referenced_locally
+  const level = createLevel(plan);
+  let recorded = $state(false);
+  let xp = $state(0);
+
+  // One run is recorded once: the effect fires again on every change while the result is up.
+  $effect(() => {
+    if (level.finished && level.score && !recorded) {
+      recorded = true;
+      xp = onfinish(level.score.stars);
+    }
+  });
 
   let analysis = $state<ReturnType<typeof analyzeVoicing> | null>(null);
   let judged = $state<string | null>(null);
@@ -40,6 +61,8 @@
 
   function again() {
     level.restart();
+    recorded = false;
+    xp = 0;
     clearVerdict();
   }
 
@@ -80,14 +103,15 @@
 <svelte:window onkeydown={onKeyDown} onkeyup={event => instrument.keyUp(event.code)} />
 
 {#if level.finished && level.score}
-  <Result name={level.plan.name} score={level.score} xp={level.xp} weakness={level.weakness}
-          timed={level.timed} onagain={again} />
+  <Result name="{unit.name} · {level.plan.name}" score={level.score} xp={xp} weakness={level.weakness}
+          timed={level.timed} threshold={level.threshold} onagain={again} onexit={onexit} />
 {:else}
   <section class="game">
     <div class="progress">
       <span class="count">{level.index + 1} / {level.total}</span>
       <span class="track"><span class="fill" style="width: {(100 * level.answered) / level.total}%"></span></span>
       <span class="level">
+        <button type="button" class="exit" onclick={onexit}>← Path</button>
         {level.plan.name}
         {#if level.timed}<span class="timed">· timed, {level.plan.tempo} bpm</span>{/if}
       </span>
@@ -160,7 +184,8 @@
   .count { font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
   .track { flex-grow: 1; height: 4px; border-radius: 999px; background: var(--border); overflow: hidden; }
   .fill { display: block; height: 4px; border-radius: 999px; background: var(--ink); }
-  .level { font-size: 13px; color: var(--ink-muted); }
+  .level { font-size: 13px; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 10px; }
+  .exit { padding: 4px 10px; font-size: 12px; border-radius: 8px; }
   .timed { font-family: ui-monospace, monospace; }
   .ask { margin: 18px 0 6px; font-size: 96px; line-height: 1; font-weight: 600; letter-spacing: -0.05em; }
   .ask.counting { color: var(--ink-muted); }
