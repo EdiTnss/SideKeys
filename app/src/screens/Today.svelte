@@ -1,9 +1,13 @@
 <script lang="ts">
   import type { LevelPlan, Unit } from '../game/level.svelte';
+  import { SQUARES } from '../bridge/game';
+  import { copyText } from '../lib/clipboard';
 
   type Review = { quality: string; misses: number; hits: number };
+  type Challenge = { number: number; states: string[] | null; share: string | null };
 
-  let { streak, minutes, goal, xp, next, reviews, pending, onplay, onreview, onpath }: {
+  let { streak, minutes, goal, xp, next, reviews, pending, challenge,
+        onplay, onreview, onchallenge, onpath }: {
     streak: number;
     minutes: number;
     goal: number;
@@ -12,12 +16,25 @@
     reviews: Review[];
     /** Queued but not due yet — missed today, back tomorrow. Saying "nothing due" would lie. */
     pending: number;
+    /** The day's challenge: its number, and the official grid once it has been played. */
+    challenge: Challenge;
     onplay: (unit: Unit, level: LevelPlan) => void;
     onreview: () => void;
+    onchallenge: () => void;
     onpath: () => void;
   } = $props();
 
   const pct = $derived(Math.min(100, Math.round((100 * minutes) / goal)));
+  const clean = $derived(challenge.states?.filter(state => state === 'clean').length ?? 0);
+
+  let copied = $state(false);
+  let showText = $state(false);
+
+  async function copy() {
+    if (!challenge.share) return;
+    copied = await copyText(challenge.share);
+    showText = !copied;
+  }
 </script>
 
 <section class="today">
@@ -51,6 +68,32 @@
           <button type="button" class="go" onclick={onpath}>Open the path</button>
         </section>
       {/if}
+
+      <section class="card">
+        <div class="title">
+          <h2>Daily challenge</h2>
+          <span class="count">#{challenge.number}</span>
+        </div>
+        {#if challenge.states}
+          <p class="squares" role="img" aria-label="{clean} of {challenge.states.length} chords clean">
+            {challenge.states.map(state => SQUARES[state as keyof typeof SQUARES] ?? SQUARES.unplayed).join('')}
+          </p>
+          <p class="line">{clean} of {challenge.states.length} clean. Played — the grid is yours to paste.</p>
+          <div class="row">
+            <button type="button" onclick={copy}>{copied ? 'Copied' : 'Copy result'}</button>
+            <button type="button" onclick={onchallenge}>Play again</button>
+          </div>
+          {#if showText && challenge.share}
+            <pre class="text">{challenge.share}</pre>
+          {/if}
+        {:else}
+          <p class="line">
+            Ten chords, a triad up to a quartal — the same ten for everyone today. No clock, and
+            the first pass is the one that counts.
+          </p>
+          <button type="button" onclick={onchallenge}>Play the challenge</button>
+        {/if}
+      </section>
 
       <section class="card">
         <div class="title">
@@ -124,6 +167,13 @@
   code { font-family: ui-monospace, monospace; color: var(--ink); min-width: 64px; }
   .misses { color: var(--ink-muted); flex-grow: 1; }
   .hits { font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
+  .squares { margin: 0 0 10px; font-size: 24px; line-height: 1.15; letter-spacing: 2px; word-break: break-all; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .text {
+    margin: 14px 0 0; padding: 12px; border: 1px solid var(--border); border-radius: 10px;
+    background: #16191c; white-space: pre-wrap; font-family: ui-monospace, monospace;
+    font-size: 13px; user-select: all;
+  }
   .streak { display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px; }
   .big { margin: 0; font-family: ui-monospace, monospace; font-size: 38px; font-weight: 600; line-height: 1; }
   .streak .line { margin: 0; }
