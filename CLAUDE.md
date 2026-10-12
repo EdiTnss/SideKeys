@@ -242,18 +242,22 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 
 ## Următorul pas
 
-P1 are totul construit și **nimic livrat**: jocul rulează doar din repo, iar GitHub Pages servește
-în continuare Laboratorul. Ordinea de mai jos nu e o listă de dorințe, e lanțul de blocaje — fiecare
-pas îl deblochează pe următorul.
+**Măsoară DoD-ul P1 pe site-ul publicat, dintr-un profil curat** (fereastră incognito, fără service
+worker și fără cache): cronometrează de la deschiderea https://editnss.github.io/SideKeys/ până la
+primul acord cântat pe clapa de ecran, și scrie cifra în `docs/PRODUCT.md`, la P1 — e singurul lucru
+din fază care nu așteaptă nici pe Edi, nici clapa, iar cifra de până acum (187 ms) e dintr-un browser
+cu cache cald, deci nu spune nimic despre un vizitator nou.
 
-1. **Edi joacă drumul pe Genos** și corectează conținutul din `src/game/path.js`. Întâi, fiindcă un
-   produs care se vinde pe corectitudine nu se publică cu lecțiile necitite de muzician. Tot aici se
-   confirmă și clapa reală în shell, singurul lucru neverificat pe hardware.
-2. ~~Publicarea~~ — **făcută pe 2026-10-12**, în 61 de secunde de rulare. Jocul e la
-   https://editnss.github.io/SideKeys/, bancul la `/lab/`.
-3. ~~Sample-urile de pian~~ — **gata pe 2026-10-12**: Salamander Grand Piano, CC BY 3.0, 3 MB.
-4. **Formularul de email** (furnizor, GDPR) **și clipul** de 15 s. Împreună pornesc ceasul porții P1;
-   clipul singur nu, formularul singur nu.
+După aceea, în ordinea blocajelor:
+
+1. **Formularul de email** — ultimul punct din P1. Așteaptă de la Edi furnizorul (Buttondown,
+   ConvertKit, Tally, un Google Form) și unde stau adresele, fiindcă are coadă GDPR. După alegere,
+   e un link sau un embed în pagină și în README.
+2. **Edi joacă drumul pe Genos** și corectează conținutul din `src/game/path.js` — tonalitățile și ce
+   lipsește dintr-o unitate. Tot atunci se confirmă și clapa reală în shell, singurul lucru
+   neverificat pe hardware.
+3. **Clipul de 15 s** pentru README (`<!-- demo.gif -->` marchează locul). Împreună cu formularul,
+   pornește ceasul porții P1: 40 de adrese în 4 săptămâni.
 
 Ordinea din `PRODUCT.md` nu se scurtcircuitează — buclă → structură → meta-joc — iar regula „niciun
 feature care nu e pe lista fazei curente" se aplică și când ideea e bună.

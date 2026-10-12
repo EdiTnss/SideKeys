@@ -297,3 +297,22 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
 
   **Din P1 mai rămâne un singur punct**: formularul de email. Restul sunt ale lui Edi și ale
   clapei — conținutul drumului pe Genos și clipul.
+- **2026-10-12 (închiderea sesiunii)** — Trecere de review înainte de predare, care a scos un
+  defect adevărat din ce scrisesem chiar în sesiunea asta: o trecere prin challenge se înregistra
+  sub `challenge-<dată>`, deci fiecare zi jucată lăsa în `localStorage` două chei — `stars` și
+  `plays` — **pe care nimic nu le citește**, fiindcă stelele challenge-ului vin din
+  `progress.challenge`, iar plafonul de XP din `challengeResult`. Creșteau la nesfârșit. Acum se
+  înregistrează sub o singură cheie, `challenge`; verificat în pagină sărind cele zece cereri, ceea
+  ce a confirmat pe drum și starea `unplayed` pe toată grila. Tot la review: două numere de teste
+  rămase la 310, în chiar sesiunea în care am scos numărul din `PRODUCT.md` ca să nu mai rămână în
+  urmă — `README.md` era cel la care trimisesem.
+
+  **Sesiunea, în cifre**: 287 → **311 teste** (+24), 18 commit-uri, `svelte-check` 0 pe 313 fișiere,
+  arborele curat și împins. **Ce s-a livrat**: challenge-ul zilei, PWA instalabilă care merge fără
+  rețea, o trecere prin documente ca să nu mai mintă, publicarea pe Pages (jocul la rădăcină, bancul
+  la `/lab/`), pianul Salamander și animația clapelor. **Din P1 a mai rămas un singur punct**:
+  formularul de email, blocat pe alegerea furnizorului.
+
+  **Următorul pas**: măsurarea DoD-ului P1 pe site-ul publicat, dintr-un profil curat — singurul
+  lucru din fază care nu așteaptă nici pe Edi, nici clapa. Raportul de predare:
+  `docs/session-log/2026-10-12-0541.md`.
