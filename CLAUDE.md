@@ -176,16 +176,17 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 - **Sunetul e un pian adevărat**: 17 înregistrări din Salamander Grand Piano V3 (Yamaha C5), sub
   CC BY 3.0, cu creditul pe ecranul Azi fiindcă licența îl cere. `audio/synth.js` rămâne ca prima
   voce, până se decodează înregistrările, și ca plasă dacă manifestul lipsește.
+- **Clapele răspund**: verdictul înflorește o dată pe notele cântate, nota greșită primește o
+  împingere de un pixel, nota lipsă respiră. Numai transform, opacitate și filtru — nimic nu
+  atinge layout-ul — și nicio culoare nouă. `prefers-reduced-motion` le oprește pe toate.
 - **Brandul** e legat în pagină, cu o regulă portantă: accentul magenta nu atinge niciodată o clapă
   sau un verdict (`assets/BRAND.md`, comentariul din `styles.css`).
 
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
-- **Feedback-ul pe clape colorează, nu animează** — `PRODUCT.md`, P1, punctul „ecranul de joc".
-  E singurul lucru care mai ține acel punct nebifat.
 - **Laboratorul nu se reface în shell** (decizia 5, închisă pe 2026-10-12): rămâne pagina care e,
-  publicată alături, la `/lab/`.
+  publicată alături, la `/lab/`. Animațiile de clapă sunt doar în shell — bancul rămâne sobru.
 
 ### Verificat pe hardware (Genos)
 

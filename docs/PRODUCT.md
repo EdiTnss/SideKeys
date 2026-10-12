@@ -122,9 +122,10 @@ Ordinea e obligatorie și nu se scurtcircuitează: **întâi bucla de bază să 
 apoi structura (drum, unități, nivele), abia apoi meta-jocul (XP, streak).**
 
 - [x] Shell nou: Vite + TypeScript + Svelte 5, cu `theory/` importat neatins și testele verzi.
-- [ ] Ecranul de joc: sunet de pian din sample-uri, feedback animat pe clape, stele. **Stelele sunt**
-  (`theory/stars.js`) și **pianul sună** din 2026-10-12 (Salamander Grand, CC BY 3.0, 17 note).
-  Rămâne nebifat pentru un singur motiv: feedback-ul pe clape **colorează, nu animează**.
+- [x] Ecranul de joc: sunet de pian din sample-uri, feedback animat pe clape, stele. Stelele din
+  `theory/stars.js`, pianul Salamander (CC BY 3.0, 17 note) și, de pe 2026-10-12, clapele care
+  răspund: verdictul înflorește o dată, nota greșită primește o împingere de un pixel, iar nota
+  lipsă respiră. Totul din cele șapte culori de teorie, fără accent pe clape.
 - [x] Drumul, cu primele 2–3 unități (Triade, Inversiuni, Septacorduri) și boss-ul lor. **Opt unități**,
   Triade → ii–V–I; lipsește doar Comping, care cere Gig Mode.
 - [x] Challenge-ul zilei, partajabil, fără cont. Rampă de zece acorduri, seed din dată, grilă de

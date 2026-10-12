@@ -243,3 +243,29 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   Pianul se încarcă la intrarea într-un nivel, nu pe ecranul Azi, deci DoD-ul de 30 de secunde rămâne
   neatins: synth-ul răspunde de la primul clic. **311 teste verzi**, `svelte-check` 0 pe 313 fișiere.
   **Următorul pas**: clicul din Settings → Pages, apoi conținutul drumului pe Genos.
+- **2026-10-12 (clapele răspund)** — Ultimul punct din P1 care nu aștepta nici clapa, nici o decizie:
+  „feedback animat pe clape". Trei gesturi, toate din CSS, toate peste clasele care existau deja —
+  n-am inventat un al doilea sistem de stări. **Verdictul înflorește o dată** pe notele cântate
+  (`brightness` plus o coborâre de o unitate, 260 ms) ca să se vadă *momentul* judecății, nu doar
+  rezultatul. **Nota greșită primește gestul pe care nu trebuie să-l explici nimănui**: o împingere de
+  un pixel, 200 ms — o corecție, nu o mustrare; regula din `DIRECTION.md` e că jazzmanul nu se simte
+  tratat ca un copil. **Nota lipsă respiră** lent, 1,8 s, ca ochiul s-o găsească fără etichetă.
+
+  **Capcana, și singura parte care n-a fost trivială**: o animație CSS nu repornește pentru o clasă pe
+  care elementul o are deja, deci același acord cântat de două ori la rând s-ar fi animat o singură
+  dată. Marcajul alternează acum între `strike-a` și `strike-b` la fiecare verdict. Verificat exact
+  asta în pagină: aceeași triadă de două ori → `strike-b`, apoi `strike-a`, cu `key-strike` în stare
+  `running` de fiecare dată.
+
+  **Nicio culoare nouă** — regula din `assets/BRAND.md` ține: accentul magenta nu se apropie de o
+  clapă. Totul e transform, opacitate și filtru, deci nimic nu atinge layout-ul. Și `prefers-reduced-
+  motion` le oprește pe toate, fiindcă cine și-a cerut sistemului mai puțină mișcare merită culorile
+  fără restul.
+
+  **Verificat în pagină, pe toate cele cinci comportamente**: bloomul pe notele cântate, alternanța
+  marcajului, tranziția de culoare care rulează în paralel, `key-wrong` pe nota greșită în locul
+  bloomului, și `key-missing` cu `iterations=Infinity` pe nota pe care acordul o cerea și n-a primit.
+  Regula de accesibilitate am citit-o din CSSOM, nu din fișier. **Bancul (`/lab/`) rămâne neatins** —
+  animațiile sunt ale jocului; unealta de analiză rămâne sobră. **311 teste verzi**, `svelte-check` 0
+  pe 313 fișiere. Cu asta, punctul „ecranul de joc" din P1 se bifează, iar din fază mai rămân
+  publicarea (un clic), conținutul drumului (Genos) și formularul de email.

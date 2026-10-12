@@ -43,6 +43,9 @@
   let anticipated = $state(false);
   let judgedTexture = $state<string | string[] | null>(null);
   let classes = $state<Record<number, string>>({});
+  // Alternates with every verdict so the keys animate again when the same chord comes back:
+  // a CSS animation does not restart for a class the element already carries.
+  let strike = 'strike-a';
 
   const instrument = createInstrument({ onVoicing: judge, onNext: skip });
 
@@ -55,7 +58,12 @@
     judged = answered.symbol;
     anticipated = answered.anticipated;
     judgedTexture = answered.texture;
-    classes = { ...roleClasses(answered.analysis), ...missingClasses(answered.analysis) };
+    strike = strike === 'strike-a' ? 'strike-b' : 'strike-a';
+    // Only the notes that were played are struck. A missing one was never under a finger, so
+    // it breathes instead — its own animation, in app.css.
+    const played = Object.entries(roleClasses(answered.analysis) as Record<string, string>)
+      .map(([midi, role]) => [midi, `${role} ${strike}`]);
+    classes = { ...Object.fromEntries(played), ...missingClasses(answered.analysis) };
   }
 
   function skip() {

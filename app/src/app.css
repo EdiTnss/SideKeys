@@ -41,7 +41,13 @@ body {
 /* ---- The keyboard, drawn by src/ui/keyboard.js ---- */
 
 .keyboard { width: 100%; height: auto; display: block; }
-.key { stroke: #333; stroke-width: 1; }
+.key {
+  stroke: #333;
+  stroke-width: 1;
+  /* The verdict arrives rather than appearing. Short enough that it never delays the reading
+     of it — the whole point of this app is an answer inside 100 ms. */
+  transition: fill 120ms ease-out, stroke 120ms ease-out;
+}
 .key.white { fill: #fff; }
 .key.black { fill: #222; }
 .key.held { fill: var(--held); }
@@ -53,5 +59,49 @@ body {
 .key.caution { stroke: var(--warn, #d97706); stroke-width: 3; }
 .key.armed { fill: var(--armed); }
 .key.missing { stroke: var(--held); stroke-width: 3; stroke-dasharray: 3 3; }
+
+/* ---- Feedback with some weight behind it ----
+
+   Nothing here introduces a colour. The accent never comes near a key or a verdict
+   (assets/BRAND.md), so these are the same seven theory colours, arriving with movement.
+   Everything is transform, opacity or filter, so none of it touches layout. */
+
+/* A key under a finger goes down, like one with a hammer beneath it. */
+.key.held, .key.armed { transform: translateY(1px); }
+
+/* The moment of judgement: the colour blooms once and settles. The marker alternates between
+   verdicts (see Game.svelte) because a CSS animation does not restart for a class that was
+   already on the element — without it, the same chord twice over would animate only once. */
+.key.strike-a, .key.strike-b { animation: key-strike 260ms ease-out; }
+
+@keyframes key-strike {
+  from { filter: brightness(1.5); transform: translateY(1.5px); }
+  to { filter: none; transform: none; }
+}
+
+/* A wrong note gets the one gesture nobody has to be taught. One unit, 200 ms: a correction,
+   not a telling-off — the jazz pianist is not being scolded by a cartoon. */
+.key.role-wrong.strike-a, .key.role-wrong.strike-b { animation: key-wrong 200ms ease-out; }
+
+@keyframes key-wrong {
+  0%, 100% { transform: none; }
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}
+
+/* What the chord asked for and did not get: it breathes, so the eye finds it without a label
+   pointing at it. Slow on purpose — this is the one thing here that repeats. */
+.key.missing { animation: key-missing 1.8s ease-in-out infinite; }
+
+@keyframes key-missing {
+  0%, 100% { stroke-opacity: 1; }
+  50% { stroke-opacity: 0.3; }
+}
+
+/* Someone who has asked their system for less movement gets the colours and none of this. */
+@media (prefers-reduced-motion: reduce) {
+  .key, .key.strike-a, .key.strike-b, .key.missing { transition: none; animation: none; }
+  .key.held, .key.armed { transform: none; }
+}
 .key-label { font-size: 9px; fill: #555; pointer-events: none; }
 .keyboard.playable { cursor: pointer; touch-action: none; }
