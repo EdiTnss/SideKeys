@@ -19,7 +19,7 @@ Everything in that answer is computed, not guessed. No model is asked what a Dm7
 
 ## What you actually do with it
 
-A path of eight units, from triads to ii–V–I in twelve keys, each ending on a boss. A level
+A path of eight units, from triads to ii–V–I in twelve keys, all of them open from the start. A level
 asks for a chord, you play it, and the keyboard answers immediately — green for the chord tones
 you found, a dotted outline for the ones you did not. A pass earns up to three stars:
 

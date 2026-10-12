@@ -10,7 +10,7 @@
   } from '../bridge/theory';
 
   let { unit, plan, instrument, onfinish, onnext = null, onexit }: {
-    unit: { name: string; difficulty: number };
+    unit: { name: string };
     plan: LevelPlan;
     /** The app's one instrument: it outlives this screen, so the keyboard stays connected. */
     instrument: Instrument;
@@ -26,7 +26,6 @@
   // svelte-ignore state_referenced_locally
   const level = createLevel(plan);
   let recorded = $state(false);
-  let xp = $state(0);
   let grid = $state<string[] | null>(null);
   let share = $state<string | null>(null);
   let official = $state(true);
@@ -36,7 +35,6 @@
     if (level.finished && level.score && !recorded) {
       recorded = true;
       const filed = onfinish({ stars: level.score.stars, attempts: level.attempts, seconds: level.seconds });
-      xp = filed.xp;
       grid = filed.grid;
       share = filed.share;
       official = filed.official;
@@ -86,7 +84,6 @@
   function again() {
     level.restart();
     recorded = false;
-    xp = 0;
     grid = null;
     share = null;
     clearVerdict();
@@ -161,7 +158,7 @@
 <svelte:window onkeydown={onKeyDown} onkeyup={event => instrument.keyUp(event.code)} />
 
 {#if level.finished && level.score}
-  <Result name={title} score={level.score} xp={xp} weakness={level.weakness}
+  <Result name={title} score={level.score} weakness={level.weakness}
           timed={level.timed} threshold={level.threshold} grid={grid} share={share}
           official={official} onagain={again} onnext={onnext} onexit={onexit} />
 {:else}

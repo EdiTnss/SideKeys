@@ -15,12 +15,6 @@ import { isRight, isClean } from '../theory/stars.js';
 /** Day 1. The challenge is numbered from here, the way Wordle numbers its puzzles. */
 export const EPOCH = '2026-10-11';
 
-/**
- * What a pass is worth. The ramp runs from triads to quartal, so it is priced in the middle of
- * the path it spans rather than at either end (docs/spec-game.md).
- */
-export const CHALLENGE_DIFFICULTY = 4;
-
 /** Kept at the path's tempo for the day the challenge is ever played on the clock. */
 const TEMPO = 120;
 
@@ -123,7 +117,6 @@ export function challengeLevel(date) {
     name: `Daily challenge #${number}`,
     tempo: TEMPO,
     free: true,
-    difficulty: CHALLENGE_DIFFICULTY,
     // Already shaped, one texture per rung: `asksFor` hands these through untouched.
     asks: { kind: 'fixed', asks },
   };

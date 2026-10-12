@@ -1,6 +1,6 @@
 # SideKeys — spec-game.md
 
-Stelele și XP-ul: ce înseamnă un rezultat bun la un exercițiu, cu praguri măsurate, nu presupuse.
+Stelele: ce înseamnă un rezultat bun la un exercițiu, cu praguri măsurate, nu presupuse.
 Scris și aprobat pe 2026-10-11 (decizia deschisă 3 din [DIRECTION.md](DIRECTION.md), acum
 închisă). Pragurile de mai jos sunt măsurate; metoda e în secțiunea de praguri, ca să poată fi
 refăcută când se adaugă o progresie.
@@ -168,18 +168,40 @@ de sub acord, iar primul acord se vede de la primul clic.
   ultima jumătate de timp a măsurii e judecat tot pe acordul următor (`docs/spec-capture.md`).
   Unul început **mai devreme** de atât e judecat pe acordul curent și îi înlocuiește răspunsul.
 
-## XP — propunere, nu decizie
+## XP — scos (2026-10-12)
 
-Edi a cerut stelele; XP-ul de mai jos e propunerea mea, de aprobat separat.
+A existat o zi, ca propunere a mea care n-a fost niciodată aprobată separat: `stele × dificultatea
+unității`, cu plafon pe repetițiile din aceeași zi. Edi l-a scos după ce a jucat drumul pe Genos:
+era un număr în antet care nu cumpăra nimic. Tot ce ar fi putut măsura măsoară deja mai bine
+**stelele** (calitatea unei treceri) și **streak-ul cu minutele** (obiceiul), iar numărul care ar
+conta cu adevărat pentru un avansat e tabla de măiestrie din `DIRECTION.md` — pricepere, nu volum
+— care nu e construită.
 
-- **XP pe calitate și dificultate, nu pe volum** (regulă din `DIRECTION.md`):
-  `XP = stele × dificultatea unității`, unde dificultatea e poziția unității pe drum (1 pentru
-  Triade … 9 pentru Comping). Un nivel de triade cu trei stele dă 3; același rezultat pe
-  rootless dă 15.
-- **Plafon pe repetiții**: a doua trecere prin același nivel în aceeași zi dă jumătate, a treia și
-  următoarele zero. Nivelul rămâne jucabil la nesfârșit — numai XP-ul se oprește, ca să nu fie
-  mai profitabil să spamezi triade decât să mergi mai departe.
-- **Nimic pentru timp petrecut.** Obiectivul zilnic în minute e pentru streak, nu pentru XP.
+Au plecat odată cu el `xpFor`, numărătoarea de treceri pe zi (`plays`, `playsToday`), prețul
+challenge-ului și câmpul `difficulty` al unităților; poziția unei unități pe drum e acum
+`number`, calculat de `pathState`. Un fișier de progres salvat înainte poartă încă `xp` și
+`plays`: `loadProgress` nu le mai citește, dar **nu aruncă fișierul** pentru ele — stelele din el
+au fost câștigate.
+
+## Drumul: ce e deschis (2026-10-12)
+
+- **Toate unitățile sunt deschise de la început.** Se deschideau în lanț, iar fără test de
+  plasare asta trimitea prin triade pe cineva venit pentru rootless. Decizie Edi, valabilă până
+  există testul de plasare (`DIRECTION.md`, decizia deschisă 2), care va hotărî atunci ce
+  încuie.
+- **Înăuntrul unei unități ordinea rămâne**: un nivel se deschide când cel dinaintea lui are o
+  stea.
+- **Nu mai există „boss".** Ultimul nivel al unei unități rămâne — la Triade, Inversiuni și
+  Drop 2 e singurul în toate cele 12 tonalități — dar se numește după ce cere („With sus4,
+  twelve keys") și nu mai păzește nimic. Id-urile se termină încă în `-boss`: sunt cheile sub
+  care se salvează stelele, iar redenumirea lor ar orfaniza stele deja câștigate, pentru un
+  cuvânt pe care jucătorul nu-l vede.
+- **„Continue the path" pornește de la nivelul jucat ultima dată** (`progress.last`, ținut numai
+  pentru nivelele de pe drum): primul nivel deschis cu mai puțin de trei stele, căutat de acolo
+  înainte și, la capăt, de la început. Cu toate unitățile deschise, căutarea de sus l-ar fi
+  întors la triade pe cine a început de la Rootless.
+- **„Next level"** pe ecranul de rezultat apare când trecerea are măcar o stea și duce la
+  nivelul următor, inclusiv peste granița dintre unități (`levelAfter`).
 
 ## Antrenamentul zilnic (2026-10-11)
 
@@ -276,15 +298,11 @@ schimbă într-un loc când shell-ul se publică (sau când `sidekeys.app` e viu
 
 Prima trecere a zilei e cea care contează: ea intră în `progress.challenge` și ea e textul pe care
 butonul copiază, oricâte treceri urmează. Un replay **se poate juca oricând** — e unealtă de studiu,
-nu concurs — dar plătește **0 XP** și nu schimbă grila; ecranul o spune pe față („Practice run"), iar
-butonul devine „Copy first result". Plafonul ăsta e separat de cel al nivelelor (a doua trecere dă
-jumătate, a treia zero): acolo repetiția e studiu plătit, aici ar fi retușarea unui rezultat public.
+nu concurs — dar nu schimbă grila; ecranul o spune pe față („Practice run"), iar butonul devine
+„Copy first result". O a doua trecere socotită ar fi retușarea unui rezultat public.
 
 Se păstrează **numai ziua curentă**. Un istoric de grile n-a cerut nimic, iar când va cere, locul
 lui e într-un cont, nu în browserul ăsta.
-
-**XP**: dificultate **4**, fiindcă rampa merge de la triade la quartal — nu poate fi plătită nici ca
-un nivel de triade, nici ca unul de quartal. Altfel e aceeași formulă: `stele × dificultate`.
 
 Challenge-ul **numără ca orice trecere** în restul: minutele zilei, streak-ul și punctele slabe pe
 care le-a scos (o calitate ratată pe challenge revine mâine în antrenament, ca de oriunde).

@@ -43,7 +43,7 @@ Ambele scopuri sunt egale. Dacă o decizie tehnică ajută portofoliul dar stric
 - **Două straturi, cu reguli diferite.** `src/theory/**` rămâne **vanilla JS, ES modules, zero dependențe npm, fără DOM**, rulabil în Node fără build — acolo nu intră nimic. **Shell-ul** (interfața) e un proiect **Vite + TypeScript + Svelte 5**, cu dependențe, care importă `theory/` neatins. Granița e regula, nu o excepție punctuală: dacă o logică poate fi testată cu `node --test`, locul ei e în `theory/`, nu în shell.
 - **Browser țintă**: Chrome/Edge (Web MIDI), ca PWA instalabilă. Safari nu suportă Web MIDI; iPad-ul vine prin shell nativ (Capacitor), mai târziu, nu prin adaptări acum. Demo mode merge oriunde.
 - **Dev server**: `npm run dev` în `app/` (Vite, HMR). Pagina veche (`index.html` + `src/ui/`) rămâne servibilă cu `npx serve .` cât timp e Laboratorul; ES modules nu se încarcă de pe `file://` (CORS), iar `localhost` e context securizat, deci Web MIDI funcționează.
-- **Teste**: `node --test` (test runner-ul încorporat în Node, fără instalare; Node ≥ 22 — 20 a ieșit din suport în aprilie 2026), pornit cu `npm test`. CI pe GitHub Actions rulează `npm test` pe Node 22 și 24 la fiecare push, cu badge în README; GitHub pornește o singură rulare per push, pe ultimul commit, deci commit-urile `test:` roșii dinaintea `feat:` nu produc rulări roșii dacă se împing împreună. `package.json` există doar pentru `"type": "module"` (Node tratează `.js` ca ES modules pe orice versiune) și scriptul de test — **fără nicio dependență**. Modulele din `src/theory/` sunt JS pur, fără DOM, exact ca să poată fi testate în Node. Fără framework de test în shell până nu cere ceva anume: logica nouă de scor (stele, XP) se scrie testabilă cu `node --test`, ca restul.
+- **Teste**: `node --test` (test runner-ul încorporat în Node, fără instalare; Node ≥ 22 — 20 a ieșit din suport în aprilie 2026), pornit cu `npm test`. CI pe GitHub Actions rulează `npm test` pe Node 22 și 24 la fiecare push, cu badge în README; GitHub pornește o singură rulare per push, pe ultimul commit, deci commit-urile `test:` roșii dinaintea `feat:` nu produc rulări roșii dacă se împing împreună. `package.json` există doar pentru `"type": "module"` (Node tratează `.js` ca ES modules pe orice versiune) și scriptul de test — **fără nicio dependență**. Modulele din `src/theory/` sunt JS pur, fără DOM, exact ca să poată fi testate în Node. Fără framework de test în shell până nu cere ceva anume: logica nouă de scor (stelele) se scrie testabilă cu `node --test`, ca restul.
 - **Deploy**: GitHub Pages (static, HTTPS → Web MIDI merge). Proxy-ul AI din Faza 3a e separat, pe Cloudflare Workers.
 - **Cheia Anthropic nu ajunge niciodată în frontend sau în repo.** Doar în variabilele de mediu ale Worker-ului (local în `worker/.dev.vars`, ignorat de git).
 - Excepțiile de la „zero dependențe" sunt trei, toate foldere izolate cu `package.json` propriu, din care `src/` nu importă nimic: `worker/` (cu `wrangler` ca dev dependency, pentru rulare locală și deploy) și `mic-proto/` (cu `@spotify/basic-pitch`, care aduce TensorFlow.js — aprobat de Edi pe 2026-09-24, pentru prototipul de microfon). A treia e **`app/`**, shell-ul nou (Vite + TypeScript + Svelte 5), aprobat de Edi pe 2026-10-11 odată cu direcția din `DIRECTION.md`. Aplicația din `src/` nu importă nimic din npm și nimic din `app/`. O a patra excepție se cere explicit.
@@ -57,15 +57,15 @@ Ambele scopuri sunt egale. Dacă o decizie tehnică ajută portofoliul dar stric
 app/                       shell-ul (Vite + TS + Svelte 5), cu package.json propriu și versiuni fixate
   vite.config.ts           fs.allow pe rădăcina repo-ului, ca ../src să poată fi importat neatins
   svelte.config.js         runes only: fără stores, fără `export let`, fără `$:`
-  src/App.svelte           ține progresul, prețuiește o trecere înainte s-o înregistreze, alege ecranul
+  src/App.svelte           ține progresul și instrumentul (unul pe toată vizita), înregistrează o trecere, alege ecranul
   src/bridge/theory.ts     ușa spre teorie: analizor, acorduri, stele, mapările de clape
   src/bridge/midi.ts       ușa spre note: capture, porturi virtuale, synth, clapa de ecran
   src/lib/instrument.svelte.ts  sesiunea MIDI în runes: ce ține mâna, ce e armat, ce aparat e conectat
   src/screens/Game.svelte  ecranul de joc: acordul cerut, clapa, verdictul, progresul nivelului
-  src/screens/Result.svelte  rezultatul trecerii: stele, XP, un singur lucru de reparat
+  src/screens/Result.svelte  rezultatul trecerii: stele, un singur lucru de reparat, „Next level"
   src/game/level.svelte.ts   nivelul: cererile, încercările, metronomul și ce acord răspunde un voicing
   src/bridge/time.ts       ușa spre ceas: metronomul, sesiunea, regula de anticipare
-  src/bridge/game.ts       ușa spre drum: unitățile, deblocarea, stelele și XP-ul salvate
+  src/bridge/game.ts       ușa spre drum: unitățile, ce e deschis, stelele salvate
   src/screens/Path.svelte  harta: unități, nivele, lacăte, stele
   src/screens/Today.svelte ecranul de start: streak, minute, „continuă drumul", antrenamentul
   src/lib/Keyboard.svelte  învelește src/ui/keyboard.js; Svelte decide când se colorează
@@ -97,9 +97,9 @@ src/
   theory/voiceLeading.js   compareVoicings, scoreProgression (Faza 2)
   theory/progressions.js   biblioteca de progresii generice + parser de grilă text
   theory/timing.js         timp ↔ (bar, beat), cuantizare; folosit de metronom, recorder și player
-  theory/stars.js          stelele: isRight / isClean pe acord, scoreRun și xpFor pe trecere (docs/spec-game.md)
+  theory/stars.js          stelele: isRight / isClean pe acord, scoreRun pe trecere (docs/spec-game.md)
   game/path.js             unitățile și nivelele ca date, cererile lor și regulile de deblocare; testat
-  game/progress.js         stelele, XP-ul, zilele, streak-ul, coada de recapitulare și grila zilei; testat
+  game/progress.js         stelele, zilele, streak-ul, coada de recapitulare, grila zilei și ultimul nivel jucat; testat
   game/challenge.js        challenge-ul zilei: seed din dată, rampa de 10, grila și textul partajat; testat
   theory/voicings.js       sugestii de voicing din șabloane, în registru, ordonate după voice leading (Faza 2; sămânța lui realize.js)
   audio/context.js         AudioContext-ul paginii și conversiile de ceas (pure, testate)
@@ -165,7 +165,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
   **311 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5, `npm --prefix app run dev`): cele patru
   ecrane din prototip — Azi, Drumul, Jocul, Rezultatul — peste opt unități (Triade → ii–V–I), cu
-  stele Right/Clean/Smooth, XP plafonat pe repetiții, streak, antrenament zilnic pe calități,
+  stele Right/Clean/Smooth, streak, antrenament zilnic pe calități,
   challenge zilnic partajabil și PWA instalabilă care merge fără rețea. Regulile:
   [docs/spec-game.md](docs/spec-game.md).
 - **Laboratorul** (`index.html` + `src/ui/`, `npx serve .`): drill, progresii, grilă text, metronom,
@@ -273,7 +273,7 @@ feature care nu e pe lista fazei curente" se aplică și când ideea e bună.
 | [docs/spec-capture.md](docs/spec-capture.md) | snapshot-ul de voicing: debounce, staccato, nota de „next", canalele; harness-ul: portul virtual, banda sesiunii, reluarea | `midi/capture.js`, `midi/input.js`, `midi/virtual.js`, `ui/tape.js`, `harness/` |
 | [docs/spec-analyzer.md](docs/spec-analyzer.md) | parserul de chord symbol, tabelul calităților, clasificarea voicing-ului, voice leading | `theory/chords.js`, `analyzer.js`, `voiceLeading.js`, `voicings.js` |
 | [docs/spec-reharm.md](docs/spec-reharm.md) | piesa, recorder-ul, analiza, candidații, pipeline-ul AI și Worker-ul, scorurile, validarea, realizarea, partenerul de studiu, evaluarea | `piece.js`, `recorder.js`, `analysis.js`, `candidates.js`, `scoring.js`, `realize.js`, `player.js`, `ai/`, `worker/`, `eval/` |
-| [docs/spec-game.md](docs/spec-game.md) | stelele (Right · Clean · Smooth) cu pragurile măsurate, XP-ul, antrenamentul zilnic și challenge-ul zilei | logica de scor a jocului, `src/game/`, orice progresie nouă în bibliotecă |
+| [docs/spec-game.md](docs/spec-game.md) | stelele (Right · Clean · Smooth) cu pragurile măsurate, ce e deschis pe drum, antrenamentul zilnic și challenge-ul zilei | logica de scor a jocului, `src/game/`, orice progresie nouă în bibliotecă |
 | [docs/spec-mic.md](docs/spec-mic.md) | prototipul de microfon: ce s-a măsurat, cum, cifrele și verdictul | `mic-proto/`; dacă se reia vreodată modul microfon |
 | [docs/PHASES.md](docs/PHASES.md) | planul inițial pe faze 0–5, cu DoD-urile și vechiul scope guard | **istoric**: toate fazele de acolo sunt bifate. Se citește doar dacă se caută un DoD vechi |
 | [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi | când o sesiune se închide cu mult context de predat |

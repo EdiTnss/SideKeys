@@ -6,11 +6,10 @@
   type Score = NonNullable<ReturnType<typeof scoreRun>>;
   type Weakness = { key: string; problem: string; count: number } | null;
 
-  let { name, score, xp, weakness, timed, threshold, grid = null, share = null,
+  let { name, score, weakness, timed, threshold, grid = null, share = null,
         official = true, onagain, onnext = null, onexit }: {
     name: string;
     score: Score;
-    xp: number;
     weakness: Weakness;
     timed: boolean;
     threshold: number;
@@ -78,10 +77,6 @@
   {/if}
 
   <div class="tiles">
-    <div class="tile">
-      <p class="big">+{xp}</p>
-      <p class="label">XP — quality, not volume</p>
-    </div>
     <div class="tile">
       <p class="big">{score.right} / {score.total}</p>
       <p class="label">right ({percent(score.rightShare)})</p>

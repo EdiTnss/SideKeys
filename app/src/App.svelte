@@ -4,12 +4,11 @@
   import Today from './screens/Today.svelte';
   import type { Attempt, Finished, LevelPlan, Unit } from './game/level.svelte';
   import { createInstrument } from './lib/instrument.svelte';
-  import { xpFor } from './bridge/theory';
   import {
-    loadProgress, saveProgress, recordRun, playsToday, dayStamp,
+    loadProgress, saveProgress, recordRun, dayStamp,
     streak, secondsOn, outcomesFor, dueReviews, nextLevel, levelAfter, reviewLevel,
     recordChallenge, challengeResult, challengeLevel, challengeNumber, challengeStates,
-    shareText, CHALLENGE_DIFFICULTY,
+    shareText,
   } from './bridge/game';
 
   /** Fifteen minutes is the daily goal until someone asks to change it. */
@@ -27,11 +26,11 @@
   const today = $derived(dayStamp());
   const due = $derived(dueReviews(progress, today));
   const pending = $derived(Object.keys(progress.review ?? {}).length - due.length);
-  const next = $derived(nextLevel(progress.stars));
+  const next = $derived(nextLevel(progress.stars, progress.last));
 
-  // The level after the one being played, once it is open. A level opens on a star in the one
-  // before it, and a unit on a star in the last level of the unit before — so on the path both
-  // rules come to the same thing: this level has a star. Off the path there is nothing after.
+  // The level after the one being played, offered once this one has a star. Inside a unit that
+  // is what opens the next level; across units nothing is locked, but a run that earned nothing
+  // should lead with "Once more", not with the way past it. Off the path there is nothing after.
   const following = $derived.by(() => {
     if (!playing || !(progress.stars[playing.plan.id] > 0)) return null;
     const after = levelAfter(playing.plan.id) as { unit: Unit; level: LevelPlan } | null;
@@ -48,40 +47,30 @@
     share: official ? shareText({ number: official.number, states: official.states }) : null,
   });
 
-  /**
-   * A finished run, priced and filed. The XP is worked out *before* the run is recorded, because
-   * the price depends on how many times this level has already paid out today.
-   */
+  /** A finished run, filed. For the daily challenge it also hands back the grid. */
   function finish({ stars, attempts, seconds }:
                   { stars: number; attempts: Attempt[]; seconds: number }): Finished {
-    if (!playing) return { xp: 0, grid: null, share: null, official: true };
+    if (!playing) return { grid: null, share: null, official: true };
     const { missed, cleared } = outcomesFor(attempts);
     const isChallenge = playing.unit.id === 'challenge';
-    // The challenge pays on the pass played cold and never again that day: a replay is
-    // practice (Edi, 2026-10-11). A level instead pays less the second time, which is what
-    // `playsToday` is for, so the two caps stay separate rather than one pretending to be both.
+    // Only the pass played cold is the official one: a replay is practice, and must not change
+    // the grid someone pastes (Edi, 2026-10-11).
     const first = isChallenge && !challengeResult(progress, today);
-    const xp = isChallenge && !first ? 0 : xpFor({
-      stars,
-      difficulty: playing.unit.difficulty,
-      playsToday: isChallenge ? 0 : playsToday(progress, playing.plan.id, today),
-    });
     // A challenge run still counts as playing: the minutes, the streak and the weak spots it
     // turned up are the same as any other run’s.
-    // One key for the challenge rather than one per day: its stars come from `progress.challenge`
-    // and its XP cap from the record above, so a key per date would grow for ever and be read by
-    // nothing. The plan keeps its dated id, which is what remounts the screen for a new day.
+    // One key for the challenge rather than one per day: its stars come from `progress.challenge`,
+    // so a key per date would grow for ever and be read by nothing. The plan keeps its dated id,
+    // which is what remounts the screen for a new day.
     const levelId = isChallenge ? 'challenge' : playing.plan.id;
-    let filed = recordRun(progress, { levelId, stars, xp, today, seconds, missed, cleared });
+    let filed = recordRun(progress, { levelId, stars, today, seconds, missed, cleared });
     const grid = isChallenge ? (challengeStates(attempts) as string[]) : null;
     if (first && grid) {
-      filed = recordChallenge(filed, { date: today, number: challengeNumber(today), states: grid, stars, xp });
+      filed = recordChallenge(filed, { date: today, number: challengeNumber(today), states: grid, stars });
     }
     progress = filed;
     saveProgress(progress);
     const stored = challengeResult(progress, today);
     return {
-      xp,
       grid,
       share: stored ? shareText({ number: stored.number, states: stored.states }) : null,
       official: first,
@@ -90,17 +79,14 @@
 
   function startChallenge() {
     const plan = challengeLevel(today) as LevelPlan;
-    // Not on the path, so it carries its own one-level "unit" for the XP price, like the review.
-    playing = {
-      unit: { id: 'challenge', name: '', blurb: '', difficulty: CHALLENGE_DIFFICULTY, levels: [plan] },
-      plan,
-    };
+    // Not on the path, so it carries its own one-level "unit", like the review.
+    playing = { unit: { id: 'challenge', name: '', blurb: '', levels: [plan] }, plan };
   }
 
   function startReview() {
-    const plan = reviewLevel(due.map(entry => entry.quality)) as LevelPlan & { difficulty: number };
-    // The review is not on the path, so it carries its own one-level "unit" for the XP price.
-    playing = { unit: { id: 'review', name: '', blurb: '', difficulty: plan.difficulty, levels: [plan] }, plan };
+    const plan = reviewLevel(due.map(entry => entry.quality)) as LevelPlan;
+    // The review is not on the path, so it carries its own one-level "unit".
+    playing = { unit: { id: 'review', name: '', blurb: '', levels: [plan] }, plan };
   }
 
   function leaveGame() {
@@ -128,7 +114,6 @@
       <button type="button" class="connect" onclick={() => instrument.connect()}>Connect a MIDI keyboard</button>
     {/if}
   </span>
-  <span class="tag">{progress.xp} XP</span>
 </header>
 
 <main>
@@ -140,13 +125,12 @@
             onexit={() => (playing = null)} />
     {/key}
   {:else if screen === 'path'}
-    <Path stars={progress.stars} xp={progress.xp} onplay={(unit, plan) => (playing = { unit, plan })} />
+    <Path stars={progress.stars} onplay={(unit, plan) => (playing = { unit, plan })} />
   {:else}
     <Today
       streak={streak(progress, today)}
       minutes={Math.round(secondsOn(progress, today) / 60)}
       goal={GOAL_MINUTES}
-      xp={progress.xp}
       next={next as { unit: Unit; level: LevelPlan; stars: number } | null}
       reviews={due}
       pending={pending}
@@ -181,5 +165,4 @@
     background: none; color: var(--ink); font: inherit; font-size: 13px; cursor: pointer;
   }
   .connect:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .tag { font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
 </style>

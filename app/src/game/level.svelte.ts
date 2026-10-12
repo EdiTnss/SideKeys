@@ -6,7 +6,7 @@
 // `snapshotTarget`'s, shared with the harness so the game and the replay cannot disagree.
 //
 // What a run is worth is not decided here either: `scoreRun` and `weakSpots` live in the
-// engine, and the XP needs the player's progress, which belongs to the app above.
+// engine, and filing the result needs the player's progress, which belongs to the app above.
 
 import {
   parseChord, analyzeVoicing, scoreRun, emptyStats, recordAttempt, weakSpots,
@@ -16,10 +16,10 @@ import { createMetronome, createSession, snapshotTarget, isAnticipated } from '.
 
 type Analysis = ReturnType<typeof analyzeVoicing>;
 /**
- * What the app hands back once a finished run has been priced and filed: the XP it paid and,
- * for the daily challenge, the grid. A level has no grid and the result screen shows stars.
+ * What the app hands back once a finished run has been filed: for the daily challenge, the
+ * grid. A level has no grid and the result screen shows stars.
  */
-export type Finished = { xp: number; grid: string[] | null; share: string | null; official: boolean };
+export type Finished = { grid: string[] | null; share: string | null; official: boolean };
 
 /** One chord asked for, with the shape that rung demands — null when it demands none. */
 export type Ask = { symbol: string; texture: string | string[] | null };
@@ -31,26 +31,21 @@ export type LevelPlan = {
   id: string;
   name: string;
   tempo: number;
-  boss?: boolean;
   /**
    * No clock, by design rather than by omission: the daily challenge is free play so that the
    * grid people paste compares one thing, accuracy. The screen hides the timed run for it.
    */
   free?: boolean;
-  /** Its place on the path, for the XP price. Only levels that stand on their own carry it. */
-  difficulty?: number;
   /** What shape the level demands, when it demands one: 'shell', 'rootless-A', or a list. */
   texture?: string | string[];
   asks: { kind: string; [key: string]: unknown };
 };
 
-/** A unit on the path: a handful of levels ending on a boss. */
+/** A unit on the path: a handful of levels on one idea. */
 export type Unit = {
   id: string;
   name: string;
   blurb: string;
-  /** Its place on the path, which is what XP multiplies by. */
-  difficulty: number;
   levels: LevelPlan[];
 };
 

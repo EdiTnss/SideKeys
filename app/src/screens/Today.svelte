@@ -6,12 +6,11 @@
   type Review = { quality: string; misses: number; hits: number };
   type Challenge = { number: number; states: string[] | null; share: string | null };
 
-  let { streak, minutes, goal, xp, next, reviews, pending, challenge,
+  let { streak, minutes, goal, next, reviews, pending, challenge,
         onplay, onreview, onchallenge, onpath }: {
     streak: number;
     minutes: number;
     goal: number;
-    xp: number;
     next: { unit: Unit; level: LevelPlan; stars: number } | null;
     reviews: Review[];
     /** Queued but not due yet — missed today, back tomorrow. Saying "nothing due" would lie. */
@@ -43,7 +42,6 @@
       <h1>Today</h1>
       <p class="sub">Three things. Nothing else.</p>
     </div>
-    <p class="xp"><span>{xp}</span> XP</p>
   </header>
 
   <div class="columns">
@@ -64,7 +62,7 @@
       {:else}
         <section class="card hero">
           <h2>Every open level is at three stars.</h2>
-          <p class="line">Beat a boss to open the next unit, or go over an old one again.</p>
+          <p class="line">Open the path and pick one to go over again.</p>
           <button type="button" class="go" onclick={onpath}>Open the path</button>
         </section>
       {/if}
@@ -157,8 +155,6 @@
   .head div { flex: 999 1 320px; }
   h1 { margin: 0 0 6px; font-size: 30px; font-weight: 600; letter-spacing: -0.03em; }
   .sub { margin: 0; color: var(--ink-muted); font-size: 15px; }
-  .xp { margin: 0; font-size: 14px; color: var(--ink-muted); }
-  .xp span { font-family: ui-monospace, monospace; font-size: 22px; font-weight: 600; color: var(--ink); }
   .columns { display: flex; flex-wrap: wrap; gap: 20px; }
   .main { flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
   .side { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 18px; }

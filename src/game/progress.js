@@ -1,5 +1,7 @@
-// What the player has to show for it: the best stars on each level, the XP, and how many times
-// a level has paid out today. No DOM beyond localStorage, and never mutated in place.
+// What the player has to show for it: the best stars on each level, the days played, what is
+// due to come back, and the level played last. No DOM beyond localStorage, and never mutated in
+// place. There is no XP: it bought nothing the stars and the streak did not already say, and
+// it went on 2026-10-12 (Edi).
 //
 // It lives here rather than in the shell because `node --test` has to reach it, and because the
 // same arithmetic would have to run on a server the day a leaderboard needs checking.
@@ -7,29 +9,27 @@
 import { storageKey } from '../storage.js';
 import { parseChord } from '../theory/chords.js';
 import { isClean } from '../theory/stars.js';
-import { pathState } from './path.js';
+import { pathState, levelById } from './path.js';
 
 /** Three clean answers in a row retire a weak spot; one miss puts the count back to zero. */
 export const REVIEW_HITS = 3;
 
 export function emptyProgress() {
-  return { stars: {}, xp: 0, plays: {}, days: {}, review: {}, challenge: null };
+  return { stars: {}, days: {}, review: {}, challenge: null, last: null };
 }
 
 /**
- * A finished run. Stars are kept at their best — a worse pass never takes a star away — XP adds
- * up, and the level's count for the day goes up by one, which is what caps the XP on repeats.
+ * A finished run. Stars are kept at their best — a worse pass never takes a star away — and a
+ * level on the path becomes the place "continue" picks up from.
  *
  * `seconds` feeds the day's minutes, and `missed` / `cleared` are chord qualities, which is
  * what the review queue is keyed by: a weak spot is "m7b5", not "Abm7b5 that one time".
  *
  * @param {any} progress
- * @param {{ levelId: string, stars: number, xp: number, today: string,
+ * @param {{ levelId: string, stars: number, today: string,
  *           seconds?: number, missed?: string[], cleared?: string[] }} run
  */
-export function recordRun(progress, { levelId, stars, xp, today, seconds = 0, missed = [], cleared = [] }) {
-  const played = progress.plays[levelId];
-  const count = played?.date === today ? played.count + 1 : 1;
+export function recordRun(progress, { levelId, stars, today, seconds = 0, missed = [], cleared = [] }) {
   const review = { ...(progress.review ?? {}) };
 
   for (const quality of missed) {
@@ -50,10 +50,10 @@ export function recordRun(progress, { levelId, stars, xp, today, seconds = 0, mi
     // challenge the day that field was added.
     ...progress,
     stars: { ...progress.stars, [levelId]: Math.max(progress.stars[levelId] ?? 0, stars) },
-    xp: progress.xp + xp,
-    plays: { ...progress.plays, [levelId]: { date: today, count } },
     days: { ...(progress.days ?? {}), [today]: (progress.days?.[today] ?? 0) + Math.max(0, Math.round(seconds)) },
     review,
+    // The review and the challenge are not places on the path, so they do not move it.
+    last: levelById(levelId) ? levelId : progress.last ?? null,
   };
 }
 
@@ -64,7 +64,7 @@ export function recordRun(progress, { levelId, stars, xp, today, seconds = 0, mi
  * asks for yet, and the day it does it belongs in an account, not in this browser.
  *
  * @param {any} progress
- * @param {{ date: string, number: number, states: string[], stars: number, xp: number }} result
+ * @param {{ date: string, number: number, states: string[], stars: number }} result
  */
 export function recordChallenge(progress, result) {
   if (progress.challenge?.date === result.date) return progress;
@@ -134,21 +134,21 @@ export function dueReviews(progress, today) {
     .sort((a, b) => b.misses - a.misses || a.quality.localeCompare(b.quality));
 }
 
-/** Where "continue the path" goes: the first open level that is not yet three stars. */
-export function nextLevel(stars) {
-  for (const entry of pathState(stars)) {
-    if (!entry.unlocked) continue;
-    for (const item of entry.levels) {
-      if (item.unlocked && item.stars < 3) return { unit: entry.unit, level: item.level, stars: item.stars };
-    }
-  }
-  return null;
-}
-
-/** How many times this level has already paid out today — what xpFor needs to cap a repeat. */
-export function playsToday(progress, levelId, today) {
-  const played = progress.plays[levelId];
-  return played?.date === today ? played.count : 0;
+/**
+ * Where "continue the path" goes: the first open level short of three stars, looked for from the
+ * level played last and round to the start again. Every unit is open, so looking from the top
+ * would send someone who began at Rootless back to the triads.
+ *
+ * @param {Record<string, number>} stars
+ * @param {string | null} [last] The level played last, or anything else to start from the top.
+ * @returns {{ unit: any, level: any, stars: number } | null}
+ */
+export function nextLevel(stars, last = null) {
+  const open = pathState(stars).flatMap(entry => entry.levels
+    .filter(item => item.unlocked)
+    .map(item => ({ unit: entry.unit, level: item.level, stars: item.stars })));
+  const from = Math.max(0, open.findIndex(item => item.level.id === last));
+  return [...open.slice(from), ...open.slice(0, from)].find(item => item.stars < 3) ?? null;
 }
 
 /** Today, as the key the counts are filed under. Local time: the player's day, not UTC's. */
@@ -166,15 +166,15 @@ export function loadProgress(storage = globalThis.localStorage) {
     // broken file must never stop someone from playing.
     if (!data || typeof data !== 'object') return emptyProgress();
     if (typeof data.stars !== 'object' || data.stars === null || Array.isArray(data.stars)) return emptyProgress();
-    if (typeof data.xp !== 'number' || !Number.isFinite(data.xp)) return emptyProgress();
     return {
+      // A file from before 2026-10-12 also carries `xp` and `plays`. They are simply not read:
+      // the stars in that file were earned, and it must not be thrown away for the rest.
       stars: data.stars,
-      xp: data.xp,
-      plays: (typeof data.plays === 'object' && data.plays) || {},
       // Added after the first saves went out, so an older file simply starts these empty.
       days: (typeof data.days === 'object' && data.days) || {},
       review: (typeof data.review === 'object' && data.review) || {},
       challenge: (typeof data.challenge === 'object' && data.challenge) || null,
+      last: typeof data.last === 'string' ? data.last : null,
     };
   } catch {
     return emptyProgress();

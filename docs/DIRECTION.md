@@ -106,6 +106,12 @@ teoria.
 | **Gig Mode** | Aplicația cântă bas și tobe, tu acompaniezi și primești raport pe măsuri. Momentul „fun" și puntea spre raportul de comping plătit | `realize.js`, `player.js`; **tobele sunt de scris** |
 | **Reharm puzzle** | Nivel avansat: găsește substituția care merge peste melodie | `candidates.js`, `piece.js` (fără AI) |
 
+**Schimbat pe 2026-10-12**, după ce Edi a jucat drumul pe Genos (ce urmează e consemnarea din
+2026-10-11, lăsată cum a fost): **XP-ul a fost scos** cu totul, **„boss" nu mai există** ca ramă
+— ultimul nivel al unității rămâne, fără nume și fără rol de paznic — și **toate unitățile sunt
+deschise** până există testul de plasare. Ce e adevărat acum stă în `PRODUCT.md` și în
+`spec-game.md`.
+
 **Reguli de design ale jocului:**
 - **XP pe calitate și dificultate, nu pe volum.** Plafon pe repetițiile identice, altfel
   oamenii spamează acorduri ușoare.

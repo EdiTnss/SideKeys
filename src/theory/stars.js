@@ -116,17 +116,3 @@ function meanMovement(attempts) {
   if (!moves.length) return null;
   return moves.reduce((sum, move) => sum + move, 0) / moves.length;
 }
-
-/**
- * XP from quality and difficulty, never from volume (docs/spec-game.md). `difficulty` is the
- * unit's place on the path, 1 for Triads; `playsToday` is how many times this level was already
- * cleared today, so the second pass pays half and the rest pay nothing. The level stays playable
- * for as long as anyone likes — only the XP stops.
- */
-export function xpFor({ stars, difficulty, playsToday = 0 }) {
-  if (stars <= 0) return 0;
-  const base = stars * difficulty;
-  if (playsToday === 0) return base;
-  if (playsToday === 1) return Math.round(base / 2);
-  return 0;
-}

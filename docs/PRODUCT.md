@@ -55,7 +55,7 @@ Consecințe pentru cod:
 
 `src/theory/**` rămâne JS pur, fără DOM, fără dependențe, testat cu `node --test`. Motivele nu
 mai sunt doar comerciale, sunt structurale: pe același cod stau exercițiile generate procedural
-(12 tonalități × calități × tipuri de voicing), scorurile deterministe (stele, XP) și, când va
+(12 tonalități × calități × tipuri de voicing), scorurile deterministe (stelele) și, când va
 exista clasament, verificarea anti-trișat pe server — aceeași funcție, trei locuri. **Testele din
 `test/`** sunt singura garanție că produsul nu strică teoria; numărul lor curent e în badge-ul din
 README, nu scris aici, ca să nu rămână în urmă.
@@ -125,14 +125,17 @@ poarta se reia acolo, ca **poarta P1**.
 ### P1 — Jocul, prima livrare publică (~2 săptămâni)
 
 Ordinea e obligatorie și nu se scurtcircuitează: **întâi bucla de bază să fie plăcută în sine,
-apoi structura (drum, unități, nivele), abia apoi meta-jocul (XP, streak).**
+apoi structura (drum, unități, nivele), abia apoi meta-jocul (streak, obiectivul zilnic).**
 
 - [x] Shell nou: Vite + TypeScript + Svelte 5, cu `theory/` importat neatins și testele verzi.
 - [x] Ecranul de joc: sunet de pian din sample-uri, feedback animat pe clape, stele. Stelele din
   `theory/stars.js`, pianul Salamander (CC BY 3.0, 17 note) și, de pe 2026-10-12, clapele care
   răspund: verdictul înflorește o dată, nota greșită primește o împingere de un pixel, iar nota
   lipsă respiră. Totul din cele șapte culori de teorie, fără accent pe clape.
-- [x] Drumul, cu primele 2–3 unități (Triade, Inversiuni, Septacorduri) și boss-ul lor. **Opt unități**,
+- [x] Drumul, cu primele 2–3 unități (Triade, Inversiuni, Septacorduri). Pe 2026-10-12, după ce a
+  jucat drumul pe Genos, Edi a scos **XP-ul** (nu cumpăra nimic), **rama de boss** (nivelul rămâne,
+  numit după ce cere) și **încuierea unităților** (toate deschise, până există testul de plasare);
+  regulile, în [spec-game.md](spec-game.md). **Opt unități**,
   Triade → ii–V–I; lipsește doar Comping, care cere Gig Mode.
 - [x] Challenge-ul zilei, partajabil, fără cont. Rampă de zece acorduri, seed din dată, grilă de
   pătrățele; regulile și costul fiecărei decizii, în [spec-game.md](spec-game.md).
@@ -187,7 +190,7 @@ prototipul a trecut, mod profesor. Se detaliază când P2 e bifat.
   bună ar fi ideea: intră în faza următoare, nu în asta.
 - **Ordinea gamificării nu se inversează**: buclă → structură → meta-joc. Un streak pus înaintea
   unei bucle plăcute măsoară doar frecvența cu care oamenii se plictisesc.
-- Test întâi pentru orice atinge `analyzer.js`, `chords.js`, formula de stele/XP, raportul de
+- Test întâi pentru orice atinge `analyzer.js`, `chords.js`, formula de stele, raportul de
   comping sau scheduler-ul de repetiție spațiată.
 - Fără conturi de utilizator în `theory/`. Logica de teorie rămâne pură și rulabilă offline;
   doar cota și cheia stau pe server.
