@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { pitchClass, midiToName, nameToMidi, spellDegree } from '../src/theory/notes.js';
+import { pitchClass, midiToName, nameToMidi, spellDegree, plainName, spellPlain } from '../src/theory/notes.js';
 
 test('pitchClass: C is 0 in every octave, other notes count semitones up from C', () => {
   for (let midi = 0; midi <= 120; midi += 12) {
@@ -40,4 +40,27 @@ test('spellDegree: the letter comes from the degree number, the accidental from 
   assert.equal(spellDegree('F#', '7'), 'E#');
   assert.equal(spellDegree('C', 'bb7'), 'Bbb');
   assert.equal(spellDegree('Eb', '#11'), 'A');
+});
+
+test('plainName: a name the player reads never needs Cb, Fb, B#, E# or a double accidental', () => {
+  assert.equal(plainName('Fb'), 'E');
+  assert.equal(plainName('Cb'), 'B');
+  assert.equal(plainName('B#'), 'C');
+  assert.equal(plainName('E#'), 'F');
+  assert.equal(plainName('Bbb'), 'A');
+  assert.equal(plainName('Ebb'), 'D');
+  assert.equal(plainName('Cbb'), 'Bb');     // a double flat that lands on a black key stays a flat
+  assert.equal(plainName('F##'), 'G');
+  assert.equal(plainName('E##'), 'F#');     // and a double sharp stays a sharp
+  // Everything else is plain already and is left alone, sharps included.
+  for (const name of ['C', 'C#', 'Db', 'F#', 'Gb', 'A', 'Bb', 'B']) assert.equal(plainName(name), name);
+});
+
+test('spellPlain: the degree spelled from the chord, then made readable', () => {
+  assert.equal(spellPlain('Ab', 'b3'), 'B');      // Cb on paper
+  assert.equal(spellPlain('Db', 'b7'), 'B');      // Cb on paper
+  assert.equal(spellPlain('C', 'bb7'), 'A');      // Bbb on paper
+  assert.equal(spellPlain('F#', '7'), 'F');       // E# on paper
+  assert.equal(spellPlain('D', 'b9'), 'Eb');      // the letter still follows the degree when it can
+  assert.equal(spellPlain('E', '3'), 'G#');
 });

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { nameToMidi } from '../src/theory/notes.js';
 import { parseChord } from '../src/theory/chords.js';
-import { analyzeVoicing } from '../src/theory/analyzer.js';
+import { analyzeVoicing, inversionOf } from '../src/theory/analyzer.js';
 
 // 'C4 E4 G4' → analysis against the parsed chord. MIDI 60 = C4.
 const analyze = (symbol, notes, options) =>
@@ -155,4 +155,30 @@ test('the bass warning comes before the wrong notes, after the missing ones', ()
   // no Cmaj7 — one of each, so the order is the whole point of the assertion.
   const a = analyze('Cmaj7/E', 'C4 E4 Db5');
   assert.deepEqual(a.messages.map(m => m.code), ['missing', 'bass', 'wrong', 'type']);
+});
+
+test('messages name notes the way a player says them: no Cb, no Fb, no double flats', () => {
+  // Db7 without its seventh: Cb on paper, B at the piano.
+  assert.equal(analyze('Db7', 'Db3 F3 Ab3').messages[0].text, 'Missing B (b7)');
+  // Cdim7 without its bb7, which is Bbb on paper.
+  assert.equal(analyze('Cdim7', 'C4 Eb4 Gb4').messages[0].text, 'Missing A (bb7)');
+  assert.equal(analyze('Dbm7', 'Db3 Ab3 B3').messages[0].text, 'Missing E (b3)');
+  // The letter still follows the degree wherever that reads plainly.
+  assert.equal(analyze('E7', 'E3 B3 D4').messages[0].text, 'Missing G# (3)');
+});
+
+test('inversionOf: named by the chord tone in the bass, whatever is spread above it', () => {
+  assert.equal(inversionOf(analyze('C', 'C4 E4 G4')), 'root position');
+  assert.equal(inversionOf(analyze('C', 'E4 G4 C5')), '1st inversion');
+  assert.equal(inversionOf(analyze('C', 'G3 C4 E4')), '2nd inversion');
+  assert.equal(inversionOf(analyze('Cm', 'Eb4 G4 C5')), '1st inversion');
+  // On a sus chord the fourth stands where the third would.
+  assert.equal(inversionOf(analyze('Csus4', 'F4 G4 C5')), '1st inversion');
+  // Two hands, with the bass an octave or two below: the lowest note still decides.
+  assert.equal(inversionOf(analyze('C', 'E2 C4 E4 G4')), '1st inversion');
+  assert.equal(inversionOf(analyze('Cmaj7', 'B3 C4 E4 G4')), '3rd inversion');
+  assert.equal(inversionOf(analyze('C6', 'A3 C4 E4 G4')), '3rd inversion');
+  // A bass that is not a chord tone names no inversion, and neither does silence.
+  assert.equal(inversionOf(analyze('C', 'D3 E4 G4 C5')), null);
+  assert.equal(inversionOf(analyzeVoicing([], parseChord('C'))), null);
 });

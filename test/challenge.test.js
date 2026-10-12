@@ -3,6 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parseChord } from '../src/theory/chords.js';
+import { plainName } from '../src/theory/notes.js';
 import { analyzeVoicing } from '../src/theory/analyzer.js';
 import { suggestVoicings } from '../src/theory/voicings.js';
 import {
@@ -137,6 +138,19 @@ test('every chord a textured rung could ever draw has a voicing of that shape', 
         const found = suggestVoicings(parseChord(symbol)).some(candidate => wanted.includes(candidate.type));
         assert.ok(found, `rung ${at + 1}: no ${wanted.join(' or ')} voicing for ${symbol}`);
       }
+    }
+  }
+});
+
+test('no day of the year asks for a chord a chart would not write', () => {
+  for (const date of year) {
+    for (const { symbol } of dailyChallenge(date).asks) {
+      const chord = parseChord(symbol);
+      for (const name of [chord.root, chord.bass]) {
+        if (name) assert.equal(plainName(name), name, `${date}: ${symbol}`);
+      }
+      const minorThird = chord.chordTones.includes((chord.rootPc + 3) % 12);
+      assert.ok(!(minorThird && ['Db', 'Gb'].includes(chord.root)), `${date}: ${symbol} is written from C# or F#`);
     }
   }
 });

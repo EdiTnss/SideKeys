@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseChord, classifyPc, qualityIds, QUALITIES, ChordParseError } from '../src/theory/chords.js';
+import { parseChord, classifyPc, qualityIds, chartSymbol, QUALITIES, ChordParseError } from '../src/theory/chords.js';
 
 test('Cmaj7: full output shape', () => {
   assert.deepEqual(parseChord('Cmaj7'), {
@@ -237,4 +237,24 @@ test('qualityIds lists every quality in table order, not in Object.keys order', 
   assert.ok(ids.indexOf('6') > ids.indexOf('maj7'));
   assert.deepEqual([...ids].sort(), Object.keys(QUALITIES).sort());
   assert.equal(new Set(ids).size, ids.length);
+});
+
+test('chartSymbol: a chord with a minor third on Db or Gb is written from C# and F#', () => {
+  assert.equal(chartSymbol('Db', 'm'), 'C#m');
+  assert.equal(chartSymbol('Gb', 'm'), 'F#m');
+  assert.equal(chartSymbol('Db', 'm7'), 'C#m7');
+  assert.equal(chartSymbol('Gb', 'm7b5'), 'F#m7b5');
+  assert.equal(chartSymbol('Db', 'dim7'), 'C#dim7');
+  assert.equal(chartSymbol('Gb', 'm6'), 'F#m6');
+  // A major third keeps the flat root: Db, Dbmaj7 and Gb7 are how those are written.
+  assert.equal(chartSymbol('Db', ''), 'Db');
+  assert.equal(chartSymbol('Db', 'maj7'), 'Dbmaj7');
+  assert.equal(chartSymbol('Gb', '7'), 'Gb7');
+  assert.equal(chartSymbol('Gb', 'sus4'), 'Gbsus4');
+  // Every other root is left exactly as it was asked for.
+  assert.equal(chartSymbol('Ab', 'm'), 'Abm');
+  assert.equal(chartSymbol('Eb', 'm7'), 'Ebm7');
+  assert.equal(chartSymbol('C', 'm'), 'Cm');
+  // The same pitches either way: only the name changes.
+  assert.deepEqual(parseChord(chartSymbol('Db', 'm7')).chordTones, parseChord('Dbm7').chordTones);
 });

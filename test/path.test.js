@@ -4,6 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PATH, asksFor, pathState, levelById, levelAfter, reviewLevel } from '../src/game/path.js';
 import { parseChord } from '../src/theory/chords.js';
+import { plainName } from '../src/theory/notes.js';
 
 test('every ask on the path parses as a chord the analyzer can judge', () => {
   for (const unit of PATH) {
@@ -131,4 +132,25 @@ test('levelAfter: the next level, across the end of a unit, and null off the pat
   assert.equal(crossing.level.id, PATH[1].levels[0].id);
   assert.equal(levelAfter(PATH.at(-1).levels.at(-1).id), null, 'nothing follows the last level');
   assert.equal(levelAfter('review'), null, 'the review is not on the path');
+});
+
+/** True when a chart would never write this symbol: an awkward root or bass, or Dbm / Gbm. */
+const awkward = symbol => {
+  const chord = parseChord(symbol);
+  const minorThird = chord.chordTones.includes((chord.rootPc + 3) % 12);
+  return [chord.root, chord.bass].some(name => name && plainName(name) !== name)
+    || (minorThird && ['Db', 'Gb'].includes(chord.root));
+};
+
+test('the path asks for chords the way a chart writes them', () => {
+  for (const unit of PATH) for (const level of unit.levels) {
+    for (const { symbol } of asksFor(level)) assert.ok(!awkward(symbol), `${level.id}: ${symbol}`);
+  }
+  // The three inversions that used to come out as Abm/Cb, Dbm/Fb and Gbm/Bbb.
+  const minorFirst = { asks: { kind: 'slash', shapes: [{ quality: 'm', degree: 'b3' }], keys: ['Ab', 'Db', 'Gb'] } };
+  assert.deepEqual(asksFor(minorFirst).map(ask => ask.symbol), ['Abm/B', 'C#m/E', 'F#m/A']);
+  // The same rule without a slash, and in the review, which is built from the same keys.
+  const minors = { asks: { kind: 'chords', qualities: ['m', 'maj7'], keys: ['Db', 'Gb'] } };
+  assert.deepEqual(asksFor(minors).map(ask => ask.symbol), ['C#m', 'Dbmaj7', 'F#m', 'Gbmaj7']);
+  for (const { symbol } of asksFor(reviewLevel(['m7', 'm7b5', 'dim7']))) assert.ok(!awkward(symbol), symbol);
 });
