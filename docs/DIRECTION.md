@@ -202,8 +202,15 @@ formularul repornesc ceasul porții.
 3. ~~**Formula de stele**~~ — **închisă pe 2026-10-11**: Right (≥60% corecte) · Clean (≥80% fără
    avertismente) · Smooth (timed, plus mișcare medie pe voce sub pragul măsurat al progresiei).
    Specificația, cu pragurile măsurate și metoda: [spec-game.md](spec-game.md).
-4. **Sursa de sample-uri de pian**: licența (ex. Salamander Grand, CC-BY) și dimensiunea
-   descărcării.
+4. ~~**Sursa de sample-uri de pian**~~ — **închisă pe 2026-10-12**: **Salamander Grand Piano V3**
+   de Alexander Holm (Yamaha C5), sub **CC BY 3.0**, 17 note din registrul claviaturii (C2–C6), un
+   singur strat de velocitate din 16, **3,05 MB** în distribuția Ogg Vorbis. Licența a fost
+   verificată, nu presupusă: afirmația că ar fi domeniu public din 2022 vine dintr-un singur blog a
+   cărui pagină „despre" nu mai există, în timp ce itemul de pe Internet Archive și catalogul SFZ
+   Instruments spun amândouă CC BY 3.0. Tratat ca CC BY, ceea ce e corect oricum — a credita o
+   lucrare care se dovedește domeniu public nu costă nimic, invers e încălcare de licență.
+   Obligația se vede pe ecranul Azi, nu doar într-un fișier, fiindcă CC BY cere atribuire potrivită
+   mediului. Ce s-a schimbat față de original e scris în `app/public/piano/CREDITS.md`.
 5. ~~**Ce se întâmplă cu UI-ul vechi**~~ — **închisă pe 2026-10-12**: shell-ul la rădăcină,
    **Laboratorul publicat la `/lab/`** (varianta a). Motivul alegerii lui Edi: dovada tehnică —
    analizorul, reharm-ul hibrid, harness-ul — rămâne ceva ce un recrutor poate *deschide*, nu doar

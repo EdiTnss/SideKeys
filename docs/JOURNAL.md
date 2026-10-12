@@ -209,3 +209,37 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   poate măsura și `SHARE_URL` încetează să mintă; (3) sample-urile de pian, înaintea clipului; (4)
   formularul și clipul, care pornesc împreună ceasul porții. **310 teste verzi**, `svelte-check` 0 pe
   313 fișiere; nimic din cod nu s-a atins.
+- **2026-10-12 (publicarea scrisă, pianul adevărat)** — Edi n-avea clapa la el, deci am luat tot ce nu
+  cere Genos. **Decizia 5, luată**: shell-ul la rădăcină, Laboratorul la `/lab/`, ca dovada tehnică să
+  rămână ceva ce un recrutor *deschide*, nu doar citește. Workflow-ul de publicare e scris
+  (`.github/workflows/pages.yml`): build, apoi Laboratorul copiat **după** — ordinea contează, fiindcă
+  `npm run build` se termină cu `build-sw.mjs`, care precachează tot ce găsește. Verificat local prin
+  simularea aspectului: Laboratorul merge din subfolder **fără nicio linie schimbată**, fiindcă toate
+  căile lui sunt relative. **Un bug prevenit, nu reparat**: `/lab/` cade în domeniul service
+  worker-ului, deci offline ar fi primit shell-ul jocului la adresa Laboratorului; acum worker-ul stă
+  deoparte, și am probat-o cu serverul oprit — rădăcina randează jocul din cache, `/lab/` primește
+  pagina de eroare a browserului. Mai lipsește un clic al lui Edi: Settings → Pages → Source.
+
+  **Decizia 4, închisă, și licența verificată — nu presupusă.** Salamander Grand Piano V3 (Yamaha C5,
+  AKG C414). Căutarea a scos o contradicție: un blog spune „public domain din 4.3.2022", dar pagina
+  lui „despre" dă 404, deci nu se poate stabili că e al autorului, iar itemul de pe Internet Archive și
+  catalogul SFZ Instruments spun amândouă **CC BY 3.0**. Am ales varianta prudentă, care e corectă
+  oricum: a credita ceva ce se dovedește domeniu public nu costă nimic, invers e încălcare. Deci
+  creditul e **pe ecranul Azi**, nu doar într-un fișier — CC BY cere atribuire potrivită mediului.
+
+  **Trei lucruri practice care au decis forma.** Nu există ffmpeg pe mașină, dar arhiva are o
+  distribuție **Ogg Vorbis de 74 MB**, pe care Chrome o decodează nativ — deci zero conversie. Pachetul
+  eșantionează la fiecare trei semitonuri, exact cum voiam, deci 17 note acoperă C2–C6 fără ca nimic să
+  fie mutat cu mai mult de un ton: **3,05 MB**. Și sharp-urile au fost redenumite la intrare, fiindcă
+  un `#` într-un nume de fișier începe fragmentul unui URL.
+
+  **O capcană văzută înainte să muște**: worker-ul ar fi precachat cele 3 MB, iar pagina le cere
+  *eager* la deschiderea unui nivel — deci la prima vizită s-ar fi descărcat de două ori. Acum
+  înregistrările se cachează din mers; manifestul rămâne precachat, fiindcă fără el o pagină offline
+  nici nu poate ști dacă există pian. Testul care păzește regula e scris.
+
+  **Verificat în pagină**: 18 cereri, 3130 KB, linia de stare trece pe „piano samples", iar o triadă
+  construiește **3 buffer sources și 0 oscilatoare** — adică sună din înregistrări, nu din synth.
+  Pianul se încarcă la intrarea într-un nivel, nu pe ecranul Azi, deci DoD-ul de 30 de secunde rămâne
+  neatins: synth-ul răspunde de la primul clic. **311 teste verzi**, `svelte-check` 0 pe 313 fișiere.
+  **Următorul pas**: clicul din Settings → Pages, apoi conținutul drumului pe Genos.

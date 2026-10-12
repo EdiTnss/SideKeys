@@ -173,15 +173,19 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
   trei sesiuni înregistrate, una de 11 minute reale pe Genos. Jocul și reluarea folosesc **aceeași**
   funcție (`snapshotTarget`) ca să decidă ce acord răspunde un voicing, deci nu pot ajunge să spună
   lucruri diferite.
+- **Sunetul e un pian adevărat**: 17 înregistrări din Salamander Grand Piano V3 (Yamaha C5), sub
+  CC BY 3.0, cu creditul pe ecranul Azi fiindcă licența îl cere. `audio/synth.js` rămâne ca prima
+  voce, până se decodează înregistrările, și ca plasă dacă manifestul lipsește.
 - **Brandul** e legat în pagină, cu o regulă portantă: accentul magenta nu atinge niciodată o clapă
   sau un verdict (`assets/BRAND.md`, comentariul din `styles.css`).
 
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
-- **Sunetul e synth**, nu pian: nu există pachet de sample-uri ales (decizia deschisă 4).
 - **Feedback-ul pe clape colorează, nu animează** — `PRODUCT.md`, P1, punctul „ecranul de joc".
-- **Laboratorul nu e refăcut în shell** și nu se știe dacă va fi (decizia deschisă 5).
+  E singurul lucru care mai ține acel punct nebifat.
+- **Laboratorul nu se reface în shell** (decizia 5, închisă pe 2026-10-12): rămâne pagina care e,
+  publicată alături, la `/lab/`.
 
 ### Verificat pe hardware (Genos)
 
@@ -212,8 +216,8 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 - **Drumul, pe Genos**: joacă lanțul (Azi → drum → un nivel în timp → o recapitulare) și corectează
   **conținutul** din `src/game/path.js`. Ordinea unităților și tempoul 120 sunt aprobate; tonalitățile
   și ce lipsește dintr-o unitate sunt teoria lui.
-- **Decizia deschisă 4**: pachetul de sample-uri de pian (care, ce licență, cât de mare). Până atunci
-  `app/public/piano/manifest.json` are `"samples": null` și pagina rămâne pe synth, fără 404.
+- **Să asculte pianul** și să spună dacă stratul de velocitate ales (v9 din 16) e potrivit: cu un
+  singur strat, timbrul nu se schimbă cu forța, doar volumul. Se schimbă într-o comandă.
 - **Un clic în Settings → Pages → Source: „GitHub Actions"**, ca workflow-ul de publicare să poată
   rula. Până atunci `.github/workflows/pages.yml` rulează și pică la ultimul pas, fiindcă Pages e
   încă pe „deploy from a branch".
@@ -246,8 +250,7 @@ pas îl deblochează pe următorul.
    după prima rulare verde jocul e deschizibil de cineva, PWA-ul e instalabil de undeva, iar
    `SHARE_URL` din `challenge.js` încetează să mintă. Până aici, DoD-ul P1 („un vizitator nou
    ajunge la primul acord în sub 30 de secunde") nici nu se poate măsura.
-3. **Decizia deschisă 4**, pachetul de sample-uri de pian. Înaintea clipului, fiindcă e diferența
-   dintre „sună a aplicație" și „sună a instrument", iar clipul e exact ce vede lumea prima dată.
+3. ~~Sample-urile de pian~~ — **gata pe 2026-10-12**: Salamander Grand Piano, CC BY 3.0, 3 MB.
 4. **Formularul de email** (furnizor, GDPR) **și clipul** de 15 s. Împreună pornesc ceasul porții P1;
    clipul singur nu, formularul singur nu.
 
