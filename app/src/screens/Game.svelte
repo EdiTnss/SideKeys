@@ -55,6 +55,8 @@
   let analysis = $state<ReturnType<typeof analyzeVoicing> | null>(null);
   let judged = $state<string | null>(null);
   let anticipated = $state(false);
+  // False when the voicing was judged but not filed: on the clock, its bar already had an answer.
+  let counted = $state(true);
   let judgedTexture = $state<string | string[] | null>(null);
   let classes = $state<Record<number, string>>({});
   // Alternates with every verdict so the keys animate again when the same chord comes back:
@@ -93,6 +95,7 @@
     analysis = answered.analysis;
     judged = answered.symbol;
     anticipated = answered.anticipated;
+    counted = answered.counted;
     judgedTexture = answered.texture;
     strike = strike === 'strike-a' ? 'strike-b' : 'strike-a';
     // Only the notes that were played are struck. A missing one was never under a finger, so
@@ -125,6 +128,7 @@
     analysis = null;
     judged = null;
     anticipated = false;
+    counted = true;
     judgedTexture = null;
     classes = {};
   }
@@ -267,6 +271,12 @@
           <span class="judged">{judged}{anticipated ? ', anticipated' : ''}</span>
           {warnings[0].text}
         </p>
+      {/if}
+
+      {#if analysis && !counted}
+        <!-- Said in so many words, because the verdict above is true and still changes nothing:
+             the bar had its answer, and on the clock the first one stands. -->
+        <p class="move">Not counted — this bar already had its answer, and the first one stands.</p>
       {/if}
 
       {#if practice?.movement && star}

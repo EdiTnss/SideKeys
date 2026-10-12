@@ -9,7 +9,7 @@
 // Which chord a voicing answers is decided exactly as in a level, by `snapshotTarget`, so the
 // anticipation rule is one rule here, on the path and in the harness.
 
-import { parseChord, analyzeVoicing, isClean, compareVoicings } from '../bridge/theory';
+import { parseChord, analyzeVoicing, isClean, counts, compareVoicings } from '../bridge/theory';
 import { createMetronome, createSession, snapshotTarget, isAnticipated } from '../bridge/time';
 import type { Answer, Ask, Attempt, Run } from './level.svelte';
 
@@ -59,6 +59,9 @@ export function createPractice(plan: PracticePlan): Practice {
   let firstAnswerAt: number | null = null;
   let lastAnswerAt: number | null = null;
   let metronome: ReturnType<typeof createMetronome> | null = null;
+  // On the clock, which time round each chord was last answered: a bar keeps its first answer,
+  // and in a loop "this bar" is a chord and a chorus, not a chord alone.
+  const standing = new Map<number, number>();
 
   const ask = $derived(finished ? null : asks[current]);
   // On the clock the next bar is the next bar, even when it holds the same chord. Without one,
@@ -79,7 +82,10 @@ export function createPractice(plan: PracticePlan): Practice {
     const position = metronome.positionOf(startedAt ?? performance.now());
     const target = snapshotTarget({ mode: 'progression', session, started: true, timed: true, position });
     if (!target) return null;     // the count-in: there is no chord before the first one
-    return { slot: target.slot, symbol: target.symbol, anticipated: isAnticipated(session, position, target.slot) };
+    const anticipated = isAnticipated(session, position, target.slot);
+    // An anticipated voicing answers the bar after the one it started in.
+    const chorus = Math.floor((position.bar - 1 + (anticipated ? 1 : 0)) / barCount);
+    return { slot: target.slot, symbol: target.symbol, anticipated, chorus };
   }
 
   function stopClock() {
@@ -129,12 +135,21 @@ export function createPractice(plan: PracticePlan): Practice {
       if (finished) return null;
       const target = timed
         ? timedTarget(startedAt)
-        : { slot: current, symbol: asks[current].symbol, anticipated: false };
+        : { slot: current, symbol: asks[current].symbol, anticipated: false, chorus: 0 };
       if (!target) return null;
+      const { chorus, ...where } = target;
       const now = performance.now();
       firstAnswerAt ??= now;
       lastAnswerAt = now;
       const analysis = analyzeVoicing(notes, parseChord(target.symbol));
+      // On the clock a bar keeps its first answer: a second voicing in it is judged and shown,
+      // but it is not counted, and what it got wrong is not held against the chord.
+      const counted = counts({ timed, answered: timed && standing.get(target.slot) === chorus });
+      if (!counted) {
+        movement = null;
+        return { ...where, texture: plan.texture, analysis, counted };
+      }
+      if (timed) standing.set(target.slot, chorus);
       const before = history.at(-1);
       // Only a change of chord is a step to measure: the same chord struck twice went nowhere.
       const compared = plan.mode === 'progression' && before && before.symbol !== target.symbol && before.notes.length
@@ -147,7 +162,7 @@ export function createPractice(plan: PracticePlan): Practice {
       played += 1;
       if (isClean(analysis, { texture: plan.texture })) clean += 1;
       if (!timed) current = following(target.slot);
-      return { ...target, texture: plan.texture, analysis };
+      return { ...where, texture: plan.texture, analysis, counted };
     },
 
     /** Without the clock: on to the next chord, and nothing is held against the one passed over. */
@@ -160,6 +175,7 @@ export function createPractice(plan: PracticePlan): Practice {
     /** Starts the clock from the top: a bar of count-in, then the progression in time, round and round. */
     start() {
       stopClock();
+      standing.clear();
       current = 0;
       movement = null;
       timed = true;

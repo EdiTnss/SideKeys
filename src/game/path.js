@@ -13,7 +13,10 @@ import { spellPlain } from '../theory/notes.js';
 import { getProgression } from '../theory/progressions.js';
 import { movementThreshold, DEFAULT_MOVEMENT } from '../theory/stars.js';
 
-const SIX = ['C', 'F', 'G', 'D', 'A', 'E'];
+// The six keys a unit starts in, before its last levels go round all twelve: the ones tunes are
+// most often in, flats first. Until 2026-10-13 this was C F G D A E — the sharp side, friendly
+// to a guitar — which kept B flat and E flat out of every unit until its last level (Edi).
+const SIX = ['C', 'F', 'Bb', 'Eb', 'G', 'D'];
 /** The twelve keys round the cycle of fourths: the order every twelve-key level walks them in. */
 export const TWELVE = ['C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'B', 'E', 'A', 'D', 'G'];
 

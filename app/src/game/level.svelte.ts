@@ -9,7 +9,7 @@
 // engine, and filing the result needs the player's progress, which belongs to the app above.
 
 import {
-  parseChord, analyzeVoicing, scoreRun, emptyStats, recordAttempt, weakSpots,
+  parseChord, analyzeVoicing, scoreRun, counts, emptyStats, recordAttempt, weakSpots,
 } from '../bridge/theory';
 import { asksFor, thresholdFor } from '../bridge/game';
 import { createMetronome, createSession, snapshotTarget, isAnticipated } from '../bridge/time';
@@ -26,7 +26,9 @@ export type Ask = { symbol: string; texture: string | string[] | null };
 export type Attempt = { symbol: string; notes: number[]; analysis: Analysis | null;
                         texture?: string | string[] | null };
 export type Answer = { slot: number; symbol: string; anticipated: boolean; analysis: Analysis;
-                       texture: string | string[] | null };
+                       texture: string | string[] | null;
+                       /** False for a voicing that was judged but not filed: its bar already had an answer. */
+                       counted: boolean };
 export type LevelPlan = {
   id: string;
   name: string;
@@ -190,12 +192,15 @@ export function createLevel(plan: LevelPlan): Run {
       // that need not be the rung on screen.
       const texture = asks[target.slot]?.texture ?? null;
       const analysis = analyzeVoicing(notes, parseChord(target.symbol));
-      answers[target.slot] = { symbol: target.symbol, notes, analysis, texture };
+      // On the clock a bar keeps its first answer. A later voicing is still judged and shown —
+      // it is what was played — but it does not replace what the bar has already earned.
+      const counted = counts({ timed, answered: answers[target.slot] !== null });
+      if (counted) answers[target.slot] = { symbol: target.symbol, notes, analysis, texture };
       if (!timed) {
         if (current + 1 >= asks.length) finish();
         else current += 1;
       }
-      return { ...target, texture, analysis };
+      return { ...target, texture, analysis, counted };
     },
 
     /** Free play only: an ask nobody answered still counts, so it is stored as a miss. */

@@ -171,7 +171,8 @@ de sub acord, iar primul acord se vede de la primul clic.
   challenge-ul zilei e o rampă, unde fiecare treaptă poate cere alta.
 - Previzualizarea face fereastra de anticipare folosibilă, nu o schimbă: un voicing început în
   ultima jumătate de timp a măsurii e judecat tot pe acordul următor (`docs/spec-capture.md`).
-  Unul început **mai devreme** de atât e judecat pe acordul curent și îi înlocuiește răspunsul.
+  Unul început **mai devreme** de atât e judecat tot pe acordul curent, dar din 2026-10-13 nu-i
+  mai înlocuiește răspunsul (vezi „Primul răspuns rămâne").
 
 ## XP — scos (2026-10-12)
 
@@ -187,6 +188,26 @@ challenge-ului și câmpul `difficulty` al unităților; poziția unei unități
 `number`, calculat de `pathState`. Un fișier de progres salvat înainte poartă încă `xp` și
 `plays`: `loadProgress` nu le mai citește, dar **nu aruncă fișierul** pentru ele — stelele din el
 au fost câștigate.
+
+## Primul răspuns rămâne (2026-10-13)
+
+**Într-o trecere în timp, o măsură își păstrează primul răspuns.** Fără ceas un acord are un singur
+răspuns prin construcție — răspunsul trece la acordul următor. Cu ceas o măsură poate fi lovită de
+mai multe ori, iar până acum câștiga **ultima** lovitură. De când acordul următor se vede pe ecran
+(2026-10-12) asta a devenit o capcană: cine îl ia cu mai mult de o jumătate de timp înainte e
+judecat, corect, pe măsura în care se află — și își ștergea răspunsul bun dat pe timpul 1.
+
+- Regula e `counts({ timed, answered })` din `theory/stars.js`, testată; nivelul și Training o
+  întreabă înainte să înregistreze un voicing.
+- Voicing-ul necontat **e totuși judecat și arătat** — e ce s-a cântat — cu rândul „Not counted —
+  this bar already had its answer, and the first one stands." sub verdict.
+- **Consecință asumată**: o corectură făcută un timp mai târziu, în aceeași măsură, nu contează.
+  Asta înseamnă „în timp". O corectură în interiorul celor 300 ms ai capturii e același voicing.
+- Acordul luat prea devreme **nu e creditat nici măsurii următoare**: acolo trebuie cântat din nou,
+  în fereastra de anticipare sau după bara de măsură. Regula de anticipare e neschimbată.
+- În Training, „aceeași măsură" e un acord **și** un tur al buclei, nu doar un acord: la a doua
+  trecere prin progresie, măsura primește din nou un răspuns. Un voicing necontat nu intră nici în
+  numărătoare, nici în ce se trimite spre Review.
 
 ## Drumul: ce e deschis (2026-10-12)
 
@@ -207,6 +228,12 @@ au fost câștigate.
   întors la triade pe cine a început de la Rootless.
 - **„Next level"** pe ecranul de rezultat apare când trecerea are măcar o stea și duce la
   nivelul următor, inclusiv peste granița dintre unități (`levelAfter`).
+- **Cele șase tonalități în care începe o unitate sunt `C F Bb Eb G D`** (Edi, 2026-10-13): cele
+  în care sunt scrise cele mai multe piese, cu bemolii întâi. Până atunci erau `C F G D A E`,
+  partea cu diezi, prietenoasă cu chitara, care ținea Si bemol și Mi bemol în afara fiecărei
+  unități până la ultimul ei nivel. La ii–V–I, „Four more" a rămas `Ab Db G D`: sunt următoarele
+  patru după frecvență, iar `Ab Db` continuă cercul de cvarte din `C F Bb Eb`. Ultimul nivel a
+  rămas la 36 de acorduri, fiindcă e singurul al cărui rost e să treacă prin toate cele 12.
 
 ## Training — exercițiu liber, în afara drumului (2026-10-12)
 

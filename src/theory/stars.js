@@ -116,3 +116,21 @@ function meanMovement(attempts) {
   if (!moves.length) return null;
   return moves.reduce((sum, move) => sum + move, 0) / moves.length;
 }
+
+/**
+ * Whether a voicing that lands on a chord is the one that counts for it.
+ *
+ * Without the clock a chord has one answer by construction: answering it moves on to the next.
+ * On the clock a bar can be struck more than once, and then the first answer stands (Edi,
+ * 2026-10-13). The run shows the next chord, so it is easy to reach for it early; a voicing that
+ * starts more than half a beat before the bar line still belongs to the bar it is in, and the
+ * last-one-wins rule that was here before let it overwrite the right answer already given. It
+ * also means a correction a beat later does not count — which is what playing in time means.
+ *
+ * @param {{ timed: boolean, answered: boolean }} slot Whether the clock is running, and whether
+ *   this chord (this bar, this time round) already has its answer.
+ * @returns {boolean}
+ */
+export function counts({ timed, answered }) {
+  return !(timed && answered);
+}
