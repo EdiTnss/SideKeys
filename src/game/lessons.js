@@ -1,8 +1,8 @@
 // The theory pages: one lesson per unit of the path. Data and three lookups, no DOM.
 //
 // A lesson is text, a handful of voicings to look at and listen to, and a list of what the game
-// listens for. The text is a DRAFT: Claude wrote it on 2026-10-12 and the theory in it is Edi's
-// to correct. What is not a matter of opinion is checked: test/lessons.test.js grades every
+// listens for. Claude drafted the text on 2026-10-12 and Edi read it through and passed it the
+// same day; the theory in it stays his to change. What is not a matter of opinion is checked: test/lessons.test.js grades every
 // example with the analyzer that grades the player, and holds every "listens for" line to a
 // test that fails the day the engine stops behaving that way. A page cannot say one thing while
 // the verdict says another.
@@ -66,8 +66,9 @@ export const LESSONS = [
       { symbol: 'C', notes: 'C3 E4 G4 C5', type: 'spread', inversion: 'root position', caption: 'The same C major over two hands. Still a C major triad.' },
     ],
     listens: [
-      'The third decides whether you played the chord that was asked for: C with an E flat in it is not C.',
-      'On a sus4 the fourth has to be there, and the third must not take its place.',
+      'All three notes have to be there: the root, the third and the fifth.',
+      'The third decides which triad it is: C with an E flat in it is not C.',
+      'On a sus4 the fourth stands where the third would, and the third must not take its place.',
       'The spacing is yours: one hand or two, any octave.',
     ],
     level: 'triads-major',
@@ -292,6 +293,12 @@ export const LESSONS = [
         heading: 'On a major seventh',
         text: [
           'Start on the seventh. B, E, A, D is Cmaj7: seventh, third, thirteenth, ninth.',
+        ],
+      },
+      {
+        heading: 'On a dominant',
+        text: [
+          'Start on the seventh. The first step up, to the third, is the tritone that makes the chord a dominant: the one augmented fourth in the stack. The rest are perfect fourths. F, B, E, A is G7: seventh, third, thirteenth, ninth.',
         ],
       },
       {

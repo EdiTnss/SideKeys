@@ -148,8 +148,8 @@ apoi structura (drum, unități, nivele), abia apoi meta-jocul (streak, obiectiv
   slabe contează. Regulile, în [spec-game.md](spec-game.md).
 - [x] **Teoria** — o pagină pe unitate, cu exemple desenate și cântate de motor. **Adăugată pe
   2026-10-12, peste lista inițială**, la cererea lui Edi: drumul cerea forme pe care nu le explica
-  nicăieri. Lecțiile erau la P3; au venit acum cele opt ale drumului. **Textul e draft, de corectat
-  de Edi** — până atunci nu e considerat gata. Regulile, în [spec-game.md](spec-game.md).
+  nicăieri. Lecțiile erau la P3; au venit acum cele opt ale drumului. Textul, scris de Claude, a fost
+  citit și acceptat de Edi în aceeași zi. Regulile, în [spec-game.md](spec-game.md).
 - [ ] Formular de email găzduit, legat din pagină și din README.
 - [x] **Shell-ul publicat pe Pages**, în locul Laboratorului — **făcut pe 2026-10-12**. Jocul e la
   rădăcină, bancul la `/lab/`, publicate din `.github/workflows/pages.yml`. Verificat pe site-ul

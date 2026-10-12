@@ -6,7 +6,10 @@
 import { parseNoteName, DEGREE_SEMITONES } from './notes.js';
 
 // One row per quality. Every list holds degree labels; parseChord turns them into pitch classes.
-// `required` is what the drill demands (root is never required: rootless voicings are a goal).
+// `required` is what the drill demands. On a seventh chord that is never the root, and never a
+// natural fifth: rootless voicings are a goal, and both are notes someone else can play. A plain
+// triad is the exception — its three notes are the chord, with nobody to leave any of them to —
+// so all three are required (Edi, 2026-10-12; the third alone used to pass for C major).
 // `caution` is a subset of `tensions`: valid, but flagged as informational.
 export const QUALITIES = {
   maj7: {
@@ -51,7 +54,7 @@ export const QUALITIES = {
   },
   sus4: {
     aliases: ['sus4', 'sus'],
-    chordTones: ['1', '4', '5'], guideTones: ['4'], required: ['4'],
+    chordTones: ['1', '4', '5'], guideTones: ['4'], required: ['1', '4', '5'],
     tensions: ['9', '13', 'b7'], altered: [], avoid: ['3'], caution: [],
   },
   m7b5: {
@@ -66,12 +69,12 @@ export const QUALITIES = {
   },
   maj: {
     aliases: ['', 'maj', 'M', 'MA', 'ma'], // plain 'C'
-    chordTones: ['1', '3', '5'], guideTones: ['3'], required: ['3'],
+    chordTones: ['1', '3', '5'], guideTones: ['3'], required: ['1', '3', '5'],
     tensions: ['7', '9', '#11', '13'], altered: [], avoid: ['11'], caution: [],
   },
   m: {
     aliases: ['m', '-', 'min', 'mi', 'MI'],
-    chordTones: ['1', 'b3', '5'], guideTones: ['b3'], required: ['b3'],
+    chordTones: ['1', 'b3', '5'], guideTones: ['b3'], required: ['1', 'b3', '5'],
     tensions: ['b7', '7', '9', '11', '13'], altered: [], avoid: [], caution: [],
   },
 };

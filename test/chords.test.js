@@ -165,18 +165,20 @@ test('triads and sus4: the sevenths they usually get in practice are tensions', 
   const c = parseChord('C');
   assert.equal(c.quality, 'maj');
   assert.deepEqual(c.chordTones, [0, 4, 7]);
-  assert.deepEqual(c.required, [4]);
+  // All three since 2026-10-12 (Edi): a triad has nobody to leave its root or its fifth to.
+  assert.deepEqual(c.required, [0, 4, 7]);
   assert.deepEqual(c.tensions.available, [11, 2, 6, 9]);      // B D F# A
   assert.deepEqual(c.avoid, [5]);
 
   const cm = parseChord('Cm');
   assert.deepEqual(cm.chordTones, [0, 3, 7]);
+  assert.deepEqual(cm.required, [0, 3, 7]);
   assert.deepEqual(cm.tensions.available, [10, 11, 2, 5, 9]); // Bb B D F A
   assert.deepEqual(cm.avoid, []);
 
   const sus = parseChord('Csus4');
   assert.deepEqual(sus.chordTones, [0, 5, 7]);
-  assert.deepEqual(sus.required, [5]);
+  assert.deepEqual(sus.required, [0, 5, 7]);
   assert.deepEqual(sus.tensions.available, [2, 9, 10]);       // D A Bb
   assert.deepEqual(sus.avoid, [4]);                           // E
 });

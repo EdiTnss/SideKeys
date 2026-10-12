@@ -45,8 +45,9 @@ export const RUNGS = [
   { kind: 'chords', qualities: ['maj7', 'm7', '7'], keys: TWELVE, texture: 'shell' },
   { kind: 'chords', qualities: ['m7', '7', 'maj7'], keys: TWELVE, texture: ['rootless-A', 'rootless-B'] },
   { kind: 'chords', qualities: ['maj7', 'm7', '7'], keys: TWELVE, texture: 'drop-2' },
-  // Quartal tops the ramp, and takes no dominant: with the tightened rule (at most one augmented
-  // fourth) the generator builds no quartal voicing for one, in any key.
+  // Quartal tops the ramp. It takes no dominant, though one can be played since 2026-10-12: the
+  // ramp is Edi's table (docs/spec-game.md), and a wider pool here would redraw the top rung of
+  // every day, today's included.
   { kind: 'chords', qualities: ['m7', 'maj7'], keys: TWELVE, texture: 'quartal' },
 ];
 

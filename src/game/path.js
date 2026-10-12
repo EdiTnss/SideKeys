@@ -104,10 +104,13 @@ export const PATH = [
     name: 'Quartal',
     blurb: 'Fourths stacked. The modern sound, and the one the engine is strictest about.',
     levels: [
-      // Dominants are missing on purpose: with the tightened quartal rule (at most one augmented
-      // fourth), the generator offers no quartal voicing for a dominant in any key.
+      // On a dominant the stack starts on the seventh, and its first step is the tritone up to
+      // the third: 7, 3, 13, 9. The level came in on 2026-10-12, the day the generator learned to
+      // build that voicing (Edi); until then no dominant could be asked for here. The unit runs
+      // in the order the Shell unit does: one quality, the next, then all of them.
       { id: 'quartal-minor', name: 'Minor sevenths, twelve keys', tempo: TEMPO, texture: 'quartal', asks: { kind: 'chords', qualities: ['m7'], keys: TWELVE } },
-      { id: 'quartal-boss', name: 'With maj7', tempo: TEMPO, texture: 'quartal', asks: { kind: 'chords', qualities: ['m7', 'maj7'], keys: TWELVE, count: 18 } },
+      { id: 'quartal-dom', name: 'Dominants, twelve keys', tempo: TEMPO, texture: 'quartal', asks: { kind: 'chords', qualities: ['7'], keys: TWELVE } },
+      { id: 'quartal-boss', name: 'All three, twelve keys', tempo: TEMPO, texture: 'quartal', asks: { kind: 'chords', qualities: ['m7', 'maj7', '7'], keys: TWELVE, count: 18 } },
     ],
   },
   {

@@ -213,7 +213,11 @@ function buildMessages({ chord, missing, hasRoot, wrong, avoid, caution, muddy, 
     const played = slash.played === null ? 'nothing' : pcName(slash.played, chord);
     messages.push({ level: 'warning', code: 'bass', text: `Bass should be ${chord.bass}, not ${played}` });
   }
-  if (!hasRoot) messages.push({ level: 'info', code: 'rootless', text: `Rootless voicing (no ${chord.root})` });
+  // Rootless is a name for a choice. Where the root is required — a triad — leaving it out is a
+  // missing note, already said above, and calling it a voicing would take the warning back.
+  if (!hasRoot && !missing.includes(chord.rootPc)) {
+    messages.push({ level: 'info', code: 'rootless', text: `Rootless voicing (no ${chord.root})` });
+  }
   for (const pc of wrong) messages.push({ level: 'warning', code: 'wrong', text: `Wrong note: ${pcName(pc, chord)} is not in ${chord.symbol}` });
   for (const pc of avoid) messages.push({ level: 'warning', code: 'avoid', text: `Avoid note: ${withDegree(pc)}` });
   for (const pc of caution) messages.push({ level: 'info', code: 'caution', text: `Caution: ${withDegree(pc)}` });

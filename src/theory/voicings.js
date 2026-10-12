@@ -78,11 +78,23 @@ function dropTwoShapes(chord) {
 
 // Four stacked perfect fourths starting on any chord tone or available tension, kept only when
 // every note is a chord tone or an available tension.
+//
+// A dominant gets one more: the stack that starts on its seventh, where the first step up is the
+// tritone to the third — seventh, third, thirteenth, ninth, F B E A on G7. The analyzer allows a
+// quartal voicing one augmented fourth and always read this as quartal; here it is the chord's
+// own tritone rather than an accident, which is why the generator builds it for a dominant and
+// for nothing else (Edi, 2026-10-12). The same notes sit on a minor sixth a tritone substitute
+// away (Eb A D G on Cm6); nobody asked for that one, and a test pins that it is not built.
 function quartalShapes(chord) {
   const allowed = new Set([...chord.chordTones, ...chord.tensions.available]);
   const shapes = [];
   for (const start of allowed) {
     const stack = [0, 5, 10, 15].map(interval => (start + interval) % 12);
+    if (stack.every(pc => allowed.has(pc))) shapes.push(stack);
+  }
+  if (chord.quality === '7') {
+    const [third, seventh] = chord.guideTones;
+    const stack = [seventh, third, (third + 5) % 12, (third + 10) % 12];
     if (stack.every(pc => allowed.has(pc))) shapes.push(stack);
   }
   return shapes;

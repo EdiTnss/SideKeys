@@ -82,9 +82,10 @@ o anticipare, nu e treapta de pe ecran.
 fiecărui nivel cu textură și verifică, prin `suggestVoicings`, că există măcar un voicing fără
 avertismente de forma cerută. Oracolul e conservator: o textură pe care un om ar putea-o cânta
 dar generatorul n-o construiește ține nivelul afară din drum. Mai bine așa decât un nivel pe care
-nimeni nu-l poate trece. Ce a tăiat oracolul, măsurat pe 2026-10-11: **shell** nu există pe
-m7b5, dim7 sau m6; **quartal** nu există pe nicio dominantă (regula strânsă din 2026-09-20 —
-cel mult o cvartă mărită); **rootless A** lipsește pe Abm7b5, o margine de registru.
+nimeni nu-l poate trece. Ce taie oracolul, re-măsurat pe 2026-10-12: **shell** nu există pe
+m7b5 și dim7; **quartal** nu există pe m7b5, dim7, m6 și mMaj7 (pe dominantă există din
+2026-10-12, vezi `spec-analyzer.md`); **rootless A** lipsește pe Abm7b5, o margine de registru.
+Nicio formă nu există pe triadele majore și minore, care își cer toate trei notele.
 
 **Tempoul**: 120 bpm, un acord pe măsură — două secunde ca să-l auzi, să-l găsești și să-l cânți
 (decizie Edi, 2026-10-11).
@@ -146,6 +147,10 @@ o chestiune de reglaj fin — orice valoare între 1,25 și 2 separă corect. De
 - **1,75 pe turnaround**, fiindcă mișcarea de bas pe terțe costă mai mult (1,25 măsurat, cel mai
   scump din bibliotecă). La 1,50 ar fi fost singura progresie unde steaua cere mai bine decât
   cântă generatorul.
+
+Tabelul e măsurat înainte ca generatorul să construiască dominantul quartal (2026-10-12) și nu a
+fost refăcut: un candidat în plus poate doar să micșoreze cifra „bine condus" sau s-o lase cum e,
+deci pragurile rămân de partea sigură.
 
 Când se adaugă o progresie nouă în bibliotecă, i se măsoară pragul în același fel și intră în
 tabel, ca la tabelul de calități al analizorului.
@@ -237,7 +242,7 @@ dominant quartal n-a fost uitat: nu există. Măsurat pe 2026-10-12, pe 12 tonal
 | shell | triade, m7b5, dim7, 6/9, 7b9, 7#11, 7alt |
 | rootless A / B | triade, 7#11 (și câte o tonalitate pe m7b5, dim7, 7b9 — margine de registru) |
 | drop 2 | triade, 6/9, 7b9, 7#11, 7alt |
-| quartal | 7, m7b5, dim7, m6, mMaj7 și dominantele alterate |
+| quartal | triadele majore și minore, m7b5, dim7, m6, mMaj7 și dominantele alterate |
 
 **Un drill are 512 măsuri** (`DRILL_BARS`) și apoi o ia de la capăt. Trebuie să se termine undeva,
 fiindcă ceasul răspunde la „al cui e acordul din măsura asta" dintr-o listă — aceeași
@@ -272,8 +277,8 @@ ecranul îl oprește acum la plecare (`dispose`).
 Cerută de Edi după prima zi pe Genos: jocul cerea „drop 2" și „quartal" cu un singur rând de
 explicație. Sunt opt pagini, una pe fiecare unitate a drumului, în `src/game/lessons.js`.
 
-**Textul e un DRAFT.** L-a scris Claude pe 2026-10-12; teoria din el e a lui Edi de corectat, și
-până n-o corectează nu e considerat gata. Se corectează direct în `lessons.js`.
+**Textul l-a scris Claude pe 2026-10-12, iar Edi l-a citit și l-a acceptat în aceeași zi.** Teoria
+din el rămâne a lui de schimbat, direct în `lessons.js`.
 
 **Ce nu e chestiune de părere e verificat** (`test/lessons.test.js`), ca o pagină să nu poată
 spune un lucru cât timp verdictul spune altul:
@@ -304,20 +309,19 @@ nivelul**: întrebarea „ce e un drop 2?" valorează mai mult decât trecerea p
 între ele. Transpunerea lor în alte tonalități nu e făcută: limitele de registru grav ar strica
 unele exemple, deci ar trebui verificate una câte una.
 
-**Trei lucruri pe care scrisul paginilor le-a scos la iveală, nerezolvate — sunt ale lui Edi:**
+**Trei lucruri pe care scrisul paginilor le-a scos la iveală, și ce a hotărât Edi (2026-10-12):**
 
-1. **O triadă trece cu o singură notă.** Analizorul cere doar terța (`required` e `3` pe majoră,
-   `b3` pe minoră, `4` pe sus4), fiindcă regula a fost scrisă pentru voicing-uri de jazz, unde
-   fundamentala și cvinta se lasă altcuiva. La unitatea de Triade asta înseamnă că un Mi singur e
-   „Clean" pentru Do major. Pagina de triade nu promite că se cer toate trei notele, tocmai ca să
-   nu mintă.
-2. **Un dominant quartal există și e recunoscut**: `F3 B3 E4 A4` pe G7 (7, 3, 13, 9) iese
-   „quartal", fără avertismente, cu tritonul ca singura cvartă mărită admisă. Lipsește din drum
-   și din Training doar fiindcă **generatorul** suprapune numai cvarte perfecte, deci oracolul de
-   jucabilitate nu găsește niciunul. Nu analizorul e limita, cum se credea.
+1. **O triadă trecea cu o singură notă.** Analizorul cerea doar terța, fiindcă regula fusese
+   scrisă pentru voicing-uri de jazz; un Mi singur ieșea „Clean" pentru Do major. **Hotărât: o
+   triadă cere toate trei notele** (`spec-analyzer.md`, punctul 1). Pagina de triade o spune
+   acum pe față.
+2. **Dominantul quartal exista și era recunoscut**, dar nu era cerut nicăieri, fiindcă generatorul
+   suprapunea numai cvarte perfecte. **Hotărât: intră.** Generatorul îl construiește (7, 3, 13,
+   9), unitatea Quartal are un nivel „Dominants, twelve keys" și ultimul ei nivel le amestecă pe
+   toate trei, în ordinea unității Shell; în Training, „7" nu mai e stins la Quartal. Rampa
+   challenge-ului a rămas cum a aprobat-o Edi (m7 sau maj7 pe treapta de sus).
 3. **Numele formelor A și B pe dominantă** urmează motorul: A are terța jos (3–13–7–9), B are
-   septima jos (7–9–3–13), pe orice acord. Unele metode numesc setul după acordul de pornire al
-   unui ii–V–I; dacă Edi vrea altă convenție, se schimbă și detectorul, nu doar pagina.
+   septima jos (7–9–3–13), pe orice acord. **Hotărât: rămâne așa.**
 
 ## Antrenamentul zilnic (2026-10-11)
 
@@ -365,9 +369,10 @@ câștigă primele pătrățele în loc să primească o grilă goală, iar un a
 adică și un rezultat parțial rămâne ceva ce are rost să fie arătat. Alternativa (douăsprezece
 acorduri amestecate din tot drumul) a fost respinsă exact aici: un începător ar fi luat 2 din 12.
 
-Quartal e treapta de sus și **nu ia nicio dominantă**: cu regula strânsă din 2026-09-20 (cel mult
-o cvartă mărită), generatorul nu construiește niciun voicing quartal pe o dominantă, în nicio
-tonalitate. **Jucabilitatea se verifică pe produsul cartezian întreg** — fiecare tonalitate contra
+Quartal e treapta de sus și **nu ia nicio dominantă**. Motivul de la început — generatorul nu
+construia niciun voicing quartal pe o dominantă — a căzut pe 2026-10-12, când a învățat să-l
+construiască. Bazinul a rămas totuși cum l-a aprobat Edi: lărgit, ar retrage treapta de sus a
+fiecărei zile, inclusiv a celei de azi. **Jucabilitatea se verifică pe produsul cartezian întreg** — fiecare tonalitate contra
 fiecărei calități din bazin — nu pe un eșantion de zile: un seed nu e conținut citit de cineva.
 Plimbarea pe un an de zile verifică altceva (determinismul și regula de nerepetare).
 
