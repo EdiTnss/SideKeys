@@ -316,3 +316,57 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   **Următorul pas**: măsurarea DoD-ului P1 pe site-ul publicat, dintr-un profil curat — singurul
   lucru din fază care nu așteaptă nici pe Edi, nici clapa. Raportul de predare:
   `docs/session-log/2026-10-12-0541.md`.
+- **2026-10-12 (ziua)** — **Prima zi a shell-ului pe Genos, și cele opt lucruri pe care le-a găsit Edi.**
+  Sesiunea a început cu iconița de pe desktop, care „nu mergea": nu era stricată, deschidea
+  Laboratorul vechi (`start.cmd` pornea `npx serve` și proxy-ul AI pe care jocul nu-l apelează).
+  Acum `start.cmd` deschide jocul publicat într-o fereastră Chrome proprie, fără niciun server, iar
+  `dev.cmd` a preluat pornirea de dezvoltare. Edi a jucat apoi drumul pe Genos și a venit cu opt
+  observații, luate pe rând, de la cea mai ușoară:
+
+  1. **„Close position"** lângă o triadă cântată cum s-a cerut se citea ca o observație. E altă
+     axă decât răsturnarea (cât de întinse sunt notele, nu care e jos). Etichetele generice nu mai
+     apar lângă o stea; pe acordurile de trei sunete verdictul spune răsturnarea (`inversionOf`).
+  2. **Fa bemol**: `Dbm/Fb`, `Gbm/Bbb`, `Abm/Cb`. Două reguli, ale lui Edi: un nume afișat nu e
+     niciodată Cb, Fb, B#, E# sau cu dublu accident (`plainName`), iar un acord cu terță mică pe
+     Db sau Gb se scrie din C# și F# (`chartSymbol`). **Decizii**: `C#m/E` și `F#m/A`; `Abm`
+     rămâne `Abm/B`. Am extins regula la toată familia cu terță mică (m7, m7b5, dim7, m6).
+  3. **În timed nu se putea cădea pe timpul 1**, fiindcă acordul apărea pe timpul 1. Acum acordul
+     următor stă mereu lângă cel curent, iar numărătoarea nu mai acoperă primul acord. Răstoarnă
+     în parte o variantă respinsă în `PRODUCT.md` (următorul acord numai în fereastra de
+     anticipare, care pâlpâia). **Decizie**: și în free play, nu doar în timed.
+  4. **Clapa se reconecta la fiecare nivel**: instrumentul era al ecranului de joc. E acum al
+     aplicației, cu butonul în antet și reconectare fără dialog când permisiunea există deja.
+  5. **„Next level"** pe ecranul de rezultat; „Back" se întoarce de unde ai intrat.
+  6. **Training**: drill liber și progresii în buclă, în joc. **Decizii**: numele „Training", iar
+     „Your training" devine „Review"; fără stele, dar minutele și punctele slabe contează; grila
+     scrisă de mână, melodia și aranjamentul rămân în Laborator. Redeschide în parte decizia 5 din
+     `DIRECTION.md`, luată în aceeași dimineață.
+  7. **XP-ul și „boss"**. **Decizii**: XP scos de tot (era „propunere, nu decizie" în specificație
+     și nu cumpăra nimic); rama de boss scoasă, nivelul păstrat; toate unitățile deschise până
+     există testul de plasare. Consecință: „Continue the path" pornește de la ultimul nivel jucat.
+  8. **Theory**: o pagină pe unitate, cu exemple notate de analizor. **Decizii**: forma (pagină pe
+     unitate, exemple pe claviatura aplicației); draftul îl scrie Claude, Edi îl corectează.
+
+  **Garda de teste a oprit sesiunea o dată**, corect: scoaterea XP-ului a șters patru teste (formula,
+  adunarea, plafonul pe zi, prețul challenge-ului) și numărul a scăzut de la 319 la 317. Renumărând,
+  am găsit o gaură adevărată — nimic nu verifica dacă ultimul nivel jucat supraviețuiește unui
+  reload — și am închis-o (318), fără să umplu până la 319. **Pragul a fost coborât la 318 cu
+  acordul lui Edi**, cerut cu `AskUserQuestion` după ce patru mesaje obișnuite n-au deblocat garda.
+
+  **Defecte vechi găsite pe drum și reparate**: un `6/9` ratat intra în Review ca `6` (calitatea se
+  tăia la primul `/`); un nivel părăsit în mijlocul unui timed run își lăsa metronomul bătând;
+  „Back to the path" ducea de fapt pe Today.
+
+  **Ce a scos la iveală scrisul paginilor de teorie și a rămas nerezolvat**, fiindcă e al lui Edi:
+  o triadă trece cu terța singură (`required` e doar `3`); un dominant quartal (`F B E A` pe G7) e
+  recunoscut de analizor și lipsește numai fiindcă generatorul suprapune doar cvarte perfecte —
+  nu analizorul e limita, cum scrisesem dimineața; numele formelor A/B pe dominantă urmează motorul.
+
+  **Sesiunea, în cifre**: 311 → **347 de teste** (+36), 13 commit-uri înaintea acestei intrări, 41 de fișiere (2970 adăugate,
+  439 șterse), `svelte-check` 0 pe 318 fișiere, reluarea harness-ului neschimbată la fiecare pas
+  (110 din 110). **Nimic nu e împins**: site-ul publicat e pe versiunea de dimineață.
+  **Neverificat**: tot ce ține de ureche și de Genos — metronomul din Training, sunetul exemplelor,
+  conexiunea care rămâne. Probat doar în browser, cu clapa de ecran.
+
+  **Următorul pas**: Edi corectează draftul de teorie și confirmă reparațiile pe Genos; apoi push.
+  Raportul de predare: `docs/session-log/2026-10-12-2313.md`.

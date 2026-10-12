@@ -160,114 +160,122 @@ Regula de dependență: `app/` importă din `src/`, niciodată invers. `theory/`
 
 ## Starea curentă
 
-La 2026-10-12. **Cum s-a ajuns aici stă în [docs/JOURNAL.md](docs/JOURNAL.md)**, nu aici: secțiunea
+La 2026-10-12, seara. **Cum s-a ajuns aici stă în [docs/JOURNAL.md](docs/JOURNAL.md)**, nu aici: secțiunea
 asta se citește la fiecare sesiune, deci ține doar ce e adevărat acum, ce e nedecis și ce așteaptă
 pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a produs.
 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **311 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
-- **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5, `npm --prefix app run dev`): cele patru
-  ecrane din prototip — Azi, Drumul, Jocul, Rezultatul — peste opt unități (Triade → ii–V–I), cu
-  stele Right/Clean/Smooth, streak, antrenament zilnic pe calități,
-  challenge zilnic partajabil și PWA instalabilă care merge fără rețea. Regulile:
+  **347 de teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+- **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5): Azi, Drumul, Jocul, Rezultatul, plus
+  **Training** și **Theory**, peste opt unități (Triade → ii–V–I), **toate deschise**. Stele
+  Right/Clean/Smooth, streak, Review zilnic pe calități, challenge zilnic partajabil, PWA care
+  merge fără rețea. **Fără XP și fără „boss"** (scoase pe 2026-10-12). Regulile:
   [docs/spec-game.md](docs/spec-game.md).
-- **Laboratorul** (`index.html` + `src/ui/`, `npx serve .`): drill, progresii, grilă text, metronom,
-  statistici, aranjament pe Genos, reharm cu Claude dacă pornești Worker-ul local. Publicat la
-  **`/lab/`** de pe 2026-10-12; tab-ul Reharm și „Ask Claude" rămân ascunse acolo, verificat pe viu.
-- **Totul e publicat** din `.github/workflows/pages.yml`: jocul la rădăcină, bancul la `/lab/`,
-  bancul copiat **după** build ca să nu intre în precache-ul PWA-ului.
-- **Harness-ul**: port MIDI virtual (`?midi=virtual`), banda sesiunii, reluare în Node și în CI pe
-  trei sesiuni înregistrate, una de 11 minute reale pe Genos. Jocul și reluarea folosesc **aceeași**
-  funcție (`snapshotTarget`) ca să decidă ce acord răspunde un voicing, deci nu pot ajunge să spună
-  lucruri diferite.
-- **Sunetul e un pian adevărat**: 17 înregistrări din Salamander Grand Piano V3 (Yamaha C5), sub
-  CC BY 3.0, cu creditul pe ecranul Azi fiindcă licența îl cere. `audio/synth.js` rămâne ca prima
-  voce, până se decodează înregistrările, și ca plasă dacă manifestul lipsește.
-- **Clapele răspund**: verdictul înflorește o dată pe notele cântate, nota greșită primește o
-  împingere de un pixel, nota lipsă respiră. Numai transform, opacitate și filtru — nimic nu
-  atinge layout-ul — și nicio culoare nouă. `prefers-reduced-motion` le oprește pe toate.
-- **Brandul** e legat în pagină, cu o regulă portantă: accentul magenta nu atinge niciodată o clapă
-  sau un verdict (`assets/BRAND.md`, comentariul din `styles.css`).
+- **Acordul următor e mereu pe ecran**, lângă cel cerut, inclusiv în măsura de numărătoare: altfel
+  o trecere în timp nu putea cădea pe timpul 1.
+- **Clapa se conectează o dată**, din antet, și rămâne conectată între nivele; la vizitele
+  următoare se reconectează singură dacă Chrome are deja permisiunea.
+- **Training**: drill liber (calități, tonalități, formă opțională) și progresii din bibliotecă în
+  buclă, cu metronom care se pornește și se oprește fără să încheie sesiunea. Fără stele; minutele
+  și punctele slabe contează.
+- **Theory**: o pagină pe unitate, cu exemple colorate de analizor și cântate la clic. **Textul e
+  draft** (vezi „Ce așteaptă pe Edi").
+- **Ortografia**: niciun Cb, Fb, B#, E# sau dublu accident în ce citește jucătorul; acordurile cu
+  terță mică pe Db și Gb se scriu din C# și F# (`C#m/E`, `F#m/A`). `Abm` rămâne `Abm`.
+- **Laboratorul** (`index.html` + `src/ui/`), publicat la **`/lab/`**: grila scrisă de mână,
+  înregistrarea melodiei, aranjamentul pe Genos, reharm-ul. Drill-ul și progresiile lui au acum și
+  o variantă în joc (Training).
+- **Harness-ul**: port MIDI virtual, banda sesiunii, reluare în Node și în CI pe trei sesiuni
+  înregistrate. Jocul, Training și reluarea folosesc **aceeași** `snapshotTarget`, deci nu pot
+  ajunge să spună lucruri diferite. Toată ziua de azi a lăsat reluarea neschimbată: 110 din 110.
+- **Sunetul e un pian adevărat** (Salamander Grand, CC BY 3.0, cu creditul pe ecranul Azi).
+- **Lansarea**: `start.cmd` (iconița de pe desktop) deschide jocul **publicat** într-o fereastră
+  proprie, fără server; `dev.cmd` pornește serverul de dezvoltare, `dev.cmd lab` adaugă bancul
+  și proxy-ul.
+
+### Nimic din ziua de 2026-10-12 nu e împins
+
+**Toate commit-urile zilei sunt doar local** (`git log origin/main..HEAD` le arată). Site-ul
+publicat — deci și iconița de pe desktop — arată versiunea de dimineață: cu XP, cu boși, fără Training și fără Theory. Împingerea așteaptă două
+lucruri de la Edi: să corecteze draftul de teorie și să confirme pe Genos ce s-a reparat.
 
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
-- **Laboratorul nu se reface în shell** (decizia 5, închisă pe 2026-10-12): rămâne pagina care e,
-  publicată alături, la `/lab/`. Animațiile de clapă sunt doar în shell — bancul rămâne sobru.
+- **Testul de plasare**: nu există; de aceea toate unitățile sunt deschise.
+- **Exemplele din Theory sunt doar în Do**: transpunerea ar trebui verificată tonalitate cu
+  tonalitate, din cauza limitelor de registru grav.
 
 ### Verificat pe hardware (Genos)
 
-- Pornirea MIDI: Genos apare ca intrare, e ales singur ca ieșire, literele `A S D F…` tac cât e
-  conectat (2026-10-05).
-- Aranjamentul complet, cu melodia deasupra, după repararea registrului (2026-10-05; regula, în
-  [docs/spec-reharm.md](docs/spec-reharm.md)).
-- Stop oprește cu adevărat redarea. Cauza găsită atunci rămâne valabilă: **Chrome nu implementează
-  `MIDIOutput.clear()`**, deci `output.sendScheduled` predă felie cu felie, pe lookahead-ul
-  metronomului.
-- **Neverificat pe Genos: tot shell-ul.** Jocul a fost probat doar cu mouse-ul, clapa de ecran și
-  portul virtual. „Connect a MIDI keyboard" cere permisiunea Chrome și se poate confirma doar la Edi.
+- Pornirea MIDI, aranjamentul complet și Stop-ul din Laborator (2026-10-05).
+- **Shell-ul a văzut prima dată Genos-ul pe 2026-10-12**: Edi a jucat drumul și a găsit opt
+  probleme, toate rezolvate în aceeași zi (jurnal).
+- **Neconfirmat de Edi pe Genos, deși probat în browser cu clapa de ecran**: conexiunea care
+  rămâne între nivele și se reface singură după reload; acordul următor (dacă se poate cădea pe
+  timpul 1); Training cu metronomul lui; sunetul exemplelor din Theory.
 
 ### Decizii care nu se schimbă (și de ce)
 
-- **Worker-ul nu se publică** (Edi, 2026-09-20): site-ul public nu face niciun apel AI, deci nu poate
-  costa nimic. `PUBLISHED_PROXY_URL` rămâne gol, iar „Ask Claude" apare doar cu un proxy în Settings.
-- **Modul microfon rămâne închis**: 45% măsurat față de pragul de 90%, cu tavan de 72% — nici cea mai
-  bună regulă de prag nu ajunge ([docs/spec-mic.md](docs/spec-mic.md)). Se redeschide doar dacă se
-  schimbă modelul, nu regula de citire.
-- **Reharm-ul cu apel AI e înghețat** (`ai/pipeline.js`): dovadă tehnică, fără lucru nou. Aranjamentul
-  (`realize.js`, `player.js`) **nu** e reharm — e unealta de comping, și e al produsului.
-- **Piesa demo nu blochează nimic**: fără `demo/reharm.json`, tab-ul Reharm nu apare pe site.
+- **Worker-ul nu se publică** (Edi, 2026-09-20): site-ul public nu face niciun apel AI.
+- **Modul microfon rămâne închis**: 45% față de pragul de 90% ([docs/spec-mic.md](docs/spec-mic.md)).
+- **Reharm-ul cu apel AI e înghețat** (`ai/pipeline.js`). Aranjamentul **nu** e reharm.
 - **Poarta P1 e suspendată** până există amândouă, clipul și formularul (`PRODUCT.md`).
+- **Id-urile ultimelor nivele se termină în `-boss`**, deși „boss" nu mai există: sunt cheile sub
+  care se salvează stelele.
 
 ### Ce așteaptă pe Edi
 
-- **Drumul, pe Genos**: joacă lanțul (Azi → drum → un nivel în timp → o recapitulare) și corectează
-  **conținutul** din `src/game/path.js`. Ordinea unităților și tempoul 120 sunt aprobate; tonalitățile
-  și ce lipsește dintr-o unitate sunt teoria lui.
-- **Să asculte pianul** și să spună dacă stratul de velocitate ales (v9 din 16) e potrivit: cu un
-  singur strat, timbrul nu se schimbă cu forța, doar volumul. Se schimbă într-o comandă.
-- **Să asculte pianul pe site-ul viu** și să spună dacă stratul de velocitate (v9 din 16) e
-  potrivit. Cu un singur strat, timbrul nu se schimbă cu forța, doar volumul.
-- **Formularul de email** (furnizor, GDPR, unde stau adresele) și clipul de 15 s / videoul de 60–90 s
-  pentru README (`<!-- demo.gif -->` marchează locul).
-- **La P2, nu acum**: opinie de marcă pe familia „Sidekick", clasele 9 și 41, înainte de înregistrare.
+- **Să corecteze draftul de teorie** din `src/game/lessons.js` (opt pagini, în engleză). Scris de
+  Claude; nu e gata până nu-l corectează. Se citește cel mai ușor în aplicație, din cardul Theory.
+- **Trei întrebări de teorie scoase la iveală de scrisul paginilor** (`spec-game.md`, secțiunea
+  Teoria): o triadă trece cu terța singură; un dominant quartal e recunoscut de analizor, dar nu e
+  cerut nicăieri fiindcă generatorul nu-l construiește; numele formelor A/B pe dominantă.
+- **O regulă de scor de urmărit**: în timed, un acord luat cu mai mult de o jumătate de timp
+  înainte se judecă pe acordul curent și îi **înlocuiește** răspunsul. Acum că acordul următor se
+  vede, e mai ușor de pățit. Soluția simplă: o măsură își păstrează primul răspuns.
+- **Conținutul drumului**, încă necorectat: „cele șase chei" sunt `C F G D A E` (partea cu diezi,
+  nu `F Bb Eb`), „Four more" amestecă `Ab Db` cu `G D`, iar ultimul nivel de ii–V–I cere 36 de
+  acorduri.
+- **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
+- **Formularul de email** și **clipul** pentru README — singurele care deschid poarta P1.
+- **La P2, nu acum**: opinie de marcă pe familia „Sidekick".
 
 ### Cioburi de care te lovești dacă nu le știi
 
+- **Garda din `.claude/hooks/guard.mjs` oprește închiderea sesiunii când scade numărul de teste.**
+  Pragul (`testFloor`) urcă singur și se coboară numai cu acordul lui Edi. Când ștergerea e
+  intenționată, întrebarea se pune cu `AskUserQuestion`: un mesaj obișnuit nu deblochează garda.
+- **Heredoc-urile din Bash strică două lucruri**: pică la un număr impar de apostrofuri și
+  înghit un backslash din două. Un script cu regex sau cu text în proză se scrie cu unealta Write.
+- **Serverul de dezvoltare** se pornește din `.claude/launch.json` (`sidekeys-shell`, portul
+  5173) sau cu `dev.cmd`.
 - **Prototipul celor patru ecrane**, aprobat, trăiește în afara repo-ului:
   https://claude.ai/artifact/LwezgTTnCurF57ZN1DecAY
-- **O vizită cu adevărat rece nu s-a putut măsura** din browserul de test (cache-ul HTTP servea tot,
-  0 KB prin rețea). Ce se știe sigur: shell-ul e ~156 KB în 3 cereri, iar pianul se încarcă abia la
-  intrarea într-un nivel, deci nu stă pe drumul către primul acord. DoD-ul de 30 de secunde din P1
-  nu e în pericol, dar cifra lui o dă o măsurătoare pe un profil curat.
-- **Sesiunile din `harness/sessions/`** poartă `"app": "voicing-lab"`, fiindcă au fost înregistrate
-  înainte de redenumire. Nimic nu citește câmpul, și sunt înregistrări — nu se rescriu.
-- **Necommis**: `Voicing Lab ca produs.pdf` (numele de pe disc, cum e în `.gitignore`), care nu intră
-  în repo; analiza de piață stă în afara lui.
+- **O vizită cu adevărat rece nu s-a măsurat încă** (DoD-ul de 30 de secunde din P1).
+- **Sesiunile din `harness/sessions/`** poartă `"app": "voicing-lab"`; nu se rescriu.
+- **Necommis**: `Voicing Lab ca produs.pdf`, care nu intră în repo.
 
 ## Următorul pas
 
-**Măsoară DoD-ul P1 pe site-ul publicat, dintr-un profil curat** (fereastră incognito, fără service
-worker și fără cache): cronometrează de la deschiderea https://editnss.github.io/SideKeys/ până la
-primul acord cântat pe clapa de ecran, și scrie cifra în `docs/PRODUCT.md`, la P1 — e singurul lucru
-din fază care nu așteaptă nici pe Edi, nici clapa, iar cifra de până acum (187 ms) e dintr-un browser
-cu cache cald, deci nu spune nimic despre un vizitator nou.
+**Edi corectează draftul de teorie și confirmă pe Genos reparațiile zilei** (conexiunea, acordul
+următor, Training). Abia apoi se împinge ziua de lucru: până atunci site-ul publicat rămâne pe
+versiunea veche, iar paginile de teorie nu ajung la nimeni necorectate.
 
 După aceea, în ordinea blocajelor:
 
-1. **Formularul de email** — ultimul punct din P1. Așteaptă de la Edi furnizorul (Buttondown,
-   ConvertKit, Tally, un Google Form) și unde stau adresele, fiindcă are coadă GDPR. După alegere,
-   e un link sau un embed în pagină și în README.
-2. **Edi joacă drumul pe Genos** și corectează conținutul din `src/game/path.js` — tonalitățile și ce
-   lipsește dintr-o unitate. Tot atunci se confirmă și clapa reală în shell, singurul lucru
-   neverificat pe hardware.
-3. **Clipul de 15 s** pentru README (`<!-- demo.gif -->` marchează locul). Împreună cu formularul,
-   pornește ceasul porții P1: 40 de adrese în 4 săptămâni.
+1. **Cele trei întrebări de teorie** din `spec-game.md` și regula de scor cu răspunsul înlocuit:
+   fiecare e o decizie scurtă a lui Edi, urmată de un test și de câteva linii.
+2. **Conținutul drumului** din `src/game/path.js`: tonalitățile și lungimea nivelelor.
+3. **Măsurarea DoD-ului P1** pe site-ul publicat, dintr-un profil curat (fereastră incognito):
+   de la deschiderea paginii la primul acord cântat. Nu așteaptă nici pe Edi, nici clapa.
+4. **Formularul de email**, apoi **clipul de 15 s**: împreună pornesc ceasul porții P1.
 
-Ordinea din `PRODUCT.md` nu se scurtcircuitează — buclă → structură → meta-joc — iar regula „niciun
-feature care nu e pe lista fazei curente" se aplică și când ideea e bună.
+Ordinea din `PRODUCT.md` nu se scurtcircuitează, iar regula „niciun feature care nu e pe lista
+fazei curente" s-a aplicat și azi: Training și Theory au intrat pe lista P1 cu acordul explicit al
+lui Edi, scris acolo, nu pe lângă ea.
 
 ## Documentație
 
