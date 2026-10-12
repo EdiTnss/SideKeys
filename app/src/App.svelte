@@ -3,16 +3,21 @@
   import Path from './screens/Path.svelte';
   import Today from './screens/Today.svelte';
   import type { Attempt, Finished, LevelPlan, Unit } from './game/level.svelte';
+  import { createInstrument } from './lib/instrument.svelte';
   import { xpFor } from './bridge/theory';
   import {
     loadProgress, saveProgress, recordRun, playsToday, dayStamp,
-    streak, secondsOn, outcomesFor, dueReviews, nextLevel, reviewLevel,
+    streak, secondsOn, outcomesFor, dueReviews, nextLevel, levelAfter, reviewLevel,
     recordChallenge, challengeResult, challengeLevel, challengeNumber, challengeStates,
     shareText, CHALLENGE_DIFFICULTY,
   } from './bridge/game';
 
   /** Fifteen minutes is the daily goal until someone asks to change it. */
   const GOAL_MINUTES = 15;
+
+  // One instrument for the whole visit, so the keyboard is connected once and stays connected
+  // from one level to the next. The screens borrow it; none of them owns it.
+  const instrument = createInstrument();
 
   // Progress lives in this browser and nowhere else for now: no account, nothing to sign up to.
   let progress = $state(loadProgress());
@@ -23,6 +28,15 @@
   const due = $derived(dueReviews(progress, today));
   const pending = $derived(Object.keys(progress.review ?? {}).length - due.length);
   const next = $derived(nextLevel(progress.stars));
+
+  // The level after the one being played, once it is open. A level opens on a star in the one
+  // before it, and a unit on a star in the last level of the unit before — so on the path both
+  // rules come to the same thing: this level has a star. Off the path there is nothing after.
+  const following = $derived.by(() => {
+    if (!playing || !(progress.stars[playing.plan.id] > 0)) return null;
+    const after = levelAfter(playing.plan.id) as { unit: Unit; level: LevelPlan } | null;
+    return after && { unit: after.unit, plan: after.level };
+  });
 
   // The day's challenge: its number always, its grid only once it has been played. The share
   // text is built from the stored pass, never from the run just finished, so a practice run
@@ -105,13 +119,25 @@
     </svg>
     Side<span class="accent">Keys</span>
   </button>
+  <!-- The keyboard is the app's, not a level's, so it is connected here and shown on every
+       screen. Once the browser has been told yes, later visits find it without being asked. -->
+  <span class="midi">
+    {#if instrument.hardware.length}
+      <span class="dot" aria-hidden="true"></span>{instrument.hardware.join(', ')}
+    {:else}
+      <button type="button" class="connect" onclick={() => instrument.connect()}>Connect a MIDI keyboard</button>
+    {/if}
+  </span>
   <span class="tag">{progress.xp} XP</span>
 </header>
 
 <main>
   {#if playing}
     {#key playing.plan.id}
-      <Game unit={playing.unit} plan={playing.plan} onfinish={finish} onexit={leaveGame} />
+      <!-- Leaving a level goes back to the screen it was opened from; the logo goes to Today. -->
+      <Game unit={playing.unit} plan={playing.plan} instrument={instrument} onfinish={finish}
+            onnext={following ? () => (playing = following) : null}
+            onexit={() => (playing = null)} />
     {/key}
   {:else if screen === 'path'}
     <Path stars={progress.stars} xp={progress.xp} onplay={(unit, plan) => (playing = { unit, plan })} />
@@ -144,5 +170,16 @@
   }
   .logo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
   .accent { color: var(--accent); }
-  .tag { margin-left: auto; font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
+  .midi {
+    margin-left: auto; display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--ink-muted);
+  }
+  /* The same green the status line under the keyboard already uses for "MIDI in". */
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--chord-tone); }
+  .connect {
+    padding: 6px 12px; border: 1px solid var(--accent); border-radius: 8px;
+    background: none; color: var(--ink); font: inherit; font-size: 13px; cursor: pointer;
+  }
+  .connect:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tag { font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
 </style>

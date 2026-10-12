@@ -7,7 +7,7 @@
   type Weakness = { key: string; problem: string; count: number } | null;
 
   let { name, score, xp, weakness, timed, threshold, grid = null, share = null,
-        official = true, onagain, onexit }: {
+        official = true, onagain, onnext = null, onexit }: {
     name: string;
     score: Score;
     xp: number;
@@ -21,6 +21,8 @@
     /** False on a replay of a challenge already played today. */
     official?: boolean;
     onagain: () => void;
+    /** The level after this one, when this run opened it (or it was open already). */
+    onnext?: (() => void) | null;
     onexit: () => void;
   } = $props();
 
@@ -111,9 +113,14 @@
     <p class="locked">Timed and clean. The third star wants the voices moving less: {score.movement.toFixed(2)} semitones each, and this level asks for {threshold}.</p>
   {/if}
 
+  <!-- One button leads, and it is the way forward when there is one: a level just passed should
+       be a single press away from the next, not a trip back to the map (Edi, 2026-10-12). -->
   <div class="buttons">
-    <button type="button" class="again" onclick={onagain}>Once more</button>
-    <button type="button" onclick={onexit}>Back to the path</button>
+    {#if onnext}
+      <button type="button" class="primary" onclick={onnext}>Next level</button>
+    {/if}
+    <button type="button" class:primary={!onnext} onclick={onagain}>Once more</button>
+    <button type="button" onclick={onexit}>Back</button>
   </div>
 </section>
 
@@ -146,6 +153,6 @@
     padding: 14px 28px; border: 1px solid var(--border); border-radius: 12px;
     background: var(--surface); color: var(--ink); font: inherit; font-size: 16px; cursor: pointer;
   }
-  button.again { background: var(--ink); color: #14171a; border-color: var(--ink); font-weight: 600; }
+  button.primary { background: var(--ink); color: #14171a; border-color: var(--ink); font-weight: 600; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>

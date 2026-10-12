@@ -222,3 +222,17 @@ export function levelById(id) {
   }
   return null;
 }
+
+/**
+ * The level that follows this one on the path, crossing into the next unit after a unit's last
+ * level. Null after the very last level, and for anything that is not on the path at all (the
+ * review, the daily challenge). Whether it is *open* is `pathState`'s question, not this one's.
+ *
+ * @param {string} id
+ * @returns {{ unit: any, level: any } | null}
+ */
+export function levelAfter(id) {
+  const ordered = PATH.flatMap(unit => unit.levels.map(level => ({ unit, level })));
+  const at = ordered.findIndex(entry => entry.level.id === id);
+  return at === -1 ? null : ordered[at + 1] ?? null;
+}

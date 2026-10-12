@@ -4,6 +4,10 @@
 // browser synth a virtual *output*, sitting beside the real ports rather than replacing them, so
 // there is no "demo mode" branch anywhere: a click and a Genos arrive by the same road. What
 // this file owns is when those parts are built and what the screens are allowed to see.
+//
+// There is one instrument for the whole visit, built by the app and handed to whichever screen
+// is being played. It used to be built by the game screen, once per level, and so the keyboard
+// had to be connected again on every level (Edi, at the Genos, 2026-10-12).
 
 import {
   connectMidi, VoicingCapture, createVirtualMidi, mergeAccess, createSynth, createOnScreen, loadPiano,
@@ -11,6 +15,11 @@ import {
 
 export type Status = { text: string; level: 'ok' | 'warn' | '' };
 export type Instrument = ReturnType<typeof createInstrument>;
+/** What a screen wants to be told while it is the one being played to. */
+export type Listener = {
+  onVoicing: (notes: number[], info: { startedAt: number | null }) => void;
+  onNext?: () => void;
+};
 
 type Device = { id: string; name: string };
 type OnScreenState = { armed: number[]; sounding: number[]; octave: number };
@@ -18,16 +27,12 @@ type OnScreenState = { armed: number[]; sounding: number[]; octave: number };
 const IDLE: Status = { text: 'Click the keys to arm them, Enter to play. Or type: A S D F G H J.', level: '' };
 
 export function createInstrument({
-  onVoicing,
-  onNext = () => {},
   debounceMs = 300,
   nextNote = 28,
 }: {
-  onVoicing: (notes: number[], info: { startedAt: number | null }) => void;
-  onNext?: () => void;
   debounceMs?: number;
   nextNote?: number | null;
-}) {
+} = {}) {
   const synth = createSynth();
   const virtual = createVirtualMidi({ inputs: ['On-screen keyboard'], outputs: [synth, 'Virtual output'] });
   const ports = mergeAccess(virtual.access);
@@ -37,11 +42,19 @@ export function createInstrument({
   // output ports, so nothing above this line knows which one it is talking to.
   let voice: { send: (data: number[], time?: number) => void } = synth;
   let sound = $state<'synth' | 'piano'>('synth');
-  loadPiano().then(piano => {
-    if (!piano) return;
-    voice = piano;
-    sound = 'piano';
-  });
+  // Three megabytes nobody needs on the first screen: the samples are fetched the first time a
+  // screen listens, which is the first time a note could sound. That is also a click after the
+  // page opened, so the browser lets the audio start.
+  let soundAsked = false;
+  function loadSound() {
+    if (soundAsked) return;
+    soundAsked = true;
+    loadPiano().then(piano => {
+      if (!piano) return;
+      voice = piano;
+      sound = 'piano';
+    });
+  }
 
   let held = $state<number[]>([]);
   let armed = $state<number[]>([]);
@@ -51,7 +64,10 @@ export function createInstrument({
   // While the letters are a piano they are not shortcuts. With an instrument plugged in they go
   // back to being shortcuts, because nobody types a voicing when a Genos is under their hands.
   let typeToPlay = $state(true);
+  // Whether the *player* asked for the keyboard. A reconnection the page made by itself is not
+  // a question anyone put, so a missing cable is not reported as the answer to one.
   let asked = false;
+  let listener: Listener | null = null;
 
   const onscreen = createOnScreen({
     send: (data: number[]) => virtual.send(data),
@@ -69,8 +85,8 @@ export function createInstrument({
     nextNote,
     // startedAt rides along because timed play needs where the voicing *began*, not where it
     // was captured: half a beat of debounce is the difference between two chords.
-    onVoicing: (notes: number[], info: { startedAt: number | null }) => onVoicing(notes, info),
-    onNext,
+    onVoicing: (notes: number[], info: { startedAt: number | null }) => listener?.onVoicing(notes, info),
+    onNext: () => listener?.onNext?.(),
     onChange: (notes: number[]) => { held = notes; },
   });
 
@@ -96,15 +112,40 @@ export function createInstrument({
     status = { text: error.message, level: 'warn' };
   });
 
-  /** Asks the browser for the real instrument and drops it into the same access. */
+  let real: Promise<void> | null = null;
+  /** Adds the real ports to the merged access. Once: a second add would list every port twice. */
+  function addHardware() {
+    if (!real) {
+      real = navigator.requestMIDIAccess().then(access => ports.add(access));
+      // A refusal is not kept as the answer: the player may allow it the next time they ask.
+      real.catch(() => { real = null; });
+    }
+    return real;
+  }
+
+  /** The player asks for the real instrument. The browser shows its prompt the first time. */
   async function connect() {
     asked = true;
     try {
-      ports.add(await navigator.requestMIDIAccess());
+      await addHardware();
     } catch (error) {
       status = { text: `Web MIDI was refused: ${(error as Error).message}`, level: 'warn' };
     }
   }
+
+  // The browser remembers the answer to its MIDI prompt, per site. When that answer was yes,
+  // asking again shows nothing, so the keyboard is simply there on every later visit. When it
+  // was never given, nothing is asked here: a prompt on page load would be an answer demanded
+  // before anyone has seen the question.
+  async function reconnect() {
+    try {
+      const permission = await navigator.permissions.query({ name: 'midi' as PermissionName });
+      if (permission.state === 'granted') await addHardware();
+    } catch {
+      // No Permissions API, or one that does not know "midi": the button is still there.
+    }
+  }
+  reconnect();
 
   return {
     get held() { return held; },
@@ -115,6 +156,21 @@ export function createInstrument({
     get typeToPlay() { return typeToPlay; },
     get sound() { return sound; },
     connect,
+    /**
+     * A screen starts receiving voicings; what comes back stops it. Leaving also drops whatever
+     * was armed or half captured, so the notes of one level never land in the next.
+     */
+    listen(next: Listener) {
+      listener = next;
+      loadSound();
+      return () => {
+        // A newer screen may already be listening, if it was mounted before this one was torn down.
+        if (listener !== next) return;
+        listener = null;
+        capture.cancel();
+        onscreen.clear();
+      };
+    },
     toggle: (midi: number) => onscreen.toggle(midi),
     play: () => onscreen.play(),
     clear: () => onscreen.clear(),

@@ -4,7 +4,7 @@
 // the rest: `node --test` reaches them there, and the day a leaderboard needs checking, the
 // server can run the same arithmetic the browser ran.
 
-export { PATH, asksFor, thresholdFor, pathState, levelById, reviewLevel } from '../../../src/game/path.js';
+export { PATH, asksFor, thresholdFor, pathState, levelById, levelAfter, reviewLevel } from '../../../src/game/path.js';
 export {
   emptyProgress, recordRun, playsToday, dayStamp, loadProgress, saveProgress,
   streak, secondsOn, outcomesFor, dueReviews, nextLevel,

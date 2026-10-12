@@ -1,17 +1,22 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
   import Keyboard from '../lib/Keyboard.svelte';
   import Result from './Result.svelte';
-  import { createInstrument } from '../lib/instrument.svelte';
+  import type { Instrument } from '../lib/instrument.svelte';
   import { createLevel, type Attempt, type Finished, type LevelPlan } from '../game/level.svelte';
   import {
     analyzeVoicing, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
 
-  let { unit, plan, onfinish, onexit }: {
+  let { unit, plan, instrument, onfinish, onnext = null, onexit }: {
     unit: { name: string; difficulty: number };
     plan: LevelPlan;
+    /** The app's one instrument: it outlives this screen, so the keyboard stays connected. */
+    instrument: Instrument;
     onfinish: (run: { stars: number; attempts: Attempt[]; seconds: number }) => Finished;
+    /** Straight on to the level after this one, once this run has opened it. Null when it has not. */
+    onnext?: (() => void) | null;
     onexit: () => void;
   } = $props();
 
@@ -47,7 +52,9 @@
   // a CSS animation does not restart for a class the element already carries.
   let strike = 'strike-a';
 
-  const instrument = createInstrument({ onVoicing: judge, onNext: skip });
+  // This screen is the one being played to for as long as it is mounted, and no longer.
+  // svelte-ignore state_referenced_locally
+  onDestroy(instrument.listen({ onVoicing: judge, onNext: skip }));
 
   function judge(notes: number[], { startedAt }: { startedAt: number | null }) {
     // Which chord this answers is the level's decision, not the screen's: timed, a voicing that
@@ -137,7 +144,7 @@
 {#if level.finished && level.score}
   <Result name={title} score={level.score} xp={xp} weakness={level.weakness}
           timed={level.timed} threshold={level.threshold} grid={grid} share={share}
-          official={official} onagain={again} onexit={onexit} />
+          official={official} onagain={again} onnext={onnext} onexit={onexit} />
 {:else}
   <section class="game">
     <div class="progress">
@@ -208,9 +215,6 @@
       {#if !level.timed}
         <button type="button" onclick={skip}>Skip <kbd>Space</kbd></button>
       {/if}
-      {#if !instrument.hardware.length}
-        <button type="button" class="connect" onclick={() => instrument.connect()}>Connect a MIDI keyboard</button>
-      {/if}
       <span class="octave">letters start at {midiToName(instrument.octave)} <kbd>Z</kbd><kbd>X</kbd></span>
     </div>
 
@@ -250,7 +254,6 @@
   button:hover { border-color: var(--ink-muted); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   button.start { background: var(--ink); color: #14171a; border-color: var(--ink); font-weight: 600; }
-  button.connect { border-color: var(--accent); }
   kbd {
     font-family: ui-monospace, monospace; font-size: 11px; color: var(--ink-muted);
     border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px;

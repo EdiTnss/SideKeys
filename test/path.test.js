@@ -2,7 +2,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PATH, asksFor, pathState, levelById, reviewLevel } from '../src/game/path.js';
+import { PATH, asksFor, pathState, levelById, levelAfter, reviewLevel } from '../src/game/path.js';
 import { parseChord } from '../src/theory/chords.js';
 
 test('every ask on the path parses as a chord the analyzer can judge', () => {
@@ -119,4 +119,16 @@ test('reviewLevel: the queue turned into something playable, in every key', () =
   assert.deepEqual(asks.slice(0, 4), ['Cm7b5', 'C7', 'Fm7b5', 'F7']);
   for (const symbol of asks) assert.doesNotThrow(() => parseChord(symbol), symbol);
   assert.equal(asksFor(reviewLevel([])).length, 0, 'nothing due is nothing to play');
+});
+
+test('levelAfter: the next level, across the end of a unit, and null off the path', () => {
+  const [first, second] = PATH[0].levels;
+  assert.equal(levelAfter(first.id).level.id, second.id);
+  assert.equal(levelAfter(first.id).unit.id, PATH[0].id);
+  // The last level of a unit hands over to the first level of the next one.
+  const crossing = levelAfter(PATH[0].levels.at(-1).id);
+  assert.equal(crossing.unit.id, PATH[1].id);
+  assert.equal(crossing.level.id, PATH[1].levels[0].id);
+  assert.equal(levelAfter(PATH.at(-1).levels.at(-1).id), null, 'nothing follows the last level');
+  assert.equal(levelAfter('review'), null, 'the review is not on the path');
 });
