@@ -161,6 +161,27 @@ apoi structura (drum, unități, nivele), abia apoi meta-jocul (streak, obiectiv
 secunde, fără cont; un exercițiu ratat se întoarce în „antrenamentul tău" a doua zi și iese după
 3 reușite.
 
+**Măsurat pe 2026-10-13**, pe site-ul publicat, cu `node tools/cold-start.mjs`: Chrome headless pe
+un **profil nou la fiecare rulare** (fără cache, fără service worker, fără progres salvat), prin
+rețeaua adevărată, cu un script care face ce trebuie să facă un vizitator nou — apasă Play, apoi
+cântă primul acord pe literele tastaturii — cât de repede poate o mașină. Mediana a cinci rulări,
+în milisecunde de la deschiderea paginii:
+
+| | butonul Play există | verdictul primului acord | pianul încărcat |
+|---|---|---|---|
+| conexiunea lui Edi | 278 | 727 | 773 |
+| 4G lent, simulat (150 ms, 1,6 Mbit/s) | 832 | 1 242 | 17 389 |
+
+Până la verdict trec prin rețea **57–90 KB în 5–6 cereri**; tot, cu pianul, înseamnă 3 226 KB în 26
+de cereri. Din timpul până la verdict, ~420 ms sunt ale jocului, nu ale încărcării: 120 ms cât
+ține scriptul clapele și 300 ms cât așteaptă captura înainte să judece.
+
+**Ce spune și ce nu spune cifra.** E **podeaua**: partea mașinii e sub 1,3 secunde chiar și pe o
+conexiune lentă, deci din cele 30 rămân peste 28 pentru om. Un vizitator nou are de făcut **două
+gesturi** — Play, apoi acordul. Cât îi ia unui om să citească ecranul și să găsească clapele **nu
+s-a măsurat**: în afară de Edi nu a fost cronometrat nimeni. Și un lucru de știut: pe o conexiune
+lentă primele ~17 secunde se aud prin synth, până sosește pianul.
+
 **Poarta P1** (fosta poartă P0, repornită): **40 de adrese de email în 4 săptămâni de la primul
 clip**. Ceasul pornește când există amândouă — clipul în README și formularul legat din pagină.
 Până atunci rămâne suspendată, ca acum.

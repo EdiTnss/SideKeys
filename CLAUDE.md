@@ -142,6 +142,8 @@ mic-proto/                 prototipul de microfon, măsurat și închis (verdict
 test/                      *.test.js, rulate cu node --test
 tools/quiet-report.mjs     rulează testele și rezumă (vezi antetul: numele din tools/ nu au voie
                            să semene cu test-*, *-test, *_test sau *.test, altfel runner-ul le execută)
+tools/cold-start.mjs       măsoară o primă vizită cu adevărat rece pe site-ul publicat: Chrome headless pe
+                           profil nou, până la primul acord judecat; fără dependențe (DoD-ul P1)
 .github/workflows/test.yml CI: npm test pe Node 22 și 24, la fiecare push (Faza 1)
 package.json               fără dependențe: "type": "module" + npm test (și test:quiet)
 README.md                  engleză, cu GIF/video demo
@@ -167,7 +169,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **353 de teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **356 de teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5): Azi, Drumul, Jocul, Rezultatul, plus
   **Training** și **Theory**, peste opt unități (Triade → ii–V–I), **toate deschise**. Stele
   Right/Clean/Smooth, streak, Review zilnic pe calități, challenge zilnic partajabil, PWA care
@@ -204,6 +206,9 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 rădăcină, bancul la `/lab/`. Iconița de pe desktop deschide deci versiunea de azi. Un browser care
 a mai vizitat site-ul poate arăta o dată versiunea veche, până își înnoiește service worker-ul.
 
+**Ce s-a făcut pe 2026-10-13 e doar local** (primul răspuns care rămâne, cele șase chei, unealta
+de măsurat): se împinge când cere Edi.
+
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
@@ -232,12 +237,6 @@ a mai vizitat site-ul poate arăta o dată versiunea veche, până își înnoie
 
 ### Ce așteaptă pe Edi
 
-- **O regulă de scor de urmărit**: în timed, un acord luat cu mai mult de o jumătate de timp
-  înainte se judecă pe acordul curent și îi **înlocuiește** răspunsul. Acum că acordul următor se
-  vede, e mai ușor de pățit. Soluția simplă: o măsură își păstrează primul răspuns.
-- **Conținutul drumului**, încă necorectat: „cele șase chei" sunt `C F G D A E` (partea cu diezi,
-  nu `F Bb Eb`), „Four more" amestecă `Ab Db` cu `G D`, iar ultimul nivel de ii–V–I cere 36 de
-  acorduri.
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
 - **Formularul de email** și **clipul** pentru README — singurele care deschid poarta P1.
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick".
@@ -253,28 +252,27 @@ a mai vizitat site-ul poate arăta o dată versiunea veche, până își înnoie
   5173) sau cu `dev.cmd`.
 - **Prototipul celor patru ecrane**, aprobat, trăiește în afara repo-ului:
   https://claude.ai/artifact/LwezgTTnCurF57ZN1DecAY
-- **O vizită cu adevărat rece nu s-a măsurat încă** (DoD-ul de 30 de secunde din P1).
+- **Pornirea la rece e măsurată** (`node tools/cold-start.mjs`, cifrele în `PRODUCT.md` la P1):
+  sub 1,3 s până la verdictul primului acord, chiar și pe 4G lent. Partea omului nu e măsurată.
 - **Sesiunile din `harness/sessions/`** poartă `"app": "voicing-lab"`; nu se rescriu.
 - **Necommis**: `Voicing Lab ca produs.pdf`, care nu intră în repo.
 
 ## Următorul pas
 
-**Măsoară DoD-ul P1 pe site-ul publicat, dintr-un profil curat** (fereastră incognito, fără service
-worker și fără cache): de la deschiderea https://editnss.github.io/SideKeys/ până la primul acord
-cântat pe clapa de ecran, cu cifra scrisă în `docs/PRODUCT.md`, la P1. Nu așteaptă nici pe Edi,
-nici clapa, și a rămas nefăcut de două sesiuni.
+**Formularul de email** — ultimul punct nebifat din P1, și așteaptă pe Edi: furnizorul (Buttondown,
+ConvertKit, Tally, un Google Form) și unde stau adresele, fiindcă are coadă GDPR. După alegere e un
+link sau un embed în pagină și în README. Apoi **clipul de 15 s** (`<!-- demo.gif -->` marchează
+locul): împreună pornesc ceasul porții P1, 40 de adrese în 4 săptămâni.
 
-După aceea, în ordinea blocajelor:
+Ce nu așteaptă pe nimeni, dacă se caută de lucru între timp:
 
-1. **Regula de scor cu răspunsul înlocuit** (un acord luat prea devreme în timed șterge răspunsul
-   corect al măsurii curente): o decizie scurtă a lui Edi, un test și câteva linii.
-2. **Conținutul drumului** din `src/game/path.js`: cele șase chei, „Four more", lungimea
-   ultimului nivel de ii–V–I.
-3. **Formularul de email**, apoi **clipul de 15 s**: împreună pornesc ceasul porții P1.
+1. **Un om cronometrat.** Pornirea la rece e măsurată doar pe partea mașinii (`PRODUCT.md`, P1).
+   Cât îi ia unui om care n-a văzut aplicația să ajungă la primul acord nu știe nimeni.
+2. **Exemplele din Theory în alte tonalități**, verificate una câte una de analizor.
+3. **Testul de plasare**, care ar hotărî și ce se mai încuie pe drum.
 
 Ordinea din `PRODUCT.md` nu se scurtcircuitează, iar regula „niciun feature care nu e pe lista
-fazei curente" s-a aplicat și pe 2026-10-12: Training și Theory au intrat pe lista P1 cu acordul
-explicit al lui Edi, scris acolo, nu pe lângă ea.
+fazei curente" se aplică: 2 și 3 de mai sus sunt idei, nu lucru aprobat.
 
 ## Documentație
 

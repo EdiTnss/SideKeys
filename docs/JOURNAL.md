@@ -383,3 +383,22 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   și afirmă acum regula nouă; reluarea harness-ului a rămas neschimbată, 110 din 110.
   **353 de teste.** **Împins și publicat**: 16 commit-uri la `138956b`, apoi acesta.
   **Următorul pas**: măsurarea DoD-ului P1 pe site-ul publicat, dintr-un profil curat.
+- **2026-10-13** — **Pornirea la rece, măsurată; primul răspuns rămâne; cheile mai folosite.** Trei
+  lucruri, toate hotărâte de Edi într-un rând. **(1) DoD-ul P1**, rămas de făcut din 2026-10-12:
+  `tools/cold-start.mjs` pornește Chrome headless pe un profil nou la fiecare rulare și face ce face
+  un vizitator nou — Play, apoi primul acord pe litere. Mediana a cinci rulări, de la deschiderea
+  paginii: butonul Play la 278 ms, verdictul la 727 ms, pianul la 773 ms; pe 4G lent simulat, 832 /
+  1 242 / 17 389 ms. Până la verdict trec 57–90 KB; cu pianul, 3 226 KB. **E podeaua mașinii** —
+  partea omului nu s-a măsurat, și scrie asta lângă cifră. De știut: pe conexiune lentă primele ~17
+  secunde se aud prin synth. Cifra de 187 ms din jurnalul vechi era dintr-un browser cu cache cald.
+  **(2) Într-un timed, o măsură își păstrează primul răspuns** (`counts` în `stars.js`): câștiga
+  ultima lovitură, deci un acord luat prea devreme ștergea răspunsul bun al măsurii curente.
+  Voicing-ul necontat e totuși arătat, cu „Not counted" sub verdict. Consecință asumată: o
+  corectură un timp mai târziu nu contează. Probat în browser pe un timed adevărat: Do pe 1, Fa
+  prea devreme pe 3, Fa pe 1 al măsurii următoare — 2 din 6 corecte, unde înainte ar fi fost 1.
+  La prima probă scriptul meu lovea înaintea clicului (ecranul se schimbă cu o clipă înaintea
+  sunetului) și cădea în numărătoare; am corectat scriptul, nu regula. **(3) Cele șase tonalități**
+  în care începe o unitate sunt acum `C F Bb Eb G D`, nu `C F G D A E`. Ce am hotărât eu: „Four
+  more" de la ii–V–I a rămas `Ab Db G D` (următoarele patru după frecvență), iar ultimul nivel a
+  rămas la 36 de acorduri, fiindcă rostul lui e să treacă prin toate cele 12. **356 de teste**,
+  reluarea harness-ului neschimbată. **Următorul pas**: formularul de email, care așteaptă pe Edi.
