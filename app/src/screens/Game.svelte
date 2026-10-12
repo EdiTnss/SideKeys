@@ -5,7 +5,7 @@
   import type { Instrument } from '../lib/instrument.svelte';
   import { createLevel, type Attempt, type Finished, type LevelPlan } from '../game/level.svelte';
   import {
-    analyzeVoicing, isRight, isClean,
+    analyzeVoicing, inversionOf, parseChord, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
 
@@ -137,6 +137,18 @@
     analysis && !star && !warnings.length
       ? analysis.messages.find((m: { code: string }) => m.code === 'type')?.text ?? 'another shape'
       : null);
+  // What the voicing is called beside its star. A shape with a name of its own is named.
+  // "Close" and "spread" are only what is left when it has none: on a triad played exactly as
+  // asked they read as a remark, in every inversion alike (Edi, 2026-10-12). There the
+  // inversion is the name worth saying — it is what the first two units teach.
+  const shape = $derived.by(() => {
+    if (!analysis || !judged) return null;
+    const { type } = analysis.voicing;
+    if (type && type !== 'close' && type !== 'spread') {
+      return analysis.messages.find((m: { code: string }) => m.code === 'type')?.text ?? null;
+    }
+    return parseChord(judged).chordTones.length === 3 ? inversionOf(analysis) : null;
+  });
 </script>
 
 <svelte:window onkeydown={onKeyDown} onkeyup={event => instrument.keyUp(event.code)} />
@@ -179,7 +191,7 @@
       {:else if star}
         <p class="star {star.toLowerCase()}">
           <span class="judged">{judged}{anticipated ? ', anticipated' : ''}</span>
-          {star}{analysis.voicing.type ? ` — ${analysis.voicing.type}` : ''}
+          {star}{shape ? ` — ${shape}` : ''}
         </p>
       {:else if shapeMiss}
         <p class="star none">

@@ -271,3 +271,27 @@ export function classifyPc(chord, pc) {
 export function qualityIds() {
   return [...QUALITY_IDS];
 }
+
+// Roots a chart writes with a sharp once the chord has a minor third. Dbm and Gbm are right on
+// paper and written by nobody: their own thirds would be Fb and Bbb. Data rather than a rule,
+// because which enharmonic a chart prefers is convention, and the convention here is the one
+// Edi chose (2026-10-12). Ab is absent on purpose: Abm stays Abm until he says otherwise.
+const MINOR_ROOTS = { Db: 'C#', Gb: 'F#' };
+
+/**
+ * The symbol a chart would write for a quality on a root: ('Db', 'm7') → 'C#m7', while
+ * ('Db', 'maj7') stays 'Dbmaj7'. Only the name changes, never the pitches. It is for building
+ * asks, where the root is a key taken from a list; a symbol somebody typed is theirs and
+ * parseChord reads it as written.
+ *
+ * @param {string} root
+ * @param {string} quality
+ * @returns {string}
+ */
+export function chartSymbol(root, quality) {
+  const sharp = MINOR_ROOTS[root];
+  if (!sharp) return `${root}${quality}`;
+  const chord = parseChord(`${root}${quality}`);
+  const minorThird = chord.chordTones.includes((chord.rootPc + 3) % 12);
+  return `${minorThird ? sharp : root}${quality}`;
+}

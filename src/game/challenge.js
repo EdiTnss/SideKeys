@@ -8,8 +8,8 @@
 // a beginner earns the first squares instead of a blank grid; there is no clock, so the grid
 // compares one thing only; and one pass a day is the official one, so the grid stays honest.
 
-import { parseChord } from '../theory/chords.js';
-import { spellDegree } from '../theory/notes.js';
+import { parseChord, chartSymbol } from '../theory/chords.js';
+import { spellPlain } from '../theory/notes.js';
 import { isRight, isClean } from '../theory/stars.js';
 
 /** Day 1. The challenge is numbered from here, the way Wordle numbers its puzzles. */
@@ -102,11 +102,11 @@ function drawAsk(rung, pick) {
   const texture = rung.texture ?? null;
   if (rung.kind === 'slash') {
     const shape = pick(rung.shapes);
-    // Spelled from the chord, so Eb/Gb never comes out as Eb/F#.
-    const chord = parseChord(`${key}${shape.quality}`);
-    return { symbol: `${key}${shape.quality}/${spellDegree(chord.root, shape.degree)}`, texture };
+    // Spelled from the chord, so Eb/Gb never comes out as Eb/F#, and named as a chart names it.
+    const chord = parseChord(chartSymbol(key, shape.quality));
+    return { symbol: `${chord.symbol}/${spellPlain(chord.root, shape.degree)}`, texture };
   }
-  return { symbol: `${key}${pick(rung.qualities)}`, texture };
+  return { symbol: chartSymbol(key, pick(rung.qualities)), texture };
 }
 
 /**

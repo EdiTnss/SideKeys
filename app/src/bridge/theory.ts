@@ -7,7 +7,7 @@
 // through the screens.
 
 export { parseChord, ChordParseError } from '../../../src/theory/chords.js';
-export { analyzeVoicing } from '../../../src/theory/analyzer.js';
+export { analyzeVoicing, inversionOf } from '../../../src/theory/analyzer.js';
 export { isRight, isClean, scoreRun, movementThreshold, xpFor } from '../../../src/theory/stars.js';
 export { getProgression, PROGRESSIONS } from '../../../src/theory/progressions.js';
 

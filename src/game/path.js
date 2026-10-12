@@ -8,8 +8,8 @@
 // a bare `dim` reads as dim7 the way charts write it; and Comping needs Gig Mode, which does not
 // exist. The teaching content below is Claude's draft; the order is Edi's to correct.
 
-import { parseChord } from '../theory/chords.js';
-import { spellDegree } from '../theory/notes.js';
+import { parseChord, chartSymbol } from '../theory/chords.js';
+import { spellPlain } from '../theory/notes.js';
 import { getProgression } from '../theory/progressions.js';
 import { movementThreshold, DEFAULT_MOVEMENT } from '../theory/stars.js';
 
@@ -153,13 +153,14 @@ function buildAsks(source) {
     return symbols.filter((symbol, at) => symbol !== symbols[at - 1]);
   }
   if (source.kind === 'slash') {
-    // The bass is spelled from the chord itself, so Eb/Gb never comes out as Eb/F#.
+    // The bass is spelled from the chord itself, so Eb/Gb never comes out as Eb/F#, and the
+    // chord is named the way a chart names it, so the minor on Db is C#m/E and never Dbm/Fb.
     return source.keys.flatMap(key => source.shapes.map(shape => {
-      const chord = parseChord(`${key}${shape.quality}`);
-      return `${key}${shape.quality}/${spellDegree(chord.root, shape.degree)}`;
+      const chord = parseChord(chartSymbol(key, shape.quality));
+      return `${chord.symbol}/${spellPlain(chord.root, shape.degree)}`;
     }));
   }
-  return source.keys.flatMap(key => source.qualities.map(quality => `${key}${quality}`));
+  return source.keys.flatMap(key => source.qualities.map(quality => chartSymbol(key, quality)));
 }
 
 /**

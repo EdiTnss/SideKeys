@@ -2,7 +2,7 @@
 // Input: MIDI notes (60 = C4) and a chord from parseChord. Output: a plain object the UI
 // renders and, in Phase 3a, the prompt receives unchanged.
 
-import { pitchClass, octave, midiToName, spellDegree } from './notes.js';
+import { pitchClass, octave, midiToName, spellPlain } from './notes.js';
 import { classifyPc } from './chords.js';
 
 // Lower note of an adjacent pair below `below` → that interval is muddy. Data, so the
@@ -196,10 +196,11 @@ function findTriad(pcs) {
   return null;
 }
 
-// Spelled from the chord when the note has a degree (b9 on C is Db, not C#); flats otherwise.
+// Spelled from the chord when the note has a degree (b9 on C is Db, not C#), then made plain,
+// because a player reads this: the b7 of Db is B here, not Cb. Flats otherwise.
 function pcName(pc, chord) {
   const label = chord.degrees[pc];
-  return label ? spellDegree(chord.root, label) : midiToName(pc).replace(/-?\d+$/, '');
+  return label ? spellPlain(chord.root, label) : midiToName(pc).replace(/-?\d+$/, '');
 }
 
 const noteName = (midi, chord) => pcName(pitchClass(midi), chord) + octave(midi);
@@ -230,4 +231,27 @@ function describeVoicing({ type, bass, detail }) {
   if (detail) text += ` (${detail})`;
   if (bass) text += `, ${bass === 'root' ? 'root' : '5th'} in the bass`;
   return text;
+}
+
+const INVERSIONS = ['root position', '1st inversion', '2nd inversion', '3rd inversion'];
+// The place each degree number holds in the chord. A sus chord has its fourth where the third
+// would be, and a sixth chord its sixth where the seventh would be.
+const PLACE = { 1: 0, 3: 1, 4: 1, 5: 2, 6: 3, 7: 3 };
+
+/**
+ * The inversion, named by the chord tone in the bass. It is the other axis from `voicing.type`:
+ * the type says how the notes are spaced, this says which of them is lowest, and a triad held in
+ * one hand is "close position" in every inversion. Null when the bass is not a chord tone, or
+ * when nothing was played.
+ *
+ * A reading of an analysis rather than a field in it, so that no recorded session changes.
+ *
+ * @param {{ roles: Array<{ role: string, degree: string | null }> }} analysis
+ * @returns {'root position' | '1st inversion' | '2nd inversion' | '3rd inversion' | null}
+ */
+export function inversionOf(analysis) {
+  const bass = analysis.roles[0];
+  if (!bass || bass.role !== 'chordTone' || !bass.degree) return null;
+  const place = PLACE[Number(bass.degree.replace(/\D/g, ''))];
+  return place === undefined ? null : /** @type {any} */ (INVERSIONS[place]);
 }

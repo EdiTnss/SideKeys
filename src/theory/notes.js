@@ -84,3 +84,34 @@ export function spellDegree(rootName, degree) {
 
   return letter + (accidental > 0 ? '#'.repeat(accidental) : 'b'.repeat(-accidental));
 }
+
+/**
+ * The name a player reads. A scale spells the third of Db minor as Fb and the seventh of a
+ * diminished chord on C as Bbb, and both are right on paper; at the piano they are called E and
+ * A. So Cb, Fb, B#, E# and every double accidental give way to the plain name of the same key
+ * (Edi, 2026-10-12). An ordinary sharp or flat is left exactly as it was spelled.
+ * 'Fb' → 'E', 'Bbb' → 'A', 'Cbb' → 'Bb', 'E##' → 'F#', 'C#' → 'C#'
+ *
+ * @param {string} name
+ * @returns {string}
+ */
+export function plainName(name) {
+  const { accidental, pc } = parseNoteName(name);
+  const white = !FLAT_NAMES[pc].includes('b');
+  if (white) return FLAT_NAMES[pc];             // whatever the accidental, it landed on a white key
+  if (Math.abs(accidental) < 2) return name;    // an ordinary sharp or flat
+  return accidental < 0 ? FLAT_NAMES[pc] : SHARP_NAMES[pc];
+}
+
+/**
+ * A degree above a root as the player reads it: spelled from the chord, so the letter follows
+ * the degree wherever that reads plainly, and made plain where it does not.
+ * ('D', 'b9') → 'Eb', ('Ab', 'b3') → 'B', ('C', 'bb7') → 'A'
+ *
+ * @param {string} rootName
+ * @param {string} degree
+ * @returns {string}
+ */
+export function spellPlain(rootName, degree) {
+  return plainName(spellDegree(rootName, degree));
+}
