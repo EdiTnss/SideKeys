@@ -307,7 +307,7 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   rămase la 310, în chiar sesiunea în care am scos numărul din `PRODUCT.md` ca să nu mai rămână în
   urmă — `README.md` era cel la care trimisesem.
 
-  **Sesiunea, în cifre**: 287 → **311 teste** (+24), 18 commit-uri, `svelte-check` 0 pe 313 fișiere,
+  **Sesiunea, în cifre**: 287 → **311 teste** (+24), 16 commit-uri, `svelte-check` 0 pe 313 fișiere,
   arborele curat și împins. **Ce s-a livrat**: challenge-ul zilei, PWA instalabilă care merge fără
   rețea, o trecere prin documente ca să nu mai mintă, publicarea pe Pages (jocul la rădăcină, bancul
   la `/lab/`), pianul Salamander și animația clapelor. **Din P1 a mai rămas un singur punct**:
