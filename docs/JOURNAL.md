@@ -125,3 +125,47 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   publicare**: `SHARE_URL` arată pagina publicată, care servește Laboratorul vechi, deci grila partajată
   trimite azi undeva unde challenge-ul nu există. **Următorul pas**: PWA instalabilă și formularul de
   email, ultimele două puncte din P1.
+- **2026-10-12 (PWA: se instalează și merge fără rețea)** — Penultimul punct din P1. **Fără nicio
+  dependență nouă**: `vite-plugin-pwa` ar fi fost a patra excepție la „zero dependențe", iar regula
+  cere ca aia să se ceară explicit — un service worker de 70 de linii și un script de build nu
+  merită o cerere. **Iconurile sunt generate din marcă, nu desenate din nou**: rasterizate în pagină
+  din aceleași patru dreptunghiuri pe care le desenează `favicon.svg`, trecute pe disc printr-o punte
+  localhost ca să nu car base64 prin context, și verificate ca PNG-uri adevărate la dimensiunile
+  cerute. Maskable-ul e full-bleed cu marca la jumătate de pânză, ca să supraviețuiască oricărei
+  măști; `apple-touch-icon` e pătrat și opac, fiindcă iOS rotunjește singur și face transparența
+  neagră. Descrise în `assets/BRAND.md`, ca să nu rămână nedocumentate.
+
+  **Lista de precache se generează, și de-aia are test.** Vite pune un hash în fiecare nume, deci o
+  listă scrisă de mână ar fi greșită de la primul build; `app/scripts/build-sw.mjs` o scrie, iar
+  numele cache-ului iese din aceeași listă (plus conținutul fișierelor pe care Vite *nu* le hashează,
+  altfel o schimbare în manifest n-ar ajunge la nimeni). Cinci teste noi: lista completă, niciun
+  loc gol rămas în worker, worker-ul nu se precachează pe sine, numele urmează build-ul, și un
+  folder fără `index.html` e un build picat care o spune. Un eșec aici e tăcut — aplicația pur și
+  simplu nu mai merge offline, și afli în tren.
+
+  **Testul offline a găsit un bug adevărat, și unul pe care un test leneș l-ar fi ratat.** Prima
+  oară am oprit serverul de tot (curl nu se mai putea conecta) și am reîncărcat: shell-ul a venit din
+  cache, dar JS-ul și CSS-ul au picat cu `ERR_FAILED`. Cauza, măsurată, nu ghicită: răspunsurile
+  statice vin cu **`Vary: Origin`**; worker-ul le precachează cu propriile cereri, care n-au antet
+  `Origin`, iar pagina cere bundle-ul cu `crossorigin`, adică **cu** `Origin`. `Vary` le declară
+  cereri diferite, cache-ul ratează, iar `fromCache` cade în rețeaua care nu există. Reparat cu
+  `ignoreVary` la fiecare căutare, cu motivul scris în fișier. Un test care doar număra intrările
+  din cache („12 fișiere, bifat") ar fi trecut senin.
+
+  **A doua inconsecvență, tot a mea**: comentariul spunea că worker-ul nu se pune pe sine în cache,
+  dar `fromCache` îl stoca la prima cerere din pagină. Acum cererea pentru propriul script nu mai e
+  interceptată deloc.
+
+  **Verificat după reparație, de la zero**: dezînregistrat worker-ul și șters cache-urile, instalare
+  rece (12 fișiere, `sw.js` nu printre ele), apoi serverul oprit și pagina reîncărcată — „Today" se
+  randează întreg, cu fontul Sora din cache, iar un Eb cântat pe clapa de ecran primește „Eb Clean —
+  close" și trece la treapta următoare. Deci **merge** offline, nu doar se desenează. Cardul arăta
+  challenge-ul **#2**, fiindcă se schimbase ziua: seed-ul își face treaba. **Ce n-am putut proba**:
+  promptul de instalare al Chrome — `beforeinstallprompt` se declanșase înainte să-mi atașez
+  ascultătorul. Am verificat în schimb criteriile pe rând: localhost, manifest valid cu `start_url`,
+  `display: standalone`, iconuri de 192 și 512 care chiar se încarcă, worker activ care controlează
+  pagina.
+
+  **310 teste verzi**, `svelte-check` 0 pe 313 fișiere. Vite rescrie `/manifest.webmanifest` în
+  `./manifest.webmanifest` la build, deci un deploy pe subpath (Pages) rămâne valid, la fel ca
+  `start_url` și `scope` relative. **Următorul pas**: formularul de email, ultimul punct din P1.

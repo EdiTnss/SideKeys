@@ -127,7 +127,8 @@ apoi structura (drum, unități, nivele), abia apoi meta-jocul (XP, streak).**
 - [x] Challenge-ul zilei, partajabil, fără cont. Rampă de zece acorduri, seed din dată, grilă de
   pătrățele; regulile și costul fiecărei decizii, în [spec-game.md](spec-game.md).
 - [x] Ecranele Azi și Rezultat; progresul și streak-ul ținute local.
-- [ ] PWA instalabilă (manifest + service worker, offline).
+- [x] PWA instalabilă (manifest + service worker, offline). Worker scris de mână, fără dependență;
+  lista de precache e generată din build, iar offline-ul a fost probat cu serverul oprit.
 - [ ] Formular de email găzduit, legat din pagină și din README.
 
 **DoD:** un vizitator nou ajunge de la deschiderea paginii la primul acord cântat în sub 30 de

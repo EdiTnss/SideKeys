@@ -13,6 +13,13 @@ Replaces the previous Voicing Lab kit entirely. Nothing from it carries over.
 | `logo-lockup-light.png` | horizontal lockup, light background (1200×480, 4×) |
 | `og-image.png` | social preview, 1200×630 |
 
+The installed app needs raster icons, which are generated from the mark above rather than drawn
+again, and live where the shell can serve them: `app/public/icons/`. `icon-192.png` and
+`icon-512.png` are the rounded tile, exactly as `favicon.svg` draws it;
+`icon-maskable-512.png` is full-bleed with the mark at half the canvas, so it survives whatever
+shape a platform masks it into; `apple-touch-icon.png` (180×180) is square and opaque, because
+iOS rounds it itself and renders transparency as black.
+
 ## The mark
 Four bars. Three upright and equal, the fourth stepped down to the side and filled with the
 accent — keys at your side, without spelling the name. Rectangles only, so it survives 16px:
