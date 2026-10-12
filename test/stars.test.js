@@ -51,7 +51,7 @@ test('isClean implies isRight, so a star never skips the one below it', () => {
 
 // ---- The run: how a whole pass turns into stars (docs/spec-game.md) ----------------------
 
-import { scoreRun, movementThreshold } from '../src/theory/stars.js';
+import { scoreRun, movementThreshold, counts } from '../src/theory/stars.js';
 
 const attempt = (symbol, notes) => ({ symbol, notes, analysis: notes.length ? on(symbol, notes) : null });
 
@@ -169,4 +169,35 @@ test('scoreRun: an ask carrying its own texture overrides the run-level one', ()
 
   // A run-level texture still covers the asks that carry none, so levels keep working as they did.
   assert.equal(scoreRun({ attempts, texture: 'shell' }).right, 1, 'now the bare triad fails too');
+});
+
+// ---- Which answer a bar keeps (2026-10-13) -----------------------------------------------
+
+test('counts: on the clock a bar keeps its first answer, and a later voicing does not replace it', () => {
+  // Edi, 2026-10-13. A timed run shows the next chord, so it is easy to reach for it early; a
+  // voicing that starts more than half a beat before the bar line still belongs to the bar it
+  // is in, and it used to overwrite the right answer already given there.
+  assert.equal(counts({ timed: true, answered: false }), true, 'the first voicing in a bar is its answer');
+  assert.equal(counts({ timed: true, answered: true }), false, 'a second one is heard, judged, and not filed');
+  // Without the clock an answer moves on to the next chord, so there is never a second one.
+  assert.equal(counts({ timed: false, answered: false }), true);
+  assert.equal(counts({ timed: false, answered: true }), true);
+});
+
+test('counts: the score is the one the first answers earn, whatever was played after them', () => {
+  // The run a player actually has: three right answers, each followed in its own bar by the next
+  // chord grabbed too early. Filing by the rule, the early ones never reach the score.
+  const asked = ['Dm7', 'G7', 'Cmaj7'];
+  const first = SMOOTH;
+  const early = [attempt('Dm7', [53, 57, 59, 64]), attempt('G7', [52, 55, 59, 62]), attempt('Cmaj7', [53, 57, 60, 64])];
+  const slots = asked.map(() => null);
+  asked.forEach((symbol, slot) => {
+    for (const voicing of [first[slot], early[slot]]) {
+      if (counts({ timed: true, answered: slots[slot] !== null })) slots[slot] = voicing;
+    }
+  });
+  assert.deepEqual(slots, first);
+  assert.equal(scoreRun({ attempts: slots, timed: true, movementThreshold: 1.25 }).stars, 3);
+  // What used to happen: the last voicing in each bar won, and the run lost its stars.
+  assert.equal(scoreRun({ attempts: early, timed: true, movementThreshold: 1.25 }).stars, 0);
 });

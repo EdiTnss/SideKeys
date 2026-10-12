@@ -160,3 +160,18 @@ test('the Quartal unit asks for dominants, now that there is a quartal voicing t
   assert.ok(dominants.includes('G7') && dominants.every(symbol => symbol.endsWith('7')));
   assert.ok(asksFor(levelById('quartal-boss').level).some(ask => /^[A-G][#b]?7$/.test(ask.symbol)), 'and the last level mixes them in');
 });
+
+test('a unit starts in the six keys tunes are most often in', () => {
+  // Edi, 2026-10-13. It was C F G D A E, the sharp side, which kept B flat and E flat out of
+  // every unit until its last level.
+  const six = ['C', 'F', 'Bb', 'Eb', 'G', 'D'];
+  for (const unit of PATH) {
+    for (const level of unit.levels) {
+      const keys = level.asks.keys;
+      if (keys.length === 6) assert.deepEqual(keys, six, level.id);
+      assert.ok(!(keys.length < 12 && (keys.includes('A') || keys.includes('E'))), `${level.id} still starts on the sharp side`);
+    }
+  }
+  assert.deepEqual(asksFor(levelById('triads-minor').level).map(ask => ask.symbol), ['Cm', 'Fm', 'Bbm', 'Ebm', 'Gm', 'Dm']);
+  assert.deepEqual(asksFor(levelById('inv-major-first').level).map(ask => ask.symbol), ['C/E', 'F/A', 'Bb/D', 'Eb/G', 'G/B', 'D/F#']);
+});
