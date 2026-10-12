@@ -70,7 +70,11 @@ test('lessonForTexture: the shape a level demands leads to the page that explain
 
 // ---- What the pages claim the game listens for ----------------------------------------------
 
-test('triads: the third decides, and the spacing does not', () => {
+test('triads: all three notes are needed, the third decides which triad, and the spacing does not', () => {
+  // A triad is its three notes: none of them is left to someone else.
+  assert.ok(!isRight(analyze('C', 'E4')), 'the third alone');
+  assert.ok(!isRight(analyze('C', 'C4 E4')), 'no fifth');
+  assert.ok(!isRight(analyze('C', 'E4 G4')), 'no root');
   // C with an E flat is not C: the note that makes it major is missing.
   assert.ok(!isRight(analyze('C', 'C4 Eb4 G4')));
   assert.ok(isRight(analyze('Cm', 'C4 Eb4 G4')));

@@ -151,3 +151,12 @@ test('the path asks for chords the way a chart writes them', () => {
 test('reviewLevel is called Review: Training is the name of the free practice now', () => {
   assert.equal(reviewLevel(['7']).name, 'Review');
 });
+
+test('the Quartal unit asks for dominants, now that there is a quartal voicing to answer with', () => {
+  const quartal = PATH.find(unit => unit.id === 'quartal');
+  assert.deepEqual(quartal.levels.map(level => level.id), ['quartal-minor', 'quartal-dom', 'quartal-boss']);
+  const dominants = asksFor(levelById('quartal-dom').level).map(ask => ask.symbol);
+  assert.equal(dominants.length, 12);
+  assert.ok(dominants.includes('G7') && dominants.every(symbol => symbol.endsWith('7')));
+  assert.ok(asksFor(levelById('quartal-boss').level).some(ask => /^[A-G][#b]?7$/.test(ask.symbol)), 'and the last level mixes them in');
+});

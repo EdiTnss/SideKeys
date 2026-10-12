@@ -67,3 +67,32 @@ test('chords without two guide tones still get something, and the register is co
   assert.ok(high.every(c => c.notes[0] >= 60));
   assert.deepEqual(suggest('Cmaj7', { register: [40, 45] }), []);     // nothing fits
 });
+
+test('a dominant has a quartal voicing: its own tritone is the one augmented fourth', () => {
+  // Edi, 2026-10-12. Seventh, third, thirteenth, ninth: F B E A on G7. The analyzer always read
+  // it as quartal; the generator stacked perfect fourths only, so no level could ask for it.
+  const pc = midi => ((midi % 12) + 12) % 12;
+  const quartal = suggestVoicings(parseChord('G7')).filter(candidate => candidate.type === 'quartal');
+  assert.ok(quartal.length > 0, 'G7 has no quartal voicing');
+  for (const candidate of quartal) {
+    assert.deepEqual(candidate.notes.map(pc), [5, 11, 4, 9], 'F B E A, bottom to top');
+  }
+  // In every key, not just the one written out.
+  for (const root of ['C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'B', 'E', 'A', 'D']) {
+    const found = suggestVoicings(parseChord(root + '7')).some(candidate => candidate.type === 'quartal');
+    assert.ok(found, root + '7 has no quartal voicing');
+  }
+});
+
+test('the augmented fourth is the dominant\'s alone: no other quality gains a quartal voicing by it', () => {
+  // The same stack exists on a minor sixth (Eb A D G on Cm6), a tritone substitute away. It was
+  // not asked for, so it is not built; this pins that the rule did not spread by accident.
+  for (const symbol of ['Cm6', 'Cm7b5', 'Cdim7', 'CmMaj7']) {
+    const found = suggestVoicings(parseChord(symbol)).some(candidate => candidate.type === 'quartal');
+    assert.equal(found, false, symbol);
+  }
+  // And what was there before is still there.
+  for (const symbol of ['Dm7', 'Cmaj7']) {
+    assert.ok(suggestVoicings(parseChord(symbol)).some(candidate => candidate.type === 'quartal'), symbol);
+  }
+});

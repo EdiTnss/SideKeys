@@ -182,3 +182,33 @@ test('inversionOf: named by the chord tone in the bass, whatever is spread above
   assert.equal(inversionOf(analyze('C', 'D3 E4 G4 C5')), null);
   assert.equal(inversionOf(analyzeVoicing([], parseChord('C'))), null);
 });
+
+test('a triad is its three notes: the root, the third and the fifth are all required', () => {
+  // Edi, 2026-10-12. The third alone used to pass, because the rule was written for jazz
+  // voicings, where the root and the fifth are left to someone else. On a triad there is nobody
+  // else: a lone E was coming back "clean" for C major.
+  const warnings = a => a.messages.filter(m => m.level === 'warning').map(m => m.text);
+  assert.deepEqual(warnings(analyze('C', 'E4')), ['Missing C (1)', 'Missing G (5)']);
+  assert.deepEqual(warnings(analyze('C', 'E4 G4')), ['Missing C (1)']);
+  assert.deepEqual(warnings(analyze('C', 'C4 E4')), ['Missing G (5)']);
+  assert.deepEqual(warnings(analyze('Cm', 'C4 G4')), ['Missing Eb (b3)']);
+  assert.deepEqual(warnings(analyze('Csus4', 'C4 F4')), ['Missing G (5)']);
+  // All three, in any spacing and any inversion, is still nothing to reproach.
+  assert.deepEqual(warnings(analyze('C', 'C4 E4 G4')), []);
+  assert.deepEqual(warnings(analyze('C', 'C2 G3 E4')), []);
+  assert.deepEqual(warnings(analyze('C/E', 'E3 C4 G4')), []);
+  assert.deepEqual(warnings(analyze('Csus4', 'C4 F4 G4')), []);
+});
+
+test('a seventh chord still leaves its root and its fifth to someone else', () => {
+  const warnings = a => a.messages.filter(m => m.level === 'warning').map(m => m.text);
+  assert.deepEqual(warnings(analyze('Cmaj7', 'E4 B4')), []);
+  assert.deepEqual(warnings(analyze('C7', 'E3 Bb3 D4')), []);
+  assert.deepEqual(warnings(analyze('Cm7', 'Eb3 G3 Bb3 D4')), []);
+});
+
+test('a missing root is called rootless only where leaving it out is a choice', () => {
+  const rootless = a => a.messages.some(m => m.code === 'rootless');
+  assert.equal(rootless(analyze('Cmaj7', 'E3 G3 B3 D4')), true, 'a rootless voicing is a goal');
+  assert.equal(rootless(analyze('C', 'E4 G4')), false, 'on a triad it is a missing note, and said once');
+});

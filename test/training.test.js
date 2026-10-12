@@ -57,12 +57,14 @@ test('drillPool: every chosen quality in every chosen key, spelled the way a cha
 });
 
 test('drillPool: a chord that cannot be played in the shape asked for is not asked for', () => {
-  // The engine builds no quartal voicing for a dominant and no shell for a half-diminished, so
+  // The engine builds no quartal voicing for a half-diminished and no shell for one either, so
   // asking for one would be a chord nobody can get right (docs/spec-game.md).
-  assert.deepEqual(drillPool({ qualities: ['7'], keys: KEYS, shape: 'quartal' }), []);
+  assert.deepEqual(drillPool({ qualities: ['m7b5'], keys: KEYS, shape: 'quartal' }), []);
   assert.deepEqual(drillPool({ qualities: ['m7b5'], keys: KEYS, shape: 'shell' }), []);
-  const mixed = drillPool({ qualities: ['m7', '7'], keys: ['C'], shape: 'quartal' });
+  const mixed = drillPool({ qualities: ['m7', 'm7b5'], keys: ['C'], shape: 'quartal' });
   assert.deepEqual(symbols(mixed), ['Cm7'], 'the playable one stays');
+  // A dominant does have one, since 2026-10-12: seventh, third, thirteenth, ninth.
+  assert.equal(drillPool({ qualities: ['7'], keys: KEYS, shape: 'quartal' }).length, 12);
   // Nothing chosen is nothing to play.
   assert.deepEqual(drillPool({ qualities: [], keys: KEYS, shape: 'any' }), []);
   assert.deepEqual(drillPool({ qualities: ['maj7'], keys: [], shape: 'any' }), []);
@@ -71,8 +73,10 @@ test('drillPool: a chord that cannot be played in the shape asked for is not ask
 test('shapeQualities: which chords a shape exists for, so the screen can grey out the rest', () => {
   assert.deepEqual(shapeQualities('any'), QUALITIES);
   const quartal = shapeQualities('quartal');
-  assert.ok(quartal.includes('m7') && quartal.includes('maj7'));
-  assert.ok(!quartal.includes('7'), 'no quartal dominant');
+  assert.ok(quartal.includes('m7') && quartal.includes('maj7') && quartal.includes('7'));
+  assert.ok(!quartal.includes('m7b5'), 'no quartal half-diminished');
+  // A triad needs its root, third and fifth, and no stack of fourths holds all three.
+  assert.ok(!quartal.includes('') && !quartal.includes('m'), 'no quartal triad');
   const shell = shapeQualities('shell');
   assert.ok(shell.includes('7') && !shell.includes('m7b5') && !shell.includes('dim7'));
   assert.ok(!shell.includes(''), 'a triad has no seventh to make a shell from');
@@ -161,7 +165,7 @@ test('trainingPlan: a progression keeps its own bars, loops, and demands no shap
 
 test('trainingPlan: nothing playable is no plan, rather than a screen with no chord on it', () => {
   assert.equal(trainingPlan({ ...DEFAULT_TRAINING, mode: 'drill', qualities: [] }), null);
-  assert.equal(trainingPlan({ ...DEFAULT_TRAINING, mode: 'drill', qualities: ['7'], shape: 'quartal' }), null);
+  assert.equal(trainingPlan({ ...DEFAULT_TRAINING, mode: 'drill', qualities: ['m7b5'], shape: 'quartal' }), null);
 });
 
 // ---- Remembering the choices -----------------------------------------------------------------
