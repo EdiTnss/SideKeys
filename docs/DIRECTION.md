@@ -195,13 +195,21 @@ formularul repornesc ceasul porții.
    React e bifa din anunțurile de job, iar Svelte 5 cu runes e mai nou în ce știe Claude — se ține
    în frâu cu versiune fixată, runes only și zero librării de componente.
 2. **Ordinea exactă a unităților** și conținutul testului de plasare. Teoria e a lui Edi.
+   **Pe jumătate închisă pe 2026-10-11**: Edi a aprobat ordinea draftului (Triade → Inversiuni →
+   Septacorduri → Shell → Rootless → Drop 2 → Quartal → ii–V–I) și tempoul de 120. Rămâne
+   **conținutul** fiecărei unități — tonalitățile, ce lipsește, ce e prea greu prea devreme —
+   care se corectează după ce Edi joacă drumul pe Genos. Testul de plasare e neatins.
 3. ~~**Formula de stele**~~ — **închisă pe 2026-10-11**: Right (≥60% corecte) · Clean (≥80% fără
    avertismente) · Smooth (timed, plus mișcare medie pe voce sub pragul măsurat al progresiei).
    Specificația, cu pragurile măsurate și metoda: [spec-game.md](spec-game.md).
 4. **Sursa de sample-uri de pian**: licența (ex. Salamander Grand, CC-BY) și dimensiunea
    descărcării.
 5. **Ce se întâmplă cu UI-ul vechi**: rămâne ca „Laborator" în shell-ul nou sau se reface
-   acolo de la zero.
+   acolo de la zero. **Devenită urgentă pe 2026-10-12**, fiindcă blochează publicarea: Pages
+   servește `index.html`, pagina veche, iar shell-ul — jocul, drumul, challenge-ul, PWA-ul —
+   nu e publicat nicăieri. Trei variante, de ales: (a) shell-ul la rădăcină și Laboratorul mutat
+   sub o cale (`/lab/`), (b) shell-ul la rădăcină și Laboratorul scos din site, rămânând în repo
+   ca dovadă, (c) Laboratorul refăcut în shell, care e singura care costă săptămâni.
 6. ~~**Vechea generalizare a regulii de anticipare**~~ — **închisă pe 2026-10-11**: se
    anticipează numai peste bara de măsură. Edi a respins schimbările din mijlocul măsurii și
    anticiparea din măsura de numărătoare; a păstrat fereastra de jumătate de timp muzical (în

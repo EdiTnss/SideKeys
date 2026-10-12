@@ -56,8 +56,9 @@ Consecințe pentru cod:
 `src/theory/**` rămâne JS pur, fără DOM, fără dependențe, testat cu `node --test`. Motivele nu
 mai sunt doar comerciale, sunt structurale: pe același cod stau exercițiile generate procedural
 (12 tonalități × calități × tipuri de voicing), scorurile deterministe (stele, XP) și, când va
-exista clasament, verificarea anti-trișat pe server — aceeași funcție, trei locuri. Cele **242
-de teste** sunt singura garanție că produsul nu strică teoria.
+exista clasament, verificarea anti-trișat pe server — aceeași funcție, trei locuri. **Testele din
+`test/`** sunt singura garanție că produsul nu strică teoria; numărul lor curent e în badge-ul din
+README, nu scris aici, ca să nu rămână în urmă.
 
 Shell-ul nou importă `theory/` **neatins**: fără TypeScript în `theory/`, fără bundler pentru
 modulele de teorie, fără conturi de utilizator în ele. TypeScript doar pe codul nou.
@@ -72,8 +73,10 @@ mult cod — se repară ipoteza.
 - [x] Execuția pe fraze pentru piese peste 32 de măsuri (ultimul punct din Faza 3b).
 - [x] Harness de verificare permanent: port MIDI virtual + sesiuni înregistrate care se reiau.
 - [x] Spargerea lui `CLAUDE.md` în reguli / jurnal / specificații.
-- [ ] Faza 4 integral: demo mode, claviatură pe ecran, `audio/synth.js`, repo public, Pages,
-  Worker publicat.
+- [x] Faza 4: demo mode, claviatură pe ecran, `audio/synth.js`, repo public, Pages. **Worker-ul
+  rămâne nepublicat**, prin decizia lui Edi din 2026-09-20 — site-ul public nu face niciun apel
+  AI, deci nu poate costa nimic. Punctul ăsta a stat nebifat o lună fiindcă enumera și partea
+  scoasă din scop; restul era gata din 20 septembrie.
 - [x] Prototip de intrare pe microfon cu `basic-pitch-ts`, măsurat pe 20 de voicings.
   Prag de acceptare: peste 90% identificate corect **cu octava exactă**. **Măsurat 2026-09-24:
   45%**, cu tavan de 72% pe 93 de voicings — pragul nu trece, modul microfon din P4 rămâne
@@ -130,6 +133,12 @@ apoi structura (drum, unități, nivele), abia apoi meta-jocul (XP, streak).**
 - [x] PWA instalabilă (manifest + service worker, offline). Worker scris de mână, fără dependență;
   lista de precache e generată din build, iar offline-ul a fost probat cu serverul oprit.
 - [ ] Formular de email găzduit, legat din pagină și din README.
+- [ ] **Shell-ul publicat pe Pages**, în locul Laboratorului. Adăugat pe 2026-10-12: faza se
+  numește „prima livrare publică", dar nicio linie din listă nu publica nimic, iar GitHub Pages
+  servește și azi `index.html`, pagina veche. Consecințele se văd deja — grila partajată a
+  challenge-ului trimite la un site unde challenge-ul nu există, iar PWA-ul nu e instalabil de
+  nicăieri. Cere o decizie legată: ce se întâmplă cu UI-ul vechi (decizia deschisă 5 din
+  [DIRECTION.md](DIRECTION.md)).
 
 **DoD:** un vizitator nou ajunge de la deschiderea paginii la primul acord cântat în sub 30 de
 secunde, fără cont; un exercițiu ratat se întoarce în „antrenamentul tău" a doua zi și iese după

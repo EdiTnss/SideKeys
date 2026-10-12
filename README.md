@@ -15,11 +15,52 @@ too low to sound clear, and how smoothly you moved from the chord before.
 
 Everything in that answer is computed, not guessed. No model is asked what a Dm7 is.
 
-**[Try it →](https://editnss.github.io/SideKeys/)** — no MIDI keyboard needed: click the
-drawn keys to build a voicing and press <kbd>Enter</kbd>, or hold <kbd>A</kbd> <kbd>S</kbd>
-<kbd>D</kbd> <kbd>F</kbd> like a piano. Chrome or Edge; Web MIDI does not exist in Safari.
-
 <!-- demo.gif -->
+
+## What you actually do with it
+
+A path of eight units, from triads to ii–V–I in twelve keys, each ending on a boss. A level
+asks for a chord, you play it, and the keyboard answers immediately — green for the chord tones
+you found, a dotted outline for the ones you did not. A pass earns up to three stars:
+
+| star | name | what it asks |
+|---|---|---|
+| ★ | **Right** | you played the chord that was asked for |
+| ★★ | **Clean** | nothing to reproach: no avoid notes, nothing muddy |
+| ★★★ | **Smooth** | the same, against the metronome, with the voices moving as little as the progression allows |
+
+The thresholds are measured rather than felt — a well-led ii–V–I moves 0.75 semitones per voice
+and a careless one moves 4.00, so the star sits at 1.25. The method and the table are in
+[docs/spec-game.md](docs/spec-game.md).
+
+A level may also demand a *shape* — play this as a shell, a rootless A or B, a drop 2, a
+quartal — and a slash chord checks the bass you put underneath it. Every level is tested to be
+answerable: a test walks each chord it asks for through the voicing generator and fails if no
+clean voicing of the demanded shape exists.
+
+**A daily challenge**, the same ten chords for everyone, drawn from the date itself — xmur3 into
+mulberry32, so there is no server and no account, and two browsers on the same day draw the same
+ramp. It climbs from a triad to a quartal, so a beginner earns the first squares rather than a
+blank grid, and the result pastes as a row of squares:
+
+```
+SideKeys #1 · 8/10 clean
+🟩🟩🟩🟩⬛🟩🟩🟩🟩⬜
+```
+
+Whatever you miss comes back tomorrow in *your training* and leaves after three clean answers in
+a row. The app installs as a PWA and works with the network off, because everything it does is
+arithmetic in your browser.
+
+**No MIDI keyboard?** The drawn one is a real MIDI input, not a special case: click the keys to
+arm them and press <kbd>Enter</kbd>, or hold <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <kbd>F</kbd>
+like a piano. A Web Audio synth appears as a MIDI *output* beside your real ports. Chrome or
+Edge; Web MIDI does not exist in Safari.
+
+> **Where to try it:** the published page is still the analyzer bench described below —
+> [editnss.github.io/SideKeys](https://editnss.github.io/SideKeys/) — which is where this started
+> and what the demo GIF shows. The game above runs from the repo (`npm --prefix app run dev`)
+> until the new shell is deployed in its place.
 
 ## How the analyzer works
 
@@ -37,9 +78,10 @@ The low interval limits in the first row are the point: the voicing is correct o
 muddy under the hands. The rules are written down in [docs/spec-analyzer.md](docs/spec-analyzer.md)
 and each one has a test.
 
-Beyond a single chord, the app runs a drill (random chords from the qualities and keys you pick),
-progressions from a small library or from a grid you type (`| Dm7 G7 | Cmaj7 | % |`), free or
-against a metronome, with a voice-leading score for the pass and statistics for your weak spots.
+This is also the bench the project grew out of, and it is still here: a drill over the qualities
+and keys you pick, progressions from a small library or from a grid you type
+(`| Dm7 G7 | Cmaj7 | % |`), free or against a metronome, with a voice-leading score for the pass
+and statistics for your weak spots.
 
 ## The hybrid reharmonizer
 
@@ -71,9 +113,11 @@ through `plan + execute + review`, several times, and writes the numbers to
 averaged 0.90 bass smoothness against 0.84 and 4.67 distinct techniques against 3.67 — with zero
 melody clashes and the change density inside its target in every run of both.
 
-Reharmonization is **out of the product's scope** (see [docs/PRODUCT.md](docs/PRODUCT.md)): it
-stays here as the technical demonstration, and the published site makes no API calls at all.
-Run it yourself with your own key and it comes back on.
+The reharmonizer with an API call is **out of the product's scope** (see
+[docs/PRODUCT.md](docs/PRODUCT.md)): it stays here as the technical demonstration, and the
+published site makes no API calls at all. Run it yourself with your own key and it comes back on.
+The arrangement half of it — grid and melody turned into bass, left hand and melody, voice-led
+and playable on a real instrument — has no model in it and is part of the product.
 
 ## The verification harness
 
@@ -85,24 +129,28 @@ chord or verdict is no longer what it was.
 CI replays three of them on every push, including eleven minutes of real playing on a Genos
 (1160 events, 93 snapshots). It has already earned its keep: it found a chord pushed over the
 bar line that silently received no verdict at all, and proved the fix left all 93 snapshots of
-that session untouched.
+that session untouched. The game uses the same decision — `snapshotTarget` — to work out which
+chord a voicing answers, so the game and the replay cannot come to disagree.
 
 ## Run it
+
+The game, with hot reload:
+
+```bash
+npm --prefix app run dev
+```
+
+The analyzer bench (the original page, no build step):
 
 ```bash
 npx serve .
 ```
 
-Open <http://localhost:3000> in Chrome or Edge. On Windows, `start.cmd` does this and opens the
-browser for you. `midi-test.html` is a diagnostic page for MIDI in and out.
+Open the address each prints, in Chrome or Edge. On Windows, `start.cmd` opens the bench and the
+local AI proxy in one double-click. `midi-test.html` is a diagnostic page for MIDI in and out.
 
-No keyboard? The drawn one plays: click keys to arm them and press <kbd>Enter</kbd>, or type on
-the letter row. A small Web Audio synth appears as a MIDI output, so suggestions and whole
-arrangements are audible in the browser.
-
-**With a keyboard:** connect it before loading the page (or press "Connect MIDI keyboard"), pick
-it as the MIDI output in Settings, and turn off any auto-accompaniment so only your own notes
-arrive.
+**With a keyboard:** connect it before loading the page (or press "Connect a MIDI keyboard"), and
+turn off any auto-accompaniment so only your own notes arrive.
 
 **To turn on the Claude features** (explanations in the drill, reharmonization), run the proxy
 from [`worker/`](worker/) with your own Anthropic API key and paste its URL into Settings. The
@@ -111,23 +159,26 @@ key never touches the frontend or this repository — see [worker/README.md](wor
 ## Tests
 
 ```bash
-npm test          # full report
+npm test            # full report
 npm run test:quiet  # one line when green
 ```
 
-239 tests, Node 22+, **no dependencies**. The music theory in `src/theory/` is pure JavaScript
-with no DOM, which is why the same code runs in the browser, in the Worker and under
-`node --test`.
+310 tests on Node 22+. The engine — everything the answers are computed from — is plain
+JavaScript with **no dependencies and no build step**, which is why the same files run in the
+browser, in the Worker, and under `node --test`. The shell on top of it is Vite, TypeScript and
+Svelte 5, and it imports the engine untouched; nothing in the engine may import from the shell.
 
 ## Layout
 
 | | |
 |---|---|
-| `src/theory/` | chords, analyzer, voice leading, pieces, harmonic analysis, candidates, scoring, realization — pure, tested |
+| `src/theory/` | chords, analyzer, voice leading, stars, pieces, harmonic analysis, candidates, scoring, realization — pure, tested |
+| `src/game/` | the path and its units, progress and the streak, the daily challenge — pure, tested |
 | `src/midi/` | Web MIDI in and out, voicing capture, the virtual port |
-| `src/audio/` | metronome, synth, the shared clock |
-| `src/ui/` | rendering, the drill, the session tape, the on-screen keyboard |
+| `src/audio/` | metronome, synth, sampled piano, the shared clock |
+| `src/ui/` | the bench: rendering, the drill, the session tape, the on-screen keyboard |
 | `src/ai/` | the prompts (versioned, in the repo) and the pipeline |
+| `app/` | the game: Vite + TypeScript + Svelte 5, the service worker and the manifest |
 | `worker/` | Cloudflare Worker: adds the key, checks the origin, limits per IP. No music logic, no prompts |
 | `harness/` | recorded sessions and the replay |
 | `docs/` | product scope, module specs, the session journal (in Romanian) |

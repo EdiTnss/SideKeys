@@ -169,3 +169,43 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   **310 teste verzi**, `svelte-check` 0 pe 313 fișiere. Vite rescrie `/manifest.webmanifest` în
   `./manifest.webmanifest` la build, deci un deploy pe subpath (Pages) rămâne valid, la fel ca
   `start_url` și `scope` relative. **Următorul pas**: formularul de email, ultimul punct din P1.
+- **2026-10-12 (ordine în documente)** — Fără cod nou: o trecere prin documente ca să nu mai mintă,
+  cerută de Edi. **Redenumirea era deja completă**: în tot repo-ul, singurele „Voicing Lab" rămase
+  sunt consemnări istorice care *trebuie* să rămână (de ce s-a redenumit, ce s-a verificat în
+  `localStorage`, competitorul din `BRIEF.md`), plus câmpul `"app": "voicing-lab"` din cele trei
+  sesiuni din `harness/sessions/` — înregistrări făcute înainte de redenumire, pe care nimic nu le
+  citește și care nu se rescriu, fiindcă sunt dovezi, nu configurație. Ce chiar mai poartă numele
+  vechi e **folderul de pe disc** și PDF-ul lui Edi, amândouă în afara repo-ului.
+
+  **Două statusuri care mințeau.** P0 avea nebifat „Faza 4 integral", deși tot ce enumera era gata
+  din 20 septembrie — în afară de „Worker publicat", care fusese **scos din scop** tot atunci. O fază
+  a stat o lună nebifată pentru o linie care enumera și partea tăiată. Și, mai grav: **P1 se numește
+  „prima livrare publică" și nicio linie din lista lui nu publica nimic.** Totul e construit — jocul,
+  drumul, challenge-ul, PWA-ul — și nimic nu e livrat: Pages servește și azi `index.html`. Am adăugat
+  punctul care lipsea, legat de decizia deschisă 5 (ce se întâmplă cu Laboratorul), care din
+  „nedecisă" a devenit **blocantă**.
+
+  **README-ul descria Laboratorul ca produs**, cu „239 tests", fără niciun cuvânt despre joc, drum,
+  stele, challenge sau PWA — adică fără direcția de două zile. Rescris: produsul întâi (ce faci
+  efectiv cu el), analizorul ca motor și bancul din care a crescut, reharm-ul și harness-ul ca dovezi
+  tehnice. Spune pe față că pagina publicată e încă bancul, fiindcă a trimite un recrutor spre altceva
+  decât descrie textul e mai rău decât a recunoaște că livrarea n-a avut loc.
+
+  **„Starea curentă" din `CLAUDE.md`: 30 KB → 5 KB.** Devenise povestea proiectului, nu starea lui, și
+  se citește la *fiecare* sesiune. Acum are cinci secțiuni scurte — ce există, ce nu există încă, ce e
+  verificat pe Genos, ce decizii nu se schimbă, ce așteaptă pe Edi — plus cioburile de care te
+  lovești dacă nu le știi. Nimic nu s-a pierdut: poveștile erau deja în jurnal, regulile în
+  `docs/spec-*.md`. Tot acolo: o linie de structură care promitea un folder `app/src/sound/` ce n-a
+  existat niciodată (pianul e `src/audio/piano.js`), `App.svelte` care lipsea din hartă, `PHASES.md`
+  marcat ca istoric, `session-log/` adăugat în tabel.
+
+  **Un număr scos, nu actualizat**: `PRODUCT.md` spunea „cele 242 de teste". Orice număr scris într-un
+  document viu rămâne în urmă, deci acum trimite la badge. Cel din `DIRECTION.md` (238) rămâne: acolo
+  e o consemnare datată, nu o afirmație la prezent.
+
+  **Ordinea de lucru, scrisă ca lanț de blocaje, nu ca listă de dorințe**: (1) Edi joacă drumul pe
+  Genos și corectează conținutul — întâi, fiindcă un produs vândut pe corectitudine nu se publică cu
+  lecțiile necitite de muzician; (2) decizia 5, apoi shell-ul publicat — abia atunci DoD-ul P1 se
+  poate măsura și `SHARE_URL` încetează să mintă; (3) sample-urile de pian, înaintea clipului; (4)
+  formularul și clipul, care pornesc împreună ceasul porții. **310 teste verzi**, `svelte-check` 0 pe
+  313 fișiere; nimic din cod nu s-a atins.
