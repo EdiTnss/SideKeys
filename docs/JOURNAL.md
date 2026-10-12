@@ -269,3 +269,31 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   animațiile sunt ale jocului; unealta de analiză rămâne sobră. **311 teste verzi**, `svelte-check` 0
   pe 313 fișiere. Cu asta, punctul „ecranul de joc" din P1 se bifează, iar din fază mai rămân
   publicarea (un clic), conținutul drumului (Genos) și formularul de email.
+- **2026-10-12 (publicat)** — Edi a dat clicul din Settings → Pages → Source, am împins cele 13
+  commit-uri, iar `pages` a trecut verde în **61 de secunde**. P1 are acum o livrare, nu doar cod.
+  **Verificat pe site-ul viu, nu pe build-ul local**: jocul la rădăcină cu service worker activ pe
+  subpath (`https://editnss.github.io/SideKeys/`), manifest valid, creditul pianului la locul lui;
+  bancul la `/lab/` cu 38 de resurse și **zero cereri picate**, servit din subfolder fără nicio linie
+  de cod schimbată. Am verificat și cele două reguli care contează pentru bani: pe banc, tab-ul
+  Reharm și butonul „Ask Claude" sunt **ascunse** — prezente în DOM, dar `hidden` — deci site-ul
+  public tot nu poate face niciun apel AI. Diferența dintre „există în DOM" și „se vede" era exact
+  genul de lucru pe care o verificare leneșă l-ar fi raportat greșit.
+
+  **Lanțul întreg, probat în producție**: challenge-ul zilei cere Eb, acordul cântat pe clapa de
+  ecran primește „Eb Clean — close", clapa animează (`key-strike`), 17 sample-uri de pian se încarcă
+  de pe site și se creează **3 buffer sources** — adică sună pianul adevărat, nu oscilatoarele.
+  `SHARE_URL` a încetat să mintă de la sine: arată exact pagina unde challenge-ul chiar există.
+
+  **Ce n-am putut măsura, și o spun ca atare**: o vizită cu adevărat rece. Am dezînregistrat
+  worker-ul, am șters cache-urile și localStorage, dar browserul tot a servit din cache-ul HTTP — 0
+  KB prin rețea, 187 ms până la interactiv. Cifra aia nu e a unui vizitator nou. Ce se știe sigur e
+  că shell-ul are ~156 KB în 3 cereri și că pianul se încarcă abia la intrarea într-un nivel, deci
+  nu stă pe drumul către primul acord; DoD-ul de 30 de secunde nu e în pericol, dar numărul lui cere
+  un profil curat.
+
+  **O greșeală a mea, prinsă înainte să conteze**: urmăritorul de deploy l-am pornit cu un SHA
+  complet **inventat** pornind de la cel scurt, deci comparația n-ar fi prins niciodată și aș fi
+  așteptat zece minute degeaba. L-am oprit și l-am repornit cu `git rev-parse HEAD`.
+
+  **Din P1 mai rămâne un singur punct**: formularul de email. Restul sunt ale lui Edi și ale
+  clapei — conținutul drumului pe Genos și clipul.

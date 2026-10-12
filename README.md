@@ -57,10 +57,9 @@ arm them and press <kbd>Enter</kbd>, or hold <kbd>A</kbd> <kbd>S</kbd> <kbd>D</k
 like a piano. A Web Audio synth appears as a MIDI *output* beside your real ports. Chrome or
 Edge; Web MIDI does not exist in Safari.
 
-> **Where to try it:** the published page is still the analyzer bench described below —
-> [editnss.github.io/SideKeys](https://editnss.github.io/SideKeys/) — which is where this started
-> and what the demo GIF shows. The game above runs from the repo (`npm --prefix app run dev`)
-> until the new shell is deployed in its place.
+**[Play it →](https://editnss.github.io/SideKeys/)** — no account, no install, nothing to sign up
+to. The analyzer bench this grew out of, with the drill, the progressions and the
+reharmonizer, is at **[/lab/](https://editnss.github.io/SideKeys/lab/)**.
 
 ## How the analyzer works
 

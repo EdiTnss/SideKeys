@@ -134,12 +134,11 @@ apoi structura (drum, unități, nivele), abia apoi meta-jocul (XP, streak).**
 - [x] PWA instalabilă (manifest + service worker, offline). Worker scris de mână, fără dependență;
   lista de precache e generată din build, iar offline-ul a fost probat cu serverul oprit.
 - [ ] Formular de email găzduit, legat din pagină și din README.
-- [ ] **Shell-ul publicat pe Pages**, în locul Laboratorului. Adăugat pe 2026-10-12: faza se
-  numește „prima livrare publică", dar nicio linie din listă nu publica nimic, iar GitHub Pages
-  servește și azi `index.html`, pagina veche. Consecințele se văd deja — grila partajată a
-  challenge-ului trimite la un site unde challenge-ul nu există, iar PWA-ul nu e instalabil de
-  nicăieri. Cere o decizie legată: ce se întâmplă cu UI-ul vechi (decizia deschisă 5 din
-  [DIRECTION.md](DIRECTION.md)).
+- [x] **Shell-ul publicat pe Pages**, în locul Laboratorului — **făcut pe 2026-10-12**. Jocul e la
+  rădăcină, bancul la `/lab/`, publicate din `.github/workflows/pages.yml`. Verificat pe site-ul
+  viu: service worker activ pe subpath, manifest valid, 17 sample-uri de pian încărcate, un acord
+  cântat primește „Eb Clean — close", iar pe banc tab-ul Reharm și „Ask Claude" rămân ascunse, deci
+  site-ul public tot nu poate face niciun apel AI.
 
 **DoD:** un vizitator nou ajunge de la deschiderea paginii la primul acord cântat în sub 30 de
 secunde, fără cont; un exercițiu ratat se întoarce în „antrenamentul tău" a doua zi și iese după

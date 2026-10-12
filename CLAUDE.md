@@ -167,8 +167,10 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
   challenge zilnic partajabil și PWA instalabilă care merge fără rețea. Regulile:
   [docs/spec-game.md](docs/spec-game.md).
 - **Laboratorul** (`index.html` + `src/ui/`, `npx serve .`): drill, progresii, grilă text, metronom,
-  statistici, aranjament pe Genos, reharm cu Claude dacă pornești Worker-ul local. **E ce servește
-  GitHub Pages azi** — shell-ul nu e publicat nicăieri.
+  statistici, aranjament pe Genos, reharm cu Claude dacă pornești Worker-ul local. Publicat la
+  **`/lab/`** de pe 2026-10-12; tab-ul Reharm și „Ask Claude" rămân ascunse acolo, verificat pe viu.
+- **Totul e publicat** din `.github/workflows/pages.yml`: jocul la rădăcină, bancul la `/lab/`,
+  bancul copiat **după** build ca să nu intre în precache-ul PWA-ului.
 - **Harness-ul**: port MIDI virtual (`?midi=virtual`), banda sesiunii, reluare în Node și în CI pe
   trei sesiuni înregistrate, una de 11 minute reale pe Genos. Jocul și reluarea folosesc **aceeași**
   funcție (`snapshotTarget`) ca să decidă ce acord răspunde un voicing, deci nu pot ajunge să spună
@@ -219,9 +221,8 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
   și ce lipsește dintr-o unitate sunt teoria lui.
 - **Să asculte pianul** și să spună dacă stratul de velocitate ales (v9 din 16) e potrivit: cu un
   singur strat, timbrul nu se schimbă cu forța, doar volumul. Se schimbă într-o comandă.
-- **Un clic în Settings → Pages → Source: „GitHub Actions"**, ca workflow-ul de publicare să poată
-  rula. Până atunci `.github/workflows/pages.yml` rulează și pică la ultimul pas, fiindcă Pages e
-  încă pe „deploy from a branch".
+- **Să asculte pianul pe site-ul viu** și să spună dacă stratul de velocitate (v9 din 16) e
+  potrivit. Cu un singur strat, timbrul nu se schimbă cu forța, doar volumul.
 - **Formularul de email** (furnizor, GDPR, unde stau adresele) și clipul de 15 s / videoul de 60–90 s
   pentru README (`<!-- demo.gif -->` marchează locul).
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick", clasele 9 și 41, înainte de înregistrare.
@@ -230,8 +231,10 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 
 - **Prototipul celor patru ecrane**, aprobat, trăiește în afara repo-ului:
   https://claude.ai/artifact/LwezgTTnCurF57ZN1DecAY
-- **`SHARE_URL` din `src/game/challenge.js`** arată pagina publicată, care servește Laboratorul: grila
-  partajată a challenge-ului trimite azi unde challenge-ul nu există. Se repară odată cu publicarea.
+- **O vizită cu adevărat rece nu s-a putut măsura** din browserul de test (cache-ul HTTP servea tot,
+  0 KB prin rețea). Ce se știe sigur: shell-ul e ~156 KB în 3 cereri, iar pianul se încarcă abia la
+  intrarea într-un nivel, deci nu stă pe drumul către primul acord. DoD-ul de 30 de secunde din P1
+  nu e în pericol, dar cifra lui o dă o măsurătoare pe un profil curat.
 - **Sesiunile din `harness/sessions/`** poartă `"app": "voicing-lab"`, fiindcă au fost înregistrate
   înainte de redenumire. Nimic nu citește câmpul, și sunt înregistrări — nu se rescriu.
 - **Necommis**: `Voicing Lab ca produs.pdf` (numele de pe disc, cum e în `.gitignore`), care nu intră
@@ -246,11 +249,8 @@ pas îl deblochează pe următorul.
 1. **Edi joacă drumul pe Genos** și corectează conținutul din `src/game/path.js`. Întâi, fiindcă un
    produs care se vinde pe corectitudine nu se publică cu lecțiile necitite de muzician. Tot aici se
    confirmă și clapa reală în shell, singurul lucru neverificat pe hardware.
-2. **Publicarea.** Decizia 5 e luată (shell la rădăcină, Laboratorul la `/lab/`) și workflow-ul e
-   scris; mai lipsește un clic al lui Edi în Settings → Pages → Source: „GitHub Actions". Abia
-   după prima rulare verde jocul e deschizibil de cineva, PWA-ul e instalabil de undeva, iar
-   `SHARE_URL` din `challenge.js` încetează să mintă. Până aici, DoD-ul P1 („un vizitator nou
-   ajunge la primul acord în sub 30 de secunde") nici nu se poate măsura.
+2. ~~Publicarea~~ — **făcută pe 2026-10-12**, în 61 de secunde de rulare. Jocul e la
+   https://editnss.github.io/SideKeys/, bancul la `/lab/`.
 3. ~~Sample-urile de pian~~ — **gata pe 2026-10-12**: Salamander Grand Piano, CC BY 3.0, 3 MB.
 4. **Formularul de email** (furnizor, GDPR) **și clipul** de 15 s. Împreună pornesc ceasul porții P1;
    clipul singur nu, formularul singur nu.
