@@ -214,8 +214,9 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
   și ce lipsește dintr-o unitate sunt teoria lui.
 - **Decizia deschisă 4**: pachetul de sample-uri de pian (care, ce licență, cât de mare). Până atunci
   `app/public/piano/manifest.json` are `"samples": null` și pagina rămâne pe synth, fără 404.
-- **Decizia deschisă 5, devenită urgentă**: ce se întâmplă cu Laboratorul când se publică shell-ul.
-  Blochează livrarea P1.
+- **Un clic în Settings → Pages → Source: „GitHub Actions"**, ca workflow-ul de publicare să poată
+  rula. Până atunci `.github/workflows/pages.yml` rulează și pică la ultimul pas, fiindcă Pages e
+  încă pe „deploy from a branch".
 - **Formularul de email** (furnizor, GDPR, unde stau adresele) și clipul de 15 s / videoul de 60–90 s
   pentru README (`<!-- demo.gif -->` marchează locul).
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick", clasele 9 și 41, înainte de înregistrare.
@@ -240,10 +241,11 @@ pas îl deblochează pe următorul.
 1. **Edi joacă drumul pe Genos** și corectează conținutul din `src/game/path.js`. Întâi, fiindcă un
    produs care se vinde pe corectitudine nu se publică cu lecțiile necitite de muzician. Tot aici se
    confirmă și clapa reală în shell, singurul lucru neverificat pe hardware.
-2. **Decizia deschisă 5** (ce se întâmplă cu Laboratorul), apoi **shell-ul publicat pe Pages** în
-   locul lui. Abia atunci jocul e deschizibil de cineva, PWA-ul e instalabil de undeva, iar
-   `SHARE_URL` din `challenge.js` încetează să mintă. Până aici, DoD-ul P1 („un vizitator nou ajunge
-   la primul acord în sub 30 de secunde") nici nu se poate măsura.
+2. **Publicarea.** Decizia 5 e luată (shell la rădăcină, Laboratorul la `/lab/`) și workflow-ul e
+   scris; mai lipsește un clic al lui Edi în Settings → Pages → Source: „GitHub Actions". Abia
+   după prima rulare verde jocul e deschizibil de cineva, PWA-ul e instalabil de undeva, iar
+   `SHARE_URL` din `challenge.js` încetează să mintă. Până aici, DoD-ul P1 („un vizitator nou
+   ajunge la primul acord în sub 30 de secunde") nici nu se poate măsura.
 3. **Decizia deschisă 4**, pachetul de sample-uri de pian. Înaintea clipului, fiindcă e diferența
    dintre „sună a aplicație" și „sună a instrument", iar clipul e exact ce vede lumea prima dată.
 4. **Formularul de email** (furnizor, GDPR) **și clipul** de 15 s. Împreună pornesc ceasul porții P1;

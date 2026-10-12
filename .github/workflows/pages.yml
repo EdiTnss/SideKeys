@@ -1,0 +1,60 @@
+name: pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Only this workflow needs them, so they are not granted repo-wide.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. A running deploy is allowed to finish rather than being cancelled
+# half-written; the next push simply queues behind it.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      # The theory the whole site is built on is guarded by these; a red build must not publish.
+      # The root takes no dependencies, so there is nothing to install for it.
+      - run: npm test
+
+      - run: npm --prefix app ci
+      - run: npm --prefix app run build
+
+      # The bench is copied in *after* the build, and the order is the point: `npm run build`
+      # ends with build-sw.mjs, which precaches everything it finds in dist. The game is meant to
+      # work offline; the bench is a separate page that is not, and putting its files into the
+      # service worker would bloat the install for nothing.
+      - name: Copy the analyzer bench to /lab/
+        run: |
+          mkdir -p app/dist/lab
+          cp -r index.html styles.css midi-test.html src assets demo app/dist/lab/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

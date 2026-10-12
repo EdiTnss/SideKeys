@@ -204,12 +204,14 @@ formularul repornesc ceasul porții.
    Specificația, cu pragurile măsurate și metoda: [spec-game.md](spec-game.md).
 4. **Sursa de sample-uri de pian**: licența (ex. Salamander Grand, CC-BY) și dimensiunea
    descărcării.
-5. **Ce se întâmplă cu UI-ul vechi**: rămâne ca „Laborator" în shell-ul nou sau se reface
-   acolo de la zero. **Devenită urgentă pe 2026-10-12**, fiindcă blochează publicarea: Pages
-   servește `index.html`, pagina veche, iar shell-ul — jocul, drumul, challenge-ul, PWA-ul —
-   nu e publicat nicăieri. Trei variante, de ales: (a) shell-ul la rădăcină și Laboratorul mutat
-   sub o cale (`/lab/`), (b) shell-ul la rădăcină și Laboratorul scos din site, rămânând în repo
-   ca dovadă, (c) Laboratorul refăcut în shell, care e singura care costă săptămâni.
+5. ~~**Ce se întâmplă cu UI-ul vechi**~~ — **închisă pe 2026-10-12**: shell-ul la rădăcină,
+   **Laboratorul publicat la `/lab/`** (varianta a). Motivul alegerii lui Edi: dovada tehnică —
+   analizorul, reharm-ul hibrid, harness-ul — rămâne ceva ce un recrutor poate *deschide*, nu doar
+   citi în README. Costul e mic și măsurat: Laboratorul folosește numai căi relative, deci se mută
+   fără nicio linie de cod schimbată; singura plată e în service worker, care trebuie să stea
+   deoparte de `/lab/`, altfel offline ar răspunde cu shell-ul jocului la adresa Laboratorului.
+   Publicarea se face din `.github/workflows/pages.yml`; Laboratorul se copiază **după** build,
+   ca fișierele lui să nu intre în precache-ul PWA-ului.
 6. ~~**Vechea generalizare a regulii de anticipare**~~ — **închisă pe 2026-10-11**: se
    anticipează numai peste bara de măsură. Edi a respins schimbările din mijlocul măsurii și
    anticiparea din măsura de numărătoare; a păstrat fereastra de jumătate de timp muzical (în

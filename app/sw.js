@@ -22,6 +22,12 @@ const shellUrl = new URL('./index.html', self.location.href).href;
 // content-hashed, so they do not vary by anything.
 const MATCH = { ignoreVary: true };
 
+// Inside the scope but not this app: the analyzer bench is published at /lab/ beside the game
+// (.github/workflows/pages.yml). It is a separate static page with its own files, so the worker
+// stays out of it entirely — otherwise an offline navigation there would be answered with the
+// game's shell, which is simply a different app wearing the right URL.
+const OUTSIDE = [new URL('./lab/', self.location.href).href];
+
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
@@ -46,6 +52,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   // Anything on another origin is somebody else's business, and caching it would be presumptuous.
   if (new URL(request.url).origin !== self.location.origin) return;
+  if (OUTSIDE.some(prefix => request.url.startsWith(prefix))) return;
   // Nor the worker script itself: build-sw.mjs keeps it out of the precache list for the same
   // reason, and a cached copy would be a stale answer to anyone who asks for it.
   if (request.url === self.location.href) return;
