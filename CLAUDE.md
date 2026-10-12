@@ -79,7 +79,8 @@ app/                       shell-ul (Vite + TS + Svelte 5), cu package.json prop
 index.html                 pagina veche: rămâne Laboratorul până e refăcută în shell
 styles.css                 stilurile paginii (folderul styles/ e pentru profilurile JSON, Faza 5)
 midi-test.html             Faza 0 — diagnostic MIDI in/out (rămâne în repo ca tool)
-start.cmd                  Windows: pornește pagina, proxy-ul local și Chrome dintr-un dublu-clic
+start.cmd                  Windows: deschide jocul publicat în fereastra lui, dintr-un dublu-clic; fără server
+dev.cmd                    Windows: pornește serverul de dezvoltare al jocului; `dev.cmd lab` adaugă bancul și proxy-ul
 src/
   app.js                   singurul loc care leagă theory, midi și ui
   storage.js               cheile din localStorage: un prefix și o funcție (mutarea de sub numele vechi a fost ștearsă pe 2026-10-05)
@@ -145,7 +146,8 @@ docs/spec-*.md             specificațiile pe module: capture, analyzer, reharm
 docs/PHASES.md             fazele 0–5 cu DoD și vechiul scope guard
 docs/JOURNAL.md            jurnalul sesiunilor
 docs/design/BRIEF.md       briefingul de brand pentru claude.ai/design (engleză)
-assets/                    brandul: favicon, mărci, lockup-uri, imaginea OG, BRAND.md (specificația designerului);
+assets/                    brandul: favicon, sidekeys.ico (iconița de Windows, generată din icon-512.png),
+                           mărci, lockup-uri, imaginea OG, BRAND.md (specificația designerului);
                            fonts/ are Sora găzduit local, cu licența OFL.txt
 ```
 

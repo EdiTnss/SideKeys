@@ -1,47 +1,33 @@
 @echo off
-rem Double-click this (or the desktop shortcut) to open SideKeys.
-rem It starts the page server, starts the AI proxy, then opens the app in Chrome.
-rem Two console windows stay open: closing them stops the servers.
+rem Double-click this (or the desktop shortcut) to play SideKeys.
+rem
+rem It opens the published game in its own browser window. There is no server to start, nothing
+rem to install and nothing to wait for: the game is a PWA, so after the first visit it also opens
+rem with the network down. Progress lives in the browser, under the published address, so it is
+rem the same progress every time -- which a localhost server would not give you.
+rem
+rem To work ON the game rather than play it, use dev.cmd.
 setlocal
 title SideKeys
-cd /d "%~dp0"
 
-echo Starting SideKeys...
-echo.
+set "GAME=https://editnss.github.io/SideKeys/"
 
-rem The page needs a server: ES modules do not load from file:// .
-netstat -ano | findstr /c:":3000" | findstr /c:"LISTENING" >nul
-if errorlevel 1 (
-  echo   page server     : starting on port 3000
-  start "SideKeys page - close this window to stop" cmd /k npx --yes serve . -l 3000
-) else (
-  echo   page server     : already running on port 3000
-)
-
-rem The proxy is only needed for Ask Claude and Reharmonize.
-netstat -ano | findstr /c:":8787" | findstr /c:"LISTENING" >nul
-if errorlevel 1 (
-  echo   AI proxy        : starting on port 8787
-  start "SideKeys AI proxy - close this window to stop" cmd /k npm --prefix worker run dev
-) else (
-  echo   AI proxy        : already running on port 8787
-)
-
-echo.
-echo Waiting for the servers...
-rem ping, not timeout: timeout refuses to run when input is redirected.
-ping -n 6 127.0.0.1 >nul
-
+rem --app gives a window with no tabs and no address bar, so it behaves like an installed app.
+rem Web MIDI needs a secure context, which the published HTTPS address is.
 set "BROWSER=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
+if not exist "%BROWSER%" set "BROWSER=%ProgramFiles(x86)%\Google\Chrome\Application\chrome.exe"
+if not exist "%BROWSER%" set "BROWSER=%LocalAppData%\Google\Chrome\Application\chrome.exe"
+
+rem Edge is the other browser that implements Web MIDI; Firefox and Safari do not.
+if not exist "%BROWSER%" set "BROWSER=%ProgramFiles(x86)%\Microsoft\Edge\Application\msedge.exe"
+if not exist "%BROWSER%" set "BROWSER=%ProgramFiles%\Microsoft\Edge\Application\msedge.exe"
+
 if exist "%BROWSER%" (
-  start "" "%BROWSER%" "http://localhost:3000"
-) else (
-  rem Web MIDI needs Chrome or Edge; the default browser may not have it.
-  start "" "http://localhost:3000"
+  start "" "%BROWSER%" --app=%GAME%
+  exit /b
 )
 
-echo.
-echo SideKeys is open at http://localhost:3000
-echo Close the two server windows when you are done.
-ping -n 4 127.0.0.1 >nul
+rem Neither is installed: the default browser still shows the game, but MIDI will not work in it.
+echo Chrome or Edge is needed for the MIDI keyboard; opening the default browser instead.
+start "" "%GAME%"
 endlocal
