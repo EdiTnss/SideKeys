@@ -167,7 +167,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **347 de teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **353 de teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5): Azi, Drumul, Jocul, Rezultatul, plus
   **Training** și **Theory**, peste opt unități (Triade → ii–V–I), **toate deschise**. Stele
   Right/Clean/Smooth, streak, Review zilnic pe calități, challenge zilnic partajabil, PWA care
@@ -180,8 +180,11 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 - **Training**: drill liber (calități, tonalități, formă opțională) și progresii din bibliotecă în
   buclă, cu metronom care se pornește și se oprește fără să încheie sesiunea. Fără stele; minutele
   și punctele slabe contează.
-- **Theory**: o pagină pe unitate, cu exemple colorate de analizor și cântate la clic. **Textul e
-  draft** (vezi „Ce așteaptă pe Edi").
+- **Theory**: o pagină pe unitate, cu exemple colorate de analizor și cântate la clic. Textul l-a
+  scris Claude; Edi l-a citit și l-a acceptat pe 2026-10-12.
+- **O triadă cere toate trei notele** (fundamentală, terță, cvintă); septacordurile lasă în
+  continuare fundamentala și cvinta altcuiva. **Dominantul quartal** (7, 3, 13, 9) e construit de
+  generator, deci unitatea Quartal și Training îl pot cere.
 - **Ortografia**: niciun Cb, Fb, B#, E# sau dublu accident în ce citește jucătorul; acordurile cu
   terță mică pe Db și Gb se scriu din C# și F# (`C#m/E`, `F#m/A`). `Abm` rămâne `Abm`.
 - **Laboratorul** (`index.html` + `src/ui/`), publicat la **`/lab/`**: grila scrisă de mână,
@@ -195,11 +198,11 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
   proprie, fără server; `dev.cmd` pornește serverul de dezvoltare, `dev.cmd lab` adaugă bancul
   și proxy-ul.
 
-### Nimic din ziua de 2026-10-12 nu e împins
+### Publicat
 
-**Toate commit-urile zilei sunt doar local** (`git log origin/main..HEAD` le arată). Site-ul
-publicat — deci și iconița de pe desktop — arată versiunea de dimineață: cu XP, cu boși, fără Training și fără Theory. Împingerea așteaptă două
-lucruri de la Edi: să corecteze draftul de teorie și să confirme pe Genos ce s-a reparat.
+**Tot ce s-a făcut pe 2026-10-12 e împins și publicat** (seara, la cererea lui Edi): jocul la
+rădăcină, bancul la `/lab/`. Iconița de pe desktop deschide deci versiunea de azi. Un browser care
+a mai vizitat site-ul poate arăta o dată versiunea veche, până își înnoiește service worker-ul.
 
 ### Ce nu există încă
 
@@ -213,9 +216,10 @@ lucruri de la Edi: să corecteze draftul de teorie și să confirme pe Genos ce 
 - Pornirea MIDI, aranjamentul complet și Stop-ul din Laborator (2026-10-05).
 - **Shell-ul a văzut prima dată Genos-ul pe 2026-10-12**: Edi a jucat drumul și a găsit opt
   probleme, toate rezolvate în aceeași zi (jurnal).
-- **Neconfirmat de Edi pe Genos, deși probat în browser cu clapa de ecran**: conexiunea care
-  rămâne între nivele și se reface singură după reload; acordul următor (dacă se poate cădea pe
-  timpul 1); Training cu metronomul lui; sunetul exemplelor din Theory.
+- **Confirmat de Edi pe Genos în seara de 2026-10-12** („am verificat pe Genos, este totul în
+  regulă"): conexiunea care rămâne între nivele, acordul următor în timed, Training.
+- **Neauzit de nimeni altcineva decât Edi**: Claude a verificat sunetul (metronom, exemplele din
+  Theory) numai prin absența erorilor, nu cu urechea.
 
 ### Decizii care nu se schimbă (și de ce)
 
@@ -228,11 +232,6 @@ lucruri de la Edi: să corecteze draftul de teorie și să confirme pe Genos ce 
 
 ### Ce așteaptă pe Edi
 
-- **Să corecteze draftul de teorie** din `src/game/lessons.js` (opt pagini, în engleză). Scris de
-  Claude; nu e gata până nu-l corectează. Se citește cel mai ușor în aplicație, din cardul Theory.
-- **Trei întrebări de teorie scoase la iveală de scrisul paginilor** (`spec-game.md`, secțiunea
-  Teoria): o triadă trece cu terța singură; un dominant quartal e recunoscut de analizor, dar nu e
-  cerut nicăieri fiindcă generatorul nu-l construiește; numele formelor A/B pe dominantă.
 - **O regulă de scor de urmărit**: în timed, un acord luat cu mai mult de o jumătate de timp
   înainte se judecă pe acordul curent și îi **înlocuiește** răspunsul. Acum că acordul următor se
   vede, e mai ușor de pățit. Soluția simplă: o măsură își păstrează primul răspuns.
@@ -260,22 +259,22 @@ lucruri de la Edi: să corecteze draftul de teorie și să confirme pe Genos ce 
 
 ## Următorul pas
 
-**Edi corectează draftul de teorie și confirmă pe Genos reparațiile zilei** (conexiunea, acordul
-următor, Training). Abia apoi se împinge ziua de lucru: până atunci site-ul publicat rămâne pe
-versiunea veche, iar paginile de teorie nu ajung la nimeni necorectate.
+**Măsoară DoD-ul P1 pe site-ul publicat, dintr-un profil curat** (fereastră incognito, fără service
+worker și fără cache): de la deschiderea https://editnss.github.io/SideKeys/ până la primul acord
+cântat pe clapa de ecran, cu cifra scrisă în `docs/PRODUCT.md`, la P1. Nu așteaptă nici pe Edi,
+nici clapa, și a rămas nefăcut de două sesiuni.
 
 După aceea, în ordinea blocajelor:
 
-1. **Cele trei întrebări de teorie** din `spec-game.md` și regula de scor cu răspunsul înlocuit:
-   fiecare e o decizie scurtă a lui Edi, urmată de un test și de câteva linii.
-2. **Conținutul drumului** din `src/game/path.js`: tonalitățile și lungimea nivelelor.
-3. **Măsurarea DoD-ului P1** pe site-ul publicat, dintr-un profil curat (fereastră incognito):
-   de la deschiderea paginii la primul acord cântat. Nu așteaptă nici pe Edi, nici clapa.
-4. **Formularul de email**, apoi **clipul de 15 s**: împreună pornesc ceasul porții P1.
+1. **Regula de scor cu răspunsul înlocuit** (un acord luat prea devreme în timed șterge răspunsul
+   corect al măsurii curente): o decizie scurtă a lui Edi, un test și câteva linii.
+2. **Conținutul drumului** din `src/game/path.js`: cele șase chei, „Four more", lungimea
+   ultimului nivel de ii–V–I.
+3. **Formularul de email**, apoi **clipul de 15 s**: împreună pornesc ceasul porții P1.
 
 Ordinea din `PRODUCT.md` nu se scurtcircuitează, iar regula „niciun feature care nu e pe lista
-fazei curente" s-a aplicat și azi: Training și Theory au intrat pe lista P1 cu acordul explicit al
-lui Edi, scris acolo, nu pe lângă ea.
+fazei curente" s-a aplicat și pe 2026-10-12: Training și Theory au intrat pe lista P1 cu acordul
+explicit al lui Edi, scris acolo, nu pe lângă ea.
 
 ## Documentație
 

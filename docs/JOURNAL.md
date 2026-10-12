@@ -370,3 +370,16 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
 
   **Următorul pas**: Edi corectează draftul de teorie și confirmă reparațiile pe Genos; apoi push.
   Raportul de predare: `docs/session-log/2026-10-12-2313.md`.
+- **2026-10-12 (seara)** — **Edi a citit, a hotărât și a cerut push.** A confirmat pe Genos
+  reparațiile zilei („este totul în regulă") și a acceptat cele opt pagini de teorie fără
+  corecturi. La cele trei întrebări scoase la iveală de scrisul lor: **o triadă cere toate trei
+  notele** (`required` devine `1 3 5` pe majoră, `1 b3 5` pe minoră, `1 4 5` pe sus4; pe o triadă
+  fără fundamentală nu se mai scrie și „Rootless voicing"); **dominantul quartal intră**
+  (`quartalShapes` îl construiește de pe septimă — 7, 3, 13, 9 — numai pe dominantă; unitatea
+  Quartal a primit nivelul „Dominants, twelve keys", iar ultimul ei nivel le amestecă pe toate
+  trei); **numele formelor A/B rămân** cum le dă motorul. Ce am hotărât eu: nivelele unității
+  Quartal urmează ordinea unității Shell, iar rampa challenge-ului a rămas la m7/maj7 pe treapta
+  de sus, cum a aprobat-o Edi. Un singur test vechi afirma regula dinainte (triada cere doar terța)
+  și afirmă acum regula nouă; reluarea harness-ului a rămas neschimbată, 110 din 110.
+  **353 de teste.** **Împins și publicat**: 16 commit-uri la `138956b`, apoi acesta.
+  **Următorul pas**: măsurarea DoD-ului P1 pe site-ul publicat, dintr-un profil curat.
