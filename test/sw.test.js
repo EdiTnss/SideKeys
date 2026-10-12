@@ -22,6 +22,9 @@ function fakeDist(extra = {}) {
   writeFileSync(join(dist, 'assets', 'index-BUrhXD-P.css'), 'body{}');
   writeFileSync(join(dist, 'manifest.webmanifest'), '{"name":"SideKeys"}');
   writeFileSync(join(dist, 'icons', 'icon-192.png'), 'not really a png');
+  mkdirSync(join(dist, 'piano'));
+  writeFileSync(join(dist, 'piano', 'manifest.json'), '{"format":1}');
+  writeFileSync(join(dist, 'piano', 'c4.ogg'), 'pretend this is three hundred kilobytes');
   for (const [name, contents] of Object.entries(extra)) writeFileSync(join(dist, name), contents);
   return dist;
 }
@@ -43,6 +46,7 @@ test('the worker is written with every built file in its precache list', () => {
       './icons/icon-192.png',
       './index.html',
       './manifest.webmanifest',
+      './piano/manifest.json',
     ].sort());
     // The root is there as well as index.html: a visitor who opens the bare URL offline asks for
     // the directory, which is a different cache key from the file.
@@ -59,6 +63,19 @@ test('neither placeholder survives, so the worker is never shipped half-written'
     assert.ok(!sw.includes('__PRECACHE__'), 'precache placeholder left in');
     assert.ok(!sw.includes('__CACHE_NAME__'), 'cache name placeholder left in');
     assert.match(sw, /const CACHE = "sidekeys-[0-9a-f]{12}"/);
+  } finally {
+    rmSync(dist, { recursive: true, force: true });
+  }
+});
+
+test('the piano stays out of the precache, but its manifest does not', () => {
+  // Three megabytes of recordings would be fetched twice on a first visit: once by the
+  // install, once by the page, which loads them eagerly as soon as a level opens.
+  const dist = fakeDist();
+  try {
+    const list = JSON.parse(build(dist).match(/const PRECACHE = (\[[\s\S]*?\]);/)[1]);
+    assert.ok(!list.includes('./piano/c4.ogg'), 'a recording was precached');
+    assert.ok(list.includes('./piano/manifest.json'), 'without it, an offline page cannot tell whether a piano exists');
   } finally {
     rmSync(dist, { recursive: true, force: true });
   }

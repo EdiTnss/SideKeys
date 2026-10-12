@@ -183,6 +183,15 @@ Svelte 5, and it imports the engine untouched; nothing in the engine may import 
 | `harness/` | recorded sessions and the replay |
 | `docs/` | product scope, module specs, the session journal (in Romanian) |
 
+## Credits
+
+The piano is the **Salamander Grand Piano V3** by **Alexander Holm** — a Yamaha C5, recorded
+with a pair of AKG C414s — used under
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), with one velocity layer of sixteen
+kept and seventeen notes of the full set. What was changed and why is in
+[`app/public/piano/CREDITS.md`](app/public/piano/CREDITS.md).
+
 ## License
 
-None. All rights reserved — the code is here to be read, not reused.
+None. All rights reserved — the code is here to be read, not reused. That covers the code; the
+piano samples above are the author's, under their own licence.

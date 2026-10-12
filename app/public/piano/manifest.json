@@ -1,6 +1,24 @@
 {
   "format": 1,
-  "note": "No recordings yet: which pack, under which licence, is open decision 4 in docs/DIRECTION.md. The page reads this once and keeps the oscillator synth. Published empty on purpose, so there is no 404 in the console - the same convention as demo/manifest.json.",
+  "note": "Salamander Grand Piano V3 by Alexander Holm, CC BY 3.0 — see CREDITS.md beside this file. One velocity layer (v9 of 16) per sampled note; piano.js scales it and shifts the nearest recording, so the gaps between these are covered.",
   "release": 0.4,
-  "samples": null
+  "samples": {
+    "36": "c2.ogg",
+    "39": "ds2.ogg",
+    "42": "fs2.ogg",
+    "45": "a2.ogg",
+    "48": "c3.ogg",
+    "51": "ds3.ogg",
+    "54": "fs3.ogg",
+    "57": "a3.ogg",
+    "60": "c4.ogg",
+    "63": "ds4.ogg",
+    "66": "fs4.ogg",
+    "69": "a4.ogg",
+    "72": "c5.ogg",
+    "75": "ds5.ogg",
+    "78": "fs5.ogg",
+    "81": "a5.ogg",
+    "84": "c6.ogg"
+  }
 }

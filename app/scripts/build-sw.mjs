@@ -29,6 +29,12 @@ const files = walk(dist)
   // The worker must not cache itself: it is fetched by the browser's own update check, and a
   // cached copy would make a new version invisible.
   .filter(file => file !== 'sw.js')
+  // Nor the piano: three megabytes of recordings would be downloaded twice on a first visit —
+  // once by this install and once by the page, which fetches them eagerly the moment a level
+  // opens. The worker caches them at runtime instead, on the way past, so they are there
+  // offline after the first level anyone plays. The manifest stays precached, because without
+  // it an offline page cannot even tell whether a piano exists.
+  .filter(file => !/^piano\/.+\.ogg$/.test(file))
   .sort();
 
 if (!files.includes('index.html')) throw new Error('dist has no index.html — did vite build run?');
