@@ -267,6 +267,58 @@ se trecea în Review ca `6` — acum taie basul găsit de parser. Și un nivel p
 unei treceri în timp își lăsa metronomul bătând, fără nimic pe ecran care să-l oprească:
 ecranul îl oprește acum la plecare (`dispose`).
 
+## Teoria — o pagină pe unitate (2026-10-12)
+
+Cerută de Edi după prima zi pe Genos: jocul cerea „drop 2" și „quartal" cu un singur rând de
+explicație. Sunt opt pagini, una pe fiecare unitate a drumului, în `src/game/lessons.js`.
+
+**Textul e un DRAFT.** L-a scris Claude pe 2026-10-12; teoria din el e a lui Edi de corectat, și
+până n-o corectează nu e considerat gata. Se corectează direct în `lessons.js`.
+
+**Ce nu e chestiune de părere e verificat** (`test/lessons.test.js`), ca o pagină să nu poată
+spune un lucru cât timp verdictul spune altul:
+
+- **Fiecare exemplu e notat de analizorul care notează jucătorul**: fără niciun avertisment, de
+  tipul pe care pagina îl declară (`shell`, `rootless-A`, `drop-2`, `quartal`, răsturnarea), în
+  registrul claviaturii desenate (C2–C6).
+- **Fiecare rând de sub „What the game listens for" are testul lui**, care pică în ziua în care
+  motorul nu se mai poartă așa: basul de slash în orice octavă, `m7b5` cere cvinta micșorată,
+  o fundamentală sub un rootless A nu-l strică, cvarte fără terță și septimă sunt quartal și
+  răspuns greșit.
+- **Lanțul ii–V–I de pe ultima pagină** e rootless A–B–A, se mișcă 0,25 și 1,25 semitonuri pe
+  voce (media 0,75, cifra din tabelul de praguri de mai sus) și trece pragul de 1,25.
+
+**Pe ecran nimic nu e scris de mână în afară de text.** Clapele unui exemplu sunt colorate de
+analiza lui (`roleClasses`), numele de sub ele e cel pe care l-ar da un verdict, iar treptele
+sunt ortografiate din acord cu `spellPlain` și scrise „F (b3)", ca în verdicte — alăturate fără
+paranteze, F și b3 se citeau „Fa bemol". Un clic pe exemplu îl cântă prin vocea paginii
+(`instrument.audition`), fără să treacă prin captură, deci se aude și nu se notează.
+
+**De unde se ajunge la o pagină**: cardul „Theory" de pe Today (lista), „What is it?" de pe
+fiecare unitate a hărții, „What is that?" lângă forma cerută de un nivel și „What was asked for?"
+în verdictul „Right notes, wrong shape". Din interiorul unui nivel, legătura **părăsește
+nivelul**: întrebarea „ce e un drop 2?" valorează mai mult decât trecerea pe care o întrerupe.
+„Play it" de pe pagină pornește primul nivel al unității, care e mereu deschis.
+
+**Exemplele sunt în Do** (și în tonalitățile unui ii–V–I în Do), ca paginile să se poată compara
+între ele. Transpunerea lor în alte tonalități nu e făcută: limitele de registru grav ar strica
+unele exemple, deci ar trebui verificate una câte una.
+
+**Trei lucruri pe care scrisul paginilor le-a scos la iveală, nerezolvate — sunt ale lui Edi:**
+
+1. **O triadă trece cu o singură notă.** Analizorul cere doar terța (`required` e `3` pe majoră,
+   `b3` pe minoră, `4` pe sus4), fiindcă regula a fost scrisă pentru voicing-uri de jazz, unde
+   fundamentala și cvinta se lasă altcuiva. La unitatea de Triade asta înseamnă că un Mi singur e
+   „Clean" pentru Do major. Pagina de triade nu promite că se cer toate trei notele, tocmai ca să
+   nu mintă.
+2. **Un dominant quartal există și e recunoscut**: `F3 B3 E4 A4` pe G7 (7, 3, 13, 9) iese
+   „quartal", fără avertismente, cu tritonul ca singura cvartă mărită admisă. Lipsește din drum
+   și din Training doar fiindcă **generatorul** suprapune numai cvarte perfecte, deci oracolul de
+   jucabilitate nu găsește niciunul. Nu analizorul e limita, cum se credea.
+3. **Numele formelor A și B pe dominantă** urmează motorul: A are terța jos (3–13–7–9), B are
+   septima jos (7–9–3–13), pe orice acord. Unele metode numesc setul după acordul de pornire al
+   unui ii–V–I; dacă Edi vrea altă convenție, se schimbă și detectorul, nu doar pagina.
+
 ## Antrenamentul zilnic (2026-10-11)
 
 *(Pe ecran se cheamă **Review** de pe 2026-10-12.)*

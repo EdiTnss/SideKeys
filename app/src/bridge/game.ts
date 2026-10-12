@@ -24,3 +24,6 @@ export {
   EPOCH, RUNGS, SQUARES, SHARE_URL,
   challengeNumber, dailyChallenge, challengeLevel, challengeStates, shareText,
 } from '../../../src/game/challenge.js';
+
+// The theory pages: one lesson per unit, with examples the analyzer itself has graded.
+export { LESSONS, lessonFor, lessonForTexture, exampleNotes } from '../../../src/game/lessons.js';

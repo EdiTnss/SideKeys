@@ -68,7 +68,8 @@ app/                       shell-ul (Vite + TS + Svelte 5), cu package.json prop
   src/screens/Training.svelte  alegerea pentru Training: drill (calități, tonalități, formă) sau progresie în buclă
   src/bridge/time.ts       ușa spre ceas: metronomul, sesiunea, regula de anticipare
   src/bridge/game.ts       ușa spre drum: unitățile, ce e deschis, stelele salvate
-  src/screens/Path.svelte  harta: unități, nivele, lacăte, stele
+  src/screens/Path.svelte  harta: unități, nivele, lacăte, stele, legătura spre pagina de teorie a fiecărei unități
+  src/screens/Theory.svelte  teoria: lista lecțiilor și o pagină pe unitate, cu exemple colorate de analizor și cântate la clic
   src/screens/Today.svelte ecranul de start: streak, minute, „continuă drumul", Review, ușa spre Training
   src/lib/Keyboard.svelte  învelește src/ui/keyboard.js; Svelte decide când se colorează
   src/lib/clipboard.ts     copiază un text și spune dacă a reușit (grila zilei, în două ecrane)
@@ -104,6 +105,7 @@ src/
   game/progress.js         stelele, zilele, streak-ul, coada de recapitulare, grila zilei și ultimul nivel jucat; testat
   game/challenge.js        challenge-ul zilei: seed din dată, rampa de 10, grila și textul partajat; testat
   game/training.js         Training: ce se poate alege, ce se poate cânta în forma cerută, planul sesiunii; testat
+  game/lessons.js          teoria: o lecție pe unitate (text DRAFT, de corectat de Edi) și exemplele ei; testat contra analizorului
   theory/voicings.js       sugestii de voicing din șabloane, în registru, ordonate după voice leading (Faza 2; sămânța lui realize.js)
   audio/context.js         AudioContext-ul paginii și conversiile de ceas (pure, testate)
   audio/metronome.js       metronom Web Audio cu lookahead, count-in, onBeat, positionOf(performance.now)

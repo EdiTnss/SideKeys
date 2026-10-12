@@ -11,9 +11,11 @@
     levels: Array<{ level: LevelPlan; stars: number; unlocked: boolean }>;
   };
 
-  let { stars, onplay }: {
+  let { stars, onplay, ontheory }: {
     stars: Record<string, number>;
     onplay: (unit: Unit, level: LevelPlan) => void;
+    /** The page that explains a unit: every unit on the path has one. */
+    ontheory: (unit: string) => void;
   } = $props();
 
   const units = $derived(pathState(stars) as Entry[]);
@@ -40,7 +42,10 @@
             <h2>{entry.unit.name}</h2>
             <span class="count">{entry.stars} / {entry.maxStars} stars</span>
           </div>
-          <p class="blurb">{entry.unit.blurb}</p>
+          <p class="blurb">
+            {entry.unit.blurb}
+            <button type="button" class="theory" onclick={() => ontheory(entry.unit.id)}>What is it?</button>
+          </p>
 
           <ul class="levels">
             {#each entry.levels as item (item.level.id)}
@@ -115,6 +120,12 @@
   }
   button:hover { border-color: var(--ink-muted); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  /* A link in the sentence, not another row of the unit: the levels are what the card is for. */
+  button.theory {
+    width: auto; display: inline; margin-left: 6px; padding: 0; border: none; background: none;
+    font-size: 13px; color: var(--ink-muted); text-decoration: underline;
+  }
+  button.theory:hover { color: var(--ink); }
   .name { flex-grow: 1; }
   .stars { display: inline-flex; gap: 3px; }
   .tempo { font-family: ui-monospace, monospace; font-size: 12px; color: var(--ink-muted); }

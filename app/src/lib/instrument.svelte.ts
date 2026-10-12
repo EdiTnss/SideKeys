@@ -112,6 +112,15 @@ export function createInstrument({
     status = { text: error.message, level: 'warn' };
   });
 
+  // The example ringing now, if one is: a second one cuts it off rather than piling on top.
+  let auditioning: { timer: ReturnType<typeof setTimeout>; stop: () => void } | null = null;
+  function stopAudition() {
+    if (!auditioning) return;
+    clearTimeout(auditioning.timer);
+    auditioning.stop();
+    auditioning = null;
+  }
+
   let real: Promise<void> | null = null;
   /** Adds the real ports to the merged access. Once: a second add would list every port twice. */
   function addHardware() {
@@ -171,6 +180,25 @@ export function createInstrument({
         onscreen.clear();
       };
     },
+    /**
+     * Sounds a voicing that nobody is judging: an example on a theory page. It goes to the
+     * page's own voice and never through the capture, so it is heard and not answered.
+     */
+    audition(notes: number[], ms = 1600) {
+      loadSound();
+      stopAudition();
+      // The voice may change from synth to piano while this rings, and a note has to be let go
+      // by the voice that started it.
+      const ringing = voice;
+      for (const note of notes) ringing.send([0x90, note, 80]);
+      const timer = setTimeout(() => {
+        for (const note of notes) ringing.send([0x80, note, 0]);
+        if (auditioning?.timer === timer) auditioning = null;
+      }, ms);
+      auditioning = { timer, stop: () => { for (const note of notes) ringing.send([0x80, note, 0]); } };
+    },
+    /** Lets go of an example that is still ringing, for when its page is left. */
+    hush: stopAudition,
     toggle: (midi: number) => onscreen.toggle(midi),
     play: () => onscreen.play(),
     clear: () => onscreen.clear(),

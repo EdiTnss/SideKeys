@@ -5,12 +5,13 @@
   import type { Instrument } from '../lib/instrument.svelte';
   import { createLevel, type Attempt, type Finished, type LevelPlan, type Run } from '../game/level.svelte';
   import { createPractice, type PracticePlan } from '../game/practice.svelte';
+  import { lessonForTexture } from '../bridge/game';
   import {
     analyzeVoicing, inversionOf, parseChord, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
 
-  let { unit, plan, instrument, onfinish, onpractice = () => {}, onnext = null, onexit }: {
+  let { unit, plan, instrument, onfinish, onpractice = () => {}, ontheory = () => {}, onnext = null, onexit }: {
     unit: { name: string };
     /** A level, or a stretch of training: the same screen plays both. */
     plan: LevelPlan | PracticePlan;
@@ -19,6 +20,8 @@
     onfinish: (run: { stars: number; attempts: Attempt[]; seconds: number }) => Finished;
     /** A stretch of training is over: what was played, and for how long. No stars come back. */
     onpractice?: (run: { attempts: Attempt[]; seconds: number }) => void;
+    /** Opens the page that explains a shape. It leaves this screen: the run in hand is given up. */
+    ontheory?: (unit: string) => void;
     /** Straight on to the level after this one, once this run has opened it. Null when it has not. */
     onnext?: (() => void) | null;
     onexit: () => void;
@@ -164,6 +167,12 @@
       : null);
   const shapeOf = (texture: string | string[] | null | undefined) =>
     texture ? ([] as string[]).concat(texture).join(' or ') : '';
+  // The theory page for a shape, when there is one. A level that demands "drop-2" of someone who
+  // has never met the word is a wall; the page is one press away from the word itself.
+  const pageFor = (texture: string | string[] | null | undefined) =>
+    (lessonForTexture(texture) as { unit: string } | null)?.unit ?? null;
+  const askPage = $derived(pageFor(level.ask?.texture));
+  const missPage = $derived(pageFor(judgedTexture));
   // The shape the next chord wants, said only when it is not the one already being asked for:
   // a level demands one shape throughout, and repeating it under every chord would be noise.
   // The daily challenge is a ramp, where each rung may want another.
@@ -233,6 +242,7 @@
         Bar {level.at?.bar ?? 1}, beat {level.at?.beat ?? 1}. Play it before the bar turns.
       {:else if level.ask?.texture}
         Play it as {shapeOf(level.ask.texture)}.
+        {#if askPage}<button type="button" class="what" onclick={() => ontheory(askPage)}>What is that?</button>{/if}
       {:else}
         Play it. Any voicing that works counts.
       {/if}
@@ -250,6 +260,7 @@
         <p class="star none">
           <span class="judged">{judged}</span>
           Right notes, wrong shape — that is {shapeMiss}.
+          {#if missPage}<button type="button" class="what" onclick={() => ontheory(missPage)}>What was asked for?</button>{/if}
         </p>
       {:else}
         <p class="star none">
@@ -343,6 +354,12 @@
   button:hover { border-color: var(--ink-muted); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   button.start { background: var(--ink); color: #14171a; border-color: var(--ink); font-weight: 600; }
+  /* A link inside a sentence, to the page that explains the word before it. */
+  button.what {
+    display: inline; margin-left: 6px; padding: 0; border: none; background: none;
+    font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--ink-muted); text-decoration: underline;
+  }
+  button.what:hover { color: var(--ink); }
   kbd {
     font-family: ui-monospace, monospace; font-size: 11px; color: var(--ink-muted);
     border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px;

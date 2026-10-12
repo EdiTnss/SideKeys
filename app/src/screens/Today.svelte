@@ -7,7 +7,7 @@
   type Challenge = { number: number; states: string[] | null; share: string | null };
 
   let { streak, minutes, goal, next, reviews, pending, challenge,
-        onplay, onreview, onchallenge, ontraining, onpath }: {
+        onplay, onreview, onchallenge, ontraining, ontheory, onpath }: {
     streak: number;
     minutes: number;
     goal: number;
@@ -21,6 +21,7 @@
     onreview: () => void;
     onchallenge: () => void;
     ontraining: () => void;
+    ontheory: () => void;
     onpath: () => void;
   } = $props();
 
@@ -146,6 +147,12 @@
         <h2>Training</h2>
         <p class="line">Drill any chords, or loop a progression. No stars — it still counts for today.</p>
         <button type="button" onclick={ontraining}>Open training</button>
+      </section>
+
+      <section class="card">
+        <h2>Theory</h2>
+        <p class="line">What a shell, a rootless voicing, a drop 2 and a quartal are — with examples you can hear.</p>
+        <button type="button" onclick={ontheory}>Open the lessons</button>
       </section>
     </div>
   </div>

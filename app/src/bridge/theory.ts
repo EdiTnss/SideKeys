@@ -15,7 +15,7 @@ export { getProgression, PROGRESSIONS } from '../../../src/theory/progressions.j
 // screen is counted exactly like the weak spots in the Lab, not by a second rule.
 export { emptyStats, recordAttempt, weakSpots } from '../../../src/ui/stats.js';
 export { compareVoicings } from '../../../src/theory/voiceLeading.js';
-export { midiToName, octave, spellDegree } from '../../../src/theory/notes.js';
+export { midiToName, octave, spellDegree, spellPlain } from '../../../src/theory/notes.js';
 
 // Pure mappers that turn an analysis into keyboard classes. They touch no DOM, and they are
 // tested in test/render.test.js, so the shell reuses them rather than growing a second copy.

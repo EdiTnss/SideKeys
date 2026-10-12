@@ -2,6 +2,7 @@
   import Game from './screens/Game.svelte';
   import Path from './screens/Path.svelte';
   import Today from './screens/Today.svelte';
+  import Theory from './screens/Theory.svelte';
   import Training from './screens/Training.svelte';
   import type { Attempt, Finished, LevelPlan, Unit } from './game/level.svelte';
   import type { PracticePlan } from './game/practice.svelte';
@@ -9,7 +10,7 @@
   import { isClean } from './bridge/theory';
   import {
     loadProgress, saveProgress, recordRun, recordPractice, dayStamp,
-    streak, secondsOn, outcomesFor, dueReviews, nextLevel, levelAfter, reviewLevel,
+    streak, secondsOn, outcomesFor, dueReviews, nextLevel, levelAfter, levelById, reviewLevel,
     recordChallenge, challengeResult, challengeLevel, challengeNumber, challengeStates,
     shareText,
   } from './bridge/game';
@@ -23,7 +24,10 @@
 
   // Progress lives in this browser and nowhere else for now: no account, nothing to sign up to.
   let progress = $state(loadProgress());
-  let screen = $state<'today' | 'path' | 'training'>('today');
+  let screen = $state<'today' | 'path' | 'training' | 'theory'>('today');
+  // Which theory page is open (null is the list of them), and the screen to go back to from it.
+  let lesson = $state<string | null>(null);
+  let beforeTheory: 'today' | 'path' | 'training' = 'today';
   let playing = $state<{ unit: Unit; plan: LevelPlan | PracticePlan } | null>(null);
   // What the stretch of training just finished came to, said once on the way back to its screen.
   let lastTraining = $state<{ minutes: number; played: number; clean: number } | null>(null);
@@ -122,6 +126,24 @@
     };
   }
 
+  /**
+   * Opens a theory page, or the list of them. From inside a level this leaves the level: the
+   * question "what is a drop 2?" is worth more than the run it interrupts, and a stretch of
+   * training is filed by its screen as it goes.
+   */
+  function openTheory(unit: string | null) {
+    if (screen !== 'theory') beforeTheory = screen;
+    playing = null;
+    lesson = unit;
+    screen = 'theory';
+  }
+
+  /** "Play it" on a theory page: the first level of the unit the page is about. */
+  function playLevel(id: string) {
+    const found = levelById(id) as { unit: Unit; level: LevelPlan } | null;
+    if (found) playing = { unit: found.unit, plan: found.level };
+  }
+
   function leaveGame() {
     playing = null;
     screen = 'today';
@@ -155,11 +177,15 @@
       <!-- Leaving a level goes back to the screen it was opened from; the logo goes to Today. -->
       <Game unit={playing.unit} plan={playing.plan} instrument={instrument} onfinish={finish}
             onpractice={finishTraining}
+            ontheory={openTheory}
             onnext={following ? () => (playing = following) : null}
             onexit={() => (playing = null)} />
     {/key}
   {:else if screen === 'path'}
-    <Path stars={progress.stars} onplay={(unit, plan) => (playing = { unit, plan })} />
+    <Path stars={progress.stars} onplay={(unit, plan) => (playing = { unit, plan })} ontheory={openTheory} />
+  {:else if screen === 'theory'}
+    <Theory unit={lesson} instrument={instrument} onopen={unit => (lesson = unit)} onplay={playLevel}
+            onback={() => (screen = beforeTheory)} />
   {:else if screen === 'training'}
     <Training last={lastTraining} onstart={startTraining} onback={() => (screen = 'today')} />
   {:else}
@@ -175,6 +201,7 @@
       onreview={startReview}
       onchallenge={startChallenge}
       ontraining={() => (screen = 'training')}
+      ontheory={() => openTheory(null)}
       onpath={() => (screen = 'path')} />
   {/if}
 </main>

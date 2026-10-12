@@ -53,6 +53,11 @@ progression from the library with its bars as written, and play for as long as y
 stars and nothing to open, but the minutes count, and in a progression every change tells you
 how far the voices moved.
 
+**A theory page for every unit**, for when the game asks for a drop 2 and you have never met
+one. The keyboards on it are not pictures: each example is run through the same analyzer that
+grades you, coloured by what it found and named by what it would say, and a test fails if a
+page ever claims something the verdict would not.
+
 Whatever you miss comes back tomorrow in *Review* and leaves after three clean answers in
 a row. The app installs as a PWA and works with the network off, because everything it does is
 arithmetic in your browser.
