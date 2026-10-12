@@ -27,6 +27,21 @@
         "--strictPort"
       ],
       "port": 5173
+    },
+    {
+      "name": "sidekeys-built",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "app",
+        "run",
+        "preview",
+        "--",
+        "--port",
+        "4173",
+        "--strictPort"
+      ],
+      "port": 4173
     }
   ]
 }

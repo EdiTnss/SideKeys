@@ -7,7 +7,7 @@
   "description": "The SideKeys shell. src/theory and src/ui are imported from the repo above, untouched.",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/build-sw.mjs",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
