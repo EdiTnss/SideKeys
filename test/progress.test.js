@@ -191,3 +191,17 @@ test('an older progress file still loads: its stars are kept, its XP and play co
   assert.equal('plays' in back, false);
   assert.equal(challengeResult(back, '2026-10-11'), null);
 });
+
+test('the level played last survives a save and a load, and junk in its place is ignored', () => {
+  // Without this, "continue the path" would go back to the top of the path after every reload,
+  // which is the very thing `last` exists to prevent.
+  const storage = fakeStorage();
+  const played = recordRun(emptyProgress(), { levelId: 'rootless-a', stars: 3, today: '2026-10-12' });
+  saveProgress(played, storage);
+  const back = loadProgress(storage);
+  assert.equal(back.last, 'rootless-a');
+  assert.equal(nextLevel(back.stars, back.last)?.level.id, 'rootless-b');
+
+  const broken = fakeStorage({ 'sidekeys.progress': JSON.stringify({ stars: {}, last: 42 }) });
+  assert.equal(loadProgress(broken).last, null);
+});
