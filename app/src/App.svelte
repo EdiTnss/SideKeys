@@ -54,7 +54,11 @@
     });
     // A challenge run still counts as playing: the minutes, the streak and the weak spots it
     // turned up are the same as any other run’s.
-    let filed = recordRun(progress, { levelId: playing.plan.id, stars, xp, today, seconds, missed, cleared });
+    // One key for the challenge rather than one per day: its stars come from `progress.challenge`
+    // and its XP cap from the record above, so a key per date would grow for ever and be read by
+    // nothing. The plan keeps its dated id, which is what remounts the screen for a new day.
+    const levelId = isChallenge ? 'challenge' : playing.plan.id;
+    let filed = recordRun(progress, { levelId, stars, xp, today, seconds, missed, cleared });
     const grid = isChallenge ? (challengeStates(attempts) as string[]) : null;
     if (first && grid) {
       filed = recordChallenge(filed, { date: today, number: challengeNumber(today), states: grid, stars, xp });

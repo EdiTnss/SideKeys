@@ -160,7 +160,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **310 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **311 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5, `npm --prefix app run dev`): cele patru
   ecrane din prototip — Azi, Drumul, Jocul, Rezultatul — peste opt unități (Triade → ii–V–I), cu
   stele Right/Clean/Smooth, XP plafonat pe repetiții, streak, antrenament zilnic pe calități,
