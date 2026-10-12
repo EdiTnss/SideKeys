@@ -147,3 +147,7 @@ test('the path asks for chords the way a chart writes them', () => {
   assert.deepEqual(asksFor(minors).map(ask => ask.symbol), ['C#m', 'Dbmaj7', 'F#m', 'Gbmaj7']);
   for (const { symbol } of asksFor(reviewLevel(['m7', 'm7b5', 'dim7']))) assert.ok(!awkward(symbol), symbol);
 });
+
+test('reviewLevel is called Review: Training is the name of the free practice now', () => {
+  assert.equal(reviewLevel(['7']).name, 'Review');
+});

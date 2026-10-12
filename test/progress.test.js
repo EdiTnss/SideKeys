@@ -43,7 +43,7 @@ test('loadProgress: a round trip, and anything unreadable starts over instead of
 // ---- The day: streak, the minutes goal, and what comes back tomorrow (2026-10-11) --------
 
 import { streak, secondsOn, outcomesFor, dueReviews, nextLevel } from '../src/game/progress.js';
-import { recordChallenge, challengeResult } from '../src/game/progress.js';
+import { recordChallenge, challengeResult, recordPractice } from '../src/game/progress.js';
 import { PATH } from '../src/game/path.js';
 import { parseChord } from '../src/theory/chords.js';
 import { analyzeVoicing } from '../src/theory/analyzer.js';
@@ -204,4 +204,35 @@ test('the level played last survives a save and a load, and junk in its place is
 
   const broken = fakeStorage({ 'sidekeys.progress': JSON.stringify({ stars: {}, last: 42 }) });
   assert.equal(loadProgress(broken).last, null);
+});
+
+// ---- Training: practice outside the path (2026-10-12) -------------------------------------
+
+test('recordPractice: the minutes and the weak spots count, the path does not move', () => {
+  const before = recordRun(emptyProgress(), { levelId: 'shell-dom', stars: 2, today: '2026-10-12', seconds: 60 });
+  const after = recordPractice(before, { today: '2026-10-12', seconds: 300, missed: ['m7b5'], cleared: ['m7'] });
+  assert.equal(secondsOn(after, '2026-10-12'), 360, 'practice time is playing time');
+  assert.equal(streak(after, '2026-10-12'), 1);
+  assert.deepEqual(dueReviews(after, '2026-10-13').map(r => r.quality), ['m7b5'], 'a miss comes back tomorrow');
+  assert.deepEqual(after.stars, before.stars, 'no stars are earned in training');
+  assert.equal(after.last, 'shell-dom', 'and the path stays where it was');
+  assert.deepEqual(before.review, {}, 'the progress handed in is not mutated');
+});
+
+test('recordPractice: a clean answer in training retires a weak spot like one anywhere else', () => {
+  let p = recordRun(emptyProgress(), { levelId: 'a', stars: 1, today: '2026-10-11', missed: ['7'] });
+  for (const date of ['2026-10-12', '2026-10-13', '2026-10-14']) {
+    p = recordPractice(p, { today: date, seconds: 30, cleared: ['7'] });
+  }
+  assert.equal(p.review['7'], undefined, 'three clean days and it is gone');
+});
+
+test('outcomesFor: the quality is the symbol without its root and its bass, and 6/9 is not a bass', () => {
+  const filed = symbol => {
+    const outcomes = outcomesFor([{ symbol, analysis: analyzeVoicing([60, 64, 67], parseChord(symbol)) }]);
+    return [...outcomes.missed, ...outcomes.cleared];
+  };
+  assert.deepEqual(filed('C6/9'), ['6/9'], 'the slash in 6/9 belongs to the chord');
+  assert.deepEqual(filed('C/E'), [''], 'an inversion is filed under the chord it inverts');
+  assert.deepEqual(filed('C#m/E'), ['m']);
 });
