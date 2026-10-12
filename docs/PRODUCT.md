@@ -102,6 +102,12 @@ Nu sunt propuneri; se respectă sau se renegociază explicit cu Edi înainte de 
    pentru că intră în conflict cu regula „feedback sub 100 ms" din `CLAUDE.md`; a doua variantă
    respinsă, acordul următor arătat estompat în fereastra de anticipare, adaugă pâlpâire înaintea
    fiecărei schimbări de acord, inclusiv când nu anticipezi nimic.
+   **Răsturnată în parte de Edi pe 2026-10-12**, după ce a jucat pe Genos: acordul următor se
+   arată **mereu**, mai mic și estompat, lângă cel curent — în free play, în timed și în măsura
+   de numărătoare. Motivul e mecanic: un acord văzut prima dată pe timpul 1 nu poate fi cântat pe
+   timpul 1, deci în timed nu se putea cădea niciodată la timp. Obiecția de atunci nu se aplică,
+   fiindcă nu mai apare și dispare nimic: ce pâlpâia era apariția lui numai în fereastra de
+   anticipare. Verdictul spune în continuare pentru ce acord a fost dat.
 
 **Poarta P0** nu e „codul funcționează", ci **40 de adrese de email în 4 săptămâni de la primul
 clip**.

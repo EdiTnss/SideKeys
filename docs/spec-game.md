@@ -150,6 +150,24 @@ o chestiune de reglaj fin — orice valoare între 1,25 și 2 separă corect. De
 Când se adaugă o progresie nouă în bibliotecă, i se măsoară pragul în același fel și intră în
 tabel, ca la tabelul de calități al analizorului.
 
+## Acordul următor, pe ecran (2026-10-12)
+
+Ecranul de joc arată două acorduri: cel cerut, mare, și **cel de după el**, mai mic și estompat,
+în dreapta („then F"). E acolo tot timpul — în free play, în timed și în măsura de numărătoare —
+și lipsește doar la ultimul acord. Cerut de Edi după prima trecere pe Genos: în timed acordul
+apărea pe timpul 1 al măsurii lui, deci nu putea fi cântat pe timpul 1, adică exact ce cere o
+trecere în timp. Măsura de numărătoare era și mai rea: cifrele stăteau **în locul** primului
+acord, care se vedea abia când trebuia deja cântat. Acum numărătoarea e o cifră mică în rândul
+de sub acord, iar primul acord se vede de la primul clic.
+
+- `level.next` (`app/src/game/level.svelte.ts`) e cererea de după cea curentă, sau `null`.
+- Forma cerută de acordul următor se scrie lângă el **numai când diferă** de a celui curent: un
+  nivel cere o singură formă de la cap la coadă, deci repetată sub fiecare acord ar fi zgomot;
+  challenge-ul zilei e o rampă, unde fiecare treaptă poate cere alta.
+- Previzualizarea face fereastra de anticipare folosibilă, nu o schimbă: un voicing început în
+  ultima jumătate de timp a măsurii e judecat tot pe acordul următor (`docs/spec-capture.md`).
+  Unul început **mai devreme** de atât e judecat pe acordul curent și îi înlocuiește răspunsul.
+
 ## XP — propunere, nu decizie
 
 Edi a cerut stelele; XP-ul de mai jos e propunerea mea, de aprobat separat.

@@ -77,6 +77,10 @@ export function createLevel(plan: LevelPlan) {
   let metronome: ReturnType<typeof createMetronome> | null = null;
 
   const ask = $derived(finished ? null : asks[current]);
+  // The chord after this one, for the screen to show beside it. A chord first seen on beat one
+  // cannot be played on beat one: reading a bar ahead is what a chart allows, and what landing
+  // in time needs (Edi, at the Genos, 2026-10-12). Null on the last chord.
+  const next = $derived(finished ? null : asks[current + 1] ?? null);
   const attempts = $derived(asks.map((item, slot) =>
     answers[slot] ?? { symbol: item.symbol, notes: [], analysis: null, texture: item.texture }));
   const score = $derived(finished
@@ -132,6 +136,7 @@ export function createLevel(plan: LevelPlan) {
     get threshold() { return threshold; },
     get texture() { return plan.texture ?? null; },
     get ask() { return ask; },
+    get next() { return next; },
     get index() { return current; },
     get total() { return asks.length; },
     get answered() { return answers.filter(Boolean).length; },

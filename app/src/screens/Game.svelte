@@ -137,6 +137,13 @@
     analysis && !star && !warnings.length
       ? analysis.messages.find((m: { code: string }) => m.code === 'type')?.text ?? 'another shape'
       : null);
+  const shapeOf = (texture: string | string[] | null | undefined) =>
+    texture ? ([] as string[]).concat(texture).join(' or ') : '';
+  // The shape the next chord wants, said only when it is not the one already being asked for:
+  // a level demands one shape throughout, and repeating it under every chord would be noise.
+  // The daily challenge is a ramp, where each rung may want another.
+  const nextShape = $derived(
+    level.next && shapeOf(level.next.texture) !== shapeOf(level.ask?.texture) ? shapeOf(level.next.texture) : '');
   // What the voicing is called beside its star. A shape with a name of its own is named.
   // "Close" and "spread" are only what is left when it has none: on a triad played exactly as
   // asked they read as a remark, in every inversion alike (Edi, 2026-10-12). There the
@@ -169,21 +176,31 @@
       </span>
     </div>
 
-    {#if level.countIn !== null}
-      <p class="ask counting">{level.countIn}</p>
-      <p class="hint">Count-in. One chord per bar from the next one.</p>
-    {:else}
+    <!-- The chord to play and the one after it. The next one is always on screen — in free play,
+         on the clock and through the count-in — because a chord first seen on beat one cannot be
+         played on beat one (Edi, at the Genos, 2026-10-12). It never comes and goes, which is
+         what the earlier idea, showing it only inside the anticipation window, was turned down
+         for. The count-in used to stand where the first chord is, so even that one came late. -->
+    <div class="asks">
       <p class="ask">{level.ask?.symbol}</p>
-      <p class="hint">
-        {#if level.timed}
-          Bar {level.at?.bar ?? 1}, beat {level.at?.beat ?? 1}. Play it before the bar turns.
-        {:else if level.ask?.texture}
-          Play it as {[].concat(level.ask.texture as never).join(' or ')}.
-        {:else}
-          Play it. Any voicing that works counts.
-        {/if}
-      </p>
-    {/if}
+      {#if level.next}
+        <p class="next">
+          <span class="then">then</span>{level.next.symbol}{#if nextShape}<span class="as">as {nextShape}</span>{/if}
+        </p>
+      {/if}
+    </div>
+    <p class="hint">
+      {#if level.countIn !== null || (level.timed && !level.at)}
+        <!-- Timed with no position yet is the instant before the first click: already the count-in. -->
+        <span class="beat">{level.countIn ?? ''}</span>Count-in. The first chord lands on the next bar.
+      {:else if level.timed}
+        Bar {level.at?.bar ?? 1}, beat {level.at?.beat ?? 1}. Play it before the bar turns.
+      {:else if level.ask?.texture}
+        Play it as {shapeOf(level.ask.texture)}.
+      {:else}
+        Play it. Any voicing that works counts.
+      {/if}
+    </p>
 
     <div class="verdict" aria-live="polite">
       {#if !analysis}
@@ -246,8 +263,14 @@
   .level { font-size: 13px; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 10px; }
   .exit { padding: 4px 10px; font-size: 12px; border-radius: 8px; }
   .timed { font-family: ui-monospace, monospace; }
-  .ask { margin: 18px 0 6px; font-size: 96px; line-height: 1; font-weight: 600; letter-spacing: -0.05em; }
-  .ask.counting { color: var(--ink-muted); }
+  .asks { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 44px; margin: 18px 0 6px; }
+  .ask { margin: 0; font-size: 96px; line-height: 1; font-weight: 600; letter-spacing: -0.05em; }
+  /* Smaller and muted: read ahead of time, never mistaken for the chord being asked for. */
+  .next { margin: 0; font-size: 40px; line-height: 1; font-weight: 600; letter-spacing: -0.04em; color: var(--ink-muted); }
+  .then, .as { font-size: 13px; font-weight: 400; letter-spacing: 0; }
+  .then { margin-right: 10px; }
+  .as { margin-left: 10px; }
+  .beat { margin-right: 10px; font-family: ui-monospace, monospace; font-size: 22px; font-weight: 600; color: var(--ink); }
   .hint { margin: 0 0 24px; color: var(--ink-muted); font-size: 15px; }
   .verdict { min-height: 92px; }
   .star { margin: 0 0 8px; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
