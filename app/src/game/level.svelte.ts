@@ -49,7 +49,38 @@ export type Unit = {
   levels: LevelPlan[];
 };
 
-export function createLevel(plan: LevelPlan) {
+/**
+ * What the game screen needs from whatever it is running: a level, or a stretch of training
+ * (practice.svelte.ts). The screen is written against this, so neither kind of run can grow a
+ * habit the other one has to be special-cased for.
+ */
+export type Run = {
+  readonly plan: { id: string; name: string; tempo: number; free?: boolean };
+  readonly threshold: number;
+  readonly ask: Ask | null;
+  /** The chord after the one asked for, shown beside it. Null when there is none. */
+  readonly next: Ask | null;
+  readonly index: number;
+  readonly total: number;
+  readonly answered: number;
+  readonly finished: boolean;
+  readonly timed: boolean;
+  readonly countIn: number | null;
+  readonly at: { bar: number; beat: number } | null;
+  readonly score: ReturnType<typeof scoreRun> | null;
+  readonly attempts: Attempt[];
+  readonly seconds: number;
+  readonly weakness: { key: string; problem: string; count: number } | null;
+  answer(notes: number[], startedAt?: number | null): Answer | null;
+  skip(): void;
+  start(): void;
+  stop(): void;
+  restart(): void;
+  /** The screen is going away: stop the clock. Nothing is scored and nothing is filed. */
+  dispose(): void;
+};
+
+export function createLevel(plan: LevelPlan): Run {
   const asks = asksFor(plan) as Ask[];
   const threshold = thresholdFor(plan) as number;
   // One chord per bar, no loop: the pass ends when the metronome walks past the last bar.
@@ -129,7 +160,6 @@ export function createLevel(plan: LevelPlan) {
   return {
     get plan() { return plan; },
     get threshold() { return threshold; },
-    get texture() { return plan.texture ?? null; },
     get ask() { return ask; },
     get next() { return next; },
     get index() { return current; },
@@ -199,6 +229,13 @@ export function createLevel(plan: LevelPlan) {
       countIn = null;
       at = null;
       session.reset?.();
+    },
+
+    // Leaving a level in the middle of a timed pass used to leave its metronome clicking, with
+    // nothing on screen to stop it.
+    dispose() {
+      metronome?.stop();
+      metronome = null;
     },
   };
 }

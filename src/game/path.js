@@ -14,7 +14,8 @@ import { getProgression } from '../theory/progressions.js';
 import { movementThreshold, DEFAULT_MOVEMENT } from '../theory/stars.js';
 
 const SIX = ['C', 'F', 'G', 'D', 'A', 'E'];
-const TWELVE = ['C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'B', 'E', 'A', 'D', 'G'];
+/** The twelve keys round the cycle of fourths: the order every twelve-key level walks them in. */
+export const TWELVE = ['C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'B', 'E', 'A', 'D', 'G'];
 
 // One chord to the bar at 120: two seconds to hear it, find it and play it (Edi, 2026-10-11).
 const TEMPO = 120;
@@ -199,13 +200,13 @@ export function pathState(stars = {}) {
 }
 
 /**
- * The level behind "your training": the qualities due for review, across all twelve keys. It is
+ * The level behind the review: the qualities due to come back, across all twelve keys. It is
  * not on the path and has no stars to unlock — it is the queue, turned into something playable.
  */
 export function reviewLevel(qualities) {
   return {
     id: 'review',
-    name: 'Your training',
+    name: 'Review',
     tempo: TEMPO,
     asks: { kind: 'chords', qualities, keys: TWELVE, count: 12 },
   };

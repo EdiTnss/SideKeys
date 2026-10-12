@@ -4,12 +4,19 @@
 // the rest: `node --test` reaches them there, and the day a leaderboard needs checking, the
 // server can run the same arithmetic the browser ran.
 
-export { PATH, asksFor, thresholdFor, pathState, levelById, levelAfter, reviewLevel } from '../../../src/game/path.js';
+export { PATH, TWELVE, asksFor, thresholdFor, pathState, levelById, levelAfter, reviewLevel } from '../../../src/game/path.js';
 export {
   emptyProgress, recordRun, dayStamp, loadProgress, saveProgress,
   streak, secondsOn, outcomesFor, dueReviews, nextLevel,
-  recordChallenge, challengeResult,
+  recordChallenge, challengeResult, recordPractice,
 } from '../../../src/game/progress.js';
+
+// Training: free practice off the path — a drill or a looped progression, with no stars.
+export {
+  QUALITY_GROUPS, KEYS, SHAPES, TEMPO_RANGE, DEFAULT_TRAINING,
+  drillPool, shapeQualities, progressionFor, trainingPlan, loadTraining, saveTraining,
+} from '../../../src/game/training.js';
+export { PROGRESSIONS } from '../../../src/theory/progressions.js';
 
 // The daily challenge: the same ten chords for everyone, drawn from the date. Deterministic,
 // so no server and no account — and testable in Node like everything else here.

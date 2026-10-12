@@ -225,6 +225,10 @@ formularul repornesc ceasul porții.
    deoparte de `/lab/`, altfel offline ar răspunde cu shell-ul jocului la adresa Laboratorului.
    Publicarea se face din `.github/workflows/pages.yml`; Laboratorul se copiază **după** build,
    ca fișierele lui să nu intre în precache-ul PWA-ului.
+   **Redeschisă în parte pe 2026-10-12, în aceeași zi**: drill-ul liber și progresiile în buclă au
+   intrat și în shell, ca secțiunea **Training** (ecranul 5 din lista de mai sus, sub alt nume).
+   Laboratorul rămâne unde e, cu ce nu s-a mutat: grila scrisă de mână, înregistrarea melodiei,
+   aranjamentul pe Genos și reharm-ul.
 6. ~~**Vechea generalizare a regulii de anticipare**~~ — **închisă pe 2026-10-11**: se
    anticipează numai peste bara de măsură. Edi a respins schimbările din mijlocul măsurii și
    anticiparea din măsura de numărătoare; a păstrat fereastra de jumătate de timp muzical (în

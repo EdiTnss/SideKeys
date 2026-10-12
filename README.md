@@ -48,7 +48,12 @@ SideKeys #1 · 8/10 clean
 🟩🟩🟩🟩⬛🟩🟩🟩🟩⬜
 ```
 
-Whatever you miss comes back tomorrow in *your training* and leaves after three clean answers in
+**Training**, for when you want none of that: pick the chords, the keys and a shape, or loop a
+progression from the library with its bars as written, and play for as long as you like. No
+stars and nothing to open, but the minutes count, and in a progression every change tells you
+how far the voices moved.
+
+Whatever you miss comes back tomorrow in *Review* and leaves after three clean answers in
 a row. The app installs as a PWA and works with the network off, because everything it does is
 arithmetic in your browser.
 

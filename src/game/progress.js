@@ -19,17 +19,12 @@ export function emptyProgress() {
 }
 
 /**
- * A finished run. Stars are kept at their best — a worse pass never takes a star away — and a
- * level on the path becomes the place "continue" picks up from.
- *
- * `seconds` feeds the day's minutes, and `missed` / `cleared` are chord qualities, which is
- * what the review queue is keyed by: a weak spot is "m7b5", not "Abm7b5 that one time".
- *
- * @param {any} progress
- * @param {{ levelId: string, stars: number, today: string,
- *           seconds?: number, missed?: string[], cleared?: string[] }} run
+ * What any playing leaves behind, on the path or off it: the seconds added to the day, and the
+ * review queue moved by what was missed and what came back clean. `missed` and `cleared` are
+ * chord qualities, which is what the queue is keyed by: a weak spot is "m7b5", not "Abm7b5 that
+ * one time".
  */
-export function recordRun(progress, { levelId, stars, today, seconds = 0, missed = [], cleared = [] }) {
+function played(progress, { today, seconds = 0, missed = [], cleared = [] }) {
   const review = { ...(progress.review ?? {}) };
 
   for (const quality of missed) {
@@ -46,15 +41,42 @@ export function recordRun(progress, { levelId, stars, today, seconds = 0, missed
   }
 
   return {
+    days: { ...(progress.days ?? {}), [today]: (progress.days?.[today] ?? 0) + Math.max(0, Math.round(seconds)) },
+    review,
+  };
+}
+
+/**
+ * A finished run. Stars are kept at their best — a worse pass never takes a star away — and a
+ * level on the path becomes the place "continue" picks up from. The minutes and the review
+ * queue move as they do for any playing.
+ *
+ * @param {any} progress
+ * @param {{ levelId: string, stars: number, today: string,
+ *           seconds?: number, missed?: string[], cleared?: string[] }} run
+ */
+export function recordRun(progress, { levelId, stars, today, seconds = 0, missed = [], cleared = [] }) {
+  return {
     // Spread first: this used to list the fields it kept, which silently dropped the daily
     // challenge the day that field was added.
     ...progress,
     stars: { ...progress.stars, [levelId]: Math.max(progress.stars[levelId] ?? 0, stars) },
-    days: { ...(progress.days ?? {}), [today]: (progress.days?.[today] ?? 0) + Math.max(0, Math.round(seconds)) },
-    review,
+    ...played(progress, { today, seconds, missed, cleared }),
     // The review and the challenge are not places on the path, so they do not move it.
     last: levelById(levelId) ? levelId : progress.last ?? null,
   };
+}
+
+/**
+ * A stretch of Training: free practice, off the path. It is playing, so the minutes, the streak
+ * and the weak spots count exactly as they do anywhere else. It is not the path, so no star is
+ * earned and the place "continue" picks up from does not move (Edi, 2026-10-12).
+ *
+ * @param {any} progress
+ * @param {{ today: string, seconds?: number, missed?: string[], cleared?: string[] }} practice
+ */
+export function recordPractice(progress, { today, seconds = 0, missed = [], cleared = [] }) {
+  return { ...progress, ...played(progress, { today, seconds, missed, cleared }) };
 }
 
 /**
@@ -119,7 +141,10 @@ export function outcomesFor(attempts) {
   for (const attempt of attempts) {
     if (!attempt.analysis) continue;
     const chord = parseChord(attempt.symbol);
-    const quality = attempt.symbol.slice(chord.root.length).split('/')[0];
+    // The symbol without its root and without its slash bass. The bass is cut by what the
+    // parser found, not at the first slash, which would file a 6/9 under 6.
+    const body = attempt.symbol.slice(chord.root.length);
+    const quality = chord.bass ? body.slice(0, -(chord.bass.length + 1)) : body;
     (isClean(attempt.analysis) ? cleared : missed).add(quality);
   }
   for (const quality of missed) cleared.delete(quality);

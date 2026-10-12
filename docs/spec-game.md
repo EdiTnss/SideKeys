@@ -203,7 +203,73 @@ au fost câștigate.
 - **„Next level"** pe ecranul de rezultat apare când trecerea are măcar o stea și duce la
   nivelul următor, inclusiv peste granița dintre unități (`levelAfter`).
 
+## Training — exercițiu liber, în afara drumului (2026-10-12)
+
+Cerut de Edi după prima zi pe Genos: drill-ul și progresiile în buclă din pagina veche, în joc,
+pentru cine vrea pur și simplu să exerseze. Se cheamă **Training**; recapitularea punctelor slabe,
+care purta numele „Your training", a devenit **Review**.
+
+**Ce contează dintr-o sesiune** (decizia lui Edi): fără stele și fără efect pe drum, dar e cântat —
+deci **minutele intră în obiectivul zilnic și în streak**, iar acordurile ratate **intră în Review**
+ca de oriunde. `recordPractice` face exact atât; `progress.last` nu se mișcă, deci „Continue the
+path" rămâne unde era.
+
+**Ce se poate alege** (`src/game/training.js`):
+
+- **Drill**: calitățile (triade, septacorduri, dominante alterate — cele din drum plus cele din
+  drill-ul vechi), tonalitățile și, opțional, **forma** (shell, rootless A, rootless B, rootless A
+  sau B, drop 2, quartal). Acordurile se trag la întâmplare, niciodată același de două ori la rând.
+- **Progression**: o progresie din bibliotecă, într-o tonalitate, în buclă, **cu măsurile ei cum
+  sunt scrise** — două acorduri pe măsură unde le are, și o măsură repetată rămâne o măsură. (Pe
+  drum, `asksFor` le aplatizează la un acord pe măsură și sare repetările; acolo e un exercițiu,
+  aici e forma.) Forma cerută e doar a drill-ului: un blues are dominante, iar un blues quartal nu
+  există în motor.
+- **Tempoul**, 40–240. Metronomul se pornește de pe ecranul de joc și se oprește fără să încheie
+  sesiunea: fără el, se continuă de la acordul la care a rămas.
+
+**Ce nu se poate cânta nu se cere.** Același oracol care ține un nivel imposibil în afara drumului
+— `suggestVoicings`, care oferă numai voicing-uri fără avertismente — scoate din drill acordurile
+fără voicing în forma cerută, iar ecranul le arată stinse, nu ascunse, ca să se vadă că un
+dominant quartal n-a fost uitat: nu există. Măsurat pe 2026-10-12, pe 12 tonalități:
+
+| Formă | Lipsește pe |
+|---|---|
+| shell | triade, m7b5, dim7, 6/9, 7b9, 7#11, 7alt |
+| rootless A / B | triade, 7#11 (și câte o tonalitate pe m7b5, dim7, 7b9 — margine de registru) |
+| drop 2 | triade, 6/9, 7b9, 7#11, 7alt |
+| quartal | 7, m7b5, dim7, m6, mMaj7 și dominantele alterate |
+
+**Un drill are 512 măsuri** (`DRILL_BARS`) și apoi o ia de la capăt. Trebuie să se termine undeva,
+fiindcă ceasul răspunde la „al cui e acordul din măsura asta" dintr-o listă — aceeași
+`snapshotTarget` ca pe drum și în harness, deci regula de anticipare e una singură. La un acord pe
+măsură sunt 17 minute la 120, iar ultimul acord tras îl evită pe primul, ca bucla să nu repete.
+
+**Db și Gb devin C# și F# când ortografia cu bemoli ar scrie Dbm sau Gbm** (`progressionFor`).
+Un ii–V–I major în Gb e `Abm7 Db7 Gbmaj7` și rămâne așa. Cel minor s-ar termina pe `Gbm6`, iar
+jazz blues-ul în Gb trece prin `Dbm7` — acorduri pe care nu le scrie nimeni (regula lui Edi din
+`spec-analyzer.md`), deci se scriu din F#: `G#ø7 C#7alt F#m6`. Ecranul de alegere arată grila
+înainte de start, ca tonalitatea aleasă să poată fi citită. Un test trece prin fiecare progresie
+în fiecare tonalitate și pică la primul acord pe care o grilă nu l-ar scrie.
+
+**Mișcarea vocilor, după fiecare schimbare** (numai la Progression): sub verdict scrie cât s-au
+mișcat vocile față de acordul dinainte — „From Dm7: 1.25 semitones a voice — smooth" — cu
+`compareVoicings`, adică numărul pe care se câștigă a treia stea, spus la fiecare pas în loc de o
+dată la final. Un acord lovit de două ori nu e o schimbare și nu se măsoară.
+
+**Sesiunea se încheie când pleci**, pe orice ușă: „Done", „Back" sau logo-ul. Se înregistrează o
+singură dată, iar secundele se numără de la primul răspuns la ultimul, nu cât a stat ecranul
+deschis. Ecranul de joc e același ca al unui nivel: `createPractice` are forma unui nivel
+(`Run`, în `level.svelte.ts`), deci verdictul, clapa și acordul următor nu au a doua
+implementare.
+
+**Două reparații găsite pe drum:** `outcomesFor` tăia calitatea la primul `/`, deci un `6/9` ratat
+se trecea în Review ca `6` — acum taie basul găsit de parser. Și un nivel părăsit în mijlocul
+unei treceri în timp își lăsa metronomul bătând, fără nimic pe ecran care să-l oprească:
+ecranul îl oprește acum la plecare (`dispose`).
+
 ## Antrenamentul zilnic (2026-10-11)
+
+*(Pe ecran se cheamă **Review** de pe 2026-10-12.)*
 
 Coada de recapitulare e ținută pe **calități de acord**, nu pe acorduri: un punct slab e „m7b5",
 nu „Abm7b5, atunci". Regula, exact cum o cere DoD-ul P1:

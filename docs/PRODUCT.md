@@ -142,6 +142,10 @@ apoi structura (drum, unități, nivele), abia apoi meta-jocul (streak, obiectiv
 - [x] Ecranele Azi și Rezultat; progresul și streak-ul ținute local.
 - [x] PWA instalabilă (manifest + service worker, offline). Worker scris de mână, fără dependență;
   lista de precache e generată din build, iar offline-ul a fost probat cu serverul oprit.
+- [x] **Training** — drill liber și progresii în buclă, în shell. **Adăugat pe 2026-10-12, peste
+  lista inițială**, la cererea lui Edi după prima zi pe Genos: drumul nu ajunge pentru cine vrea
+  să exerseze ceva anume, iar Laboratorul nu e legat din joc. Fără stele; minutele și punctele
+  slabe contează. Regulile, în [spec-game.md](spec-game.md).
 - [ ] Formular de email găzduit, legat din pagină și din README.
 - [x] **Shell-ul publicat pe Pages**, în locul Laboratorului — **făcut pe 2026-10-12**. Jocul e la
   rădăcină, bancul la `/lab/`, publicate din `.github/workflows/pages.yml`. Verificat pe site-ul

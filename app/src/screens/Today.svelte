@@ -7,7 +7,7 @@
   type Challenge = { number: number; states: string[] | null; share: string | null };
 
   let { streak, minutes, goal, next, reviews, pending, challenge,
-        onplay, onreview, onchallenge, onpath }: {
+        onplay, onreview, onchallenge, ontraining, onpath }: {
     streak: number;
     minutes: number;
     goal: number;
@@ -20,6 +20,7 @@
     onplay: (unit: Unit, level: LevelPlan) => void;
     onreview: () => void;
     onchallenge: () => void;
+    ontraining: () => void;
     onpath: () => void;
   } = $props();
 
@@ -95,7 +96,8 @@
 
       <section class="card">
         <div class="title">
-          <h2>Your training</h2>
+          <!-- "Your training" until 2026-10-12, when Training became the name of free practice. -->
+          <h2>Review</h2>
           <span class="count">{reviews.length} due</span>
         </div>
         {#if reviews.length}
@@ -136,6 +138,14 @@
         <h2>The path</h2>
         <p class="line">Eight units, triads through ii–V–I.</p>
         <button type="button" onclick={onpath}>Open the map</button>
+      </section>
+
+      <!-- Beside the day's three things, not among them: it is where to go when none of them
+           is what is wanted, and it asks for nothing back. -->
+      <section class="card">
+        <h2>Training</h2>
+        <p class="line">Drill any chords, or loop a progression. No stars — it still counts for today.</p>
+        <button type="button" onclick={ontraining}>Open training</button>
       </section>
     </div>
   </div>

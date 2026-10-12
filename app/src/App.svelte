@@ -2,10 +2,13 @@
   import Game from './screens/Game.svelte';
   import Path from './screens/Path.svelte';
   import Today from './screens/Today.svelte';
+  import Training from './screens/Training.svelte';
   import type { Attempt, Finished, LevelPlan, Unit } from './game/level.svelte';
+  import type { PracticePlan } from './game/practice.svelte';
   import { createInstrument } from './lib/instrument.svelte';
+  import { isClean } from './bridge/theory';
   import {
-    loadProgress, saveProgress, recordRun, dayStamp,
+    loadProgress, saveProgress, recordRun, recordPractice, dayStamp,
     streak, secondsOn, outcomesFor, dueReviews, nextLevel, levelAfter, reviewLevel,
     recordChallenge, challengeResult, challengeLevel, challengeNumber, challengeStates,
     shareText,
@@ -20,8 +23,11 @@
 
   // Progress lives in this browser and nowhere else for now: no account, nothing to sign up to.
   let progress = $state(loadProgress());
-  let screen = $state<'today' | 'path'>('today');
-  let playing = $state<{ unit: Unit; plan: LevelPlan } | null>(null);
+  let screen = $state<'today' | 'path' | 'training'>('today');
+  let playing = $state<{ unit: Unit; plan: LevelPlan | PracticePlan } | null>(null);
+  // What the stretch of training just finished came to, said once on the way back to its screen.
+  let lastTraining = $state<{ minutes: number; played: number; clean: number } | null>(null);
+  let trainingRuns = 0;
 
   const today = $derived(dayStamp());
   const due = $derived(dueReviews(progress, today));
@@ -89,6 +95,33 @@
     playing = { unit: { id: 'review', name: '', blurb: '', levels: [plan] }, plan };
   }
 
+  /**
+   * A stretch of training, filed. It is playing, so the minutes and the weak spots count; it is
+   * not the path, so no star is filed and "continue" stays where it was (Edi, 2026-10-12).
+   * It does not look at `playing`: the logo clears that first, and the screen only reports the
+   * stretch as it is torn down.
+   */
+  function finishTraining({ attempts, seconds }: { attempts: Attempt[]; seconds: number }) {
+    const { missed, cleared } = outcomesFor(attempts);
+    progress = recordPractice(progress, { today, seconds, missed, cleared });
+    saveProgress(progress);
+    lastTraining = {
+      minutes: Math.round(seconds / 60),
+      played: attempts.length,
+      clean: attempts.filter(attempt =>
+        attempt.analysis && isClean(attempt.analysis, { texture: attempt.texture ?? null })).length,
+    };
+  }
+
+  function startTraining(plan: Omit<PracticePlan, 'id'>) {
+    trainingRuns += 1;
+    // A fresh id each time, so starting again remounts the screen instead of reusing the last run.
+    playing = {
+      unit: { id: 'training', name: '', blurb: '', levels: [] },
+      plan: { ...plan, id: `training-${trainingRuns}` },
+    };
+  }
+
   function leaveGame() {
     playing = null;
     screen = 'today';
@@ -121,11 +154,14 @@
     {#key playing.plan.id}
       <!-- Leaving a level goes back to the screen it was opened from; the logo goes to Today. -->
       <Game unit={playing.unit} plan={playing.plan} instrument={instrument} onfinish={finish}
+            onpractice={finishTraining}
             onnext={following ? () => (playing = following) : null}
             onexit={() => (playing = null)} />
     {/key}
   {:else if screen === 'path'}
     <Path stars={progress.stars} onplay={(unit, plan) => (playing = { unit, plan })} />
+  {:else if screen === 'training'}
+    <Training last={lastTraining} onstart={startTraining} onback={() => (screen = 'today')} />
   {:else}
     <Today
       streak={streak(progress, today)}
@@ -138,6 +174,7 @@
       onplay={(unit, plan) => (playing = { unit, plan })}
       onreview={startReview}
       onchallenge={startChallenge}
+      ontraining={() => (screen = 'training')}
       onpath={() => (screen = 'path')} />
   {/if}
 </main>

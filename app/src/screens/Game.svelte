@@ -3,18 +3,22 @@
   import Keyboard from '../lib/Keyboard.svelte';
   import Result from './Result.svelte';
   import type { Instrument } from '../lib/instrument.svelte';
-  import { createLevel, type Attempt, type Finished, type LevelPlan } from '../game/level.svelte';
+  import { createLevel, type Attempt, type Finished, type LevelPlan, type Run } from '../game/level.svelte';
+  import { createPractice, type PracticePlan } from '../game/practice.svelte';
   import {
     analyzeVoicing, inversionOf, parseChord, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
 
-  let { unit, plan, instrument, onfinish, onnext = null, onexit }: {
+  let { unit, plan, instrument, onfinish, onpractice = () => {}, onnext = null, onexit }: {
     unit: { name: string };
-    plan: LevelPlan;
+    /** A level, or a stretch of training: the same screen plays both. */
+    plan: LevelPlan | PracticePlan;
     /** The app's one instrument: it outlives this screen, so the keyboard stays connected. */
     instrument: Instrument;
     onfinish: (run: { stars: number; attempts: Attempt[]; seconds: number }) => Finished;
+    /** A stretch of training is over: what was played, and for how long. No stars come back. */
+    onpractice?: (run: { attempts: Attempt[]; seconds: number }) => void;
     /** Straight on to the level after this one, once this run has opened it. Null when it has not. */
     onnext?: (() => void) | null;
     onexit: () => void;
@@ -23,8 +27,12 @@
   // A level is built once, from the plan this screen was mounted with. App.svelte wraps the
   // screen in {#key plan.id}, so picking another level remounts it rather than swapping the
   // plan underneath a run in progress — which is what the warning below would be about.
+  // Training runs on this screen too. It is a `Run` like a level, so everything below talks to
+  // `level` and only what training does differently asks for `practice`.
   // svelte-ignore state_referenced_locally
-  const level = createLevel(plan);
+  const practice = 'endless' in plan ? createPractice(plan) : null;
+  // svelte-ignore state_referenced_locally
+  const level: Run = practice ?? createLevel(plan as LevelPlan);
   let recorded = $state(false);
   let grid = $state<string[] | null>(null);
   let share = $state<string | null>(null);
@@ -53,6 +61,26 @@
   // This screen is the one being played to for as long as it is mounted, and no longer.
   // svelte-ignore state_referenced_locally
   onDestroy(instrument.listen({ onVoicing: judge, onNext: skip }));
+
+  // Training has no result screen to end on: leaving is how it ends. It is filed once,
+  // whichever way out is taken — the buttons here, or the logo, which this screen only hears
+  // of by being torn down.
+  function filePractice() {
+    if (!practice || recorded) return;
+    recorded = true;
+    practice.end();
+    if (practice.attempts.length) onpractice({ attempts: practice.attempts, seconds: practice.seconds });
+  }
+
+  function leave() {
+    filePractice();
+    onexit();
+  }
+
+  onDestroy(() => {
+    filePractice();
+    level.dispose();
+  });
 
   function judge(notes: number[], { startedAt }: { startedAt: number | null }) {
     // Which chord this answers is the level's decision, not the screen's: timed, a voicing that
@@ -164,12 +192,18 @@
 {:else}
   <section class="game">
     <div class="progress">
-      <span class="count">{level.index + 1} / {level.total}</span>
-      <span class="track"><span class="fill" style="width: {(100 * level.answered) / level.total}%"></span></span>
+      {#if practice}
+        <!-- Nothing to count towards, so the tally stands where the progress bar would. -->
+        <span class="count">{practice.played} played · {practice.clean} clean</span>
+        <span class="spacer"></span>
+      {:else}
+        <span class="count">{level.index + 1} / {level.total}</span>
+        <span class="track"><span class="fill" style="width: {(100 * level.answered) / level.total}%"></span></span>
+      {/if}
       <span class="level">
-        <button type="button" class="exit" onclick={onexit}>← Back</button>
+        <button type="button" class="exit" onclick={leave}>← Back</button>
         {level.plan.name}
-        {#if level.timed}<span class="timed">· timed, {level.plan.tempo} bpm</span>{/if}
+        {#if level.timed}<span class="timed">· {practice ? '' : 'timed, '}{level.plan.tempo} bpm</span>{/if}
       </span>
     </div>
 
@@ -190,6 +224,11 @@
       {#if level.countIn !== null || (level.timed && !level.at)}
         <!-- Timed with no position yet is the instant before the first click: already the count-in. -->
         <span class="beat">{level.countIn ?? ''}</span>Count-in. The first chord lands on the next bar.
+      {:else if level.timed && practice?.mode === 'drill'}
+        <!-- A drawn chord has no bar number worth reading: only where the bar is. -->
+        Beat {level.at?.beat ?? 1}. Play it before the bar turns.
+      {:else if level.timed && practice}
+        Bar {level.at?.bar ?? 1}, beat {level.at?.beat ?? 1}.
       {:else if level.timed}
         Bar {level.at?.bar ?? 1}, beat {level.at?.beat ?? 1}. Play it before the bar turns.
       {:else if level.ask?.texture}
@@ -219,6 +258,14 @@
         </p>
       {/if}
 
+      {#if practice?.movement && star}
+        <!-- In a progression the step from the chord before is the thing being practised. The
+             same number the third star is earned on, said after every change instead of once. -->
+        <p class="move">
+          From {practice.movement.from}: {practice.movement.average.toFixed(2)} semitones a voice — {practice.movement.rating}
+        </p>
+      {/if}
+
       {#if analysis && warnings.length}
         <ul class="messages">
           {#each warnings as message (message.text)}
@@ -231,7 +278,12 @@
     <Keyboard classes={{ ...classes, ...armedClasses(instrument.armed) }} onkey={instrument.toggle} />
 
     <div class="controls">
-      {#if level.timed}
+      {#if practice && level.timed}
+        <!-- Stops the clock, not the practice: it goes on without it, from the chord it was on. -->
+        <button type="button" onclick={() => level.stop()}>Stop the metronome</button>
+      {:else if practice}
+        <button type="button" onclick={startTimed}>Start the metronome · {level.plan.tempo} bpm</button>
+      {:else if level.timed}
         <button type="button" class="stop" onclick={() => level.stop()}>Stop the run</button>
       {:else if !level.plan.free}
         <button type="button" class="start" onclick={startTimed}>Start the timed run</button>
@@ -240,6 +292,9 @@
       <button type="button" onclick={() => instrument.clear()}>Clear <kbd>Esc</kbd></button>
       {#if !level.timed}
         <button type="button" onclick={skip}>Skip <kbd>Space</kbd></button>
+      {/if}
+      {#if practice}
+        <button type="button" onclick={leave}>Done</button>
       {/if}
       <span class="octave">letters start at {midiToName(instrument.octave)} <kbd>Z</kbd><kbd>X</kbd></span>
     </div>
@@ -256,6 +311,8 @@
   .progress { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
   .count { font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
   .track { flex-grow: 1; height: 4px; border-radius: 999px; background: var(--border); overflow: hidden; }
+  .spacer { flex-grow: 1; }
+  .move { margin: 0 0 8px; font-size: 14px; color: var(--ink-muted); }
   .fill { display: block; height: 4px; border-radius: 999px; background: var(--ink); }
   .level { font-size: 13px; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 10px; }
   .exit { padding: 4px 10px; font-size: 12px; border-radius: 8px; }

@@ -61,13 +61,15 @@ app/                       shell-ul (Vite + TS + Svelte 5), cu package.json prop
   src/bridge/theory.ts     ușa spre teorie: analizor, acorduri, stele, mapările de clape
   src/bridge/midi.ts       ușa spre note: capture, porturi virtuale, synth, clapa de ecran
   src/lib/instrument.svelte.ts  sesiunea MIDI în runes: ce ține mâna, ce e armat, ce aparat e conectat
-  src/screens/Game.svelte  ecranul de joc: acordul cerut, clapa, verdictul, progresul nivelului
+  src/screens/Game.svelte  ecranul de joc: acordul cerut și cel următor, clapa, verdictul; joacă un nivel sau o sesiune de Training
   src/screens/Result.svelte  rezultatul trecerii: stele, un singur lucru de reparat, „Next level"
-  src/game/level.svelte.ts   nivelul: cererile, încercările, metronomul și ce acord răspunde un voicing
+  src/game/level.svelte.ts   nivelul: cererile, încercările, metronomul și ce acord răspunde un voicing; tipul `Run`
+  src/game/practice.svelte.ts  o sesiune de Training: aceeași formă ca un nivel (`Run`), fără sfârșit și fără stele
+  src/screens/Training.svelte  alegerea pentru Training: drill (calități, tonalități, formă) sau progresie în buclă
   src/bridge/time.ts       ușa spre ceas: metronomul, sesiunea, regula de anticipare
   src/bridge/game.ts       ușa spre drum: unitățile, ce e deschis, stelele salvate
   src/screens/Path.svelte  harta: unități, nivele, lacăte, stele
-  src/screens/Today.svelte ecranul de start: streak, minute, „continuă drumul", antrenamentul
+  src/screens/Today.svelte ecranul de start: streak, minute, „continuă drumul", Review, ușa spre Training
   src/lib/Keyboard.svelte  învelește src/ui/keyboard.js; Svelte decide când se colorează
   src/lib/clipboard.ts     copiază un text și spune dacă a reușit (grila zilei, în două ecrane)
   src/app.css              tokenii de brand și culorile de teorie (aceleași șapte ca styles.css)
@@ -101,6 +103,7 @@ src/
   game/path.js             unitățile și nivelele ca date, cererile lor și regulile de deblocare; testat
   game/progress.js         stelele, zilele, streak-ul, coada de recapitulare, grila zilei și ultimul nivel jucat; testat
   game/challenge.js        challenge-ul zilei: seed din dată, rampa de 10, grila și textul partajat; testat
+  game/training.js         Training: ce se poate alege, ce se poate cânta în forma cerută, planul sesiunii; testat
   theory/voicings.js       sugestii de voicing din șabloane, în registru, ordonate după voice leading (Faza 2; sămânța lui realize.js)
   audio/context.js         AudioContext-ul paginii și conversiile de ceas (pure, testate)
   audio/metronome.js       metronom Web Audio cu lookahead, count-in, onBeat, positionOf(performance.now)
