@@ -1,8 +1,8 @@
-// Progress: the best stars per level, the XP earned, and how many times a level paid today.
+// Progress: the best stars per level, the days played, and what is due to come back.
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { emptyProgress, recordRun, playsToday, loadProgress, saveProgress } from '../src/game/progress.js';
+import { emptyProgress, recordRun, loadProgress, saveProgress } from '../src/game/progress.js';
 
 const fakeStorage = (seed = {}) => {
   const data = new Map(Object.entries(seed));
@@ -16,38 +16,21 @@ const fakeStorage = (seed = {}) => {
 };
 
 test('recordRun: a level keeps its best stars, never its latest', () => {
-  let progress = recordRun(emptyProgress(), { levelId: 'triads-major', stars: 3, xp: 3, today: '2026-10-11' });
+  let progress = recordRun(emptyProgress(), { levelId: 'triads-major', stars: 3, today: '2026-10-11' });
   assert.equal(progress.stars['triads-major'], 3);
-  progress = recordRun(progress, { levelId: 'triads-major', stars: 1, xp: 0, today: '2026-10-11' });
+  progress = recordRun(progress, { levelId: 'triads-major', stars: 1, today: '2026-10-11' });
   assert.equal(progress.stars['triads-major'], 3, 'a worse run does not take the stars away');
-});
-
-test('recordRun: XP adds up, and the run that earned none adds none', () => {
-  let progress = recordRun(emptyProgress(), { levelId: 'a', stars: 2, xp: 10, today: '2026-10-11' });
-  progress = recordRun(progress, { levelId: 'b', stars: 0, xp: 0, today: '2026-10-11' });
-  assert.equal(progress.xp, 10);
-});
-
-test('playsToday: counts this level today only, and resets when the date turns', () => {
-  const start = emptyProgress();
-  assert.equal(playsToday(start, 'a', '2026-10-11'), 0);
-  const once = recordRun(start, { levelId: 'a', stars: 1, xp: 1, today: '2026-10-11' });
-  assert.equal(playsToday(once, 'a', '2026-10-11'), 1);
-  assert.equal(playsToday(once, 'b', '2026-10-11'), 0, 'another level has its own count');
-  assert.equal(playsToday(once, 'a', '2026-10-12'), 0, 'tomorrow starts again');
-  const twice = recordRun(once, { levelId: 'a', stars: 1, xp: 1, today: '2026-10-11' });
-  assert.equal(playsToday(twice, 'a', '2026-10-11'), 2);
 });
 
 test('recordRun never mutates the progress it was given', () => {
   const before = emptyProgress();
-  recordRun(before, { levelId: 'a', stars: 3, xp: 5, today: '2026-10-11' });
+  recordRun(before, { levelId: 'a', stars: 3, today: '2026-10-11' });
   assert.deepEqual(before, emptyProgress());
 });
 
 test('loadProgress: a round trip, and anything unreadable starts over instead of throwing', () => {
   const storage = fakeStorage();
-  const progress = recordRun(emptyProgress(), { levelId: 'a', stars: 2, xp: 7, today: '2026-10-11' });
+  const progress = recordRun(emptyProgress(), { levelId: 'a', stars: 2, today: '2026-10-11' });
   saveProgress(progress, storage);
   assert.deepEqual(loadProgress(storage), progress);
 
@@ -61,11 +44,12 @@ test('loadProgress: a round trip, and anything unreadable starts over instead of
 
 import { streak, secondsOn, outcomesFor, dueReviews, nextLevel } from '../src/game/progress.js';
 import { recordChallenge, challengeResult } from '../src/game/progress.js';
+import { PATH } from '../src/game/path.js';
 import { parseChord } from '../src/theory/chords.js';
 import { analyzeVoicing } from '../src/theory/analyzer.js';
 
 const day = (progress, date, seconds = 300) =>
-  recordRun(progress, { levelId: 'a', stars: 1, xp: 1, today: date, seconds });
+  recordRun(progress, { levelId: 'a', stars: 1, today: date, seconds });
 
 test('streak: consecutive days up to today, and yesterday still counts', () => {
   let p = emptyProgress();
@@ -109,26 +93,47 @@ test('outcomesFor: a quality missed once is missed, however often it was clean',
 });
 
 test('a missed quality comes back tomorrow and retires after three clean answers', () => {
-  let p = recordRun(emptyProgress(), { levelId: 'a', stars: 1, xp: 1, today: '2026-10-11', missed: ['m7b5'] });
+  let p = recordRun(emptyProgress(), { levelId: 'a', stars: 1, today: '2026-10-11', missed: ['m7b5'] });
   assert.deepEqual(dueReviews(p, '2026-10-11'), [], 'not the same day: it comes back tomorrow');
   assert.deepEqual(dueReviews(p, '2026-10-12').map(r => r.quality), ['m7b5']);
 
   for (const date of ['2026-10-12', '2026-10-13']) {
-    p = recordRun(p, { levelId: 'a', stars: 2, xp: 1, today: date, cleared: ['m7b5'] });
+    p = recordRun(p, { levelId: 'a', stars: 2, today: date, cleared: ['m7b5'] });
     assert.deepEqual(dueReviews(p, '2026-10-14').map(r => r.quality), ['m7b5'], 'two is not three');
   }
-  p = recordRun(p, { levelId: 'a', stars: 2, xp: 1, today: '2026-10-14', cleared: ['m7b5'] });
+  p = recordRun(p, { levelId: 'a', stars: 2, today: '2026-10-14', cleared: ['m7b5'] });
   assert.deepEqual(dueReviews(p, '2026-10-15'), [], 'three clean answers and it is gone');
 });
 
 test('a miss resets the count, so three in a row is what retires it', () => {
-  let p = recordRun(emptyProgress(), { levelId: 'a', stars: 1, xp: 1, today: '2026-10-11', missed: ['7'] });
-  p = recordRun(p, { levelId: 'a', stars: 1, xp: 1, today: '2026-10-12', cleared: ['7'] });
-  p = recordRun(p, { levelId: 'a', stars: 1, xp: 1, today: '2026-10-13', cleared: ['7'] });
-  p = recordRun(p, { levelId: 'a', stars: 1, xp: 1, today: '2026-10-14', missed: ['7'] });
+  let p = recordRun(emptyProgress(), { levelId: 'a', stars: 1, today: '2026-10-11', missed: ['7'] });
+  p = recordRun(p, { levelId: 'a', stars: 1, today: '2026-10-12', cleared: ['7'] });
+  p = recordRun(p, { levelId: 'a', stars: 1, today: '2026-10-13', cleared: ['7'] });
+  p = recordRun(p, { levelId: 'a', stars: 1, today: '2026-10-14', missed: ['7'] });
   assert.equal(p.review['7'].hits, 0);
   assert.equal(p.review['7'].misses, 2);
   assert.deepEqual(dueReviews(p, '2026-10-15').map(r => r.quality), ['7']);
+});
+
+test('nextLevel: picks up from the level played last, since every unit is open', () => {
+  // Someone who starts at Rootless is not sent back to triads by the Today screen.
+  assert.equal(nextLevel({}, 'rootless-a')?.level.id, 'rootless-a', 'played, no star yet: still that one');
+  assert.equal(nextLevel({ 'rootless-a': 3 }, 'rootless-a')?.level.id, 'rootless-b', 'finished: the one after');
+  assert.equal(nextLevel({ 'rootless-a': 3 }, 'rootless-a')?.unit.id, 'rootless');
+  // Past the end of the path it comes round to whatever is still short of three stars.
+  const last = PATH.at(-1).levels.at(-1).id;
+  assert.equal(nextLevel({ [last]: 3 }, last)?.level.id, 'triads-major');
+  // A level that is not on the path (the review, the challenge) anchors nothing.
+  assert.equal(nextLevel({}, 'review')?.level.id, 'triads-major');
+});
+
+test('recordRun: remembers the last level played on the path, and only on the path', () => {
+  let p = recordRun(emptyProgress(), { levelId: 'shell-dom', stars: 1, today: '2026-10-12' });
+  assert.equal(p.last, 'shell-dom');
+  p = recordRun(p, { levelId: 'review', stars: 2, today: '2026-10-12' });
+  assert.equal(p.last, 'shell-dom', 'the review is not a place on the path');
+  p = recordRun(p, { levelId: 'challenge', stars: 2, today: '2026-10-12' });
+  assert.equal(p.last, 'shell-dom');
 });
 
 test('nextLevel: the first open level that is not yet three stars', () => {
@@ -143,41 +148,46 @@ test('nextLevel: the first open level that is not yet three stars', () => {
 // ---- The daily challenge, filed once (2026-10-11) -----------------------------------------
 
 test('recordChallenge: the official pass is the first one of the day', () => {
-  const official = { date: '2026-10-11', number: 1, states: ['clean', 'missed'], stars: 1, xp: 4 };
+  const official = { date: '2026-10-11', number: 1, states: ['clean', 'missed'], stars: 1 };
   let p = recordChallenge(emptyProgress(), official);
   assert.deepEqual(challengeResult(p, '2026-10-11'), official);
 
   // Playing it again is practice: the grid someone pastes is the one they played cold.
-  p = recordChallenge(p, { ...official, states: ['clean', 'clean'], stars: 2, xp: 8 });
+  p = recordChallenge(p, { ...official, states: ['clean', 'clean'], stars: 2 });
   assert.deepEqual(challengeResult(p, '2026-10-11'), official, 'the replay did not overwrite it');
 });
 
 test('a finished run leaves the day\'s challenge grid alone', () => {
   // recordRun used to list the fields it returned, so a run after the challenge wiped it.
-  const played = recordChallenge(emptyProgress(), { date: '2026-10-11', number: 1, states: ['clean'], stars: 1, xp: 4 });
-  const after = recordRun(played, { levelId: 'triads-major', stars: 2, xp: 2, today: '2026-10-11' });
+  const played = recordChallenge(emptyProgress(), { date: '2026-10-11', number: 1, states: ['clean'], stars: 1 });
+  const after = recordRun(played, { levelId: 'triads-major', stars: 2, today: '2026-10-11' });
   assert.deepEqual(challengeResult(after, '2026-10-11').states, ['clean']);
 });
 
 test('challengeResult: yesterday\'s grid is not today\'s', () => {
-  const p = recordChallenge(emptyProgress(), { date: '2026-10-11', number: 1, states: ['clean'], stars: 1, xp: 4 });
+  const p = recordChallenge(emptyProgress(), { date: '2026-10-11', number: 1, states: ['clean'], stars: 1 });
   assert.equal(challengeResult(p, '2026-10-12'), null, 'a new day has no result yet');
-  const next = recordChallenge(p, { date: '2026-10-12', number: 2, states: ['missed'], stars: 0, xp: 0 });
+  const next = recordChallenge(p, { date: '2026-10-12', number: 2, states: ['missed'], stars: 0 });
   assert.equal(challengeResult(next, '2026-10-12').number, 2);
   assert.equal(challengeResult(next, '2026-10-11'), null, 'only the latest day is kept');
 });
 
 test('the challenge record survives a save and a load', () => {
   const storage = fakeStorage();
-  const p = recordChallenge(emptyProgress(), { date: '2026-10-11', number: 1, states: ['clean', 'right'], stars: 1, xp: 4 });
+  const p = recordChallenge(emptyProgress(), { date: '2026-10-11', number: 1, states: ['clean', 'right'], stars: 1 });
   saveProgress(p, storage);
   const back = loadProgress(storage);
   assert.deepEqual(challengeResult(back, '2026-10-11').states, ['clean', 'right']);
 });
 
-test('a progress file written before the challenge existed simply has none', () => {
-  const storage = fakeStorage({ 'sidekeys.progress': JSON.stringify({ stars: {}, xp: 7 }) });
+test('an older progress file still loads: its stars are kept, its XP and play counts are not', () => {
+  // XP was removed on 2026-10-12. A file saved before that carries it, and must not be thrown
+  // away for it: the stars in it were earned.
+  const old = { stars: { 'triads-major': 2 }, xp: 7, plays: { 'triads-major': { date: '2026-10-11', count: 1 } } };
+  const storage = fakeStorage({ 'sidekeys.progress': JSON.stringify(old) });
   const back = loadProgress(storage);
-  assert.equal(back.xp, 7);
+  assert.equal(back.stars['triads-major'], 2);
+  assert.equal('xp' in back, false);
+  assert.equal('plays' in back, false);
   assert.equal(challengeResult(back, '2026-10-11'), null);
 });

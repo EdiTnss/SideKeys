@@ -51,7 +51,7 @@ test('isClean implies isRight, so a star never skips the one below it', () => {
 
 // ---- The run: how a whole pass turns into stars (docs/spec-game.md) ----------------------
 
-import { scoreRun, movementThreshold, xpFor } from '../src/theory/stars.js';
+import { scoreRun, movementThreshold } from '../src/theory/stars.js';
 
 const attempt = (symbol, notes) => ({ symbol, notes, analysis: notes.length ? on(symbol, notes) : null });
 
@@ -111,14 +111,6 @@ test('movementThreshold: measured per progression, 1.5 where the library says no
   assert.equal(movementThreshold('blues'), 1.5);
   assert.equal(movementThreshold('drill'), 1.5);
   assert.equal(movementThreshold(null), 1.5);
-});
-
-test('xpFor: quality times difficulty, halved the second time today and nothing after', () => {
-  assert.equal(xpFor({ stars: 3, difficulty: 5 }), 15);
-  assert.equal(xpFor({ stars: 1, difficulty: 1 }), 1);
-  assert.equal(xpFor({ stars: 3, difficulty: 5, playsToday: 1 }), 8);
-  assert.equal(xpFor({ stars: 3, difficulty: 5, playsToday: 2 }), 0, 'no farming the easy level');
-  assert.equal(xpFor({ stars: 0, difficulty: 9 }), 0, 'a level you did not clear pays nothing');
 });
 
 // ---- A level that asks for a texture (2026-10-11) ----------------------------------------

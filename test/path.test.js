@@ -33,22 +33,17 @@ test('asksFor: qualities across keys, and a progression straight from the librar
   );
 });
 
-test('pathState: the first unit is open, the rest wait for the boss before them', () => {
+test('pathState: every unit is open, and inside one a level waits for a star on the level before', () => {
   const fresh = pathState({});
-  assert.equal(fresh[0].unlocked, true);
-  assert.equal(fresh[1].unlocked, false);
-  assert.equal(fresh[0].levels[0].unlocked, true);
-  assert.equal(fresh[0].levels[1].unlocked, false, 'the second level waits for the first');
+  for (const entry of fresh) {
+    assert.equal(entry.levels[0].unlocked, true, `${entry.unit.id} is open from the start`);
+    assert.equal(entry.levels[1].unlocked, false, 'the second level waits for the first');
+  }
+  assert.deepEqual(fresh.map(entry => entry.number), PATH.map((_, at) => at + 1), 'numbered in path order');
 
   const firstCleared = pathState({ [PATH[0].levels[0].id]: 1 });
   assert.equal(firstCleared[0].levels[1].unlocked, true);
-  assert.equal(firstCleared[1].unlocked, false, 'one level is not the boss');
-
-  const boss = PATH[0].levels.at(-1);
-  assert.equal(boss.boss, true, 'every unit ends on a boss');
-  const bossCleared = pathState({ [boss.id]: 1 });
-  assert.equal(bossCleared[1].unlocked, true, 'the boss opens the next unit');
-  assert.equal(bossCleared[1].levels[0].unlocked, true);
+  assert.equal(firstCleared[0].levels[2].unlocked, false, 'one star opens one level, not the unit');
 });
 
 test('pathState: stars are carried through, per level and summed per unit', () => {
@@ -103,13 +98,11 @@ test('a slash level asks for a bass the analyzer will check, spelled from the ch
   }
 });
 
-test('no level runs longer than a boss, and a boss is the last of its unit', () => {
-  for (const unit of PATH) {
-    unit.levels.forEach((level, at) => {
-      const asks = asksFor(level);
-      assert.ok(asks.length <= 36, `${level.id} asks for ${asks.length} chords`);
-      assert.equal(Boolean(level.boss), at === unit.levels.length - 1, `${level.id}: boss in the wrong place`);
-    });
+test('no level runs past 36 chords, and none is dressed up as a boss', () => {
+  for (const unit of PATH) for (const level of unit.levels) {
+    assert.ok(asksFor(level).length <= 36, `${level.id} asks for ${asksFor(level).length} chords`);
+    assert.equal('boss' in level, false, `${level.id} still carries the flag`);
+    assert.ok(!/boss/i.test(level.name), `${level.id} is still named "${level.name}"`);
   }
 });
 

@@ -7,7 +7,7 @@ import { plainName } from '../src/theory/notes.js';
 import { analyzeVoicing } from '../src/theory/analyzer.js';
 import { suggestVoicings } from '../src/theory/voicings.js';
 import {
-  EPOCH, RUNGS, CHALLENGE_DIFFICULTY, SQUARES,
+  EPOCH, RUNGS, SQUARES,
   challengeNumber, dailyChallenge, challengeStates, shareText,
 } from '../src/game/challenge.js';
 
@@ -118,11 +118,6 @@ test('shareText: the number, the score and the grid — and nothing that needs a
   assert.equal(grid, `${SQUARES.clean}${SQUARES.clean}${SQUARES.right}${SQUARES.missed}${SQUARES.unplayed}`);
   assert.equal(link, 'https://example.test/');
   assert.ok(!text.includes('undefined'), text);
-});
-
-test('the challenge is priced in the middle of the ramp it spans', () => {
-  // It runs from triads to quartal, so it can be worth neither a triad level nor a quartal one.
-  assert.ok(CHALLENGE_DIFFICULTY > 1 && CHALLENGE_DIFFICULTY < 8, CHALLENGE_DIFFICULTY);
 });
 
 test('every chord a textured rung could ever draw has a voicing of that shape', () => {
