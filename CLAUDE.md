@@ -162,7 +162,7 @@ Regula de dependență: `app/` importă din `src/`, niciodată invers. `theory/`
 
 ## Starea curentă
 
-La 2026-10-12, seara. **Cum s-a ajuns aici stă în [docs/JOURNAL.md](docs/JOURNAL.md)**, nu aici: secțiunea
+La 2026-10-13. **Cum s-a ajuns aici stă în [docs/JOURNAL.md](docs/JOURNAL.md)**, nu aici: secțiunea
 asta se citește la fiecare sesiune, deci ține doar ce e adevărat acum, ce e nedecis și ce așteaptă
 pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a produs.
 
@@ -206,8 +206,8 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 rădăcină, bancul la `/lab/`. Iconița de pe desktop deschide deci versiunea de azi. Un browser care
 a mai vizitat site-ul poate arăta o dată versiunea veche, până își înnoiește service worker-ul.
 
-**Ce s-a făcut pe 2026-10-13 e doar local** (primul răspuns care rămâne, cele șase chei, unealta
-de măsurat): se împinge când cere Edi.
+**La fel și ce s-a făcut pe 2026-10-13** (primul răspuns care rămâne, cele șase chei, unealta de
+măsurat): împins, cu testele și publicarea trecute pe GitHub.
 
 ### Ce nu există încă
 
@@ -221,6 +221,8 @@ de măsurat): se împinge când cere Edi.
 - Pornirea MIDI, aranjamentul complet și Stop-ul din Laborator (2026-10-05).
 - **Shell-ul a văzut prima dată Genos-ul pe 2026-10-12**: Edi a jucat drumul și a găsit opt
   probleme, toate rezolvate în aceeași zi (jurnal).
+- **Neconfirmat pe Genos**: ce a venit după verificarea lui Edi — triada care cere trei note,
+  dominantul quartal, primul răspuns care rămâne într-un timed, cele șase chei noi.
 - **Confirmat de Edi pe Genos în seara de 2026-10-12** („am verificat pe Genos, este totul în
   regulă"): conexiunea care rămâne între nivele, acordul următor în timed, Training.
 - **Neauzit de nimeni altcineva decât Edi**: Claude a verificat sunetul (metronom, exemplele din
@@ -254,25 +256,31 @@ de măsurat): se împinge când cere Edi.
   https://claude.ai/artifact/LwezgTTnCurF57ZN1DecAY
 - **Pornirea la rece e măsurată** (`node tools/cold-start.mjs`, cifrele în `PRODUCT.md` la P1):
   sub 1,3 s până la verdictul primului acord, chiar și pe 4G lent. Partea omului nu e măsurată.
+- **Laboratorul scrie încă Cb și Fb pe etichetele clapelor**, deși mesajele analizorului de lângă
+  ele spun deja B și E: `ui/render.js`, `ui/stats.js` și `ai/explain.js` folosesc `spellDegree`,
+  nu `spellPlain`. Regula lui Edi din 2026-10-12 s-a aplicat în joc, nu și în banc.
+- **Aranjamentul din Laborator primește acum și dominantul quartal** de la `suggestVoicings`;
+  testele lui `realize.js` trec, dar nimeni nu a ascultat un aranjament de atunci.
 - **Sesiunile din `harness/sessions/`** poartă `"app": "voicing-lab"`; nu se rescriu.
 - **Necommis**: `Voicing Lab ca produs.pdf`, care nu intră în repo.
 
 ## Următorul pas
 
-**Formularul de email** — ultimul punct nebifat din P1, și așteaptă pe Edi: furnizorul (Buttondown,
-ConvertKit, Tally, un Google Form) și unde stau adresele, fiindcă are coadă GDPR. După alegere e un
-link sau un embed în pagină și în README. Apoi **clipul de 15 s** (`<!-- demo.gif -->` marchează
-locul): împreună pornesc ceasul porții P1, 40 de adrese în 4 săptămâni.
+**Întreabă-l pe Edi ce furnizor alege pentru formularul de email (Buttondown, ConvertKit, Tally
+sau un Google Form) și unde stau adresele, apoi leagă formularul din
+`app/src/screens/Today.svelte` și din `README.md`** — e ultimul punct nebifat din P1, iar
+împreună cu clipul de 15 s pornește ceasul porții: 40 de adrese în 4 săptămâni.
 
-Ce nu așteaptă pe nimeni, dacă se caută de lucru între timp:
+Cât se așteaptă răspunsul, ce se poate face fără el, în ordinea asta:
 
-1. **Un om cronometrat.** Pornirea la rece e măsurată doar pe partea mașinii (`PRODUCT.md`, P1).
-   Cât îi ia unui om care n-a văzut aplicația să ajungă la primul acord nu știe nimeni.
-2. **Exemplele din Theory în alte tonalități**, verificate una câte una de analizor.
-3. **Testul de plasare**, care ar hotărî și ce se mai încuie pe drum.
+1. **Laboratorul și numele simple**: `ui/render.js`, `ui/stats.js` și `ai/explain.js` scriu încă
+   Cb și Fb. Test întâi, apoi `spellPlain` în locul lui `spellDegree`. La `explain.js`, de
+   verificat întâi dacă schimbă ce primește modelul.
+2. **Un om cronometrat** la prima vizită: pornirea la rece e măsurată doar pe partea mașinii.
 
-Ordinea din `PRODUCT.md` nu se scurtcircuitează, iar regula „niciun feature care nu e pe lista
-fazei curente" se aplică: 2 și 3 de mai sus sunt idei, nu lucru aprobat.
+Idei care **nu** sunt lucru aprobat și nu se încep fără Edi: exemplele din Theory în alte
+tonalități, testul de plasare, quartal pe m6, dominanta pe treapta de sus a challenge-ului.
+Regula „niciun feature care nu e pe lista fazei curente" se aplică.
 
 ## Documentație
 
@@ -286,5 +294,5 @@ fazei curente" se aplică: 2 și 3 de mai sus sunt idei, nu lucru aprobat.
 | [docs/spec-game.md](docs/spec-game.md) | stelele (Right · Clean · Smooth) cu pragurile măsurate, ce e deschis pe drum, antrenamentul zilnic și challenge-ul zilei | logica de scor a jocului, `src/game/`, orice progresie nouă în bibliotecă |
 | [docs/spec-mic.md](docs/spec-mic.md) | prototipul de microfon: ce s-a măsurat, cum, cifrele și verdictul | `mic-proto/`; dacă se reia vreodată modul microfon |
 | [docs/PHASES.md](docs/PHASES.md) | planul inițial pe faze 0–5, cu DoD-urile și vechiul scope guard | **istoric**: toate fazele de acolo sunt bifate. Se citește doar dacă se caută un DoD vechi |
-| [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi | când o sesiune se închide cu mult context de predat |
+| [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi (ultimul: `2026-10-13-1047.md`) | când o sesiune se închide cu mult context de predat |
 | [docs/JOURNAL.md](docs/JOURNAL.md) | jurnalul sesiunilor, cu deciziile și cifrele măsurate | la final (intrare nouă); istoricul, la nevoie |
