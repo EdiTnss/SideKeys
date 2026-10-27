@@ -16,11 +16,14 @@ import { TWELVE } from './path.js';
 /** The twelve keys, in the order the path walks them: round the cycle of fourths. */
 export const KEYS = TWELVE;
 
-/** What a drill can ask for, grouped the way the screen lays them out. '' is the major triad. */
+/**
+ * What a drill can ask for, grouped the way the screen lays them out. '' is the major triad.
+ * The id is what the group's name is looked up by in another language (src/i18n/names.js).
+ */
 export const QUALITY_GROUPS = Object.freeze([
-  { name: 'Triads', qualities: ['', 'm', 'sus4'] },
-  { name: 'Sevenths', qualities: ['maj7', 'm7', '7', 'm7b5', 'dim7', 'm6', '6', '6/9', 'mMaj7', '7sus4'] },
-  { name: 'Altered dominants', qualities: ['7b9', '7#11', '7alt'] },
+  { id: 'triads', name: 'Triads', qualities: ['', 'm', 'sus4'] },
+  { id: 'sevenths', name: 'Sevenths', qualities: ['maj7', 'm7', '7', 'm7b5', 'dim7', 'm6', '6', '6/9', 'mMaj7', '7sus4'] },
+  { id: 'altered', name: 'Altered dominants', qualities: ['7b9', '7#11', '7alt'] },
 ]);
 const QUALITIES = QUALITY_GROUPS.flatMap(group => group.qualities);
 
@@ -177,7 +180,8 @@ const clampTempo = tempo => (Number.isFinite(tempo)
  * @param {TrainingSettings} settings
  * @param {{ random?: () => number }} [options]
  * @returns {{ name: string, tempo: number, endless: true, mode: 'drill' | 'progression',
- *             texture: string | string[] | null,
+ *             texture: string | string[] | null, shape: string | null,
+ *             progressionId: string | null, key: string | null,
  *             progression: { timeSignature: number[], bars: Array<{ chords: Array<{ symbol: string, beat: number }> }> } } | null}
  */
 export function trainingPlan(settings, { random = Math.random } = {}) {
@@ -189,6 +193,10 @@ export function trainingPlan(settings, { random = Math.random } = {}) {
       tempo,
       endless: true,
       mode: 'progression',
+      // What the name is made of, so another language can make it too (src/i18n/names.js).
+      shape: null,
+      progressionId: settings.progression,
+      key: progression.key,
       // The shape is the drill's: a blues has dominants, and a quartal blues is no blues here.
       texture: null,
       progression: { timeSignature: progression.timeSignature, bars: progression.bars },
@@ -202,6 +210,9 @@ export function trainingPlan(settings, { random = Math.random } = {}) {
     tempo,
     endless: true,
     mode: 'drill',
+    shape: shape?.texture ? shape.id : null,
+    progressionId: null,
+    key: null,
     texture: shape?.texture ?? null,
     progression: {
       timeSignature: [4, 4],

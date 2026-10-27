@@ -4,6 +4,7 @@
     QUALITY_GROUPS, KEYS, SHAPES, TEMPO_RANGE, PROGRESSIONS,
     drillPool, shapeQualities, progressionFor, trainingPlan, loadTraining, saveTraining,
   } from '../bridge/game';
+  import { sayGroup, sayProgression, sayShape } from '../lib/locale.svelte';
 
   type Settings = {
     mode: 'drill' | 'progression';
@@ -87,9 +88,9 @@
     {#if settings.mode === 'drill'}
       <div class="field">
         <h2>Chords</h2>
-        {#each QUALITY_GROUPS as group (group.name)}
-          <div class="chips" role="group" aria-label={group.name}>
-            <span class="group">{group.name}</span>
+        {#each QUALITY_GROUPS as group (group.id)}
+          <div class="chips" role="group" aria-label={sayGroup(group)}>
+            <span class="group">{sayGroup(group)}</span>
             {#each group.qualities as quality (quality)}
               <button type="button" class="chip mono" class:on={settings.qualities.includes(quality)}
                       aria-pressed={settings.qualities.includes(quality)}
@@ -124,7 +125,7 @@
           {#each SHAPES as entry (entry.id)}
             <button type="button" class="chip" class:on={settings.shape === entry.id}
                     aria-pressed={settings.shape === entry.id}
-                    onclick={() => (settings.shape = entry.id)}>{entry.label}</button>
+                    onclick={() => (settings.shape = entry.id)}>{sayShape(entry)}</button>
           {/each}
         </div>
       </div>
@@ -135,7 +136,7 @@
           {#each progressions as [id, entry] (id)}
             <button type="button" class="chip" class:on={settings.progression === id}
                     aria-pressed={settings.progression === id}
-                    onclick={() => (settings.progression = id)}>{entry.name}</button>
+                    onclick={() => (settings.progression = id)}>{sayProgression(id)}</button>
           {/each}
         </div>
       </div>

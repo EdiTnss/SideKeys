@@ -1,6 +1,7 @@
 <script lang="ts">
   import { pathState } from '../bridge/game';
   import type { LevelPlan, Unit } from '../game/level.svelte';
+  import { sayBlurb, sayLevel, sayUnit } from '../lib/locale.svelte';
 
   type Entry = {
     unit: Unit;
@@ -39,11 +40,11 @@
 
         <div class="card">
           <div class="title">
-            <h2>{entry.unit.name}</h2>
+            <h2>{sayUnit(entry.unit)}</h2>
             <span class="count">{entry.stars} / {entry.maxStars} stars</span>
           </div>
           <p class="blurb">
-            {entry.unit.blurb}
+            {sayBlurb(entry.unit)}
             <button type="button" class="theory" onclick={() => ontheory(entry.unit.id)}>What is it?</button>
           </p>
 
@@ -52,7 +53,7 @@
               <li class="level">
                 {#if item.unlocked}
                   <button type="button" onclick={() => onplay(entry.unit, item.level)}>
-                    <span class="name">{item.level.name}</span>
+                    <span class="name">{sayLevel(item.level)}</span>
                     <span class="stars" aria-label="{item.stars} of 3 stars">
                       {#each [1, 2, 3] as position (position)}
                         <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"
@@ -70,7 +71,7 @@
                       <rect x="5" y="11" width="14" height="9" rx="2"></rect>
                       <path d="M8.5 11V8a3.5 3.5 0 017 0v3"></path>
                     </svg>
-                    {item.level.name}
+                    {sayLevel(item.level)}
                   </span>
                 {/if}
               </li>

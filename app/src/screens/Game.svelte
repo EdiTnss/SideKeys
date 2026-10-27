@@ -10,10 +10,10 @@
     analyzeVoicing, inversionOf, parseChord, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
-  import { sayMessage, sayVoicing, sayInversion, t } from '../lib/locale.svelte';
+  import { sayLevel, sayMessage, sayVoicing, sayInversion, sayUnit, t } from '../lib/locale.svelte';
 
   let { unit, plan, instrument, onfinish, onpractice = () => {}, ontheory = () => {}, onnext = null, onexit }: {
-    unit: { name: string };
+    unit: { id: string; name: string };
     /** A level, or a stretch of training: the same screen plays both. */
     plan: LevelPlan | PracticePlan;
     /** The app's one instrument: it outlives this screen, so the keyboard stays connected. */
@@ -158,7 +158,7 @@
 
   // The path reads "Triads · Major triads"; the challenge and the review have no unit above
   // them, so they read as themselves instead of saying their own name twice.
-  const title = $derived(unit.name ? `${unit.name} · ${level.plan.name}` : level.plan.name);
+  const title = $derived(unit.name ? `${sayUnit(unit)} · ${sayLevel(level.plan)}` : sayLevel(level.plan));
   const warnings = $derived(analysis ? analysis.messages.filter((m: { level: string }) => m.level === 'warning') : []);
   // What was demanded of the chord that was judged, not of the one on screen: timed, an
   // anticipated voicing answers the next rung, which may ask for another shape.
@@ -214,7 +214,7 @@
       {/if}
       <span class="level">
         <button type="button" class="exit" onclick={leave}>← Back</button>
-        {level.plan.name}
+        {sayLevel(level.plan)}
         {#if level.timed}<span class="timed">· {practice ? '' : 'timed, '}{level.plan.tempo} bpm</span>{/if}
       </span>
     </div>

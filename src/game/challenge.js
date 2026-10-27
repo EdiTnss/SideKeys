@@ -116,6 +116,7 @@ export function challengeLevel(date) {
   return {
     id: `challenge-${date}`,
     name: `Daily challenge #${number}`,
+    number,
     tempo: TEMPO,
     free: true,
     // Already shaped, one texture per rung: `asksFor` hands these through untouched.

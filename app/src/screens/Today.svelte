@@ -2,6 +2,7 @@
   import type { LevelPlan, Unit } from '../game/level.svelte';
   import { SQUARES } from '../bridge/game';
   import { copyText } from '../lib/clipboard';
+  import { sayLevel, sayUnit } from '../lib/locale.svelte';
 
   type Review = { quality: string; misses: number; hits: number };
   type Challenge = { number: number; states: string[] | null; share: string | null };
@@ -51,7 +52,7 @@
       {#if next}
         <section class="card hero">
           <p class="kicker">Continue the path</p>
-          <h2>{next.unit.name} — {next.level.name}</h2>
+          <h2>{sayUnit(next.unit)} — {sayLevel(next.level)}</h2>
           <p class="line">
             {#if next.stars === 0}Not played yet.{:else}{next.stars} of 3 stars so far.{/if}
             {next.level.tempo} bpm, one chord to the bar.

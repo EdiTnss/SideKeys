@@ -8,6 +8,9 @@ import { LOCALES, detectLocale, translate, type Locale } from '../../../src/i18n
 import {
   describeMessage, describeVoicing, describeInversion, type AnalyzerMessage, type Voicing,
 } from '../../../src/i18n/messages.js';
+import {
+  unitName, unitBlurb, levelName, shapeName, groupName, progressionName,
+} from '../../../src/i18n/names.js';
 import { storageKey } from '../../../src/storage.js';
 
 export { LOCALES, type Locale };
@@ -58,6 +61,16 @@ export function sayMessage(message: AnalyzerMessage): string {
 export function sayVoicing(voicing: Voicing): string | null {
   return describeVoicing(current.locale, voicing);
 }
+
+// The names the engine gives things, looked up by id (src/i18n/names.js).
+type Named = { id: string; name: string; blurb?: string };
+type Plan = Parameters<typeof levelName>[1];
+export const sayUnit = (unit: Named): string => unitName(current.locale, unit);
+export const sayBlurb = (unit: Named): string => unitBlurb(current.locale, unit);
+export const sayLevel = (plan: Plan): string => levelName(current.locale, plan);
+export const sayShape = (shape: { id: string; label: string }): string => shapeName(current.locale, shape);
+export const sayGroup = (group: Named): string => groupName(current.locale, group);
+export const sayProgression = (id: string): string => progressionName(current.locale, id);
 
 /** An inversion as `inversionOf` gives it, in the language in use. */
 export function sayInversion(inversion: string | null): string | null {
