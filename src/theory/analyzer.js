@@ -30,7 +30,12 @@ const unique = list => [...new Set(list)];
  * → { notes, roles, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing, slash,
  *      messages }
  * Lists of notes are pitch classes; `voicing` is { type, bass, detail }; `messages` are
- * { level: 'warning' | 'info', code, text } in order of importance.
+ * { level: 'warning' | 'info', code, text, params } in order of importance. `text` is the
+ * English sentence; `params` are its parts, for saying it in another language:
+ *   missing, avoid, caution → { note, degree }     bass → { wanted, played }  (played: null)
+ *   rootless → { root }     wrong → { note, chord }     doubling → { note }
+ *   muddy → { lower, upper, semitones }  (notes with octaves, e.g. 'C2')
+ *   type → { type, detail, bass }  (the analysis's own `voicing`)
  */
 export function analyzeVoicing(notes, chord, { limits = LOW_INTERVAL_LIMITS } = {}) {
   const sorted = [...notes].sort((a, b) => a - b);
@@ -205,28 +210,39 @@ function pcName(pc, chord) {
 
 const noteName = (midi, chord) => pcName(pitchClass(midi), chord) + octave(midi);
 
+// Each message carries `params` beside its `text`: the same facts, spelled the same way, so the
+// shell can say them in another language without parsing the English (src/i18n/messages.js).
 function buildMessages({ chord, missing, hasRoot, wrong, avoid, caution, muddy, doublings, voicing, slash = null }) {
-  const withDegree = pc => `${pcName(pc, chord)} (${chord.degrees[pc]})`;
+  const degreeOf = pc => ({ note: pcName(pc, chord), degree: chord.degrees[pc] });
+  const withDegree = ({ note, degree }) => `${note} (${degree})`;
   const messages = [];
-  for (const pc of missing) messages.push({ level: 'warning', code: 'missing', text: `Missing ${withDegree(pc)}` });
+  const add = (level, code, params, text) => messages.push({ level, code, text, params });
+  for (const pc of missing) add('warning', 'missing', degreeOf(pc), `Missing ${withDegree(degreeOf(pc))}`);
   if (slash && !slash.ok) {
-    const played = slash.played === null ? 'nothing' : pcName(slash.played, chord);
-    messages.push({ level: 'warning', code: 'bass', text: `Bass should be ${chord.bass}, not ${played}` });
+    const played = slash.played === null ? null : pcName(slash.played, chord);
+    add('warning', 'bass', { wanted: chord.bass, played }, `Bass should be ${chord.bass}, not ${played ?? 'nothing'}`);
   }
   // Rootless is a name for a choice. Where the root is required — a triad — leaving it out is a
   // missing note, already said above, and calling it a voicing would take the warning back.
   if (!hasRoot && !missing.includes(chord.rootPc)) {
-    messages.push({ level: 'info', code: 'rootless', text: `Rootless voicing (no ${chord.root})` });
+    add('info', 'rootless', { root: chord.root }, `Rootless voicing (no ${chord.root})`);
   }
-  for (const pc of wrong) messages.push({ level: 'warning', code: 'wrong', text: `Wrong note: ${pcName(pc, chord)} is not in ${chord.symbol}` });
-  for (const pc of avoid) messages.push({ level: 'warning', code: 'avoid', text: `Avoid note: ${withDegree(pc)}` });
-  for (const pc of caution) messages.push({ level: 'info', code: 'caution', text: `Caution: ${withDegree(pc)}` });
+  for (const pc of wrong) {
+    const note = pcName(pc, chord);
+    add('warning', 'wrong', { note, chord: chord.symbol }, `Wrong note: ${note} is not in ${chord.symbol}`);
+  }
+  for (const pc of avoid) add('warning', 'avoid', degreeOf(pc), `Avoid note: ${withDegree(degreeOf(pc))}`);
+  for (const pc of caution) add('info', 'caution', degreeOf(pc), `Caution: ${withDegree(degreeOf(pc))}`);
   for (const { lower, upper, semitones } of muddy) {
     const interval = INTERVAL_NAMES[semitones] ?? `${semitones} semitones`;
-    messages.push({ level: 'warning', code: 'muddy', text: `Muddy: ${noteName(lower, chord)}–${noteName(upper, chord)} (${interval}) is too low` });
+    const params = { lower: noteName(lower, chord), upper: noteName(upper, chord), semitones };
+    add('warning', 'muddy', params, `Muddy: ${params.lower}–${params.upper} (${interval}) is too low`);
   }
-  for (const pc of doublings) messages.push({ level: 'info', code: 'doubling', text: `Doubled: ${pcName(pc, chord)}` });
-  if (voicing.type) messages.push({ level: 'info', code: 'type', text: describeVoicing(voicing) });
+  for (const pc of doublings) add('info', 'doubling', { note: pcName(pc, chord) }, `Doubled: ${pcName(pc, chord)}`);
+  if (voicing.type) {
+    const { type, detail, bass } = voicing;
+    add('info', 'type', { type, detail, bass }, describeVoicing(voicing));
+  }
   return messages;
 }
 

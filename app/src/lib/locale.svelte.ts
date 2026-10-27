@@ -5,6 +5,9 @@
 // remembers it, and tells the page what language it is in.
 
 import { LOCALES, detectLocale, translate, type Locale } from '../../../src/i18n/i18n.js';
+import {
+  describeMessage, describeVoicing, describeInversion, type AnalyzerMessage, type Voicing,
+} from '../../../src/i18n/messages.js';
 import { storageKey } from '../../../src/storage.js';
 
 export { LOCALES, type Locale };
@@ -44,4 +47,19 @@ export function setLocale(next: Locale) {
 /** The string for `key` in the language in use. Reactive: read it in markup and it follows. */
 export function t(key: string, params: Record<string, string | number> = {}): string {
   return translate(current.locale, key, params);
+}
+
+/** One of the analyzer's messages, said in the language in use. */
+export function sayMessage(message: AnalyzerMessage): string {
+  return describeMessage(current.locale, message);
+}
+
+/** A voicing's name ("Drop 2", "Rootless A, root in the bass"), or null when it has none. */
+export function sayVoicing(voicing: Voicing): string | null {
+  return describeVoicing(current.locale, voicing);
+}
+
+/** An inversion as `inversionOf` gives it, in the language in use. */
+export function sayInversion(inversion: string | null): string | null {
+  return describeInversion(current.locale, inversion);
 }

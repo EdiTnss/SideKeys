@@ -114,9 +114,11 @@ analyzeVoicing(notes, chord, { limits = LOW_INTERVAL_LIMITS } = {}) → {
   muddy,                    // [{ lower, upper, semitones }]
   doublings,                // pc-uri dublate, în afara root/5 din bas
   voicing: { type, bass, detail },   // type: shell | rootless-A | rootless-B | drop-2 | drop-3 | drop-2-4 | quartal | upper-structure | close | spread; bass: null | 'root' | '5'; detail: triada din UST
-  messages,                 // [{ level: 'warning' | 'info', code, text }], în ordinea de mai sus
+  messages,                 // [{ level: 'warning' | 'info', code, text, params }], în ordinea de mai sus
 }
 ```
+
+**`params` pe fiecare mesaj** (2026-10-27, pentru jocul în română): aceleași fapte ca în `text`, scrise la fel, ca shell-ul să construiască propoziția în altă limbă fără să despartă engleza. `missing`, `avoid`, `caution` → `{ note, degree }`; `bass` → `{ wanted, played }` (`played: null` când nu s-a cântat nimic); `rootless` → `{ root }`; `wrong` → `{ note, chord }`; `muddy` → `{ lower, upper, semitones }`, cu notele cu octavă (`'C2'`); `doubling` → `{ note }`; `type` → `{ type, detail, bass }`, adică `voicing`. `text` a rămas exact cum era, deci niciun test vechi și nicio sesiune din harness nu s-a schimbat, iar promptul din `ai/explain.js` primește tot doar `text`. Propoziția se compune în `src/i18n/messages.js`; `test/messages.test.js` cere ca în engleză ea să iasă literă cu literă `text`-ul analizorului, deci un mesaj nou sau reformulat aici pică testul până primește cheile lui în ambele dicționare.
 
 `LOW_INTERVAL_LIMITS` e o listă de date `{ below, semitones }`, configurabilă prin opțiuni. Voice leading-ul (Faza 2) va fi o funcție separată, `compareVoicings(previous, next)`, ca analiza unui acord izolat să rămână pură.
 

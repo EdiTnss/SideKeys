@@ -5,6 +5,7 @@
   import {
     parseChord, analyzeVoicing, inversionOf, compareVoicings, roleClasses, spellPlain,
   } from '../bridge/theory';
+  import { sayInversion, sayVoicing } from '../lib/locale.svelte';
 
   type Example = { symbol: string; notes: string; type: string; inversion?: string; caption: string };
   type Lesson = {
@@ -42,9 +43,7 @@
     const notes = exampleNotes(example) as number[];
     const chord = parseChord(example.symbol);
     const analysis = analyzeVoicing(notes, chord);
-    const named = example.inversion
-      ? inversionOf(analysis)
-      : analysis.messages.find((message: { code: string }) => message.code === 'type')?.text ?? null;
+    const named = example.inversion ? sayInversion(inversionOf(analysis)) : sayVoicing(analysis.voicing);
     const degrees = (analysis.roles as Array<{ degree: string | null }>)
       .map(role => (role.degree ? { name: spellPlain(chord.root, role.degree) as string, degree: role.degree } : null))
       .filter((entry): entry is { name: string; degree: string } => entry !== null);

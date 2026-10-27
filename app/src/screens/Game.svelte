@@ -10,6 +10,7 @@
     analyzeVoicing, inversionOf, parseChord, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
+  import { sayMessage, sayVoicing, sayInversion, t } from '../lib/locale.svelte';
 
   let { unit, plan, instrument, onfinish, onpractice = () => {}, ontheory = () => {}, onnext = null, onexit }: {
     unit: { name: string };
@@ -167,7 +168,7 @@
   // has to say it itself: the analyzer was asked about the chord, not about the exercise.
   const shapeMiss = $derived(
     analysis && !star && !warnings.length
-      ? analysis.messages.find((m: { code: string }) => m.code === 'type')?.text ?? 'another shape'
+      ? sayVoicing(analysis.voicing) ?? t('voicing.other')
       : null);
   const shapeOf = (texture: string | string[] | null | undefined) =>
     texture ? ([] as string[]).concat(texture).join(' or ') : '';
@@ -189,10 +190,8 @@
   const shape = $derived.by(() => {
     if (!analysis || !judged) return null;
     const { type } = analysis.voicing;
-    if (type && type !== 'close' && type !== 'spread') {
-      return analysis.messages.find((m: { code: string }) => m.code === 'type')?.text ?? null;
-    }
-    return parseChord(judged).chordTones.length === 3 ? inversionOf(analysis) : null;
+    if (type && type !== 'close' && type !== 'spread') return sayVoicing(analysis.voicing);
+    return parseChord(judged).chordTones.length === 3 ? sayInversion(inversionOf(analysis)) : null;
   });
 </script>
 
@@ -269,7 +268,7 @@
       {:else}
         <p class="star none">
           <span class="judged">{judged}{anticipated ? ', anticipated' : ''}</span>
-          {warnings[0].text}
+          {sayMessage(warnings[0])}
         </p>
       {/if}
 
@@ -289,8 +288,9 @@
 
       {#if analysis && warnings.length}
         <ul class="messages">
-          {#each warnings as message (message.text)}
-            <li>{message.text}</li>
+          <!-- Keyed by what the message says, not how: the text changes with the language. -->
+          {#each warnings as message (`${message.code}:${JSON.stringify(message.params)}`)}
+            <li>{sayMessage(message)}</li>
           {/each}
         </ul>
       {/if}
