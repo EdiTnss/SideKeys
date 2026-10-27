@@ -12,18 +12,57 @@ test('the dictionaries have the same keys', () => {
   assert.deepEqual(Object.keys(ro).sort(), Object.keys(en).sort());
 });
 
-test('every key takes the same {params} in both languages', () => {
+// A counted string is an object of plural forms ({ one, other } in English, { one, few, other }
+// in Romanian); every other string is a plain string.
+const formsOf = value => (typeof value === 'string' ? [value] : Object.values(value));
+
+test('every key takes the same {params} in both languages, in every plural form', () => {
   for (const key of Object.keys(en)) {
-    assert.deepEqual(paramsOf(ro[key]), paramsOf(en[key]), key);
+    const wanted = paramsOf(formsOf(en[key])[0]).sort();
+    for (const form of [...formsOf(en[key]), ...formsOf(ro[key])]) {
+      assert.deepEqual(paramsOf(form).filter(name => name !== 'count').sort(),
+        wanted.filter(name => name !== 'count'), key);
+    }
+  }
+});
+
+test('a counted string is counted in both languages, with the forms each language needs', () => {
+  for (const key of Object.keys(en)) {
+    assert.equal(typeof ro[key], typeof en[key], key);
+    if (typeof en[key] === 'string') continue;
+    assert.deepEqual(Object.keys(en[key]).sort(), ['one', 'other'], `en: ${key}`);
+    assert.deepEqual(Object.keys(ro[key]).sort(), ['few', 'one', 'other'], `ro: ${key}`);
   }
 });
 
 test('no string in either dictionary is empty', () => {
   for (const [name, dictionary] of [['en', en], ['ro', ro]]) {
-    for (const [key, text] of Object.entries(dictionary)) {
-      assert.ok(typeof text === 'string' && text.trim() !== '', `${name}: ${key}`);
+    for (const [key, value] of Object.entries(dictionary)) {
+      for (const text of formsOf(value)) {
+        assert.ok(typeof text === 'string' && text.trim() !== '', `${name}: ${key}`);
+      }
     }
   }
+});
+
+test('translate: a counted string takes the plural form of {count}', () => {
+  const dictionaries = {
+    en: { days: { one: '{count} day', other: '{count} days' } },
+    ro: { days: { one: 'o zi', few: '{count} zile', other: '{count} de zile' } },
+  };
+  assert.equal(translate('en', 'days', { count: 1 }, dictionaries), '1 day');
+  assert.equal(translate('en', 'days', { count: 0 }, dictionaries), '0 days');
+  assert.equal(translate('en', 'days', { count: 2 }, dictionaries), '2 days');
+  assert.equal(translate('ro', 'days', { count: 1 }, dictionaries), 'o zi');
+  assert.equal(translate('ro', 'days', { count: 0 }, dictionaries), '0 zile');
+  assert.equal(translate('ro', 'days', { count: 19 }, dictionaries), '19 zile');
+  assert.equal(translate('ro', 'days', { count: 20 }, dictionaries), '20 de zile');
+  assert.equal(translate('ro', 'days', { count: 101 }, dictionaries), '101 zile');
+});
+
+test('translate: a counted string with no count still says something', () => {
+  const dictionaries = { en: { days: { one: '{count} day', other: '{count} days' } }, ro: {} };
+  assert.equal(translate('en', 'days', {}, dictionaries), '{count} days');
 });
 
 test('paramsOf: the names between braces, each once, in order', () => {

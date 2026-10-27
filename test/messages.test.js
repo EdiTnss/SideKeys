@@ -7,7 +7,8 @@ import assert from 'node:assert/strict';
 import { nameToMidi } from '../src/theory/notes.js';
 import { parseChord } from '../src/theory/chords.js';
 import { analyzeVoicing, inversionOf } from '../src/theory/analyzer.js';
-import { describeMessage, describeVoicing, describeInversion } from '../src/i18n/messages.js';
+import { describeMessage, describeVoicing, describeInversion, describeProblem } from '../src/i18n/messages.js';
+import { emptyStats, recordAttempt, weakSpots } from '../src/ui/stats.js';
 
 const analyze = (symbol, notes) =>
   analyzeVoicing(notes ? notes.split(' ').map(nameToMidi) : [], parseChord(symbol));
@@ -104,4 +105,18 @@ test('inversions keep their English names in both languages', () => {
   }
   assert.equal(describeInversion('ro', null), null);
   assert.equal(describeInversion('en', inversionOf(analyze('C/E', 'E3 G3 C4'))), '1st inversion');
+});
+
+test('a weak spot reads as stats.js writes it in English, and in Romanian from its parts', () => {
+  let stats = emptyStats();
+  for (const [symbol, notes] of [['Cmaj7', 'C4 E4 G4'], ['Cmaj7', 'C4 E4 G4 B4 Db5'], ['Cmaj7', 'C4 E4 F4 B4']]) {
+    const chord = parseChord(symbol);
+    stats = recordAttempt(stats, { key: symbol.slice(1), chord, analysis: analyze(symbol, notes) });
+  }
+  const spots = weakSpots(stats, { limit: 10 });
+  assert.deepEqual([...new Set(spots.map(spot => spot.kind))].sort(), ['avoid', 'missing', 'wrong']);
+  for (const spot of spots) assert.equal(describeProblem('en', spot), spot.problem);
+  assert.equal(describeProblem('ro', { kind: 'missing', degree: '7' }), 'lipsește 7');
+  assert.equal(describeProblem('ro', { kind: 'wrong', degree: null }), 'note greșite');
+  assert.equal(describeProblem('ro', { kind: 'avoid', degree: null }), 'avoid notes');
 });

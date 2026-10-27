@@ -37,10 +37,11 @@ test('weak spots: the most frequent problems first, limited', () => {
   stats = attempt(stats, 'Cmaj7', 'C4 E4 G4');                                   // missing 7
   const spots = weakSpots(stats, { limit: 3 });
   assert.equal(spots.length, 3);
-  assert.deepEqual(spots[0], { key: '7alt', problem: 'b13 missing', count: 3 });
-  assert.deepEqual(spots[1], { key: '7alt', problem: 'wrong notes', count: 3 });
+  // `kind` and `degree` are the problem in parts, so the game can say it in Romanian (2026-10-27).
+  assert.deepEqual(spots[0], { key: '7alt', problem: 'b13 missing', count: 3, kind: 'missing', degree: 'b13' });
+  assert.deepEqual(spots[1], { key: '7alt', problem: 'wrong notes', count: 3, kind: 'wrong', degree: null });
   assert.equal(weakSpots(emptyStats()).length, 0);
-  assert.ok(weakSpots(stats, { limit: 10 }).some(s => s.key === 'maj7' && s.problem === 'avoid notes' && s.count === 1));
+  assert.ok(weakSpots(stats, { limit: 10 }).some(s => s.key === 'maj7' && s.problem === 'avoid notes' && s.count === 1 && s.kind === 'avoid'));
 });
 
 test('summaryLine reads naturally', () => {
