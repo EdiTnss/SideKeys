@@ -7,6 +7,7 @@
   import type { Attempt, Finished, LevelPlan, Unit } from './game/level.svelte';
   import type { PracticePlan } from './game/practice.svelte';
   import { createInstrument } from './lib/instrument.svelte';
+  import { locale, setLocale, t } from './lib/locale.svelte';
   import { isClean } from './bridge/theory';
   import {
     loadProgress, saveProgress, recordRun, recordPractice, dayStamp,
@@ -166,8 +167,17 @@
     {#if instrument.hardware.length}
       <span class="dot" aria-hidden="true"></span>{instrument.hardware.join(', ')}
     {:else}
-      <button type="button" class="connect" onclick={() => instrument.connect()}>Connect a MIDI keyboard</button>
+      <button type="button" class="connect" onclick={() => instrument.connect()}>{t('header.connect')}</button>
     {/if}
+  </span>
+  <!-- Each language is named in itself, so someone who cannot read the other one still finds
+       their own. The choice is remembered; the first visit follows the browser. -->
+  <span class="language">
+    <button type="button" lang="en" aria-label="English" aria-pressed={locale() === 'en'}
+            onclick={() => setLocale('en')}>EN</button>
+    <span aria-hidden="true">|</span>
+    <button type="button" lang="ro" aria-label="Română" aria-pressed={locale() === 'ro'}
+            onclick={() => setLocale('ro')}>RO</button>
   </span>
 </header>
 
@@ -229,4 +239,11 @@
     background: none; color: var(--ink); font: inherit; font-size: 13px; cursor: pointer;
   }
   .connect:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .language { display: inline-flex; align-items: center; gap: 2px; font-size: 13px; color: var(--ink-muted); }
+  .language button {
+    padding: 4px 6px; border: none; border-radius: 6px; background: none; cursor: pointer;
+    font: inherit; font-weight: 500; color: var(--ink-muted);
+  }
+  .language button[aria-pressed='true'] { color: var(--ink); font-weight: 600; }
+  .language button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>
