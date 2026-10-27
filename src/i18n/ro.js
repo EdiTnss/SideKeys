@@ -172,8 +172,6 @@ export default {
   'today.theory': 'Teorie',
   'today.theoryLine': 'Ce sunt un shell, un voicing rootless, un drop 2 și un quartal — cu exemple pe care le poți asculta.',
   'today.openLessons': 'Deschide lecțiile',
-  'today.creditPiano': 'Pian:',
-  'today.creditBy': 'de Alexander Holm, păstrat cu un singur strat de velocitate —',
 
   'path.title': 'Drumul',
   'path.sub': 'Cântatul din acorduri, de la triade până la jazz. Toate unitățile sunt deschise: începe de unde ești.',
@@ -269,4 +267,6 @@ export default {
   'theory.hearChain': 'Ascultă-le pe toate trei la rând',
   'theory.listens': 'Ce urmărește jocul',
   'theory.play': 'Joacă-l',
+  'theory.creditPiano': 'Pian:',
+  'theory.creditBy': 'de Alexander Holm, un singur strat de velocitate ·',
 };

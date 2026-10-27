@@ -177,8 +177,6 @@ export default {
   'today.theory': 'Theory',
   'today.theoryLine': 'What a shell, a rootless voicing, a drop 2 and a quartal are — with examples you can hear.',
   'today.openLessons': 'Open the lessons',
-  'today.creditPiano': 'Piano:',
-  'today.creditBy': 'by Alexander Holm, one velocity layer kept —',
 
   'path.title': 'The Path',
   'path.sub': 'Playing from chords, triads through jazz. Every unit is open: start where you are.',
@@ -271,4 +269,6 @@ export default {
   'theory.hearChain': 'Hear the three in a row',
   'theory.listens': 'What the game listens for',
   'theory.play': 'Play it',
+  'theory.creditPiano': 'Piano:',
+  'theory.creditBy': 'by Alexander Holm, one velocity layer kept ·',
 };

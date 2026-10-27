@@ -195,7 +195,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 - **Harness-ul**: port MIDI virtual, banda sesiunii, reluare în Node și în CI pe trei sesiuni
   înregistrate. Jocul, Training și reluarea folosesc **aceeași** `snapshotTarget`, deci nu pot
   ajunge să spună lucruri diferite. Toată ziua de azi a lăsat reluarea neschimbată: 110 din 110.
-- **Sunetul e un pian adevărat** (Salamander Grand, CC BY 3.0, cu creditul pe ecranul Azi).
+- **Sunetul e un pian adevărat** (Salamander Grand, CC BY 3.0, cu creditul jos, pe lista din Theory; licența cere atribuirea pe site).
 - **Lansarea**: `start.cmd` (iconița de pe desktop) deschide jocul **publicat** într-o fereastră
   proprie, fără server; `dev.cmd` pornește serverul de dezvoltare, `dev.cmd lab` adaugă bancul
   și proxy-ul.

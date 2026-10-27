@@ -151,14 +151,6 @@
       </section>
     </div>
   </div>
-
-  <p class="credit">
-    {t('today.creditPiano')}
-    <a href="https://archive.org/details/SalamanderGrandPianoV3" target="_blank" rel="noreferrer">
-      Salamander Grand Piano</a>
-    {t('today.creditBy')}
-    <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">CC BY 3.0</a>
-  </p>
 </section>
 
 <style>
@@ -190,9 +182,6 @@
     background: #16191c; white-space: pre-wrap; font-family: ui-monospace, monospace;
     font-size: 13px; user-select: all;
   }
-  .credit { margin: 28px 0 0; font-size: 12px; color: var(--ink-muted); }
-  .credit a { color: inherit; }
-  .credit a:hover { color: var(--ink); }
   .streak { display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px; }
   .big { margin: 0; font-family: ui-monospace, monospace; font-size: 38px; font-weight: 600; line-height: 1; }
   .streak .line { margin: 0; }

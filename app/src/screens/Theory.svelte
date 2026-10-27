@@ -193,10 +193,22 @@
         </li>
       {/each}
     </ol>
+
+    <!-- The piano's licence (CC BY 3.0) asks for its author where it is heard. Here, small, rather
+         than under the day's three things (Edi, 2026-10-27). -->
+    <p class="credit">
+      {t('theory.creditPiano')}
+      <a href="https://archive.org/details/SalamanderGrandPianoV3" target="_blank" rel="noreferrer">Salamander Grand Piano</a>
+      {t('theory.creditBy')}
+      <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">CC BY 3.0</a>
+    </p>
   {/if}
 </section>
 
 <style>
+  .credit { margin: 40px 0 0; font-size: 10px; color: #4a5157; }
+  .credit a { color: inherit; }
+  .credit a:hover { color: var(--ink-muted); }
   .theory { max-width: 860px; margin: 0 auto; padding: 32px 32px 56px; }
   .head { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; margin-bottom: 22px; }
   .head div { flex: 999 1 320px; }
