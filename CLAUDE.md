@@ -47,7 +47,7 @@ Ambele scopuri sunt egale. Dacă o decizie tehnică ajută portofoliul dar stric
 - **Deploy**: GitHub Pages (static, HTTPS → Web MIDI merge). Proxy-ul AI din Faza 3a e separat, pe Cloudflare Workers.
 - **Cheia Anthropic nu ajunge niciodată în frontend sau în repo.** Doar în variabilele de mediu ale Worker-ului (local în `worker/.dev.vars`, ignorat de git).
 - Excepțiile de la „zero dependențe" sunt trei, toate foldere izolate cu `package.json` propriu, din care `src/` nu importă nimic: `worker/` (cu `wrangler` ca dev dependency, pentru rulare locală și deploy) și `mic-proto/` (cu `@spotify/basic-pitch`, care aduce TensorFlow.js — aprobat de Edi pe 2026-09-24, pentru prototipul de microfon). A treia e **`app/`**, shell-ul nou (Vite + TypeScript + Svelte 5), aprobat de Edi pe 2026-10-11 odată cu direcția din `DIRECTION.md`. Aplicația din `src/` nu importă nimic din npm și nimic din `app/`. O a patra excepție se cere explicit.
-- **Limbă**: cod, comentarii, commit-uri, README, UI — engleză (recrutorii citesc repo-ul). Acest fișier, `docs/` și discuțiile — română.
+- **Limbă**: UI-ul jocului e în engleză și română — engleza implicită, româna detectată din browser și aleasă din antet ([docs/spec-i18n.md](docs/spec-i18n.md)). Jargonul de jazz, notele cu litere, numele stelelor și textul de share rămân în engleză; Laboratorul e doar în engleză. Cod, comentarii, commit-uri, README — engleză (recrutorii citesc repo-ul). Acest fișier, `docs/` și discuțiile — română.
 - Commit-uri mici, mesaje în stil `feat:`, `fix:`, `test:`, `docs:`.
 - Audio: MIDI out spre Genos e sunetul principal. Web Audio (sintetizator simplu) doar ca fallback pentru demo mode.
 
@@ -73,6 +73,8 @@ app/                       shell-ul (Vite + TS + Svelte 5), cu package.json prop
   src/screens/Today.svelte ecranul de start: streak, minute, „continuă drumul", Review, ușa spre Training
   src/lib/Keyboard.svelte  învelește src/ui/keyboard.js; Svelte decide când se colorează
   src/lib/clipboard.ts     copiază un text și spune dacă a reușit (grila zilei, în două ecrane)
+  src/lib/locale.svelte.ts limba aleasă (EN | RO), ținută minte; t() și numele traduse pentru ecrane
+  src/lib/Glossed.svelte   în română, subliniază termenii din glosar și îi explică la clic
   src/app.css              tokenii de brand și culorile de teorie (aceleași șapte ca styles.css)
   public/piano/manifest.json  ce înregistrări de pian există, sau null (fără 404, ca demo/manifest.json)
   public/manifest.webmanifest  manifestul PWA: nume, culori, iconuri, start_url relativ (merge pe subpath)
@@ -105,7 +107,10 @@ src/
   game/progress.js         stelele, zilele, streak-ul, coada de recapitulare, grila zilei și ultimul nivel jucat; testat
   game/challenge.js        challenge-ul zilei: seed din dată, rampa de 10, grila și textul partajat; testat
   game/training.js         Training: ce se poate alege, ce se poate cânta în forma cerută, planul sesiunii; testat
-  game/lessons.js          teoria: o lecție pe unitate (text DRAFT, de corectat de Edi) și exemplele ei; testat contra analizorului
+  game/lessons.js          teoria: o lecție pe unitate și exemplele ei; testat contra analizorului
+  game/lessons.ro.js       cuvintele paginilor de teorie în română; exemplele rămân ale lui lessons.js
+  game/glossary.js         glosarul (română, textul lui Edi), cu exemple trecute prin analizor
+  i18n/                    limbile jocului: dicționarele en/ro, traducerea, mesajele și numele compuse din chei, termenii
   theory/voicings.js       sugestii de voicing din șabloane, în registru, ordonate după voice leading (Faza 2; sămânța lui realize.js)
   audio/context.js         AudioContext-ul paginii și conversiile de ceas (pure, testate)
   audio/metronome.js       metronom Web Audio cu lookahead, count-in, onBeat, positionOf(performance.now)
@@ -162,19 +167,23 @@ Regula de dependență: `app/` importă din `src/`, niciodată invers. `theory/`
 
 ## Starea curentă
 
-La 2026-10-13. **Cum s-a ajuns aici stă în [docs/JOURNAL.md](docs/JOURNAL.md)**, nu aici: secțiunea
+La 2026-10-27. **Cum s-a ajuns aici stă în [docs/JOURNAL.md](docs/JOURNAL.md)**, nu aici: secțiunea
 asta se citește la fiecare sesiune, deci ține doar ce e adevărat acum, ce e nedecis și ce așteaptă
 pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a produs.
 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **356 de teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **408 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5): Azi, Drumul, Jocul, Rezultatul, plus
   **Training** și **Theory**, peste opt unități (Triade → ii–V–I), **toate deschise**. Stele
   Right/Clean/Smooth, streak, Review zilnic pe calități, challenge zilnic partajabil, PWA care
   merge fără rețea. **Fără XP și fără „boss"** (scoase pe 2026-10-12). Regulile:
   [docs/spec-game.md](docs/spec-game.md).
+- **Jocul vorbește română** (2026-10-27): ecranele, mesajele analizorului, numele unităților și
+  nivelelor, paginile de teorie, plus un **Glosar** (pagină în Teorie și termeni subliniați în joc).
+  Engleza rămâne implicită; comutatorul `EN | RO` e în antet. Regulile:
+  [docs/spec-i18n.md](docs/spec-i18n.md).
 - **Acordul următor e mereu pe ecran**, lângă cel cerut, inclusiv în măsura de numărătoare: altfel
   o trecere în timp nu putea cădea pe timpul 1.
 - **Clapa se conectează o dată**, din antet, și rămâne conectată între nivele; la vizitele
@@ -209,6 +218,9 @@ a mai vizitat site-ul poate arăta o dată versiunea veche, până își înnoie
 **La fel și ce s-a făcut pe 2026-10-13** (primul răspuns care rămâne, cele șase chei, unealta de
 măsurat): împins, cu testele și publicarea trecute pe GitHub.
 
+**Româna (2026-10-27) e comisă local, neîmpinsă și nepublicată**: Edi a cerut să nu se publice
+nimic până nu e gata toată traducerea și nu cere el explicit.
+
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
@@ -225,6 +237,7 @@ măsurat): împins, cu testele și publicarea trecute pe GitHub.
   dominantul quartal, primul răspuns care rămâne într-un timed, cele șase chei noi.
 - **Confirmat de Edi pe Genos în seara de 2026-10-12** („am verificat pe Genos, este totul în
   regulă"): conexiunea care rămâne între nivele, acordul următor în timed, Training.
+- **Româna n-a fost văzută pe Genos**: e probată doar în browser, cu clapa de ecran.
 - **Neauzit de nimeni altcineva decât Edi**: Claude a verificat sunetul (metronom, exemplele din
   Theory) numai prin absența erorilor, nu cu urechea.
 
@@ -239,6 +252,8 @@ măsurat): împins, cu testele și publicarea trecute pe GitHub.
 
 ### Ce așteaptă pe Edi
 
+- **Să spună când se publică româna** (push + Pages): e gata în toate cele șase etape și în
+  documentație, dar nu pleacă fără cererea lui explicită.
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
 - **Formularul de email** și **clipul** pentru README — singurele care deschid poarta P1.
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick".
@@ -262,6 +277,10 @@ măsurat): împins, cu testele și publicarea trecute pe GitHub.
 - **Aranjamentul din Laborator primește acum și dominantul quartal** de la `suggestVoicings`;
   testele lui `realize.js` trec, dar nimeni nu a ascultat un aranjament de atunci.
 - **Sesiunile din `harness/sessions/`** poartă `"app": "voicing-lab"`; nu se rescriu.
+- **Zecimalele calculate ies cu punct și în română** („1.25 semitonuri pe voce”), deși textul
+  scris le are cu virgulă: `toFixed` în `Game.svelte`, `Result.svelte`, `Theory.svelte`.
+- **Creditul pianului stă jos pe lista din Teorie**, mic: licența CC BY 3.0 cere atribuirea pe
+  site, deci nu se scoate de tot (README-ul nu ajunge la cine aude pianul).
 - **Necommis**: `Voicing Lab ca produs.pdf`, care nu intră în repo.
 
 ## Următorul pas
@@ -277,6 +296,7 @@ Cât se așteaptă răspunsul, ce se poate face fără el, în ordinea asta:
    Cb și Fb. Test întâi, apoi `spellPlain` în locul lui `spellDegree`. La `explain.js`, de
    verificat întâi dacă schimbă ce primește modelul.
 2. **Un om cronometrat** la prima vizită: pornirea la rece e măsurată doar pe partea mașinii.
+3. **Zecimalele în română**: cifrele calculate cu virgulă (`1,25`), ca în textul scris.
 
 Idei care **nu** sunt lucru aprobat și nu se încep fără Edi: exemplele din Theory în alte
 tonalități, testul de plasare, quartal pe m6, dominanta pe treapta de sus a challenge-ului.
@@ -292,6 +312,7 @@ Regula „niciun feature care nu e pe lista fazei curente" se aplică.
 | [docs/spec-analyzer.md](docs/spec-analyzer.md) | parserul de chord symbol, tabelul calităților, clasificarea voicing-ului, voice leading | `theory/chords.js`, `analyzer.js`, `voiceLeading.js`, `voicings.js` |
 | [docs/spec-reharm.md](docs/spec-reharm.md) | piesa, recorder-ul, analiza, candidații, pipeline-ul AI și Worker-ul, scorurile, validarea, realizarea, partenerul de studiu, evaluarea | `piece.js`, `recorder.js`, `analysis.js`, `candidates.js`, `scoring.js`, `realize.js`, `player.js`, `ai/`, `worker/`, `eval/` |
 | [docs/spec-game.md](docs/spec-game.md) | stelele (Right · Clean · Smooth) cu pragurile măsurate, ce e deschis pe drum, antrenamentul zilnic și challenge-ul zilei | logica de scor a jocului, `src/game/`, orice progresie nouă în bibliotecă |
+| [docs/spec-i18n.md](docs/spec-i18n.md) | cele două limbi: ce se traduce și ce nu, unde stau cheile, regula „cheie nouă în ambele limbi”, pluralul, glosarul și cum se adaugă un termen | orice text nou pe ecranele jocului, o pagină de teorie, un termen de glosar |
 | [docs/spec-mic.md](docs/spec-mic.md) | prototipul de microfon: ce s-a măsurat, cum, cifrele și verdictul | `mic-proto/`; dacă se reia vreodată modul microfon |
 | [docs/PHASES.md](docs/PHASES.md) | planul inițial pe faze 0–5, cu DoD-urile și vechiul scope guard | **istoric**: toate fazele de acolo sunt bifate. Se citește doar dacă se caută un DoD vechi |
 | [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi (ultimul: `2026-10-13-1047.md`) | când o sesiune se închide cu mult context de predat |

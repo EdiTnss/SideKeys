@@ -414,3 +414,29 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   dominantul quartal și nu l-a ascultat nimeni; niciun om cronometrat la prima vizită.
   **Sesiunea întreagă**: 311 → 356 de teste, 46 de fișiere. **Următorul pas**: furnizorul
   formularului de email. Raportul de predare: `docs/session-log/2026-10-13-1047.md`.
+- **2026-10-27 (jocul în română)** — Lucru aprobat de Edi azi, în șapte etape, fiecare arătată și
+  aprobată înainte de commit. **(1) Infrastructura**: `src/i18n/` (detectarea limbii doar după
+  prima limbă a browserului, `translate` cu parametri și cădere pe engleză), comutatorul `EN | RO`
+  în antet, alegerea în `sidekeys.locale`. **(2) Mesajele analizorului**: fiecare mesaj are
+  `params` lângă `text`, iar propoziția se compune din chei; testul cere ca în engleză compunerea
+  să dea literă cu literă `text`-ul, pe 22 de voicinguri care ating toate codurile și toate
+  tipurile. Reluarea harness-ului a rămas 110 din 110 la fiecare etapă. **(3) Numele din motor**
+  după id; motorul a primit câmpuri în plus (`id` pe grupele de calități, care nu aveau unul, cum
+  presupunea planul; `number` pe challenge; `shape`/`progressionId`/`key` pe planul de Training).
+  **(4) Ecranele**, cu plural românesc prin `Intl.PluralRules` și `kind`/`degree` pe `weakSpots`.
+  O singură schimbare și în engleză: „Play it as drop-2" scria id-ul formei, acum scrie numele
+  din verdict. **Decizii Edi**: nota falsă de sub Drum („inversions, shell and rootless units are
+  missing on purpose", rămasă din 2026-10-11) **ștearsă**; creditul pianului **mutat** de pe Azi,
+  jos pe lista din Teorie, mult mai mic — ștergerea de tot, cerută întâi, ar fi încălcat CC BY
+  3.0, iar Edi a ales mutarea după ce i-am spus. **(5) Paginile de teorie** în `lessons.ro.js`,
+  doar cuvintele, peste exemplele englezești; testul cere aceeași formă, iar pagina de răsturnări
+  citează exact verdictul românesc. Textul l-a citit Edi înainte de commit. **(6) Glosarul**, textul
+  lui Edi cuvânt cu cuvânt, cu o corectură aprobată: aprobat scria pragul Smooth „1,25" peste tot,
+  motorul cere 1,25 doar pe ii–V–I și 1,5 în rest; acum le spune pe amândouă. Fiecare exemplu e
+  trecut prin analizor, pragurile și limitele de registru sunt citite din motor. Pagina „Glosar"
+  există doar în română; în joc, termenii sunt subliniați și se explică la clic, dar nu în
+  interiorul butoanelor (nivelele de pe Drum, Training). **(7) Documentația**: `docs/spec-i18n.md`
+  nou, regula „Limbă" din `CLAUDE.md` rescrisă. **356 → 408 teste.** **Rămas deschis**: zecimalele
+  calculate ies cu punct în română; „Rootless" singur nu e legat de glosar; nimic din toate astea
+  n-a fost văzut pe Genos. **Nimic împins sau publicat**, la cererea lui Edi. **Următorul pas**:
+  Edi spune când se publică; formularul de email rămâne ultimul punct din P1.
