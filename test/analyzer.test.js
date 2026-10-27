@@ -212,3 +212,50 @@ test('a missing root is called rootless only where leaving it out is a choice', 
   assert.equal(rootless(analyze('Cmaj7', 'E3 G3 B3 D4')), true, 'a rootless voicing is a goal');
   assert.equal(rootless(analyze('C', 'E4 G4')), false, 'on a triad it is a missing note, and said once');
 });
+
+// ---- The parts of each message (2026-10-27, so the shell can say it in Romanian) ----------
+// `text` stays exactly as it was; `params` carries the same facts, spelled the same way, for a
+// sentence built in another language.
+
+const paramsOf = (a, code) => a.messages.filter(m => m.code === code).map(m => m.params);
+
+test('params: a missing, avoid or caution note gives its name and its degree', () => {
+  assert.deepEqual(paramsOf(analyze('Cmaj7', 'C4 E4 G4'), 'missing'), [{ note: 'B', degree: '7' }]);
+  assert.deepEqual(paramsOf(analyze('Cmaj7', 'C4 E4 F4 B4'), 'avoid'), [{ note: 'F', degree: '11' }]);
+  assert.deepEqual(paramsOf(analyze('Dm7', 'D3 F3 C4 B4'), 'caution'), [{ note: 'B', degree: '13' }]);
+});
+
+test('params: the bass asked for and the one played, null when nothing was', () => {
+  assert.deepEqual(paramsOf(analyze('C/E', 'C3 E3 G3'), 'bass'), [{ wanted: 'E', played: 'C' }]);
+  assert.deepEqual(paramsOf(analyzeVoicing([], parseChord('C/E')), 'bass'), [{ wanted: 'E', played: null }]);
+});
+
+test('params: rootless names the root, a wrong note names itself and the chord', () => {
+  assert.deepEqual(paramsOf(analyze('Cmaj7', 'E3 G3 B3 D4'), 'rootless'), [{ root: 'C' }]);
+  assert.deepEqual(paramsOf(analyze('Cmaj7', 'C4 E4 G4 B4 Db5'), 'wrong'), [{ note: 'Db', chord: 'Cmaj7' }]);
+});
+
+test('params: muddy gives both notes with their octaves, and the interval in semitones', () => {
+  assert.deepEqual(paramsOf(analyze('Cmaj7', 'C2 E2'), 'muddy'), [{ lower: 'C2', upper: 'E2', semitones: 4 }]);
+  assert.deepEqual(paramsOf(analyze('F#7', 'F#1 G#1'), 'muddy'), [{ lower: 'F#1', upper: 'G#1', semitones: 2 }]);
+});
+
+test('params: a doubling names the note', () => {
+  assert.deepEqual(paramsOf(analyze('Cmaj7', 'E3 B3 E4'), 'doubling'), [{ note: 'E' }]);
+});
+
+test('params: the voicing type is the analysis\'s own type, detail and bass', () => {
+  assert.deepEqual(paramsOf(analyze('Cmaj7', 'G3 C4 E4 B4'), 'type'), [{ type: 'drop-2', detail: null, bass: null }]);
+  assert.deepEqual(paramsOf(analyze('G7', 'F3 B3 A4 C#5 E5'), 'type'), [{ type: 'upper-structure', detail: 'A', bass: null }]);
+  assert.deepEqual(paramsOf(analyze('Cmaj7', 'C2 E4 G4 B4 D5'), 'type'), [{ type: 'rootless-A', detail: null, bass: 'root' }]);
+});
+
+test('params: every message has them, and the text is unchanged', () => {
+  const a = analyze('C/E', 'C2 E2 F2 Db3 E3');
+  assert.ok(a.messages.length >= 5);
+  for (const message of a.messages) {
+    assert.equal(typeof message.text, 'string', message.code);
+    assert.equal(typeof message.params, 'object', message.code);
+  }
+  assert.equal(a.messages.find(m => m.code === 'bass').text, 'Bass should be E, not C');
+});
