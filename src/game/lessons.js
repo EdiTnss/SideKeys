@@ -11,6 +11,7 @@
 // They are in C, or in the keys of a ii–V–I in C, so that one page can be compared with the next.
 
 import { nameToMidi } from '../theory/notes.js';
+import LESSONS_RO from './lessons.ro.js';
 
 /**
  * @typedef {{
@@ -388,6 +389,30 @@ const TEXTURE_LESSONS = { shell: 'shell', 'rootless-A': 'rootless', 'rootless-B'
 export function lessonForTexture(texture) {
   const first = [].concat(texture ?? [])[0];
   return (first && lessonFor(TEXTURE_LESSONS[first] ?? '')) || null;
+}
+
+/**
+ * The page in another language: its words from that language's file, everything else — the
+ * examples, the chain, the level — from the English page, so a translation can change what the
+ * page says but never what it plays. Without a translation the English page comes back as it is.
+ *
+ * @param {string} locale
+ * @param {Lesson} lesson
+ * @returns {Lesson}
+ */
+export function lessonIn(locale, lesson) {
+  const words = locale === 'ro' ? LESSONS_RO[lesson.unit] : null;
+  if (!words) return lesson;
+  const captioned = (examples, captions) => examples.map((example, i) => ({ ...example, caption: captions[i] }));
+  return {
+    ...lesson,
+    title: words.title,
+    lead: words.lead,
+    sections: words.sections,
+    examples: captioned(lesson.examples, words.captions),
+    ...(lesson.chain ? { chain: captioned(lesson.chain, words.chain) } : {}),
+    listens: words.listens,
+  };
 }
 
 /**

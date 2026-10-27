@@ -1,11 +1,11 @@
 <script lang="ts">
   import Keyboard from '../lib/Keyboard.svelte';
   import type { Instrument } from '../lib/instrument.svelte';
-  import { LESSONS, lessonFor, exampleNotes } from '../bridge/game';
+  import { LESSONS, lessonIn, exampleNotes } from '../bridge/game';
   import {
     parseChord, analyzeVoicing, inversionOf, compareVoicings, roleClasses, spellPlain,
   } from '../bridge/theory';
-  import { sayInversion, sayVoicing, t } from '../lib/locale.svelte';
+  import { locale, sayInversion, sayVoicing, t } from '../lib/locale.svelte';
 
   type Example = { symbol: string; notes: string; type: string; inversion?: string; caption: string };
   type Lesson = {
@@ -29,9 +29,10 @@
     onback: () => void;
   } = $props();
 
-  const lessons = LESSONS as Lesson[];
-  const lesson = $derived(unit ? (lessonFor(unit) as Lesson | null) : null);
-  const at = $derived(lesson ? lessons.indexOf(lesson) : -1);
+  // The pages in the language in use: its words, the English page's examples.
+  const lessons = $derived((LESSONS as Lesson[]).map(entry => lessonIn(locale(), entry) as Lesson));
+  const at = $derived(unit ? lessons.findIndex(entry => entry.unit === unit) : -1);
+  const lesson = $derived(at === -1 ? null : lessons[at]);
 
   /**
    * An example as the page shows it. Nothing here is written by hand: the keys are coloured by
