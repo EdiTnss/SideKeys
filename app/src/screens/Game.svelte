@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
   import Keyboard from '../lib/Keyboard.svelte';
+  import Glossed from '../lib/Glossed.svelte';
   import Result from './Result.svelte';
   import type { Instrument } from '../lib/instrument.svelte';
   import { createLevel, type Attempt, type Finished, type LevelPlan, type Run } from '../game/level.svelte';
@@ -219,7 +220,7 @@
       {/if}
       <span class="level">
         <button type="button" class="exit" onclick={leave}>{t('common.back')}</button>
-        {sayLevel(level.plan)}
+        <Glossed text={sayLevel(level.plan)} />
         {#if level.timed}<span class="timed">· {practice ? '' : t('game.timed')}{level.plan.tempo} bpm</span>{/if}
       </span>
     </div>
@@ -233,7 +234,7 @@
       <p class="ask">{level.ask?.symbol}</p>
       {#if level.next}
         <p class="next">
-          <span class="then">{t('game.then')}</span>{level.next.symbol}{#if nextShape}<span class="as">{t('game.as', { shape: nextShape })}</span>{/if}
+          <span class="then">{t('game.then')}</span>{level.next.symbol}{#if nextShape}<span class="as"><Glossed text={t('game.as', { shape: nextShape })} /></span>{/if}
         </p>
       {/if}
     </div>
@@ -249,7 +250,7 @@
       {:else if level.timed}
         {t('game.barBeatPlay', { bar: level.at?.bar ?? 1, beat: level.at?.beat ?? 1 })}
       {:else if level.ask?.texture}
-        {t('game.playAs', { shape: shapeOf(level.ask.texture) })}
+        <Glossed text={t('game.playAs', { shape: shapeOf(level.ask.texture) })} />
         {#if askPage}<button type="button" class="what" onclick={() => ontheory(askPage)}>{t('game.whatIsThat')}</button>{/if}
       {:else}
         {t('game.playAny')}
@@ -262,18 +263,18 @@
       {:else if star}
         <p class="star {star.toLowerCase()}">
           <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
-          {star}{shape ? ` — ${shape}` : ''}
+          {star}{#if shape} — <Glossed text={shape} />{/if}
         </p>
       {:else if shapeMiss}
         <p class="star none">
           <span class="judged">{judged}</span>
-          {t('game.wrongShape', { shape: shapeMiss })}
+          <Glossed text={t('game.wrongShape', { shape: shapeMiss })} />
           {#if missPage}<button type="button" class="what" onclick={() => ontheory(missPage)}>{t('game.whatAsked')}</button>{/if}
         </p>
       {:else}
         <p class="star none">
           <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
-          {sayMessage(warnings[0])}
+          <Glossed text={sayMessage(warnings[0])} />
         </p>
       {/if}
 
@@ -299,7 +300,7 @@
         <ul class="messages">
           <!-- Keyed by what the message says, not how: the text changes with the language. -->
           {#each warnings as message (`${message.code}:${JSON.stringify(message.params)}`)}
-            <li>{sayMessage(message)}</li>
+            <li><Glossed text={sayMessage(message)} /></li>
           {/each}
         </ul>
       {/if}

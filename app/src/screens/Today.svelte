@@ -2,6 +2,7 @@
   import type { LevelPlan, Unit } from '../game/level.svelte';
   import { SQUARES } from '../bridge/game';
   import { copyText } from '../lib/clipboard';
+  import Glossed from '../lib/Glossed.svelte';
   import { sayLevel, sayUnit, t } from '../lib/locale.svelte';
 
   type Review = { quality: string; misses: number; hits: number };
@@ -52,7 +53,7 @@
       {#if next}
         <section class="card hero">
           <p class="kicker">{t('today.continue')}</p>
-          <h2>{sayUnit(next.unit)} — {sayLevel(next.level)}</h2>
+          <h2><Glossed text={`${sayUnit(next.unit)} — ${sayLevel(next.level)}`} /></h2>
           <p class="line">
             {#if next.stars === 0}{t('today.notPlayed')}{:else}{t('today.starsSoFar', { count: next.stars })}{/if}
             {t('today.tempo', { tempo: next.level.tempo })}

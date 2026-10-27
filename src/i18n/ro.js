@@ -267,6 +267,8 @@ export default {
   'theory.hearChain': 'Ascultă-le pe toate trei la rând',
   'theory.listens': 'Ce urmărește jocul',
   'theory.play': 'Joacă-l',
+  'theory.glossary': 'Glosar',
+  'theory.glossaryLead': 'Cuvintele de jazz pe care le folosește jocul, explicate, cu exemple pe clapă.',
   'theory.creditPiano': 'Pian:',
   'theory.creditBy': 'de Alexander Holm, un singur strat de velocitate ·',
 };

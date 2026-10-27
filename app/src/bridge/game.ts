@@ -27,3 +27,6 @@ export {
 
 // The theory pages: one lesson per unit, with examples the analyzer itself has graded.
 export { LESSONS, lessonFor, lessonForTexture, lessonIn, exampleNotes } from '../../../src/game/lessons.js';
+
+// The glossary: the jazz words, explained in Romanian, with examples the analyzer has graded.
+export { GLOSSARY, GLOSSARY_GROUPS, glossaryTerm } from '../../../src/game/glossary.js';

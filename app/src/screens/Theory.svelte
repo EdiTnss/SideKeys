@@ -1,20 +1,24 @@
 <script lang="ts">
   import Keyboard from '../lib/Keyboard.svelte';
   import type { Instrument } from '../lib/instrument.svelte';
-  import { LESSONS, lessonIn, exampleNotes } from '../bridge/game';
+  import { LESSONS, lessonIn, exampleNotes, GLOSSARY, GLOSSARY_GROUPS } from '../bridge/game';
   import {
     parseChord, analyzeVoicing, inversionOf, compareVoicings, roleClasses, spellPlain,
   } from '../bridge/theory';
   import { locale, sayInversion, sayVoicing, t } from '../lib/locale.svelte';
 
-  type Example = { symbol: string; notes: string; type: string; inversion?: string; caption: string };
+  type Example = { symbol: string; notes: string; type?: string; inversion?: string; caption: string };
+  type Term = { id: string; group: string; name: string; short: string; long?: string; examples?: Example[] };
+
+  /** The id the glossary is opened under, beside the units' own. */
+  const GLOSSARY_PAGE = 'glossary';
   type Lesson = {
     unit: string;
     title: string;
     lead: string;
     sections: Array<{ heading: string; text: string[] }>;
-    examples: Example[];
-    chain?: Example[];
+    examples: Array<Example & { type: string }>;
+    chain?: Array<Example & { type: string }>;
     listens: string[];
     level: string;
   };
@@ -33,6 +37,10 @@
   const lessons = $derived((LESSONS as Lesson[]).map(entry => lessonIn(locale(), entry) as Lesson));
   const at = $derived(unit ? lessons.findIndex(entry => entry.unit === unit) : -1);
   const lesson = $derived(at === -1 ? null : lessons[at]);
+  // The glossary is Romanian, so it is there only in Romanian (Edi, 2026-10-27): in English
+  // nothing new appears.
+  const hasGlossary = $derived(locale() === 'ro');
+  const glossaryOpen = $derived(unit === GLOSSARY_PAGE && hasGlossary);
 
   /**
    * An example as the page shows it. Nothing here is written by hand: the keys are coloured by
@@ -52,6 +60,14 @@
   }
 
   const examples = $derived(lesson ? lesson.examples.map(shown) : []);
+  // The glossary by group, each term with its examples drawn the way a lesson draws its own.
+  const glossary = $derived(glossaryOpen
+    ? GLOSSARY_GROUPS.map(group => ({
+        ...group,
+        terms: (GLOSSARY as Term[]).filter(term => term.group === group.id)
+          .map(term => ({ ...term, shown: (term.examples ?? []).map(shown) })),
+      }))
+    : []);
   const chain = $derived(lesson?.chain ? lesson.chain.map(shown) : []);
   // How far the voices travel from each chord of the chain to the next: the figure the page quotes.
   const moves = $derived(chain.slice(1).map((step, i) =>
@@ -60,7 +76,8 @@
   // One keyboard range for the whole page, so the examples can be compared by eye: from the C
   // under the lowest note to the C above the highest.
   const range = $derived.by(() => {
-    const all = [...examples, ...chain].flatMap(example => example.midi);
+    const all = [...examples, ...chain, ...glossary.flatMap(group => group.terms.flatMap(term => term.shown))]
+      .flatMap(example => example.midi);
     if (!all.length) return { from: 48, to: 84 };
     const from = Math.floor(Math.min(...all) / 12) * 12;
     const to = Math.ceil((Math.max(...all) + 1) / 12) * 12;
@@ -171,6 +188,34 @@
       {/if}
       <button type="button" onclick={onback}>{t('common.backPlain')}</button>
     </div>
+  {:else if glossaryOpen}
+    <p class="kicker">
+      <button type="button" class="link" onclick={() => onopen(null)}>{t('theory.title')}</button>
+    </p>
+    <h1>{t('theory.glossary')}</h1>
+    <p class="lead">{t('theory.glossaryLead')}</p>
+
+    {#each glossary as group (group.id)}
+      <h2>{group.name}</h2>
+      {#each group.terms as term (term.id)}
+        <section class="term" id="term-{term.id}">
+          <h3>{term.name}</h3>
+          <p class="short">{term.short}</p>
+          {#if term.long}<p class="text">{term.long}</p>{/if}
+          {#if term.shown.length}
+            <div class="examples">
+              {#each term.shown as example (example.symbol + example.notes)}
+                {@render card(example)}
+              {/each}
+            </div>
+          {/if}
+        </section>
+      {/each}
+    {/each}
+
+    <div class="actions">
+      <button type="button" onclick={() => onopen(null)}>{t('common.back')}</button>
+    </div>
   {:else}
     <header class="head">
       <div>
@@ -192,6 +237,17 @@
           </button>
         </li>
       {/each}
+      {#if hasGlossary}
+        <li>
+          <button type="button" class="lesson" onclick={() => onopen(GLOSSARY_PAGE)}>
+            <span class="number">A–Z</span>
+            <span class="about">
+              <span class="name">{t('theory.glossary')}</span>
+              <span class="blurb">{t('theory.glossaryLead')}</span>
+            </span>
+          </button>
+        </li>
+      {/if}
     </ol>
 
     <!-- The piano's licence (CC BY 3.0) asks for its author where it is heard. Here, small, rather
@@ -257,4 +313,7 @@
   .about { display: flex; flex-direction: column; gap: 4px; }
   .name { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
   .blurb { font-size: 14px; line-height: 1.5; color: var(--ink-muted); }
+  .term { margin: 0 0 26px; }
+  h3 { margin: 0 0 4px; font-size: 19px; font-weight: 600; letter-spacing: -0.02em; }
+  .short { margin: 0 0 6px; max-width: 66ch; font-size: 15px; font-weight: 500; line-height: 1.55; }
 </style>

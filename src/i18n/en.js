@@ -269,6 +269,9 @@ export default {
   'theory.hearChain': 'Hear the three in a row',
   'theory.listens': 'What the game listens for',
   'theory.play': 'Play it',
+  // The glossary is Romanian and shown only in Romanian; English needs the keys to stay a twin.
+  'theory.glossary': 'Glossary',
+  'theory.glossaryLead': 'The jazz words the game uses, explained, with examples on the keyboard.',
   'theory.creditPiano': 'Piano:',
   'theory.creditBy': 'by Alexander Holm, one velocity layer kept ·',
 };

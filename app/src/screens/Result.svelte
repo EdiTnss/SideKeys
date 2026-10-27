@@ -2,6 +2,7 @@
   import type { scoreRun } from '../bridge/theory';
   import { SQUARES } from '../bridge/game';
   import { copyText } from '../lib/clipboard';
+  import Glossed from '../lib/Glossed.svelte';
   import { sayProblem, t } from '../lib/locale.svelte';
 
   type Score = NonNullable<ReturnType<typeof scoreRun>>;
@@ -53,7 +54,7 @@
   </div>
 
   <h2>{score.label ?? t('result.notYet')}</h2>
-  <p class="sub">{name}</p>
+  <p class="sub"><Glossed text={name} /></p>
 
   {#if grid}
     <div class="share">

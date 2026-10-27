@@ -1,6 +1,7 @@
 <script lang="ts">
   import { pathState } from '../bridge/game';
   import type { LevelPlan, Unit } from '../game/level.svelte';
+  import Glossed from '../lib/Glossed.svelte';
   import { sayBlurb, sayLevel, sayUnit, t } from '../lib/locale.svelte';
 
   type Entry = {
@@ -40,7 +41,7 @@
 
         <div class="card">
           <div class="title">
-            <h2>{sayUnit(entry.unit)}</h2>
+            <h2><Glossed text={sayUnit(entry.unit)} /></h2>
             <span class="count">{t('path.stars', { stars: entry.stars, max: entry.maxStars })}</span>
           </div>
           <p class="blurb">
