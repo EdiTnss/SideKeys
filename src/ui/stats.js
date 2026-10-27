@@ -30,13 +30,19 @@ export function recordAttempt(stats, { key, chord, analysis }) {
   };
 }
 
-/** The most frequent problems: [{ key, problem, count }], most frequent first. */
+/**
+ * The most frequent problems, most frequent first. `problem` is the English the Laboratory shows;
+ * `kind` and `degree` are the same problem in parts, for the game to say in another language.
+ * @returns {Array<{ key: string, problem: string, count: number, kind: 'missing' | 'wrong' | 'avoid', degree: string | null }>}
+ */
 export function weakSpots(stats, { limit = 3 } = {}) {
   const spots = [];
   for (const [key, bucket] of Object.entries(stats.byKey)) {
-    for (const [degree, count] of Object.entries(bucket.missing)) spots.push({ key, problem: `${degree} missing`, count });
-    if (bucket.wrong) spots.push({ key, problem: 'wrong notes', count: bucket.wrong });
-    if (bucket.avoid) spots.push({ key, problem: 'avoid notes', count: bucket.avoid });
+    for (const [degree, count] of Object.entries(bucket.missing)) {
+      spots.push({ key, problem: `${degree} missing`, count, kind: 'missing', degree });
+    }
+    if (bucket.wrong) spots.push({ key, problem: 'wrong notes', count: bucket.wrong, kind: 'wrong', degree: null });
+    if (bucket.avoid) spots.push({ key, problem: 'avoid notes', count: bucket.avoid, kind: 'avoid', degree: null });
   }
   return spots.sort((a, b) => b.count - a.count || a.key.localeCompare(b.key)).slice(0, limit);
 }

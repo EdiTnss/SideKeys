@@ -1,7 +1,7 @@
 <script lang="ts">
   import { pathState } from '../bridge/game';
   import type { LevelPlan, Unit } from '../game/level.svelte';
-  import { sayBlurb, sayLevel, sayUnit } from '../lib/locale.svelte';
+  import { sayBlurb, sayLevel, sayUnit, t } from '../lib/locale.svelte';
 
   type Entry = {
     unit: Unit;
@@ -25,8 +25,8 @@
 <section class="path">
   <header class="head">
     <div>
-      <h1>The Path</h1>
-      <p class="sub">Playing from chords, triads through jazz. Every unit is open: start where you are.</p>
+      <h1>{t('path.title')}</h1>
+      <p class="sub">{t('path.sub')}</p>
     </div>
   </header>
 
@@ -41,11 +41,11 @@
         <div class="card">
           <div class="title">
             <h2>{sayUnit(entry.unit)}</h2>
-            <span class="count">{entry.stars} / {entry.maxStars} stars</span>
+            <span class="count">{t('path.stars', { stars: entry.stars, max: entry.maxStars })}</span>
           </div>
           <p class="blurb">
             {sayBlurb(entry.unit)}
-            <button type="button" class="theory" onclick={() => ontheory(entry.unit.id)}>What is it?</button>
+            <button type="button" class="theory" onclick={() => ontheory(entry.unit.id)}>{t('path.what')}</button>
           </p>
 
           <ul class="levels">
@@ -54,7 +54,7 @@
                 {#if item.unlocked}
                   <button type="button" onclick={() => onplay(entry.unit, item.level)}>
                     <span class="name">{sayLevel(item.level)}</span>
-                    <span class="stars" aria-label="{item.stars} of 3 stars">
+                    <span class="stars" aria-label={t('common.starsOf3', { count: item.stars })}>
                       {#each [1, 2, 3] as position (position)}
                         <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"
                              fill={position <= item.stars ? '#f4f2ee' : 'none'}
@@ -81,11 +81,6 @@
       </li>
     {/each}
   </ol>
-
-  <p class="note">
-    Inversions, shell and rootless units are missing on purpose: the analyzer does not judge a
-    required bass or a required texture yet, and a level it cannot grade would be a lie.
-  </p>
 </section>
 
 <style>
@@ -134,5 +129,4 @@
     display: flex; align-items: center; gap: 10px; padding: 11px 14px;
     font-size: 14px; color: #5c646b;
   }
-  .note { margin: 26px 0 0; font-size: 12px; color: #5c646b; line-height: 1.6; }
 </style>

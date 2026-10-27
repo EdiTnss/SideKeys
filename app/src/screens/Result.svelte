@@ -2,9 +2,10 @@
   import type { scoreRun } from '../bridge/theory';
   import { SQUARES } from '../bridge/game';
   import { copyText } from '../lib/clipboard';
+  import { sayProblem, t } from '../lib/locale.svelte';
 
   type Score = NonNullable<ReturnType<typeof scoreRun>>;
-  type Weakness = { key: string; problem: string; count: number } | null;
+  type Weakness = { key: string; problem: string; count: number; kind: string; degree: string | null } | null;
 
   let { name, score, weakness, timed, threshold, grid = null, share = null,
         official = true, onagain, onnext = null, onexit }: {
@@ -41,7 +42,7 @@
 <section class="result">
   <!-- White, not magenta and not a theory colour: the accent never lands in a verdict, and an
        amber star would read as "avoid note" (assets/BRAND.md). -->
-  <div class="stars" role="img" aria-label="{score.stars} of 3 stars">
+  <div class="stars" role="img" aria-label={t('common.starsOf3', { count: score.stars })}>
     {#each [1, 2, 3] as position (position)}
       <svg width="52" height="52" viewBox="0 0 24 24" aria-hidden="true"
            fill={position <= score.stars ? '#f4f2ee' : 'none'}
@@ -51,23 +52,23 @@
     {/each}
   </div>
 
-  <h2>{score.label ?? 'Not yet'}</h2>
+  <h2>{score.label ?? t('result.notYet')}</h2>
   <p class="sub">{name}</p>
 
   {#if grid}
     <div class="share">
       <p class="squares" role="img"
-         aria-label="{grid.filter(state => state === 'clean').length} of {grid.length} chords clean">
+         aria-label={t('today.cleanOf', { clean: grid.filter(state => state === 'clean').length, total: grid.length })}>
         {grid.map(state => SQUARES[state as keyof typeof SQUARES] ?? SQUARES.unplayed).join('')}
       </p>
       {#if official}
         <div class="row">
-          <button type="button" onclick={copy}>{copied ? 'Copied' : 'Copy result'}</button>
+          <button type="button" onclick={copy}>{copied ? t('common.copied') : t('common.copyResult')}</button>
         </div>
       {:else}
-        <p class="note">Practice run. The result you can share stays the one from your first pass today.</p>
+        <p class="note">{t('result.practiceRun')}</p>
         <div class="row">
-          <button type="button" onclick={copy}>{copied ? 'Copied' : 'Copy first result'}</button>
+          <button type="button" onclick={copy}>{copied ? t('common.copied') : t('result.copyFirst')}</button>
         </div>
       {/if}
       {#if showText && share}
@@ -79,43 +80,43 @@
   <div class="tiles">
     <div class="tile">
       <p class="big">{score.right} / {score.total}</p>
-      <p class="label">right ({percent(score.rightShare)})</p>
+      <p class="label">{t('result.right', { percent: percent(score.rightShare) })}</p>
     </div>
     <div class="tile">
       <p class="big">{score.clean} / {score.total}</p>
-      <p class="label">clean ({percent(score.cleanShare)})</p>
+      <p class="label">{t('result.clean', { percent: percent(score.cleanShare) })}</p>
     </div>
     <div class="tile">
       <p class="big">{score.movement === null ? '—' : score.movement.toFixed(2)}</p>
-      <p class="label">semitones moved, per voice</p>
+      <p class="label">{t('result.moved')}</p>
     </div>
   </div>
 
   <div class="fix">
-    <p class="kicker">One thing to fix</p>
+    <p class="kicker">{t('result.fix')}</p>
     {#if weakness}
-      <p class="what">On <code>{weakness.key || 'major triad'}</code> chords — {weakness.problem}, {weakness.count} time{weakness.count === 1 ? '' : 's'}</p>
+      <p class="what">{t('result.on')} <code>{weakness.key || t('common.majorTriad')}</code> {t('result.weakness', { problem: sayProblem(weakness), count: weakness.count })}</p>
     {:else}
-      <p class="what">Nothing to report. Every chord you played came back clean.</p>
+      <p class="what">{t('result.nothing')}</p>
     {/if}
   </div>
 
   {#if grid}
-    <p class="locked">No clock on the challenge, on purpose: the grid compares the notes, not the speed.</p>
+    <p class="locked">{t('result.noClock')}</p>
   {:else if score.stars === 2 && !timed}
-    <p class="locked">The third star needs the timed run — free play tops out here.</p>
+    <p class="locked">{t('result.needTimed')}</p>
   {:else if score.stars === 2 && timed && score.movement !== null}
-    <p class="locked">Timed and clean. The third star wants the voices moving less: {score.movement.toFixed(2)} semitones each, and this level asks for {threshold}.</p>
+    <p class="locked">{t('result.needSmooth', { movement: score.movement.toFixed(2), threshold })}</p>
   {/if}
 
   <!-- One button leads, and it is the way forward when there is one: a level just passed should
        be a single press away from the next, not a trip back to the map (Edi, 2026-10-12). -->
   <div class="buttons">
     {#if onnext}
-      <button type="button" class="primary" onclick={onnext}>Next level</button>
+      <button type="button" class="primary" onclick={onnext}>{t('result.next')}</button>
     {/if}
-    <button type="button" class:primary={!onnext} onclick={onagain}>Once more</button>
-    <button type="button" onclick={onexit}>Back</button>
+    <button type="button" class:primary={!onnext} onclick={onagain}>{t('result.again')}</button>
+    <button type="button" onclick={onexit}>{t('common.backPlain')}</button>
   </div>
 </section>
 

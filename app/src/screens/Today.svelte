@@ -2,7 +2,7 @@
   import type { LevelPlan, Unit } from '../game/level.svelte';
   import { SQUARES } from '../bridge/game';
   import { copyText } from '../lib/clipboard';
-  import { sayLevel, sayUnit } from '../lib/locale.svelte';
+  import { sayLevel, sayUnit, t } from '../lib/locale.svelte';
 
   type Review = { quality: string; misses: number; hits: number };
   type Challenge = { number: number; states: string[] | null; share: string | null };
@@ -42,8 +42,8 @@
 <section class="today">
   <header class="head">
     <div>
-      <h1>Today</h1>
-      <p class="sub">Three things. Nothing else.</p>
+      <h1>{t('today.title')}</h1>
+      <p class="sub">{t('today.sub')}</p>
     </div>
   </header>
 
@@ -51,75 +51,69 @@
     <div class="main">
       {#if next}
         <section class="card hero">
-          <p class="kicker">Continue the path</p>
+          <p class="kicker">{t('today.continue')}</p>
           <h2>{sayUnit(next.unit)} — {sayLevel(next.level)}</h2>
           <p class="line">
-            {#if next.stars === 0}Not played yet.{:else}{next.stars} of 3 stars so far.{/if}
-            {next.level.tempo} bpm, one chord to the bar.
+            {#if next.stars === 0}{t('today.notPlayed')}{:else}{t('today.starsSoFar', { count: next.stars })}{/if}
+            {t('today.tempo', { tempo: next.level.tempo })}
           </p>
           <button type="button" class="go" onclick={() => onplay(next.unit, next.level)}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6L19 12z"></path></svg>
-            Play
+            {t('today.play')}
           </button>
         </section>
       {:else}
         <section class="card hero">
-          <h2>Every open level is at three stars.</h2>
-          <p class="line">Open the path and pick one to go over again.</p>
-          <button type="button" class="go" onclick={onpath}>Open the path</button>
+          <h2>{t('today.allDone')}</h2>
+          <p class="line">{t('today.allDoneLine')}</p>
+          <button type="button" class="go" onclick={onpath}>{t('today.openPath')}</button>
         </section>
       {/if}
 
       <section class="card">
         <div class="title">
-          <h2>Daily challenge</h2>
+          <h2>{t('today.challenge')}</h2>
           <span class="count">#{challenge.number}</span>
         </div>
         {#if challenge.states}
-          <p class="squares" role="img" aria-label="{clean} of {challenge.states.length} chords clean">
+          <p class="squares" role="img" aria-label={t('today.cleanOf', { clean, total: challenge.states.length })}>
             {challenge.states.map(state => SQUARES[state as keyof typeof SQUARES] ?? SQUARES.unplayed).join('')}
           </p>
-          <p class="line">{clean} of {challenge.states.length} clean. Played — the grid is yours to paste.</p>
+          <p class="line">{t('today.challengePlayed', { clean, total: challenge.states.length })}</p>
           <div class="row">
-            <button type="button" onclick={copy}>{copied ? 'Copied' : 'Copy result'}</button>
-            <button type="button" onclick={onchallenge}>Play again</button>
+            <button type="button" onclick={copy}>{copied ? t('common.copied') : t('common.copyResult')}</button>
+            <button type="button" onclick={onchallenge}>{t('today.playAgain')}</button>
           </div>
           {#if showText && challenge.share}
             <pre class="text">{challenge.share}</pre>
           {/if}
         {:else}
-          <p class="line">
-            Ten chords, a triad up to a quartal — the same ten for everyone today. No clock, and
-            the first pass is the one that counts.
-          </p>
-          <button type="button" onclick={onchallenge}>Play the challenge</button>
+          <p class="line">{t('today.challengeAbout')}</p>
+          <button type="button" onclick={onchallenge}>{t('today.playChallenge')}</button>
         {/if}
       </section>
 
       <section class="card">
         <div class="title">
           <!-- "Your training" until 2026-10-12, when Training became the name of free practice. -->
-          <h2>Review</h2>
-          <span class="count">{reviews.length} due</span>
+          <h2>{t('today.review')}</h2>
+          <span class="count">{t('today.due', { count: reviews.length })}</span>
         </div>
         {#if reviews.length}
           <ul class="spots">
             {#each reviews as review (review.quality)}
               <li>
-                <code>{review.quality || 'major triad'}</code>
-                <span class="misses">missed {review.misses} time{review.misses === 1 ? '' : 's'}</span>
-                <span class="hits">{review.hits} of 3 clean</span>
+                <code>{review.quality || t('common.majorTriad')}</code>
+                <span class="misses">{t('today.missed', { count: review.misses })}</span>
+                <span class="hits">{t('today.hits', { count: review.hits })}</span>
               </li>
             {/each}
           </ul>
-          <button type="button" onclick={onreview}>Start review — 12 chords</button>
+          <button type="button" onclick={onreview}>{t('today.startReview')}</button>
         {:else if pending > 0}
-          <p class="line">
-            Nothing due today. {pending} {pending === 1 ? 'spot comes' : 'spots come'} back tomorrow —
-            sleeping on it is the point.
-          </p>
+          <p class="line">{t('today.comingBack', { count: pending })}</p>
         {:else}
-          <p class="line">Nothing due. Anything you missed has come back clean three times.</p>
+          <p class="line">{t('today.nothingDue')}</p>
         {/if}
       </section>
     </div>
@@ -128,41 +122,41 @@
       <section class="card">
         <div class="streak">
           <p class="big">{streak}</p>
-          <p class="line">{streak === 1 ? 'day' : 'days'} in a row</p>
+          <p class="line">{t('today.streak', { count: streak })}</p>
         </div>
         <div class="goal">
           <div class="track"><span class="fill" style="width: {pct}%"></span></div>
-          <p class="line">{minutes} of {goal} minutes today</p>
+          <p class="line">{t('today.minutes', { minutes, goal })}</p>
         </div>
       </section>
 
       <section class="card">
-        <h2>The path</h2>
-        <p class="line">Eight units, triads through ii–V–I.</p>
-        <button type="button" onclick={onpath}>Open the map</button>
+        <h2>{t('today.path')}</h2>
+        <p class="line">{t('today.pathLine')}</p>
+        <button type="button" onclick={onpath}>{t('today.openMap')}</button>
       </section>
 
       <!-- Beside the day's three things, not among them: it is where to go when none of them
            is what is wanted, and it asks for nothing back. -->
       <section class="card">
-        <h2>Training</h2>
-        <p class="line">Drill any chords, or loop a progression. No stars — it still counts for today.</p>
-        <button type="button" onclick={ontraining}>Open training</button>
+        <h2>{t('today.training')}</h2>
+        <p class="line">{t('today.trainingLine')}</p>
+        <button type="button" onclick={ontraining}>{t('today.openTraining')}</button>
       </section>
 
       <section class="card">
-        <h2>Theory</h2>
-        <p class="line">What a shell, a rootless voicing, a drop 2 and a quartal are — with examples you can hear.</p>
-        <button type="button" onclick={ontheory}>Open the lessons</button>
+        <h2>{t('today.theory')}</h2>
+        <p class="line">{t('today.theoryLine')}</p>
+        <button type="button" onclick={ontheory}>{t('today.openLessons')}</button>
       </section>
     </div>
   </div>
 
   <p class="credit">
-    Piano:
+    {t('today.creditPiano')}
     <a href="https://archive.org/details/SalamanderGrandPianoV3" target="_blank" rel="noreferrer">
       Salamander Grand Piano</a>
-    by Alexander Holm, one velocity layer kept —
+    {t('today.creditBy')}
     <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noreferrer">CC BY 3.0</a>
   </p>
 </section>

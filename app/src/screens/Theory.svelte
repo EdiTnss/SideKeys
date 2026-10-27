@@ -5,7 +5,7 @@
   import {
     parseChord, analyzeVoicing, inversionOf, compareVoicings, roleClasses, spellPlain,
   } from '../bridge/theory';
-  import { sayInversion, sayVoicing } from '../lib/locale.svelte';
+  import { sayInversion, sayVoicing, t } from '../lib/locale.svelte';
 
   type Example = { symbol: string; notes: string; type: string; inversion?: string; caption: string };
   type Lesson = {
@@ -94,7 +94,7 @@
 
 {#snippet card(example: ReturnType<typeof shown>)}
   <button type="button" class="example" onclick={() => hear(example.midi)}
-          aria-label="Hear {example.symbol}: {example.caption}">
+          aria-label={t('theory.hear', { symbol: example.symbol, caption: example.caption })}>
     <span class="symbol">{example.symbol}</span>
     <span class="keys"><Keyboard classes={example.classes} from={range.from} to={range.to} /></span>
     <span class="degrees">
@@ -112,8 +112,8 @@
 <section class="theory">
   {#if lesson}
     <p class="kicker">
-      <button type="button" class="link" onclick={() => onopen(null)}>Theory</button>
-      · {at + 1} of {lessons.length}
+      <button type="button" class="link" onclick={() => onopen(null)}>{t('theory.title')}</button>
+      {t('theory.of', { at: at + 1, total: lessons.length })}
     </p>
     <h1>{lesson.title}</h1>
     <p class="lead">{lesson.lead}</p>
@@ -125,8 +125,8 @@
       {/each}
     {/each}
 
-    <h2>See it, hear it</h2>
-    <p class="hint">Click a keyboard to hear it. The colours are the ones the game uses: green is a chord tone, blue a tension.</p>
+    <h2>{t('theory.see')}</h2>
+    <p class="hint">{t('theory.hint')}</p>
     <!-- Keyed on the lesson: a keyboard is drawn once, for the range of the page it is on, and
          two pages can share an example. -->
     {#key lesson.unit}
@@ -137,20 +137,20 @@
       </div>
 
       {#if chain.length}
-        <h2>One after another</h2>
+        <h2>{t('theory.chain')}</h2>
         <div class="chain">
           {#each chain as example, i (example.symbol + example.notes)}
             {#if i > 0}
-              <span class="move"><b>{moves[i - 1].toFixed(2)}</b> semitones a voice</span>
+              <span class="move"><b>{moves[i - 1].toFixed(2)}</b> {t('theory.perVoice')}</span>
             {/if}
             {@render card(example)}
           {/each}
         </div>
-        <button type="button" onclick={hearChain}>Hear the three in a row</button>
+        <button type="button" onclick={hearChain}>{t('theory.hearChain')}</button>
       {/if}
     {/key}
 
-    <h2>What the game listens for</h2>
+    <h2>{t('theory.listens')}</h2>
     <ul class="listens">
       {#each lesson.listens as line (line)}
         <li>{line}</li>
@@ -160,7 +160,7 @@
     <div class="actions">
       <button type="button" class="go" onclick={() => onplay(lesson.level)}>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6L19 12z"></path></svg>
-        Play it
+        {t('theory.play')}
       </button>
       {#if at > 0}
         <button type="button" onclick={() => onopen(lessons[at - 1].unit)}>← {lessons[at - 1].title}</button>
@@ -168,18 +168,15 @@
       {#if at < lessons.length - 1}
         <button type="button" onclick={() => onopen(lessons[at + 1].unit)}>{lessons[at + 1].title} →</button>
       {/if}
-      <button type="button" onclick={onback}>Back</button>
+      <button type="button" onclick={onback}>{t('common.backPlain')}</button>
     </div>
   {:else}
     <header class="head">
       <div>
-        <h1>Theory</h1>
-        <p class="lead">
-          What each unit on the path is about, with voicings you can see and hear. Read one before
-          you play it, or when the game says "wrong shape" and you want to know what it meant.
-        </p>
+        <h1>{t('theory.title')}</h1>
+        <p class="lead">{t('theory.lead')}</p>
       </div>
-      <button type="button" onclick={onback}>← Back</button>
+      <button type="button" onclick={onback}>{t('common.back')}</button>
     </header>
 
     <ol class="lessons">

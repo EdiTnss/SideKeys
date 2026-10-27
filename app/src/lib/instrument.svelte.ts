@@ -13,7 +13,8 @@ import {
   connectMidi, VoicingCapture, createVirtualMidi, mergeAccess, createSynth, createOnScreen, loadPiano,
 } from '../bridge/midi';
 
-export type Status = { text: string; level: 'ok' | 'warn' | '' };
+/** The status line, as a dictionary key and its params: the screen says it in the player's language. */
+export type Status = { key: string; params?: Record<string, string>; level: 'ok' | 'warn' | '' };
 export type Instrument = ReturnType<typeof createInstrument>;
 /** What a screen wants to be told while it is the one being played to. */
 export type Listener = {
@@ -24,7 +25,7 @@ export type Listener = {
 type Device = { id: string; name: string };
 type OnScreenState = { armed: number[]; sounding: number[]; octave: number };
 
-const IDLE: Status = { text: 'Click the keys to arm them, Enter to play. Or type: A S D F G H J.', level: '' };
+const IDLE: Status = { key: 'status.idle', level: '' };
 
 export function createInstrument({
   debounceMs = 300,
@@ -95,9 +96,9 @@ export function createInstrument({
     if (hardware.length) onscreen.releaseKeys();
     typeToPlay = hardware.length === 0;
     status = hardware.length
-      ? { text: `MIDI in: ${hardware.join(', ')}`, level: 'ok' }
+      ? { key: 'status.midiIn', params: { devices: hardware.join(', ') }, level: 'ok' }
       : asked
-        ? { text: 'No MIDI input found. Check the cable, or play the keys below.', level: 'warn' }
+        ? { key: 'status.noInput', level: 'warn' }
         : IDLE;
   }
 
@@ -109,7 +110,7 @@ export function createInstrument({
     onNoteOff: (midi: number) => capture.noteOff(midi),
     onDevices: showDevices,
   }).catch((error: Error) => {
-    status = { text: error.message, level: 'warn' };
+    status = { key: 'status.error', params: { message: error.message }, level: 'warn' };
   });
 
   // The example ringing now, if one is: a second one cuts it off rather than piling on top.
@@ -138,7 +139,7 @@ export function createInstrument({
     try {
       await addHardware();
     } catch (error) {
-      status = { text: `Web MIDI was refused: ${(error as Error).message}`, level: 'warn' };
+      status = { key: 'status.refused', params: { message: (error as Error).message }, level: 'warn' };
     }
   }
 

@@ -72,7 +72,7 @@ export type Run = {
   readonly score: ReturnType<typeof scoreRun> | null;
   readonly attempts: Attempt[];
   readonly seconds: number;
-  readonly weakness: { key: string; problem: string; count: number } | null;
+  readonly weakness: { key: string; problem: string; count: number; kind: string; degree: string | null } | null;
   answer(notes: number[], startedAt?: number | null): Answer | null;
   skip(): void;
   start(): void;

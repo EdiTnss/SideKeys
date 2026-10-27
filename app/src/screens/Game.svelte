@@ -170,8 +170,13 @@
     analysis && !star && !warnings.length
       ? sayVoicing(analysis.voicing) ?? t('voicing.other')
       : null);
+  // A shape demanded, by the name a verdict gives it: "Drop 2", "Rootless A or Rootless B".
   const shapeOf = (texture: string | string[] | null | undefined) =>
-    texture ? ([] as string[]).concat(texture).join(' or ') : '';
+    texture
+      ? ([] as string[]).concat(texture)
+          .map(type => sayVoicing({ type, detail: null, bass: null }) ?? type)
+          .join(` ${t('common.or')} `)
+      : '';
   // The theory page for a shape, when there is one. A level that demands "drop-2" of someone who
   // has never met the word is a wall; the page is one press away from the word itself.
   const pageFor = (texture: string | string[] | null | undefined) =>
@@ -206,16 +211,16 @@
     <div class="progress">
       {#if practice}
         <!-- Nothing to count towards, so the tally stands where the progress bar would. -->
-        <span class="count">{practice.played} played · {practice.clean} clean</span>
+        <span class="count">{t('game.tally', { played: practice.played, clean: practice.clean })}</span>
         <span class="spacer"></span>
       {:else}
         <span class="count">{level.index + 1} / {level.total}</span>
         <span class="track"><span class="fill" style="width: {(100 * level.answered) / level.total}%"></span></span>
       {/if}
       <span class="level">
-        <button type="button" class="exit" onclick={leave}>← Back</button>
+        <button type="button" class="exit" onclick={leave}>{t('common.back')}</button>
         {sayLevel(level.plan)}
-        {#if level.timed}<span class="timed">· {practice ? '' : 'timed, '}{level.plan.tempo} bpm</span>{/if}
+        {#if level.timed}<span class="timed">· {practice ? '' : t('game.timed')}{level.plan.tempo} bpm</span>{/if}
       </span>
     </div>
 
@@ -228,26 +233,26 @@
       <p class="ask">{level.ask?.symbol}</p>
       {#if level.next}
         <p class="next">
-          <span class="then">then</span>{level.next.symbol}{#if nextShape}<span class="as">as {nextShape}</span>{/if}
+          <span class="then">{t('game.then')}</span>{level.next.symbol}{#if nextShape}<span class="as">{t('game.as', { shape: nextShape })}</span>{/if}
         </p>
       {/if}
     </div>
     <p class="hint">
       {#if level.countIn !== null || (level.timed && !level.at)}
         <!-- Timed with no position yet is the instant before the first click: already the count-in. -->
-        <span class="beat">{level.countIn ?? ''}</span>Count-in. The first chord lands on the next bar.
+        <span class="beat">{level.countIn ?? ''}</span>{t('game.countIn')}
       {:else if level.timed && practice?.mode === 'drill'}
         <!-- A drawn chord has no bar number worth reading: only where the bar is. -->
-        Beat {level.at?.beat ?? 1}. Play it before the bar turns.
+        {t('game.beat', { beat: level.at?.beat ?? 1 })}
       {:else if level.timed && practice}
-        Bar {level.at?.bar ?? 1}, beat {level.at?.beat ?? 1}.
+        {t('game.barBeat', { bar: level.at?.bar ?? 1, beat: level.at?.beat ?? 1 })}
       {:else if level.timed}
-        Bar {level.at?.bar ?? 1}, beat {level.at?.beat ?? 1}. Play it before the bar turns.
+        {t('game.barBeatPlay', { bar: level.at?.bar ?? 1, beat: level.at?.beat ?? 1 })}
       {:else if level.ask?.texture}
-        Play it as {shapeOf(level.ask.texture)}.
-        {#if askPage}<button type="button" class="what" onclick={() => ontheory(askPage)}>What is that?</button>{/if}
+        {t('game.playAs', { shape: shapeOf(level.ask.texture) })}
+        {#if askPage}<button type="button" class="what" onclick={() => ontheory(askPage)}>{t('game.whatIsThat')}</button>{/if}
       {:else}
-        Play it. Any voicing that works counts.
+        {t('game.playAny')}
       {/if}
     </p>
 
@@ -256,18 +261,18 @@
         <p class="waiting">—</p>
       {:else if star}
         <p class="star {star.toLowerCase()}">
-          <span class="judged">{judged}{anticipated ? ', anticipated' : ''}</span>
+          <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
           {star}{shape ? ` — ${shape}` : ''}
         </p>
       {:else if shapeMiss}
         <p class="star none">
           <span class="judged">{judged}</span>
-          Right notes, wrong shape — that is {shapeMiss}.
-          {#if missPage}<button type="button" class="what" onclick={() => ontheory(missPage)}>What was asked for?</button>{/if}
+          {t('game.wrongShape', { shape: shapeMiss })}
+          {#if missPage}<button type="button" class="what" onclick={() => ontheory(missPage)}>{t('game.whatAsked')}</button>{/if}
         </p>
       {:else}
         <p class="star none">
-          <span class="judged">{judged}{anticipated ? ', anticipated' : ''}</span>
+          <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
           {sayMessage(warnings[0])}
         </p>
       {/if}
@@ -275,14 +280,18 @@
       {#if analysis && !counted}
         <!-- Said in so many words, because the verdict above is true and still changes nothing:
              the bar had its answer, and on the clock the first one stands. -->
-        <p class="move">Not counted — this bar already had its answer, and the first one stands.</p>
+        <p class="move">{t('game.notCounted')}</p>
       {/if}
 
       {#if practice?.movement && star}
         <!-- In a progression the step from the chord before is the thing being practised. The
              same number the third star is earned on, said after every change instead of once. -->
         <p class="move">
-          From {practice.movement.from}: {practice.movement.average.toFixed(2)} semitones a voice — {practice.movement.rating}
+          {t('game.movement', {
+            from: practice.movement.from,
+            average: practice.movement.average.toFixed(2),
+            rating: t(`rating.${practice.movement.rating}`),
+          })}
         </p>
       {/if}
 
@@ -301,28 +310,28 @@
     <div class="controls">
       {#if practice && level.timed}
         <!-- Stops the clock, not the practice: it goes on without it, from the chord it was on. -->
-        <button type="button" onclick={() => level.stop()}>Stop the metronome</button>
+        <button type="button" onclick={() => level.stop()}>{t('game.stopMetronome')}</button>
       {:else if practice}
-        <button type="button" onclick={startTimed}>Start the metronome · {level.plan.tempo} bpm</button>
+        <button type="button" onclick={startTimed}>{t('game.startMetronome', { tempo: level.plan.tempo })}</button>
       {:else if level.timed}
-        <button type="button" class="stop" onclick={() => level.stop()}>Stop the run</button>
+        <button type="button" class="stop" onclick={() => level.stop()}>{t('game.stopRun')}</button>
       {:else if !level.plan.free}
-        <button type="button" class="start" onclick={startTimed}>Start the timed run</button>
+        <button type="button" class="start" onclick={startTimed}>{t('game.startTimed')}</button>
       {/if}
-      <button type="button" onclick={() => instrument.play()}>Play armed <kbd>Enter</kbd></button>
-      <button type="button" onclick={() => instrument.clear()}>Clear <kbd>Esc</kbd></button>
+      <button type="button" onclick={() => instrument.play()}>{t('game.playArmed')} <kbd>Enter</kbd></button>
+      <button type="button" onclick={() => instrument.clear()}>{t('game.clear')} <kbd>Esc</kbd></button>
       {#if !level.timed}
-        <button type="button" onclick={skip}>Skip <kbd>Space</kbd></button>
+        <button type="button" onclick={skip}>{t('game.skip')} <kbd>Space</kbd></button>
       {/if}
       {#if practice}
-        <button type="button" onclick={leave}>Done</button>
+        <button type="button" onclick={leave}>{t('game.done')}</button>
       {/if}
-      <span class="octave">letters start at {midiToName(instrument.octave)} <kbd>Z</kbd><kbd>X</kbd></span>
+      <span class="octave">{t('game.octave', { note: midiToName(instrument.octave) })} <kbd>Z</kbd><kbd>X</kbd></span>
     </div>
 
     <p class="status {instrument.status.level}">
-      {instrument.status.text}
-      <span class="sound">· {instrument.sound === 'piano' ? 'piano samples' : 'browser synth'}</span>
+      {t(instrument.status.key, instrument.status.params)}
+      <span class="sound">· {instrument.sound === 'piano' ? t('game.piano') : t('game.synth')}</span>
     </p>
   </section>
 {/if}

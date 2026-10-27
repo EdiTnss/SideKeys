@@ -43,6 +43,16 @@ export function describeInversion(locale, inversion) {
 }
 
 /**
+ * A weak spot's problem (src/ui/stats.js `weakSpots`), said in the locale: "b13 missing".
+ * @param {string} locale
+ * @param {{ kind: string, degree: string | null }} spot
+ * @returns {string}
+ */
+export function describeProblem(locale, { kind, degree }) {
+  return translate(locale, `problem.${kind}`, { degree: degree ?? '' });
+}
+
+/**
  * One analyzer message, said in the locale.
  * @param {string} locale
  * @param {AnalyzerMessage} message

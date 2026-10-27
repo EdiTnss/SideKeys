@@ -6,7 +6,7 @@
 
 import { LOCALES, detectLocale, translate, type Locale } from '../../../src/i18n/i18n.js';
 import {
-  describeMessage, describeVoicing, describeInversion, type AnalyzerMessage, type Voicing,
+  describeMessage, describeVoicing, describeInversion, describeProblem, type AnalyzerMessage, type Voicing,
 } from '../../../src/i18n/messages.js';
 import {
   unitName, unitBlurb, levelName, shapeName, groupName, progressionName,
@@ -71,6 +71,11 @@ export const sayLevel = (plan: Plan): string => levelName(current.locale, plan);
 export const sayShape = (shape: { id: string; label: string }): string => shapeName(current.locale, shape);
 export const sayGroup = (group: Named): string => groupName(current.locale, group);
 export const sayProgression = (id: string): string => progressionName(current.locale, id);
+
+/** A weak spot's problem ("b13 missing"), in the language in use. */
+export function sayProblem(spot: { kind: string; degree: string | null }): string {
+  return describeProblem(current.locale, spot);
+}
 
 /** An inversion as `inversionOf` gives it, in the language in use. */
 export function sayInversion(inversion: string | null): string | null {

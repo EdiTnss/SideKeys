@@ -43,17 +43,31 @@ export function paramsOf(text) {
 }
 
 /**
+ * @typedef {string | { one: string, few?: string, other: string }} Entry
+ *   A counted string holds its plural forms: `one` and `other` in English, and `few` too in
+ *   Romanian (2–19, and anything ending in 01–19: "2 zile", "20 de zile").
+ */
+
+/** The plural form `count` takes in `locale`, from the rules the browser and Node both carry. */
+function pluralForm(locale, entry, count) {
+  const form = typeof count === 'number' ? new Intl.PluralRules(locale).select(count) : 'other';
+  return entry[form] ?? entry.other;
+}
+
+/**
  * The string for `key` in `locale`, with every `{param}` filled in. A key Romanian lacks falls
  * back to English; a key nobody has comes back as itself, so a gap shows on screen as a name
- * someone can search for rather than as nothing.
+ * someone can search for rather than as nothing. A counted string is chosen by `params.count`.
  * @param {string} locale
  * @param {string} key
  * @param {Record<string, string | number>} [params]
- * @param {Record<string, Record<string, string>>} [dictionaries]  for the tests
+ * @param {Record<string, Record<string, Entry>>} [dictionaries]  for the tests
  * @returns {string}
  */
 export function translate(locale, key, params = {}, dictionaries = DICTIONARIES) {
-  const text = dictionaries[locale]?.[key] ?? dictionaries[DEFAULT_LOCALE]?.[key] ?? key;
+  const own = dictionaries[locale]?.[key];
+  const found = own ?? dictionaries[DEFAULT_LOCALE]?.[key] ?? key;
+  const text = typeof found === 'string' ? found : pluralForm(own ? locale : DEFAULT_LOCALE, found, params.count);
   // A param that was not passed stays as `{name}`: visible, so the mistake is found.
   return text.replace(/\{(\w+)\}/g, (whole, name) => (name in params ? String(params[name]) : whole));
 }

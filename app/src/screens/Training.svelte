@@ -4,7 +4,7 @@
     QUALITY_GROUPS, KEYS, SHAPES, TEMPO_RANGE, PROGRESSIONS,
     drillPool, shapeQualities, progressionFor, trainingPlan, loadTraining, saveTraining,
   } from '../bridge/game';
-  import { sayGroup, sayProgression, sayShape } from '../lib/locale.svelte';
+  import { sayGroup, sayProgression, sayShape, t } from '../lib/locale.svelte';
 
   type Settings = {
     mode: 'drill' | 'progression';
@@ -38,7 +38,9 @@
     (progressionFor(settings.progression, settings.key) as { key: string; bars: Array<{ chords: Array<{ symbol: string }> }> }));
   const ready = $derived(settings.mode === 'progression' || pool.length > 0);
 
-  const named = (quality: string) => quality || 'major';
+  const named = (quality: string) => quality || t('training.major');
+  // The shape inside a sentence: "no drop 2 voicing".
+  const shapeWord = $derived(sayShape(shape).toLowerCase());
   const progressions = Object.entries(PROGRESSIONS as Record<string, { name: string }>);
 
   function toggle(list: 'qualities' | 'keys', item: string) {
@@ -55,39 +57,39 @@
 <section class="training">
   <header class="head">
     <div>
-      <h1>Training</h1>
-      <p class="sub">
-        Practise anything, for as long as you like. No stars and nothing to open — the minutes
-        count, and what you miss comes back in Review.
-      </p>
+      <h1>{t('training.title')}</h1>
+      <p class="sub">{t('training.sub')}</p>
     </div>
-    <button type="button" class="back" onclick={onback}>← Back</button>
+    <button type="button" class="back" onclick={onback}>{t('common.back')}</button>
   </header>
 
   {#if last}
     <p class="last">
-      Last stretch: {last.minutes < 1 ? 'under a minute' : `${last.minutes} min`} ·
-      {last.played} {last.played === 1 ? 'chord' : 'chords'} · {last.clean} clean
+      {t('training.last', {
+        time: last.minutes < 1 ? t('training.underMinute') : t('training.minutes', { count: last.minutes }),
+        chords: t('common.chords', { count: last.played }),
+        clean: last.clean,
+      })}
     </p>
   {/if}
 
-  <div class="modes" role="group" aria-label="What to practise">
+  <div class="modes" role="group" aria-label={t('training.modes')}>
     <button type="button" class:on={settings.mode === 'drill'} aria-pressed={settings.mode === 'drill'}
             onclick={() => (settings.mode = 'drill')}>
-      Drill
-      <span>one chord at a time, drawn at random</span>
+      {t('training.drill')}
+      <span>{t('training.drillAbout')}</span>
     </button>
     <button type="button" class:on={settings.mode === 'progression'} aria-pressed={settings.mode === 'progression'}
             onclick={() => (settings.mode = 'progression')}>
-      Progression
-      <span>a set of changes, round and round</span>
+      {t('training.progression')}
+      <span>{t('training.progressionAbout')}</span>
     </button>
   </div>
 
   <div class="card">
     {#if settings.mode === 'drill'}
       <div class="field">
-        <h2>Chords</h2>
+        <h2>{t('training.chords')}</h2>
         {#each QUALITY_GROUPS as group (group.id)}
           <div class="chips" role="group" aria-label={sayGroup(group)}>
             <span class="group">{sayGroup(group)}</span>
@@ -95,7 +97,7 @@
               <button type="button" class="chip mono" class:on={settings.qualities.includes(quality)}
                       aria-pressed={settings.qualities.includes(quality)}
                       disabled={!available.includes(quality)}
-                      title={available.includes(quality) ? undefined : `No ${shape.label.toLowerCase()} voicing for this chord`}
+                      title={available.includes(quality) ? undefined : t('training.noShapeFor', { shape: shapeWord })}
                       onclick={() => toggle('qualities', quality)}>{named(quality)}</button>
             {/each}
           </div>
@@ -104,13 +106,13 @@
 
       <div class="field">
         <h2>
-          Keys
+          {t('training.keys')}
           <span class="quick">
-            <button type="button" class="link" onclick={() => (settings.keys = [...KEYS])}>all</button>
-            <button type="button" class="link" onclick={() => (settings.keys = [])}>none</button>
+            <button type="button" class="link" onclick={() => (settings.keys = [...KEYS])}>{t('training.all')}</button>
+            <button type="button" class="link" onclick={() => (settings.keys = [])}>{t('training.none')}</button>
           </span>
         </h2>
-        <div class="chips" role="group" aria-label="Keys">
+        <div class="chips" role="group" aria-label={t('training.keys')}>
           {#each KEYS as key (key)}
             <button type="button" class="chip mono" class:on={settings.keys.includes(key)}
                     aria-pressed={settings.keys.includes(key)}
@@ -120,8 +122,8 @@
       </div>
 
       <div class="field">
-        <h2>Shape</h2>
-        <div class="chips" role="group" aria-label="Shape">
+        <h2>{t('training.shape')}</h2>
+        <div class="chips" role="group" aria-label={t('training.shape')}>
           {#each SHAPES as entry (entry.id)}
             <button type="button" class="chip" class:on={settings.shape === entry.id}
                     aria-pressed={settings.shape === entry.id}
@@ -131,8 +133,8 @@
       </div>
     {:else}
       <div class="field">
-        <h2>Progression</h2>
-        <div class="chips" role="group" aria-label="Progression">
+        <h2>{t('training.progression')}</h2>
+        <div class="chips" role="group" aria-label={t('training.progression')}>
           {#each progressions as [id, entry] (id)}
             <button type="button" class="chip" class:on={settings.progression === id}
                     aria-pressed={settings.progression === id}
@@ -142,8 +144,8 @@
       </div>
 
       <div class="field">
-        <h2>Key</h2>
-        <div class="chips" role="group" aria-label="Key">
+        <h2>{t('training.key')}</h2>
+        <div class="chips" role="group" aria-label={t('training.key')}>
           {#each KEYS as key (key)}
             <button type="button" class="chip mono" class:on={settings.key === key}
                     aria-pressed={settings.key === key}
@@ -157,28 +159,28 @@
     {/if}
 
     <div class="field">
-      <h2>Tempo</h2>
+      <h2>{t('training.tempo')}</h2>
       <label class="tempo">
         <input type="range" min={TEMPO_RANGE.min} max={TEMPO_RANGE.max} step="2" bind:value={settings.tempo} />
         <span class="bpm">{settings.tempo} bpm</span>
       </label>
-      <p class="note">For the metronome, which you start from the keyboard screen when you want it.</p>
+      <p class="note">{t('training.tempoNote')}</p>
     </div>
 
     <div class="go-row">
       <button type="button" class="go" disabled={!ready} onclick={start}>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2v13.6L19 12z"></path></svg>
-        Start
+        {t('training.start')}
       </button>
       {#if settings.mode === 'drill'}
         <p class="note">
           {#if pool.length === 0 && (!settings.qualities.length || !settings.keys.length)}
-            Pick at least one chord and one key.
+            {t('training.pickOne')}
           {:else if pool.length === 0}
-            None of these chords has a {shape.label.toLowerCase()} voicing. Pick another shape, or other chords.
+            {t('training.noneHave', { shape: shapeWord })}
           {:else}
-            {pool.length} {pool.length === 1 ? 'chord' : 'chords'} to draw from{#if leftOut.length}; {leftOut.map(named).join(', ')}
-              left out — no {shape.label.toLowerCase()} voicing{/if}.
+            {t('training.pool', { count: pool.length })}{#if leftOut.length}{t('training.leftOut', {
+              list: leftOut.map(named).join(', '), shape: shapeWord })}{/if}.
           {/if}
         </p>
       {/if}
