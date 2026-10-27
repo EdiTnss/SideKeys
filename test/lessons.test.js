@@ -10,7 +10,9 @@ import { analyzeVoicing, inversionOf } from '../src/theory/analyzer.js';
 import { isRight, isClean, movementThreshold } from '../src/theory/stars.js';
 import { compareVoicings } from '../src/theory/voiceLeading.js';
 import { PATH } from '../src/game/path.js';
-import { LESSONS, lessonFor, lessonForTexture, exampleNotes } from '../src/game/lessons.js';
+import { LESSONS, lessonFor, lessonForTexture, exampleNotes, lessonIn } from '../src/game/lessons.js';
+import LESSONS_RO from '../src/game/lessons.ro.js';
+import { describeMessage } from '../src/i18n/messages.js';
 
 const analyze = (symbol, names) => analyzeVoicing(names.split(' ').map(nameToMidi), parseChord(symbol));
 const warnings = analysis => analysis.messages.filter(message => message.level === 'warning').map(message => message.text);
@@ -159,4 +161,54 @@ test('ii–V–I: the chain on the page is rootless A, B, A and earns the third 
   assert.equal(mean, 0.75, 'the figure the page quotes');
   assert.ok(mean <= movementThreshold('ii-V-I'));
   assert.equal(movementThreshold('ii-V-I'), 1.25, 'and the threshold it quotes');
+});
+
+// ---- The Romanian pages (2026-10-27) ------------------------------------------------------------
+// Only the words are translated. The examples, the levels and the order come from the English
+// pages, so the Romanian page has the same shape — the same sections, examples and "listens for"
+// lines — and each of its claims stands on the same test above as its English twin.
+
+test('every page has a Romanian twin with the same shape, and nothing else', () => {
+  assert.deepEqual(Object.keys(LESSONS_RO).sort(), LESSONS.map(lesson => lesson.unit).sort());
+  for (const lesson of LESSONS) {
+    const ro = LESSONS_RO[lesson.unit];
+    const where = `ro: ${lesson.unit}`;
+    assert.ok(ro.title && ro.lead, where);
+    assert.equal(ro.sections.length, lesson.sections.length, `${where}: sections`);
+    ro.sections.forEach((section, i) => {
+      assert.ok(section.heading, `${where}: heading ${i}`);
+      assert.equal(section.text.length, lesson.sections[i].text.length, `${where}: paragraphs of section ${i}`);
+    });
+    assert.equal(ro.captions.length, lesson.examples.length, `${where}: one caption per example`);
+    assert.equal(ro.chain?.length ?? 0, lesson.chain?.length ?? 0, `${where}: one caption per chord of the chain`);
+    assert.equal(ro.listens.length, lesson.listens.length, `${where}: one line per "listens for" line`);
+    for (const text of [ro.title, ro.lead, ...ro.sections.flatMap(s => [s.heading, ...s.text]),
+      ...ro.captions, ...(ro.chain ?? []), ...ro.listens]) {
+      assert.ok(typeof text === 'string' && text.trim() !== '', where);
+    }
+  }
+});
+
+test('lessonIn: Romanian words over the English page; the examples are the English ones', () => {
+  for (const lesson of LESSONS) {
+    assert.equal(lessonIn('en', lesson), lesson);
+    const ro = lessonIn('ro', lesson);
+    assert.equal(ro.unit, lesson.unit);
+    assert.equal(ro.level, lesson.level);
+    assert.equal(ro.title, LESSONS_RO[lesson.unit].title);
+    assert.deepEqual(ro.listens, LESSONS_RO[lesson.unit].listens);
+    ro.examples.forEach((example, i) => {
+      const { caption, ...rest } = example;
+      const { caption: english, ...original } = lesson.examples[i];
+      assert.deepEqual(rest, original, `${lesson.unit}: example ${i} is the English one`);
+      assert.equal(caption, LESSONS_RO[lesson.unit].captions[i]);
+    });
+    (ro.chain ?? []).forEach((example, i) => assert.equal(example.symbol, lesson.chain[i].symbol));
+  }
+  assert.equal(lessonIn('fr', LESSONS[0]), LESSONS[0], 'any other language reads the English page');
+});
+
+test('the Romanian inversions page quotes the verdict the game gives in Romanian', () => {
+  const verdict = describeMessage('ro', analyze('C/E', 'C4 E4 G4').messages.find(m => m.code === 'bass'));
+  assert.ok(LESSONS_RO.inversions.listens.some(line => line.includes(`„${verdict}”`)), verdict);
 });
