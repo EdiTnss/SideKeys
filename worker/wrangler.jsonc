@@ -10,8 +10,9 @@
   "secrets": { "required": ["ANTHROPIC_API_KEY"] },
   "vars": {
     // Browsers send only the origin (scheme + host), never the path, so the GitHub Pages
-    // entry does not depend on the repo name.
-    "ALLOWED_ORIGINS": "https://editnss.github.io,http://localhost:3000,http://127.0.0.1:3000",
+    // entry does not depend on the repo name. sidekeys.app is where the site lives now; the old
+    // Pages host stays listed for as long as it can still serve a page.
+    "ALLOWED_ORIGINS": "https://sidekeys.app,https://editnss.github.io,http://localhost:3000,http://127.0.0.1:3000",
     "MODEL": "claude-opus-5",
     "MAX_TOKENS_CAP": 8192
   },

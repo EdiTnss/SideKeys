@@ -476,3 +476,12 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   din Chrome-ul lui): video încărcat pe GitHub, în copia de 5 MB (originalul de 10,8 MB trecea de
   limita de 10 MB), cu linia „39 seconds, sound on”. **Rămas**: planul Starter înainte de postare
   (licența comercială), postarea însăși, spațiul lipsă din „Clean— Rootless A” în joc.
+- **2026-10-28 (sidekeys.app)** — Edi n-a vrut numele lui în link și pe ecranul final al reel-ului;
+  a cumpărat `sidekeys.app` la Cloudflare. Claude, cu acordul lui, în Chrome-ul lui: 10 înregistrări
+  DNS importate dintr-un fișier de zonă (4 A și 4 AAAA spre GitHub Pages, `www` CNAME spre
+  `editnss.github.io`, TXT de verificare), toate **DNS only**; domeniul verificat pe contul GitHub
+  (ca nimeni să nu-l poată lega de alt repo), setat pe repo, Enforce HTTPS bifat. Certificatul a
+  venit în câteva minute. Vechea adresă face 301 spre domeniu, inclusiv `/lab/`. Build-ul n-a cerut
+  nimic (`base: './'`). În cod: `SHARE_URL`, README, `start.cmd`, `og:` ale Laboratorului (care
+  arătau oricum spre o cale greșită), unealta de măsurat și originea permisă în Worker. **Ce se
+  pierde**: progresul salvat în browser stă pe adresă, deci pe `sidekeys.app` se pornește de la zero.

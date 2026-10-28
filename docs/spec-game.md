@@ -437,12 +437,12 @@ curat e ce măsoară aplicația:
 ```
 SideKeys #1 · 8/10 clean
 🟩🟩🟩🟩⬛🟩🟩🟩🟩⬜
-https://editnss.github.io/SideKeys/
+https://sidekeys.app/
 ```
 
-Link-ul e constanta `SHARE_URL` și arată pagina publicată. **Deocamdată pagina aceea servește
-Laboratorul vechi, nu shell-ul**, deci cine urmărește link-ul azi nu găsește challenge-ul: se
-schimbă într-un loc când shell-ul se publică (sau când `sidekeys.app` e viu).
+Link-ul e constanta `SHARE_URL` și arată jocul publicat. Din 2026-10-28 e `https://sidekeys.app/`;
+grilele partajate înainte poartă `editnss.github.io/SideKeys/`, care redirecționează aici, deci nu
+se strică.
 
 ### O trecere oficială pe zi
 

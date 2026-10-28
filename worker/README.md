@@ -55,7 +55,7 @@ npm run secret
 ```
 
 Paste that public address into the app's Settings instead of the local one. `ALLOWED_ORIGINS`
-in `wrangler.jsonc` already covers `https://editnss.github.io` and localhost, so the deployed
+in `wrangler.jsonc` already covers `https://sidekeys.app`, `https://editnss.github.io` and localhost, so the deployed
 app and local development both work; no other site can use the Worker.
 
 ## Everyday commands

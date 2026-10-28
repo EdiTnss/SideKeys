@@ -10,7 +10,7 @@ rem To work ON the game rather than play it, use dev.cmd.
 setlocal
 title SideKeys
 
-set "GAME=https://editnss.github.io/SideKeys/"
+set "GAME=https://sidekeys.app/"
 
 rem --app gives a window with no tabs and no address bar, so it behaves like an installed app.
 rem Web MIDI needs a secure context, which the published HTTPS address is.

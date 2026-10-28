@@ -55,8 +55,8 @@ export const RUNGS = [
  *  theory colour, so a grid never pretends to be the keyboard's verdict. */
 export const SQUARES = Object.freeze({ clean: '🟩', right: '🟨', missed: '⬛', unplayed: '⬜' });
 
-/** The published page, until `sidekeys.app` is live and serving the shell. */
-export const SHARE_URL = 'https://editnss.github.io/SideKeys/';
+/** The published game. The old GitHub Pages address redirects here, so older shares still land. */
+export const SHARE_URL = 'https://sidekeys.app/';
 
 /** Days since the epoch, counted on the calendar rather than in hours, so a DST night is still
  *  one day. Never below 1: a clock set before the epoch gets puzzle #1, not #0. */

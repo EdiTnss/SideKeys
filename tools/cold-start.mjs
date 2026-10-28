@@ -20,7 +20,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-const PAGE = process.env.SIDEKEYS_URL ?? 'https://editnss.github.io/SideKeys/';
+const PAGE = process.env.SIDEKEYS_URL ?? 'https://sidekeys.app/';
 const CHROME = process.env.CHROME ?? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const runs = Number(process.argv[2] ?? 3);
 const slow = process.argv[3] === 'slow';
