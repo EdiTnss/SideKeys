@@ -454,4 +454,5 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   ca pian. README: „Get notified →". Prima verificare a dat 404 pe `buttondown.com/EdiTns`
   (contul nu era încă activ); după ce Edi a confirmat numele, pagina s-a deschis. **Nicio adresă
   trimisă de probă**: ar fi ajuns la un serviciu extern. 408 teste, `svelte-check` curat. Punctul
-  din P1 bifat; rămâne clipul, care pornește ceasul porții. Comis local, neîmpins.
+  din P1 bifat; rămâne clipul, care pornește ceasul porții. **Împins și publicat** la cererea lui
+  Edi (`4389314`); pachetul de pe Pages conține formularul, în ambele limbi.
