@@ -238,6 +238,9 @@ pachetul servit de Pages conține textul românesc și glosarul.
   dominantul quartal, primul răspuns care rămâne într-un timed, cele șase chei noi.
 - **Confirmat de Edi pe Genos în seara de 2026-10-12** („am verificat pe Genos, este totul în
   regulă"): conexiunea care rămâne între nivele, acordul următor în timed, Training.
+- **Clapa de ecran pe telefon** (două octave, săgeți, fără scurtături) a fost încercată de Edi pe
+  telefonul lui pe 2026-10-28: „E bine așa”. Tot din 2026-10-28, fără Genos: click-ul care sună,
+  albirea după 1,5 s, greșeala care te ține pe acord, triada strictă.
 - **Româna n-a fost văzută pe Genos**: e probată doar în browser, cu clapa de ecran, deși e
   deja publicată.
 - **Neauzit de nimeni altcineva decât Edi**: Claude a verificat sunetul (metronom, exemplele din

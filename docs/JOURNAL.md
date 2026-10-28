@@ -558,3 +558,6 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   emulare de telefon (atingeri reale: C E G armate, „C Clean”; săgeți; un F jos mută fereastra pe
   C2–C4) și pe desktop (neschimbat). **Neverificat pe un telefon adevărat.** Edi a cerut tot pe
   2026-10-28 ca Claude să vorbească numai în română, inclusiv în rândurile scurte și rezumate.
+- **2026-10-28 (clapa pe telefon, confirmată)** — Edi a deschis sidekeys.app pe telefonul lui după
+  publicare: „E bine așa”. Din turul ca utilizator nou rămân închise toate punctele (1–8, 10, 11, iar
+  9 e clapa pe telefon). Pe Genos nu s-a încercat nimic din ce s-a făcut azi.
