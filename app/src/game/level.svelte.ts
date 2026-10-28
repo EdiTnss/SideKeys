@@ -9,7 +9,7 @@
 // engine, and filing the result needs the player's progress, which belongs to the app above.
 
 import {
-  parseChord, analyzeVoicing, scoreRun, counts, emptyStats, recordAttempt, weakSpots,
+  parseChord, analyzeVoicing, judgeAsk, isRight, scoreRun, counts, emptyStats, recordAttempt, weakSpots,
 } from '../bridge/theory';
 import { asksFor, thresholdFor } from '../bridge/game';
 import { createMetronome, createSession, snapshotTarget, isAnticipated } from '../bridge/time';
@@ -191,12 +191,14 @@ export function createLevel(plan: LevelPlan): Run {
       // The shape demanded belongs to the rung that was answered, and timed — anticipated —
       // that need not be the rung on screen.
       const texture = asks[target.slot]?.texture ?? null;
-      const analysis = analyzeVoicing(notes, parseChord(target.symbol));
+      const analysis = judgeAsk(notes, target.symbol);
       // On the clock a bar keeps its first answer. A later voicing is still judged and shown —
       // it is what was played — but it does not replace what the bar has already earned.
       const counted = counts({ timed, answered: answers[target.slot] !== null });
       if (counted) answers[target.slot] = { symbol: target.symbol, notes, analysis, texture };
-      if (!timed) {
+      // Without the clock a miss stays on the chord until it is played right; Skip is the way
+      // past it (Edi, 2026-10-28). Only the first answer is filed, so the stars stay honest.
+      if (!timed && isRight(analysis, { texture })) {
         if (current + 1 >= asks.length) finish();
         else current += 1;
       }

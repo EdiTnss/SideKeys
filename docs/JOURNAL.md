@@ -528,3 +528,14 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   încercare, cifra de mișcare pe trecerea liberă, butonul principal „Start the timed run”, „Three
   things” cu șase carduri, plus două întrebări de teorie pentru Edi (Si pe F într-un nivel de
   triade; 7#11 la „Altered dominants”).
+- **2026-10-28 (după tur: 5, 6, 10)** — Deciziile lui Edi pe lista din tur. **(10) Triada e
+  strictă**: „F A B pe F e greșită la un nivel de triade”; `analyzeVoicing` primește `strict`, iar
+  `judgeAsk` din `stars.js` îl pornește pentru orice acord cerut cu trei chord tones (maj, m, sus4,
+  și cu slash); Laboratorul și realizarea păstrează citirea jazz. Regula e în `spec-analyzer.md`.
+  **(5) Greșeala te ține pe acord**, fără ceas, în nivel și în Training; clapele se albesc doar
+  după un răspuns bun. Ca stelele să nu se câștige prin încercări, **primul răspuns rămâne și fără
+  ceas** (`counts` → `!answered`; testul vechi spunea „fără ceas nu există al doilea răspuns”,
+  adevărat doar sub regula veche). Decizia asta e a lui Claude, nu a lui Edi: de confirmat. **(6)**
+  Cifra de mișcare apare doar după o trecere în timp. Verificat în browser: F A B rămâne pe F, cu B
+  roșu și „Wrong note: B is not in F”, apoi F corect trece la Bb. 417 teste. **(11)** 7#11 rămâne
+  la „Altered dominants”. **(7), (8)**: propuneri trimise lui Edi.

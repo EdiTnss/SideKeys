@@ -197,6 +197,7 @@ export default {
   'game.anticipated': ', anticipat',
   'game.wrongShape': 'Note corecte, formă greșită — asta e {shape}.',
   'game.whatAsked': 'Ce se cerea?',
+  'game.tryAgain': 'Cântă-l din nou ca să treci mai departe, sau sari peste el. Pentru stele contează doar primul răspuns.',
   'game.notCounted': 'Nu se numără — măsura asta avea deja un răspuns, iar primul rămâne.',
   'game.movement': 'De la {from}: {average} semitonuri pe voce — {rating}',
   'game.stopMetronome': 'Oprește metronomul',

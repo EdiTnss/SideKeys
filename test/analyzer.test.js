@@ -259,3 +259,16 @@ test('params: every message has them, and the text is unchanged', () => {
   }
   assert.equal(a.messages.find(m => m.code === 'bass').text, 'Bass should be E, not C');
 });
+
+test('strict: on a chord asked for as a triad, a tension is a wrong note (Edi, 2026-10-28)', () => {
+  // F A B on F: in a jazz voicing the B is a #11; asked for an F triad, it is a note that is not
+  // in the chord, and the verdict has to say so rather than only that the C is missing.
+  const loose = analyze('F', 'F4 A4 B4');
+  assert.deepEqual(loose.wrong, []);
+  const strict = analyze('F', 'F4 A4 B4', { strict: true });
+  assert.deepEqual(strict.wrong, [11]);
+  assert.ok(strict.messages.some(message => message.code === 'wrong' && message.params.note === 'B'));
+  assert.equal(strict.roles.find(role => role.pc === 11).role, 'wrong');
+  // Chord tones stay chord tones, and a clean triad stays clean.
+  assert.deepEqual(analyze('F', 'F4 A4 C5', { strict: true }).messages.filter(m => m.level === 'warning'), []);
+});

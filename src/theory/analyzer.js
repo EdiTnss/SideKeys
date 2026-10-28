@@ -36,12 +36,16 @@ const unique = list => [...new Set(list)];
  *   rootless → { root }     wrong → { note, chord }     doubling → { note }
  *   muddy → { lower, upper, semitones }  (notes with octaves, e.g. 'C2')
  *   type → { type, detail, bass }  (the analysis's own `voicing`)
+ *
+ * `strict`: only the chord tones belong, and anything else is a wrong note. For a chord asked
+ * for as just what it says — a triad on a triad level — where a #11 is not colour but a mistake.
  */
-export function analyzeVoicing(notes, chord, { limits = LOW_INTERVAL_LIMITS } = {}) {
+export function analyzeVoicing(notes, chord, { limits = LOW_INTERVAL_LIMITS, strict = false } = {}) {
   const sorted = [...notes].sort((a, b) => a - b);
   const roles = sorted.map(midi => {
     const pc = pitchClass(midi);
-    return { midi, pc, ...classifyPc(chord, pc) };
+    const found = classifyPc(chord, pc);
+    return { midi, pc, ...(strict && found.role !== 'chordTone' ? { role: 'wrong', degree: null, caution: false } : found) };
   });
   const pcs = new Set(roles.map(r => r.pc));
 

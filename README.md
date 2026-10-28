@@ -176,7 +176,7 @@ npm test            # full report
 npm run test:quiet  # one line when green
 ```
 
-415 tests on Node 22+. The engine — everything the answers are computed from — is plain
+417 tests on Node 22+. The engine — everything the answers are computed from — is plain
 JavaScript with **no dependencies and no build step**, which is why the same files run in the
 browser, in the Worker, and under `node --test`. The shell on top of it is Vite, TypeScript and
 Svelte 5, and it imports the engine untouched; nothing in the engine may import from the shell.

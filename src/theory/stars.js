@@ -5,6 +5,8 @@
 // observations (info), and a star that disagreed with it would be a second source of truth.
 
 import { compareVoicings } from './voiceLeading.js';
+import { parseChord } from './chords.js';
+import { analyzeVoicing } from './analyzer.js';
 
 /**
  * Right (★): the chord that was asked for is there, and nothing foreign is. Avoid notes, a muddy
@@ -120,9 +122,10 @@ function meanMovement(attempts) {
 /**
  * Whether a voicing that lands on a chord is the one that counts for it.
  *
- * Without the clock a chord has one answer by construction: answering it moves on to the next.
- * On the clock a bar can be struck more than once, and then the first answer stands (Edi,
- * 2026-10-13). The run shows the next chord, so it is easy to reach for it early; a voicing that
+ * The first answer stands, with the clock or without. Without it, a miss stays on the chord
+ * until it is played right (Edi, 2026-10-28): the tries after the first are practice, and the
+ * stars are counted from the first. On the clock a bar can be struck more than once, and the
+ * first answer stands there too (Edi, 2026-10-13). The run shows the next chord, so it is easy to reach for it early; a voicing that
  * starts more than half a beat before the bar line still belongs to the bar it is in, and the
  * last-one-wins rule that was here before let it overwrite the right answer already given. It
  * also means a correction a beat later does not count — which is what playing in time means.
@@ -132,5 +135,18 @@ function meanMovement(attempts) {
  * @returns {boolean}
  */
 export function counts({ timed, answered }) {
-  return !(timed && answered);
+  return !answered;
+}
+
+/**
+ * A voicing judged against the chord the game asked for. A triad is asked for as just the
+ * triad, so a note outside it is a mistake, not a tension (Edi, 2026-10-28: F A B on F is
+ * wrong on a triad level); a seventh chord and up keeps the analyzer's jazz reading.
+ * @param {number[]} notes  MIDI numbers
+ * @param {string} symbol
+ * @returns {ReturnType<typeof analyzeVoicing>}
+ */
+export function judgeAsk(notes, symbol) {
+  const chord = parseChord(symbol);
+  return analyzeVoicing(notes, chord, { strict: chord.chordTones.length === 3 });
 }

@@ -202,6 +202,16 @@ judecat, corect, pe măsura în care se află — și își ștergea răspunsul 
 - Voicing-ul necontat **e totuși judecat și arătat** — e ce s-a cântat — cu rândul „Not counted —
   this bar already had its answer, and the first one stands." sub verdict.
 - **Consecință asumată**: o corectură făcută un timp mai târziu, în aceeași măsură, nu contează.
+
+**Fără ceas, o greșeală te ține pe acord (Edi, 2026-10-28).** Un acord care nu e Right nu mai
+trece la următorul: rămâi pe el până îl cânți bine, sau apeși Skip. Ca să nu devină stelele un
+premiu pentru încăpățânare, **și fără ceas rămâne primul răspuns**: `counts` întoarce acum
+`!answered` în ambele moduri, iar încercările de după sunt exercițiu. Sub verdict apare
+„Play it again to move on, or skip it. Only your first answer counts for the stars.” Training
+face la fel cu trecerea mai departe, dar acolo fiecare încercare se numără (nu are stele). Clapele
+colorate se albesc numai după un răspuns bun, fiindcă doar atunci se schimbă acordul cerut.
+Pe ecranul de rezultat, cifra de mișcare apare numai după o trecere în timp: a treia stea se
+câștigă acolo, iar o trecere liberă cu acorduri sărite măsoară cel mult doi vecini.
   Asta înseamnă „în timp". O corectură în interiorul celor 300 ms ai capturii e același voicing.
 - Acordul luat prea devreme **nu e creditat nici măsurii următoare**: acolo trebuie cântat din nou,
   în fereastra de anticipare sau după bara de măsură. Regula de anticipare e neschimbată.

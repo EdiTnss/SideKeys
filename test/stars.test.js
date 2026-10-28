@@ -51,7 +51,7 @@ test('isClean implies isRight, so a star never skips the one below it', () => {
 
 // ---- The run: how a whole pass turns into stars (docs/spec-game.md) ----------------------
 
-import { scoreRun, movementThreshold, counts } from '../src/theory/stars.js';
+import { scoreRun, movementThreshold, counts, judgeAsk } from '../src/theory/stars.js';
 
 const attempt = (symbol, notes) => ({ symbol, notes, analysis: notes.length ? on(symbol, notes) : null });
 
@@ -179,9 +179,10 @@ test('counts: on the clock a bar keeps its first answer, and a later voicing doe
   // is in, and it used to overwrite the right answer already given there.
   assert.equal(counts({ timed: true, answered: false }), true, 'the first voicing in a bar is its answer');
   assert.equal(counts({ timed: true, answered: true }), false, 'a second one is heard, judged, and not filed');
-  // Without the clock an answer moves on to the next chord, so there is never a second one.
+  // Without the clock a miss stays on the chord until it is played right (Edi, 2026-10-28). The
+  // retries are practice; the first answer is the one the stars are counted from.
   assert.equal(counts({ timed: false, answered: false }), true);
-  assert.equal(counts({ timed: false, answered: true }), true);
+  assert.equal(counts({ timed: false, answered: true }), false);
 });
 
 test('counts: the score is the one the first answers earn, whatever was played after them', () => {
@@ -209,4 +210,16 @@ test('scoreRun: counts the chords actually played, apart from the ones asked', (
   assert.equal(scoreRun({ attempts: skipped }).played, 0);
   assert.equal(scoreRun({ attempts: skipped }).total, 10);
   assert.equal(scoreRun({ attempts: SMOOTH, timed: true }).played, SMOOTH.length);
+});
+
+test('judgeAsk: a triad asked for is judged strictly, a seventh chord as jazz', () => {
+  const midi = names => names.map(name => ({ C: 60, E: 64, F: 65, G: 67, A: 69, B: 71, D: 74 })[name]);
+  // F A B on F: the B is wrong, and the answer is not right.
+  const triad = judgeAsk(midi(['F', 'A', 'B']), 'F');
+  assert.deepEqual(triad.wrong, [11]);
+  assert.equal(isRight(triad, {}), false);
+  // Slash triads and sus4 are triads too; a 9 on a C/E is wrong.
+  assert.deepEqual(judgeAsk(midi(['E', 'G', 'C', 'D']), 'C/E').wrong, [2]);
+  // A seventh chord keeps its tensions: the 9 on Cmaj7 is colour, not a mistake.
+  assert.deepEqual(judgeAsk(midi(['C', 'E', 'B', 'D']), 'Cmaj7').wrong, []);
 });

@@ -87,10 +87,14 @@
       <p class="big">{score.clean} / {score.total}</p>
       <p class="label">{t('result.clean', { percent: percent(score.cleanShare) })}</p>
     </div>
-    <div class="tile">
-      <p class="big">{score.movement === null ? '—' : sayDecimal(score.movement, 2)}</p>
-      <p class="label">{t('result.moved')}</p>
-    </div>
+    <!-- Only on the clock: the third star is earned there, and a free pass with skipped chords
+         measures two neighbours at best, a number that means nothing to anyone. -->
+    {#if timed}
+      <div class="tile">
+        <p class="big">{score.movement === null ? '—' : sayDecimal(score.movement, 2)}</p>
+        <p class="label">{t('result.moved')}</p>
+      </div>
+    {/if}
   </div>
 
   <div class="fix">

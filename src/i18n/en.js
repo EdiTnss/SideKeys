@@ -202,6 +202,7 @@ export default {
   'game.anticipated': ', anticipated',
   'game.wrongShape': 'Right notes, wrong shape — that is {shape}.',
   'game.whatAsked': 'What was asked for?',
+  'game.tryAgain': 'Play it again to move on, or skip it. Only your first answer counts for the stars.',
   'game.notCounted': 'Not counted — this bar already had its answer, and the first one stands.',
   'game.movement': 'From {from}: {average} semitones a voice — {rating}',
   'game.stopMetronome': 'Stop the metronome',

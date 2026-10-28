@@ -301,7 +301,9 @@
         </p>
       {/if}
 
-      {#if analysis && !counted}
+      {#if analysis && !level.timed && !star}
+        <p class="move">{t('game.tryAgain')}</p>
+      {:else if analysis && !counted && level.timed}
         <!-- Said in so many words, because the verdict above is true and still changes nothing:
              the bar had its answer, and on the clock the first one stands. -->
         <p class="move">{t('game.notCounted')}</p>

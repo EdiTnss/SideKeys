@@ -69,6 +69,7 @@ Regulile tabelului:
 - **Sus vs 11**: sus = terța e înlocuită cu 2 sau 4, deci e o calitate separată (`7sus4`), unde nota e treapta 4 și e chord tone. Cu terța prezentă, aceeași notă e 11 (extensie în sus) și pe maj7 și 7 e avoid.
 - **Funcția lui m7** vine din context: `parseChord(symbol, { minorFunction: 'ii' | 'i' })`, implicit `ii`. În drill acordurile sunt izolate, deci ii; din Faza 2 progresia știe treapta. Enum-ul rămâne extensibil: în tonal, iii are b9 și b13 avoid, vi are b13 avoid — se adaugă când `analysis.js` știe treapta.
 - Nu există regulă generică de avoid: tabelul e singura sursă. O calitate fără rând nu se parsează.
+- **Triada cerută de joc e strictă** (Edi, 2026-10-28): `analyzeVoicing(notes, chord, { strict: true })` face din orice notă care nu e chord tone o notă greșită, iar jocul (`judgeAsk` în `stars.js`) îl pornește pentru orice acord cu trei chord tones (maj, m, sus4, inclusiv cu slash). F A B pe F e deci „Wrong note: B”, nu doar „Missing C”. Tabelul de mai sus rămâne citirea jazz, folosită de Laborator, de candidați și de realizare, unde „C” dintr-o grilă poate primi un 6 sau un 9.
 - Fără rând încă: `+` (triada mărită), amânat. `7#5` nu e calitate separată: e `7` + extensia `#5` (vezi mai sus).
 
 ### Clasificarea voicing-ului (`analyzer.js`)

@@ -9,7 +9,7 @@
 // Which chord a voicing answers is decided exactly as in a level, by `snapshotTarget`, so the
 // anticipation rule is one rule here, on the path and in the harness.
 
-import { parseChord, analyzeVoicing, isClean, counts, compareVoicings } from '../bridge/theory';
+import { parseChord, analyzeVoicing, judgeAsk, isRight, isClean, counts, compareVoicings } from '../bridge/theory';
 import { createMetronome, createSession, snapshotTarget, isAnticipated } from '../bridge/time';
 import type { Answer, Ask, Attempt, Run } from './level.svelte';
 
@@ -141,7 +141,7 @@ export function createPractice(plan: PracticePlan): Practice {
       const now = performance.now();
       firstAnswerAt ??= now;
       lastAnswerAt = now;
-      const analysis = analyzeVoicing(notes, parseChord(target.symbol));
+      const analysis = judgeAsk(notes, target.symbol);
       // On the clock a bar keeps its first answer: a second voicing in it is judged and shown,
       // but it is not counted, and what it got wrong is not held against the chord.
       const counted = counts({ timed, answered: timed && standing.get(target.slot) === chorus });
@@ -161,7 +161,8 @@ export function createPractice(plan: PracticePlan): Practice {
       history.push({ symbol: target.symbol, notes, analysis, texture: plan.texture });
       played += 1;
       if (isClean(analysis, { texture: plan.texture })) clean += 1;
-      if (!timed) current = following(target.slot);
+      // As on the path: without the clock a miss stays on the chord until it is played right.
+      if (!timed && isRight(analysis, { texture: plan.texture })) current = following(target.slot);
       return { ...where, texture: plan.texture, analysis, counted };
     },
 

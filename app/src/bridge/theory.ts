@@ -8,7 +8,7 @@
 
 export { parseChord, ChordParseError } from '../../../src/theory/chords.js';
 export { analyzeVoicing, inversionOf } from '../../../src/theory/analyzer.js';
-export { isRight, isClean, scoreRun, movementThreshold, counts } from '../../../src/theory/stars.js';
+export { isRight, isClean, scoreRun, movementThreshold, counts, judgeAsk } from '../../../src/theory/stars.js';
 export { getProgression, PROGRESSIONS } from '../../../src/theory/progressions.js';
 
 // Practice statistics: the same recorder the old page uses, so "one thing to fix" on the result
