@@ -62,6 +62,9 @@ până primește cheile lui.
    număr de secțiuni și paragrafe, câte un caption pe exemplu și pe acordul din lanț, câte un rând
    pe fiecare rând „listens". `test/lessons.test.js` verifică forma, iar fiecare afirmație
    românească stă pe același test ca perechea ei englezească.
+5. **Un număr calculat pe ecran trece prin `sayDecimal`** (`decimal` în `src/i18n/i18n.js`), nu
+   prin `toFixed` direct: în română iese cu virgulă (`1,25`), ca în textul scris din jur. Cifrele
+   din textul scris de mână (`lessons.js`, dicționarele) se scriu direct în forma limbii lor.
 
 ## Glosarul
 

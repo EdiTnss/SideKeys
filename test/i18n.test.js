@@ -4,7 +4,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { LOCALES, DEFAULT_LOCALE, detectLocale, translate, paramsOf } from '../src/i18n/i18n.js';
+import { LOCALES, DEFAULT_LOCALE, detectLocale, translate, paramsOf, decimal } from '../src/i18n/i18n.js';
 import en from '../src/i18n/en.js';
 import ro from '../src/i18n/ro.js';
 
@@ -118,4 +118,15 @@ test('translate: an unknown locale falls back to English', () => {
 
 test('translate: a key missing everywhere shows the key, never an empty string', () => {
   assert.equal(translate('ro', 'no.such.key'), 'no.such.key');
+});
+
+test('decimal: a computed number is written the way each language writes it', () => {
+  // The written Romanian text already says 1,25; a number computed on the page has to agree.
+  assert.equal(decimal('en', 1.25, 2), '1.25');
+  assert.equal(decimal('ro', 1.25, 2), '1,25');
+  assert.equal(decimal('ro', 0.7512, 2), '0,75');
+  assert.equal(decimal('ro', 4, 2), '4,00');
+  assert.equal(decimal('ro', 1.5), '1,5');       // no digits asked: as short as the number is
+  assert.equal(decimal('en', 1.5), '1.5');
+  assert.equal(decimal('ro', 2), '2');
 });

@@ -71,3 +71,16 @@ export function translate(locale, key, params = {}, dictionaries = DICTIONARIES)
   // A param that was not passed stays as `{name}`: visible, so the mistake is found.
   return text.replace(/\{(\w+)\}/g, (whole, name) => (name in params ? String(params[name]) : whole));
 }
+
+/**
+ * A computed number written the way the language writes it: `1.25` in English, `1,25` in
+ * Romanian, so a figure the page works out agrees with the text written around it.
+ * @param {string} locale
+ * @param {number} value
+ * @param {number} [digits]  fixed decimals; left out, the number is as short as it is
+ * @returns {string}
+ */
+export function decimal(locale, value, digits) {
+  const text = digits === undefined ? String(value) : value.toFixed(digits);
+  return locale === 'ro' ? text.replace('.', ',') : text;
+}

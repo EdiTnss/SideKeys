@@ -5,7 +5,7 @@
   import {
     parseChord, analyzeVoicing, inversionOf, compareVoicings, roleClasses, spellPlain,
   } from '../bridge/theory';
-  import { locale, sayInversion, sayVoicing, t } from '../lib/locale.svelte';
+  import { locale, sayDecimal, sayInversion, sayVoicing, t } from '../lib/locale.svelte';
 
   type Example = { symbol: string; notes: string; type?: string; inversion?: string; caption: string };
   type Term = { id: string; group: string; name: string; short: string; long?: string; examples?: Example[] };
@@ -159,7 +159,7 @@
         <div class="chain">
           {#each chain as example, i (example.symbol + example.notes)}
             {#if i > 0}
-              <span class="move"><b>{moves[i - 1].toFixed(2)}</b> {t('theory.perVoice')}</span>
+              <span class="move"><b>{sayDecimal(moves[i - 1], 2)}</b> {t('theory.perVoice')}</span>
             {/if}
             {@render card(example)}
           {/each}

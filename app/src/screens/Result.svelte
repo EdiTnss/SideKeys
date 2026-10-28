@@ -3,7 +3,7 @@
   import { SQUARES } from '../bridge/game';
   import { copyText } from '../lib/clipboard';
   import Glossed from '../lib/Glossed.svelte';
-  import { sayProblem, t } from '../lib/locale.svelte';
+  import { sayDecimal, sayProblem, t } from '../lib/locale.svelte';
 
   type Score = NonNullable<ReturnType<typeof scoreRun>>;
   type Weakness = { key: string; problem: string; count: number; kind: string; degree: string | null } | null;
@@ -88,7 +88,7 @@
       <p class="label">{t('result.clean', { percent: percent(score.cleanShare) })}</p>
     </div>
     <div class="tile">
-      <p class="big">{score.movement === null ? '—' : score.movement.toFixed(2)}</p>
+      <p class="big">{score.movement === null ? '—' : sayDecimal(score.movement, 2)}</p>
       <p class="label">{t('result.moved')}</p>
     </div>
   </div>
@@ -107,7 +107,7 @@
   {:else if score.stars === 2 && !timed}
     <p class="locked">{t('result.needTimed')}</p>
   {:else if score.stars === 2 && timed && score.movement !== null}
-    <p class="locked">{t('result.needSmooth', { movement: score.movement.toFixed(2), threshold })}</p>
+    <p class="locked">{t('result.needSmooth', { movement: sayDecimal(score.movement, 2), threshold: sayDecimal(threshold) })}</p>
   {/if}
 
   <!-- One button leads, and it is the way forward when there is one: a level just passed should

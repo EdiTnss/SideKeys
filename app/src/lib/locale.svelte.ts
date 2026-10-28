@@ -4,7 +4,7 @@
 // a string is filled in, what a missing key falls back to. This file only holds the choice,
 // remembers it, and tells the page what language it is in.
 
-import { LOCALES, detectLocale, translate, type Locale } from '../../../src/i18n/i18n.js';
+import { LOCALES, detectLocale, translate, decimal, type Locale } from '../../../src/i18n/i18n.js';
 import {
   describeMessage, describeVoicing, describeInversion, describeProblem, type AnalyzerMessage, type Voicing,
 } from '../../../src/i18n/messages.js';
@@ -52,6 +52,11 @@ export function t(key: string, params: Record<string, string | number> = {}): st
   return translate(current.locale, key, params);
 }
 
+
+/** A computed number in the language in use: 1.25, or 1,25 in Romanian. */
+export function sayDecimal(value: number, digits?: number): string {
+  return decimal(current.locale, value, digits);
+}
 /** One of the analyzer's messages, said in the language in use. */
 export function sayMessage(message: AnalyzerMessage): string {
   return describeMessage(current.locale, message);
