@@ -498,3 +498,12 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   taie spațiul de la începutul unui `{#if}`; scris ca `{' — '}`. README-ul spunea 356 de teste; sunt
   410. **Neîmpins**: aștept cuvântul lui Edi. **Rămas fără Edi**: doar omul cronometrat, care cere
   un om.
+- **2026-10-28 (clapa de ecran se aude)** — Edi: fără clapă conectată, notele alese cu mouse-ul
+  trebuie să se audă la click, nu doar la „Play armed”. Click-ul era tăcut prin decizie (sunetul
+  sub mouse ar fi dat capturii câte un voicing de două note); acum sună 700 ms **numai prin ecou**,
+  nu pe portul virtual, deci captura nu-l vede. `Play` și dezarmarea opresc întâi ecourile încă în
+  viață, ca timer-ul lor să nu taie nota acordului. Testul vechi „arming is silent” cerea exact
+  decizia schimbată: păstrează acum doar „nimic nu ajunge la aplicație” și „urechea și analizorul
+  aud același acord”. „Play armed” suna deja în dezvoltare (trei note de pian, verdict „Clean”);
+  dacă la Edi tace, cauza e alta și trebuie reprodusă la el. Verificat în browser: un click = o notă
+  de pian, fără verdict; Play = acordul și „C Clean — root position”. 412 teste.
