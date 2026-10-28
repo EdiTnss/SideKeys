@@ -485,3 +485,16 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   nimic (`base: './'`). În cod: `SHARE_URL`, README, `start.cmd`, `og:` ale Laboratorului (care
   arătau oricum spre o cale greșită), unealta de măsurat și originea permisă în Worker. **Ce se
   pierde**: progresul salvat în browser stă pe adresă, deci pe `sidekeys.app` se pornește de la zero.
+- **2026-10-28 (ce se putea face fără Edi)** — Trei din lista „fără Edi”, fiecare cu testul întâi.
+  **Laboratorul și numele simple**: singura etichetă cu nume de notă e `noteLabel` din
+  `ui/render.js` (verdictul, sugestiile și cele ale modelului trec toate prin ea), acum cu
+  `spellPlain`. Testul a prins și un al doilea defect: „Cb3” pe MIDI 59 numea o notă cu o octavă
+  sub cea apăsată (octava vine din număr, iar Cb4 e B3). `ui/stats.js` ține trepte („b7”), nu
+  nume, deci n-avea ce schimba. **`ai/explain.js` a rămas cum era**: ar schimba ce primește modelul,
+  fără nicio evaluare care să arate efectul, pe un reharm înghețat; scris în cioburi. **Zecimalele
+  în română**: `decimal` în `src/i18n/i18n.js` (testat), `sayDecimal` în shell, folosit în toate cele
+  patru locuri cu `toFixed` și pentru pragul din Rezultat; regula e în `spec-i18n.md`. Verificat în
+  browser: pagina ii–V–I spune „0,25 / 1,25 semitonuri pe voce”. **„Clean— Rootless A”**: Svelte
+  taie spațiul de la începutul unui `{#if}`; scris ca `{' — '}`. README-ul spunea 356 de teste; sunt
+  410. **Neîmpins**: aștept cuvântul lui Edi. **Rămas fără Edi**: doar omul cronometrat, care cere
+  un om.

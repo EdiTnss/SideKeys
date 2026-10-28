@@ -174,7 +174,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **408 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **410 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5): Azi, Drumul, Jocul, Rezultatul, plus
   **Training** și **Theory**, peste opt unități (Triade → ii–V–I), **toate deschise**. Stele
   Right/Clean/Smooth, streak, Review zilnic pe calități, challenge zilnic partajabil, PWA care
@@ -278,14 +278,13 @@ pachetul servit de Pages conține textul românesc și glosarul.
   https://claude.ai/artifact/LwezgTTnCurF57ZN1DecAY
 - **Pornirea la rece e măsurată** (`node tools/cold-start.mjs`, cifrele în `PRODUCT.md` la P1):
   sub 1,3 s până la verdictul primului acord, chiar și pe 4G lent. Partea omului nu e măsurată.
-- **Laboratorul scrie încă Cb și Fb pe etichetele clapelor**, deși mesajele analizorului de lângă
-  ele spun deja B și E: `ui/render.js`, `ui/stats.js` și `ai/explain.js` folosesc `spellDegree`,
-  nu `spellPlain`. Regula lui Edi din 2026-10-12 s-a aplicat în joc, nu și în banc.
+- **Ce primește modelul în `ai/explain.js` rămâne scris ca pe hârtie** (Cb pe Db7, cu
+  `spellDegree`): Laboratorul afișează nume simple din 2026-10-28, dar intrarea modelului nu s-a
+  schimbat, ca să nu schimbe răspunsurile fără o evaluare. Dacă modelul scrie „Cb” în motivația lui,
+  de acolo vine. Reharm-ul e oricum înghețat.
 - **Aranjamentul din Laborator primește acum și dominantul quartal** de la `suggestVoicings`;
   testele lui `realize.js` trec, dar nimeni nu a ascultat un aranjament de atunci.
 - **Sesiunile din `harness/sessions/`** poartă `"app": "voicing-lab"`; nu se rescriu.
-- **Zecimalele calculate ies cu punct și în română** („1.25 semitonuri pe voce”), deși textul
-  scris le are cu virgulă: `toFixed` în `Game.svelte`, `Result.svelte`, `Theory.svelte`.
 - **Creditul pianului stă jos pe lista din Teorie**, mic: licența CC BY 3.0 cere atribuirea pe
   site, deci nu se scoate de tot (README-ul nu ajunge la cine aude pianul).
 - **Necommis**: `Voicing Lab ca produs.pdf`, care nu intră în repo.
@@ -295,8 +294,9 @@ pachetul servit de Pages conține textul românesc și glosarul.
   ffmpeg e instalat prin winget, dar nu e în PATH-ul sesiunilor deja pornite.
 - **ElevenLabs, prin conector, rulează o singură generare odată**: mai multe deodată dau 429
   („too many requests”) și nu taxează nimic. Se pornesc pe rând, cu câte o variantă.
-- **Verdictul din joc scrie „Clean— Rootless A”**, fără spațiu înaintea liniei (`Game.svelte`,
-  blocul `{#if shape}`). Se vede în prim-planurile reel-ului; nereparat.
+- **Svelte taie spațiul de la începutul unui bloc `{#if}`**: un text care trebuie să înceapă cu
+  spațiu se scrie ca expresie, `{' — '}`. Așa lipsea spațiul din „Clean— Rootless A” (reparat pe
+  2026-10-28; reel-ul îl arată încă fără).
 
 ## Următorul pas
 
@@ -306,11 +306,8 @@ poarta P1, iar ceasul se urmărește de acolo.
 
 Ce se poate face fără Edi, în ordinea asta:
 
-1. **Laboratorul și numele simple**: `ui/render.js`, `ui/stats.js` și `ai/explain.js` scriu încă
-   Cb și Fb. Test întâi, apoi `spellPlain` în locul lui `spellDegree`. La `explain.js`, de
-   verificat întâi dacă schimbă ce primește modelul.
-2. **Un om cronometrat** la prima vizită: pornirea la rece e măsurată doar pe partea mașinii.
-3. **Zecimalele în română**: cifrele calculate cu virgulă (`1,25`), ca în textul scris.
+1. **Un om cronometrat** la prima vizită: pornirea la rece e măsurată doar pe partea mașinii.
+   Cere un om care n-a văzut jocul; Claude nu-l poate face singur.
 
 Idei care **nu** sunt lucru aprobat și nu se încep fără Edi: exemplele din Theory în alte
 tonalități, testul de plasare, quartal pe m6, dominanta pe treapta de sus a challenge-ului.
