@@ -139,12 +139,12 @@
     paintedSlot = null;
   }
 
-  // Once the chord asked for moves on, the keys of the last answer go back to white after two
+  // Once the chord asked for moves on, the keys of the last answer go back to white after 1.5
   // seconds: long enough to read them, gone before they are mistaken for the new chord (Edi,
   // 2026-10-28). Only the keys: the verdict above them stays until the next one.
   // The clock runs only while the keys show an answer to some other chord than the one asked: a
   // verdict on the new chord stops it, and so does an anticipated one once its bar arrives.
-  const FADE_MS = 2000;
+  const FADE_MS = 1500;
   $effect(() => {
     if (paintedSlot === null || paintedSlot === level.index) return;
     const timer = setTimeout(() => {
