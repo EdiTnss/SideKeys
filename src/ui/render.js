@@ -1,6 +1,6 @@
 // DOM rendering for the drill. Reads analysis objects, writes HTML. No theory here.
 
-import { midiToName, octave, spellDegree } from '../theory/notes.js';
+import { midiToName, octave, spellPlain } from '../theory/notes.js';
 
 function h(tag, attrs = {}, ...children) {
   const node = document.createElement(tag);
@@ -46,10 +46,10 @@ export function renderAnalysis(el, analysis, chord, judged = null) {
   el.replaceChildren(headline, list, notes);
 }
 
-/** 'Eb4 (b3)' spelled from the chord; wrong notes get a flat name and '?'. */
+/** 'Eb4 (b3)' spelled from the chord, never Cb or E#; wrong notes get a flat name and '?'. */
 export function noteLabel(role, chord) {
   if (!role.degree) return `${midiToName(role.midi)} (?)`;
-  return `${spellDegree(chord.root, role.degree)}${octave(role.midi)} (${role.degree})`;
+  return `${spellPlain(chord.root, role.degree)}${octave(role.midi)} (${role.degree})`;
 }
 
 /** midi → CSS class for the keyboard, by role. */
