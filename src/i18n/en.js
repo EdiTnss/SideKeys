@@ -177,6 +177,10 @@ export default {
   'today.theory': 'Theory',
   'today.theoryLine': 'What a shell, a rootless voicing, a drop 2 and a quartal are — with examples you can hear.',
   'today.openLessons': 'Open the lessons',
+  'today.news': 'Stay in the loop',
+  'today.newsLine': 'A short email when new units land. No spam, unsubscribe anytime.',
+  'today.newsEmail': 'Your email',
+  'today.subscribe': 'Subscribe',
 
   'path.title': 'The Path',
   'path.sub': 'Playing from chords, triads through jazz. Every unit is open: start where you are.',

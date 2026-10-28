@@ -255,7 +255,9 @@ pachetul servit de Pages conține textul românesc și glosarul.
 ### Ce așteaptă pe Edi
 
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
-- **Formularul de email** și **clipul** pentru README — singurele care deschid poarta P1.
+- **Clipul** pentru README: formularul există (Buttondown, 2026-10-28), deci clipul e singurul
+  care mai lipsește ca să pornească ceasul porții P1.
+- **Să încerce formularul cu adresa lui**, după publicare: Claude nu a trimis nicio adresă de probă.
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick".
 
 ### Cioburi de care te lovești dacă nu le știi
@@ -285,12 +287,11 @@ pachetul servit de Pages conține textul românesc și glosarul.
 
 ## Următorul pas
 
-**Întreabă-l pe Edi ce furnizor alege pentru formularul de email (Buttondown, ConvertKit, Tally
-sau un Google Form) și unde stau adresele, apoi leagă formularul din
-`app/src/screens/Today.svelte` și din `README.md`** — e ultimul punct nebifat din P1, iar
-împreună cu clipul de 15 s pornește ceasul porții: 40 de adrese în 4 săptămâni.
+**Clipul de 15 s pentru README**, cu Edi la Genos: toată lista P1 e bifată, iar clipul e ultimul
+lucru care pornește ceasul porții (40 de adrese în 4 săptămâni). Formularul Buttondown e pe Azi
+și în README din 2026-10-28.
 
-Cât se așteaptă răspunsul, ce se poate face fără el, în ordinea asta:
+Ce se poate face fără Edi, în ordinea asta:
 
 1. **Laboratorul și numele simple**: `ui/render.js`, `ui/stats.js` și `ai/explain.js` scriu încă
    Cb și Fb. Test întâi, apoi `spellPlain` în locul lui `spellDegree`. La `explain.js`, de

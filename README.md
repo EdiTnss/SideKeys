@@ -71,6 +71,8 @@ Edge; Web MIDI does not exist in Safari.
 to. The analyzer bench this grew out of, with the drill, the progressions and the
 reharmonizer, is at **[/lab/](https://editnss.github.io/SideKeys/lab/)**.
 
+**[Get notified →](https://buttondown.com/EdiTns)** — a short email when new units land.
+
 ## How the analyzer works
 
 A chord symbol is parsed into chord tones, available tensions and avoid notes; the notes you

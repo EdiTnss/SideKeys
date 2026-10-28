@@ -446,3 +446,12 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   `editnss.github.io/SideKeys` conține textul românesc și glosarul.
   `CLAUDE.md` corectat. Lecția: starea „împins / nepublicat" se verifică cu `git status -sb`
   înainte de scris, nu se deduce din ce s-a cerut.
+- **2026-10-28 (formularul de email)** — Edi a ales **Buttondown**, adresele stau la ei
+  (newsletter `EdiTns`, double opt-in). Card nou pe Azi, în coloana laterală, sub Teorie: titlu,
+  o linie, câmp de email și buton, în engleză și română (patru chei `today.news*`/`today.subscribe`
+  în ambele dicționare). Formularul trimite direct la endpoint-ul de embed al Buttondown, într-un
+  tab nou, ca jocul să rămână pe loc; câmpul e sigur fiindcă doar ecranul de joc ascultă literele
+  ca pian. README: „Get notified →". Prima verificare a dat 404 pe `buttondown.com/EdiTns`
+  (contul nu era încă activ); după ce Edi a confirmat numele, pagina s-a deschis. **Nicio adresă
+  trimisă de probă**: ar fi ajuns la un serviciu extern. 408 teste, `svelte-check` curat. Punctul
+  din P1 bifat; rămâne clipul, care pornește ceasul porții. Comis local, neîmpins.

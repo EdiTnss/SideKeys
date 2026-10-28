@@ -150,7 +150,9 @@ apoi structura (drum, unități, nivele), abia apoi meta-jocul (streak, obiectiv
   2026-10-12, peste lista inițială**, la cererea lui Edi: drumul cerea forme pe care nu le explica
   nicăieri. Lecțiile erau la P3; au venit acum cele opt ale drumului. Textul, scris de Claude, a fost
   citit și acceptat de Edi în aceeași zi. Regulile, în [spec-game.md](spec-game.md).
-- [ ] Formular de email găzduit, legat din pagină și din README.
+- [x] Formular de email găzduit, legat din pagină și din README. **Buttondown** (`EdiTns`), ales de
+  Edi pe 2026-10-28; adresele stau la ei, cu double opt-in. Cardul e pe Azi, iar README-ul are
+  „Get notified". Pagina newsletterului a fost verificată; nicio adresă n-a fost trimisă de probă.
 - [x] **Shell-ul publicat pe Pages**, în locul Laboratorului — **făcut pe 2026-10-12**. Jocul e la
   rădăcină, bancul la `/lab/`, publicate din `.github/workflows/pages.yml`. Verificat pe site-ul
   viu: service worker activ pe subpath, manifest valid, 17 sample-uri de pian încărcate, un acord

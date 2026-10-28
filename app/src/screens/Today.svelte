@@ -5,7 +5,10 @@
   import Glossed from '../lib/Glossed.svelte';
   import { sayLevel, sayUnit, t } from '../lib/locale.svelte';
 
-  type Review = { quality: string; misses: number; hits: number };
+  /** The Buttondown newsletter the form subscribes to (README links the same one). */
+  const BUTTONDOWN = 'EdiTns';
+
+  type Review ={ quality: string; misses: number; hits: number };
   type Challenge = { number: number; states: string[] | null; share: string | null };
 
   let { streak, minutes, goal, next, reviews, pending, challenge,
@@ -150,6 +153,20 @@
         <p class="line">{t('today.theoryLine')}</p>
         <button type="button" onclick={ontheory}>{t('today.openLessons')}</button>
       </section>
+
+      <!-- Buttondown keeps the addresses and sends the double opt-in; the page only posts the
+           form, in a new tab, so the game stays where it was. -->
+      <section class="card">
+        <h2>{t('today.news')}</h2>
+        <p class="line">{t('today.newsLine')}</p>
+        <form class="news" action={`https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN}`}
+              method="post" target="_blank">
+          <input type="email" name="email" required autocomplete="email"
+                 placeholder={t('today.newsEmail')} aria-label={t('today.newsEmail')} />
+          <input type="hidden" name="embed" value="1" />
+          <button type="submit">{t('today.subscribe')}</button>
+        </form>
+      </section>
     </div>
   </div>
 </section>
@@ -195,6 +212,12 @@
     background: #16191c; color: var(--ink); font: inherit; font-size: 14px; cursor: pointer;
   }
   button:hover { border-color: var(--ink-muted); }
+  .news { display: flex; flex-wrap: wrap; gap: 10px; }
+  .news input[type='email'] {
+    flex: 1 1 160px; min-width: 0; padding: 11px 14px; border: 1px solid var(--border);
+    border-radius: 10px; background: #16191c; color: var(--ink); font: inherit; font-size: 14px;
+  }
+  .news input[type='email']:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   button.go { background: var(--ink); color: #14171a; border-color: var(--ink); font-size: 16px; font-weight: 600; padding: 14px 26px; }
 </style>

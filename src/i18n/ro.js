@@ -172,6 +172,10 @@ export default {
   'today.theory': 'Teorie',
   'today.theoryLine': 'Ce sunt un shell, un voicing rootless, un drop 2 și un quartal — cu exemple pe care le poți asculta.',
   'today.openLessons': 'Deschide lecțiile',
+  'today.news': 'Rămâi pe aproape',
+  'today.newsLine': 'Un email scurt când apar unități noi. Fără spam, te dezabonezi oricând.',
+  'today.newsEmail': 'Adresa ta de email',
+  'today.subscribe': 'Abonează-te',
 
   'path.title': 'Drumul',
   'path.sub': 'Cântatul din acorduri, de la triade până la jazz. Toate unitățile sunt deschise: începe de unde ești.',
