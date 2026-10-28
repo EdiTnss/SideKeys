@@ -13,12 +13,14 @@
   } from '../bridge/theory';
   import { sayLevel, sayMessage, sayVoicing, sayInversion, sayUnit, sayDecimal, t } from '../lib/locale.svelte';
 
-  let { unit, plan, instrument, onfinish, onpractice = () => {}, ontheory = () => {}, onnext = null, onexit }: {
+  let { unit, plan, instrument, best = 0, onfinish, onpractice = () => {}, ontheory = () => {}, onnext = null, onexit }: {
     unit: { id: string; name: string };
     /** A level, or a stretch of training: the same screen plays both. */
     plan: LevelPlan | PracticePlan;
     /** The app's one instrument: it outlives this screen, so the keyboard stays connected. */
     instrument: Instrument;
+    /** The stars this level already has: the timed run only leads once it is the way to the third. */
+    best?: number;
     onfinish: (run: { stars: number; attempts: Attempt[]; seconds: number }) => Finished;
     /** A stretch of training is over: what was played, and for how long. No stars come back. */
     onpractice?: (run: { attempts: Attempt[]; seconds: number }) => void;
@@ -342,7 +344,9 @@
       {:else if level.timed}
         <button type="button" class="stop" onclick={() => level.stop()}>{t('game.stopRun')}</button>
       {:else if !level.plan.free}
-        <button type="button" class="start" onclick={startTimed}>{t('game.startTimed')}</button>
+        <!-- Free play is where a level starts, so the clock is not the button that leads. It leads
+             once the level has two stars, when the timed run is the only way to the third. -->
+        <button type="button" class:start={best >= 2} onclick={startTimed}>{t('game.startTimed')}</button>
       {/if}
       <button type="button" onclick={() => instrument.play()}>{t('game.playArmed')} <kbd>Enter</kbd></button>
       <button type="button" onclick={() => instrument.clear()}>{t('game.clear')} <kbd>Esc</kbd></button>

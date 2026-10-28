@@ -11,7 +11,7 @@
   type Review ={ quality: string; misses: number; hits: number };
   type Challenge = { number: number; states: string[] | null; share: string | null };
 
-  let { streak, minutes, goal, next, reviews, pending, challenge,
+  let { streak, minutes, goal, next, reviews, pending, challenge, fresh = false,
         onplay, onreview, onchallenge, ontraining, ontheory, onpath }: {
     streak: number;
     minutes: number;
@@ -22,6 +22,8 @@
     pending: number;
     /** The day's challenge: its number, and the official grid once it has been played. */
     challenge: Challenge;
+    /** Nothing played yet, ever: the visitor has to be told what this is before anything else. */
+    fresh?: boolean;
     onplay: (unit: Unit, level: LevelPlan) => void;
     onreview: () => void;
     onchallenge: () => void;
@@ -47,7 +49,7 @@
   <header class="head">
     <div>
       <h1>{t('today.title')}</h1>
-      <p class="sub">{t('today.sub')}</p>
+      <p class="sub">{fresh ? t('today.welcome') : t('today.sub')}</p>
     </div>
   </header>
 
@@ -176,7 +178,7 @@
   .head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; margin-bottom: 26px; }
   .head div { flex: 999 1 320px; }
   h1 { margin: 0 0 6px; font-size: 30px; font-weight: 600; letter-spacing: -0.03em; }
-  .sub { margin: 0; color: var(--ink-muted); font-size: 15px; }
+  .sub { margin: 0; max-width: 62ch; color: var(--ink-muted); font-size: 15px; line-height: 1.5; }
   .columns { display: flex; flex-wrap: wrap; gap: 20px; }
   .main { flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
   .side { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 18px; }

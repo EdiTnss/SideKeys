@@ -141,7 +141,8 @@ export default {
   'status.error': '{message}',
 
   'today.title': 'Today',
-  'today.sub': 'Three things. Nothing else.',
+  'today.sub': 'Your practice for today, in one place.',
+  'today.welcome': 'Play the chord on screen and SideKeys tells you what your hands did: the notes you found, the ones you missed, and why. No MIDI keyboard? Click the keys or type.',
   'today.continue': 'Continue the path',
   'today.notPlayed': 'Not played yet.',
   'today.noStars': 'Played, no stars yet.',

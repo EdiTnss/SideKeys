@@ -135,7 +135,8 @@ export default {
   'status.error': '{message}',
 
   'today.title': 'Azi',
-  'today.sub': 'Trei lucruri. Nimic altceva.',
+  'today.sub': 'Exercițiul de azi, într-un singur loc.',
+  'today.welcome': 'Cânți acordul de pe ecran, iar SideKeys îți spune ce au făcut mâinile: notele găsite, cele lipsă și de ce. N-ai clapă MIDI? Dai clic pe clape sau tastezi.',
   'today.continue': 'Continuă drumul',
   'today.notPlayed': 'Nejucat încă.',
   'today.noStars': 'Jucat, încă fără stele.',

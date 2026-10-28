@@ -186,6 +186,7 @@
     {#key playing.plan.id}
       <!-- Leaving a level goes back to the screen it was opened from; the logo goes to Today. -->
       <Game unit={playing.unit} plan={playing.plan} instrument={instrument} onfinish={finish}
+            best={progress.stars[playing.plan.id] ?? 0}
             onpractice={finishTraining}
             ontheory={openTheory}
             onnext={following ? () => (playing = following) : null}
@@ -207,6 +208,7 @@
       reviews={due}
       pending={pending}
       challenge={challenge}
+      fresh={Object.keys(progress.days ?? {}).length === 0}
       onplay={(unit, plan) => (playing = { unit, plan })}
       onreview={startReview}
       onchallenge={startChallenge}

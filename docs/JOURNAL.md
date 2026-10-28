@@ -539,3 +539,11 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   Cifra de mișcare apare doar după o trecere în timp. Verificat în browser: F A B rămâne pe F, cu B
   roșu și „Wrong note: B is not in F”, apoi F corect trece la Bb. 417 teste. **(11)** 7#11 rămâne
   la „Altered dominants”. **(7), (8)**: propuneri trimise lui Edi.
+- **2026-10-28 (7 și 8 din tur)** — Acceptate de Edi cum le-a propus Claude. **(7)** „Start the
+  timed run” nu mai e butonul principal pe un nivel: e secundar până când nivelul are două stele,
+  adică exact când trecerea în timp e singurul drum spre a treia (`best` în `Game.svelte`, din
+  `progress.stars`). **(8)** Azi spune, până la prima trecere jucată vreodată (`progress.days`
+  gol), ce face aplicația și că merge fără clapă MIDI; după aceea, „Your practice for today, in
+  one place.” în locul lui „Three things. Nothing else.” (pe ecran sunt șase carduri). Verificat în
+  browser: textul de bun venit pe profil gol, celălalt după o trecere; butonul evidențiat pe un
+  nivel cu două stele, simplu pe unul nejucat. **Următorul**: clapa pe telefon.
