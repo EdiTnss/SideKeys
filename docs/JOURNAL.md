@@ -507,3 +507,9 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   aud același acord”. „Play armed” suna deja în dezvoltare (trei note de pian, verdict „Clean”);
   dacă la Edi tace, cauza e alta și trebuie reprodusă la el. Verificat în browser: un click = o notă
   de pian, fără verdict; Play = acordul și „C Clean — root position”. 412 teste.
+- **2026-10-28 (clapele se albesc)** — Edi: după un acord cântat, clapele rămâneau colorate și pe
+  acordul următor. Acum se albesc la 2 s după ce acordul cerut s-a schimbat (`Game.svelte`,
+  `paintedSlot` + `FADE_MS`); verdictul scris rămâne. Ceasul merge doar cât clapele arată
+  răspunsul altui acord decât cel cerut: un verdict pe acordul nou îl oprește, iar unul anticipat
+  (în timed) se oprește singur când îi vine măsura. Notele ținute nu sunt șterse. Verificat în
+  browser: colorate la 1,6 s, albe la 2,8 s, verdictul neatins.

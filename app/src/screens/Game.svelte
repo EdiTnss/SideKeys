@@ -61,6 +61,8 @@
   let counted = $state(true);
   let judgedTexture = $state<string | string[] | null>(null);
   let classes = $state<Record<number, string>>({});
+  // The chord the coloured keys answer, so they can go white once another one is asked.
+  let paintedSlot = $state<number | null>(null);
   // Alternates with every verdict so the keys animate again when the same chord comes back:
   // a CSS animation does not restart for a class the element already carries.
   let strike = 'strike-a';
@@ -105,6 +107,7 @@
     const played = Object.entries(roleClasses(answered.analysis) as Record<string, string>)
       .map(([midi, role]) => [midi, `${role} ${strike}`]);
     classes = { ...Object.fromEntries(played), ...missingClasses(answered.analysis) };
+    paintedSlot = answered.slot;
   }
 
   function skip() {
@@ -133,7 +136,24 @@
     counted = true;
     judgedTexture = null;
     classes = {};
+    paintedSlot = null;
   }
+
+  // Once the chord asked for moves on, the keys of the last answer go back to white after two
+  // seconds: long enough to read them, gone before they are mistaken for the new chord (Edi,
+  // 2026-10-28). Only the keys: the verdict above them stays until the next one.
+  // The clock runs only while the keys show an answer to some other chord than the one asked: a
+  // verdict on the new chord stops it, and so does an anticipated one once its bar arrives.
+  const FADE_MS = 2000;
+  $effect(() => {
+    if (paintedSlot === null || paintedSlot === level.index) return;
+    const timer = setTimeout(() => {
+      if (instrument.held.length) return;
+      classes = {};
+      paintedSlot = null;
+    }, FADE_MS);
+    return () => clearTimeout(timer);
+  });
 
   // Held notes show grey while the chord is being built; the verdict paints over them when the
   // capture fires, and a release leaves the verdict standing.
