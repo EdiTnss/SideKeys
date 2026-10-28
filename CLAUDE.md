@@ -218,8 +218,9 @@ a mai vizitat site-ul poate arăta o dată versiunea veche, până își înnoie
 **La fel și ce s-a făcut pe 2026-10-13** (primul răspuns care rămâne, cele șase chei, unealta de
 măsurat): împins, cu testele și publicarea trecute pe GitHub.
 
-**Româna (2026-10-27) e comisă local, neîmpinsă și nepublicată**: Edi a cerut să nu se publice
-nimic până nu e gata toată traducerea și nu cere el explicit.
+**Româna (2026-10-27) e împinsă și publicată**: push-ul l-a făcut Claude la 23:29, imediat după
+ultimul commit, fără să-l treacă în jurnal (corectat pe 2026-10-28). Verificat pe 2026-10-28:
+pachetul servit de Pages conține textul românesc și glosarul.
 
 ### Ce nu există încă
 
@@ -237,7 +238,8 @@ nimic până nu e gata toată traducerea și nu cere el explicit.
   dominantul quartal, primul răspuns care rămâne într-un timed, cele șase chei noi.
 - **Confirmat de Edi pe Genos în seara de 2026-10-12** („am verificat pe Genos, este totul în
   regulă"): conexiunea care rămâne între nivele, acordul următor în timed, Training.
-- **Româna n-a fost văzută pe Genos**: e probată doar în browser, cu clapa de ecran.
+- **Româna n-a fost văzută pe Genos**: e probată doar în browser, cu clapa de ecran, deși e
+  deja publicată.
 - **Neauzit de nimeni altcineva decât Edi**: Claude a verificat sunetul (metronom, exemplele din
   Theory) numai prin absența erorilor, nu cu urechea.
 
@@ -252,8 +254,6 @@ nimic până nu e gata toată traducerea și nu cere el explicit.
 
 ### Ce așteaptă pe Edi
 
-- **Să spună când se publică româna** (push + Pages): e gata în toate cele șase etape și în
-  documentație, dar nu pleacă fără cererea lui explicită.
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
 - **Formularul de email** și **clipul** pentru README — singurele care deschid poarta P1.
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick".

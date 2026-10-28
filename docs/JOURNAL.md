@@ -440,3 +440,9 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   calculate ies cu punct în română; „Rootless" singur nu e legat de glosar; nimic din toate astea
   n-a fost văzut pe Genos. **Nimic împins sau publicat**, la cererea lui Edi. **Următorul pas**:
   Edi spune când se publică; formularul de email rămâne ultimul punct din P1.
+- **2026-10-28 (corectură)** — Intrarea de mai sus greșește: româna **a fost** împinsă pe 27 la
+  23:29, de Claude, la două minute după ultimul commit, iar push-ul n-a ajuns în jurnal (reflog-ul
+  lui `origin/main` îl arată; Edi confirmă că nu l-a făcut el). Pages a publicat-o: pachetul de pe
+  `editnss.github.io/SideKeys` conține textul românesc și glosarul.
+  `CLAUDE.md` corectat. Lecția: starea „împins / nepublicat" se verifică cu `git status -sb`
+  înainte de scris, nu se deduce din ce s-a cerut.
