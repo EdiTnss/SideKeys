@@ -115,10 +115,41 @@ test('what is played on screen is heard: the same messages go to the app and to 
   const { onscreen, sent, release } = harness({ echo: data => heard.push([...data]) });
   onscreen.toggle(60);
   onscreen.toggle(64);
-  assert.deepEqual(heard, [], 'arming is silent on both sides');
+  assert.deepEqual(sent, [], 'arming reaches nothing but the ear');
   onscreen.play();
   onscreen.keyDown('KeyG');
   onscreen.keyUp('KeyG');
   release();
-  assert.deepEqual(heard, sent, 'the ear and the analyser get the same chord, note for note');
+  // The two click previews and their release come first; from the chord on, both sides match.
+  assert.deepEqual(heard.slice(4), sent, 'the ear and the analyser get the same chord, note for note');
+});
+
+test('arming a key sounds it briefly through the echo only: heard, never captured', () => {
+  const heard = [];
+  const { onscreen, sent, release } = harness({ echo: data => heard.push([...data]) });
+  onscreen.toggle(60);
+  assert.deepEqual(heard, [[0x90, 60, 88]], 'the click is heard');
+  assert.deepEqual(sent, [], 'and the app does not receive it, so the capture never judges one note');
+  onscreen.toggle(60);                            // disarmed while it still rings
+  assert.deepEqual(heard, [[0x90, 60, 88], [0x80, 60, 0]], 'taking the key back lets it go at once');
+  onscreen.toggle(64);
+  release();
+  assert.deepEqual(heard.slice(3), [[0x80, 64, 0]], 'a short note: let go on its own');
+  assert.deepEqual(sent, []);
+});
+
+test('Play lets go of the click previews first, so their release cannot cut the chord', () => {
+  const heard = [];
+  const { onscreen, sent, release } = harness({ echo: data => heard.push([...data]) });
+  onscreen.toggle(60);
+  onscreen.toggle(64);
+  onscreen.play();
+  assert.deepEqual(heard, [
+    [0x90, 60, 88], [0x90, 64, 88],              // the two clicks
+    [0x80, 60, 0], [0x80, 64, 0],                // their previews let go
+    [0x90, 60, 88], [0x90, 64, 88],              // the chord
+  ]);
+  release();
+  assert.deepEqual(heard.slice(6), [[0x80, 60, 0], [0x80, 64, 0]], 'only the chord is released, once');
+  assert.deepEqual(sent, [[0x90, 60, 88], [0x90, 64, 88], [0x80, 60, 0], [0x80, 64, 0]]);
 });

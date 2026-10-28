@@ -5,8 +5,9 @@
 //
 // Two ways in, because the two devices are not the same:
 // - the mouse holds one note at a time, so a click only arms a key and Enter plays the chord.
-//   Sounding under the mouse would give the capture's debounce (300 ms) a two-note voicing to
-//   report for every click;
+//   Sending under the mouse would give the capture's debounce (300 ms) a two-note voicing to
+//   report for every click, so the click is only *heard*: a short note through the echo, which
+//   the capture never sees;
 // - a computer keyboard does hold several keys, so a letter is a note-on for as long as it is
 //   down, like a piano.
 
@@ -26,7 +27,7 @@ export function noteForKey(code, octave) {
 }
 
 /**
- * createOnScreen({ send, echo, velocity, holdMs, octave, setTimer, clearTimer, onChange })
+ * createOnScreen({ send, echo, velocity, holdMs, previewMs, octave, setTimer, clearTimer, onChange })
  * → { toggle(midi), play(), clear(), release(), keyDown(code), keyUp(code), octaveUp(),
  *     octaveDown(), armed, sounding, octave }
  * `send(data)` delivers one MIDI message on the virtual input and `echo(data)` sounds it through
@@ -38,6 +39,7 @@ export function noteForKey(code, octave) {
  *   echo?: (data: number[]) => void,
  *   velocity?: number,
  *   holdMs?: number,
+ *   previewMs?: number,
  *   octave?: number,
  *   setTimer?: (fn: () => void, ms: number) => any,
  *   clearTimer?: (id: any) => void,
@@ -49,6 +51,7 @@ export function createOnScreen({
   echo = () => {},               // the same message to the browser synth: on screen you hear what you play
   velocity = 88,
   holdMs = 1300,                 // longer than the capture's debounce: the verdict lands while the chord still sounds
+  previewMs = 700,               // a clicked key rings this long, enough to hear it, short enough not to pile up
   octave = 60,
   setTimer = (fn, ms) => setTimeout(fn, ms),
   clearTimer = id => clearTimeout(id),
@@ -59,6 +62,7 @@ export function createOnScreen({
   let sounding = [];
   let last = [];                 // the chord played last, for Enter with nothing armed
   let timer = null;
+  const previews = new Map();    // note → the timer that lets go of its click preview
 
   const sorted = set => [...set].sort((a, b) => a - b);
   // The app gets the message because it is the input; the synth gets it because the drawn keyboard
@@ -71,9 +75,24 @@ export function createOnScreen({
     onChange({ armed: sorted(armed), sounding: [...sounding], octave });
   }
 
-  /** A click on a drawn key: arms it, or takes it back. */
+  /** Lets go of a clicked key's preview now, if it still rings. Echo only, like the preview itself. */
+  function silence(note) {
+    if (!previews.has(note)) return;
+    clearTimer(previews.get(note));
+    previews.delete(note);
+    echo([0x80, note, 0]);
+  }
+
+  /** A click on a drawn key: arms it and lets you hear it, or takes it back. */
   function toggle(midi) {
-    if (!armed.delete(midi)) armed.add(midi);
+    if (armed.delete(midi)) {
+      silence(midi);
+    } else {
+      armed.add(midi);
+      silence(midi);
+      echo([0x90, midi, velocity]);
+      previews.set(midi, setTimer(() => { previews.delete(midi); echo([0x80, midi, 0]); }, previewMs));
+    }
     changed();
   }
 
@@ -81,6 +100,8 @@ export function createOnScreen({
   function play() {
     const notes = armed.size ? sorted(armed) : last;
     if (notes.length === 0) return false;
+    // A preview still ringing would be let go by its own timer in the middle of the chord.
+    for (const note of [...previews.keys()]) silence(note);
     release();
     armed.clear();
     sounding = notes;
@@ -102,6 +123,7 @@ export function createOnScreen({
   }
 
   function clear() {
+    for (const note of [...previews.keys()]) silence(note);
     armed.clear();
     release();
     changed();
