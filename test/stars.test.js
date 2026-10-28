@@ -51,7 +51,7 @@ test('isClean implies isRight, so a star never skips the one below it', () => {
 
 // ---- The run: how a whole pass turns into stars (docs/spec-game.md) ----------------------
 
-import { scoreRun, movementThreshold, counts, judgeAsk } from '../src/theory/stars.js';
+import { scoreRun, movementThreshold, counts, judgeAsk, rateStep } from '../src/theory/stars.js';
 
 const attempt = (symbol, notes) => ({ symbol, notes, analysis: notes.length ? on(symbol, notes) : null });
 
@@ -222,4 +222,14 @@ test('judgeAsk: a triad asked for is judged strictly, a seventh chord as jazz', 
   assert.deepEqual(judgeAsk(midi(['E', 'G', 'C', 'D']), 'C/E').wrong, [2]);
   // A seventh chord keeps its tensions: the 9 on Cmaj7 is colour, not a mistake.
   assert.deepEqual(judgeAsk(midi(['C', 'E', 'B', 'D']), 'Cmaj7').wrong, []);
+});
+
+test('rateStep: "smooth" in Training means what the Smooth star means for that progression', () => {
+  // ii–V–I: the star asks 1.25. 1.50 used to read "smooth" in Training and fail the star.
+  assert.equal(rateStep(1.0, 'smooth', 1.25), 'smooth');
+  assert.equal(rateStep(1.5, 'smooth', 1.25), 'close');
+  assert.equal(rateStep(2.25, 'ok', 1.25), 'ok');
+  assert.equal(rateStep(4, 'jumpy', 1.25), 'jumpy');
+  // The turnaround's star allows 1.75, above the generic 1.5: there 1.6 is smooth too.
+  assert.equal(rateStep(1.6, 'ok', 1.75), 'smooth');
 });

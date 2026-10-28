@@ -561,3 +561,18 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
 - **2026-10-28 (clapa pe telefon, confirmată)** — Edi a deschis sidekeys.app pe telefonul lui după
   publicare: „E bine așa”. Din turul ca utilizator nou rămân închise toate punctele (1–8, 10, 11, iar
   9 e clapa pe telefon). Pe Genos nu s-a încercat nimic din ce s-a făcut azi.
+- **2026-10-28 (al doilea tur)** — Claude a mai trecut o dată prin site ca utilizator nou
+  (Training, teorie, glosar, rezultat, conectare) și a găsit 7 lucruri; Edi: „fă tot ce ai zis”.
+  (1) Training spunea „Only your first answer counts for the stars”, deși n-are stele — greșeala
+  lui Claude de azi. (2) „Connect a MIDI keyboard” nu spunea nimic în afara ecranului de joc;
+  acum mesajul (nicio clapă, refuz, eroare) apare în antet, pe orice ecran, iar o permisiune dată
+  fără nicio clapă spune „No MIDI keyboard found…”. (3) „Back” dintr-o lecție deschisă din listă
+  duce la listă; deschisă din Drum sau din joc, duce acolo. (4) Pagina Triade spune acum că o notă
+  în plus e greșită (rând nou, EN și RO, cu testul pe `judgeAsk`; testele lecțiilor judecă de
+  acum ca jocul). (5) Glosarul: terța e avoid pe 7sus4, greșită pe un sus4 cerut ca triadă.
+  (6) „smooth” în Training e ținut de pragul stelei (`rateStep`), cu „close” între prag și 1,5.
+  (7) Forma se poate cere și pe progresii (`progressionShapes`). La verificare s-a mai găsit una:
+  după o reîncercare, mișcarea se compara cu încercarea ratată pe același acord și nu apărea;
+  acum se măsoară de la ultimul acord diferit. Testul vechi „a progression demands no shape” cerea
+  decizia schimbată și a fost rescris. Verificat în browser; 424 de teste. **Neverificat**: cazul
+  „permisiune dată, nicio clapă” (browserul de test refuză MIDI); trecerea în timp și Recapitularea.

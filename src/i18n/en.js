@@ -3,6 +3,7 @@
 
 export default {
   'header.connect': 'Connect a MIDI keyboard',
+  'header.noInput': 'No MIDI keyboard found. Check the cable — or play on screen, no keyboard needed.',
 
   // The analyzer's messages (src/i18n/messages.js). In English they must read exactly as the
   // analyzer's own `text`; test/messages.test.js compares them.
@@ -96,6 +97,7 @@ export default {
   'level.training.drill': 'Drill',
   'level.training.drill.shape': 'Drill · {shape}',
   'level.training.progression': '{name} in {key}',
+  'level.training.progression.shape': '{name} in {key} · {shape}',
 
   // Training (src/game/training.js): the shapes by id, the chord groups by id.
   'shape.any': 'Any voicing',
@@ -205,6 +207,7 @@ export default {
   'game.wrongShape': 'Right notes, wrong shape — that is {shape}.',
   'game.whatAsked': 'What was asked for?',
   'game.tryAgain': 'Play it again to move on, or skip it. Only your first answer counts for the stars.',
+  'game.tryAgainPractice': 'Play it again to move on, or skip it.',
   'game.notCounted': 'Not counted — this bar already had its answer, and the first one stands.',
   'game.movement': 'From {from}: {average} semitones a voice — {rating}',
   'game.stopMetronome': 'Stop the metronome',
@@ -223,6 +226,7 @@ export default {
 
   // How far the voices moved (theory/voiceLeading.js's rating).
   'rating.smooth': 'smooth',
+  'rating.close': 'close',
   'rating.ok': 'ok',
   'rating.jumpy': 'jumpy',
 
@@ -256,6 +260,7 @@ export default {
   'training.progressionAbout': 'a set of changes, round and round',
   'training.chords': 'Chords',
   'training.noShapeFor': 'No {shape} voicing for this chord',
+  'training.noShapeOnProgression': 'Not every chord of this progression has a voicing in this shape',
   'training.keys': 'Keys',
   'training.all': 'all',
   'training.none': 'none',

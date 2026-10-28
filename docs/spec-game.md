@@ -309,6 +309,23 @@ se trecea în Review ca `6` — acum taie basul găsit de parser. Și un nivel p
 unei treceri în timp își lăsa metronomul bătând, fără nimic pe ecran care să-l oprească:
 ecranul îl oprește acum la plecare (`dispose`).
 
+
+**Schimbări din 2026-10-28** (al doilea tur ca utilizator nou, aprobate de Edi):
+
+- **Forma se cere și pe progresii**, nu doar în drill: `progressionShapes(id, key)` din
+  `game/training.js` oferă numai formele pentru care motorul are un voicing pe *fiecare* acord
+  al progresiei, în tonalitatea aleasă (pe ii–V–i, cu m7b5, nu există shell, drop 2 sau quartal);
+  celelalte apar cu gri. O formă salvată care nu se potrivește progresiei e lăsată deoparte, nu
+  refuzată. Numele sesiunii o spune: „ii–V–I (major) in C · Rootless A”.
+- **„smooth” înseamnă ce înseamnă steaua**: `rateStep` din `theory/stars.js` ține eticheta
+  fiecărei schimbări de pragul Smooth al progresiei (`movementThreshold`). Sub prag, „smooth”;
+  peste prag, dar sub 1,5 (pragul generic al lui `compareVoicings`), „close” / „aproape”; restul
+  rămâne „ok” sau „jumpy”.
+- **Mișcarea se măsoară de la ultimul acord diferit**, nu de la ultima încercare: de când o
+  greșeală te ține pe acord, încercarea dinaintea unui răspuns bun e adesea același acord ratat.
+- După o greșeală, Training spune doar „Play it again to move on, or skip it.”, fără partea despre
+  stele, pe care Training nu le are.
+
 ## Teoria — o pagină pe unitate (2026-10-12)
 
 Cerută de Edi după prima zi pe Genos: jocul cerea „drop 2" și „quartal" cu un singur rând de

@@ -73,6 +73,10 @@ export function progressionName(locale, id) {
 export function levelName(locale, plan) {
   if (plan.mode === 'progression' && plan.progressionId) {
     const name = progressionName(locale, plan.progressionId);
+    if (plan.shape) {
+      const shape = translate(locale, `shape.${plan.shape}`);
+      return translate(locale, 'level.training.progression.shape', { name, key: plan.key ?? '', shape });
+    }
     return translate(locale, 'level.training.progression', { name, key: plan.key ?? '' });
   }
   if (plan.mode === 'drill') {

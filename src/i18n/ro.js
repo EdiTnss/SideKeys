@@ -3,6 +3,7 @@
 
 export default {
   'header.connect': 'Conectează o clapă MIDI',
+  'header.noInput': 'Nu găsesc nicio clapă MIDI. Verifică cablul — sau cântă pe ecran, nu ai nevoie de clapă.',
 
   // The analyzer's messages. "Avoid note" and "rootless" are jazz words and stay English;
   // "muddy" is said as what it means (Edi, 2026-10-27).
@@ -95,6 +96,7 @@ export default {
   'level.training.drill': 'Exercițiu',
   'level.training.drill.shape': 'Exercițiu · {shape}',
   'level.training.progression': '{name} în {key}',
+  'level.training.progression.shape': '{name} în {key} · {shape}',
 
   'shape.any': 'Orice voicing',
   'shape.shell': 'Shell',
@@ -200,6 +202,7 @@ export default {
   'game.wrongShape': 'Note corecte, formă greșită — asta e {shape}.',
   'game.whatAsked': 'Ce se cerea?',
   'game.tryAgain': 'Cântă-l din nou ca să treci mai departe, sau sari peste el. Pentru stele contează doar primul răspuns.',
+  'game.tryAgainPractice': 'Cântă-l din nou ca să treci mai departe, sau sari peste el.',
   'game.notCounted': 'Nu se numără — măsura asta avea deja un răspuns, iar primul rămâne.',
   'game.movement': 'De la {from}: {average} semitonuri pe voce — {rating}',
   'game.stopMetronome': 'Oprește metronomul',
@@ -217,6 +220,7 @@ export default {
   'game.synth': 'synth-ul browserului',
 
   'rating.smooth': 'lin',
+  'rating.close': 'aproape',
   'rating.ok': 'ok',
   'rating.jumpy': 'cu salturi',
 
@@ -250,6 +254,7 @@ export default {
   'training.progressionAbout': 'un șir de acorduri, în buclă',
   'training.chords': 'Acorduri',
   'training.noShapeFor': 'Niciun voicing {shape} pentru acordul ăsta',
+  'training.noShapeOnProgression': 'Nu toate acordurile progresiei au un voicing în forma asta',
   'training.keys': 'Tonalități',
   'training.all': 'toate',
   'training.none': 'niciuna',

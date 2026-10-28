@@ -2,7 +2,7 @@
   import type { PracticePlan } from '../game/practice.svelte';
   import {
     QUALITY_GROUPS, KEYS, SHAPES, TEMPO_RANGE, PROGRESSIONS,
-    drillPool, shapeQualities, progressionFor, trainingPlan, loadTraining, saveTraining,
+    drillPool, shapeQualities, progressionFor, progressionShapes, trainingPlan, loadTraining, saveTraining,
   } from '../bridge/game';
   import { sayGroup, sayProgression, sayShape, t } from '../lib/locale.svelte';
 
@@ -37,6 +37,9 @@
   const chart = $derived(
     (progressionFor(settings.progression, settings.key) as { key: string; bars: Array<{ chords: Array<{ symbol: string }> }> }));
   const ready = $derived(settings.mode === 'progression' || pool.length > 0);
+  // On a progression a shape is offered only where every chord of it has one: a shell
+  // ii–V–i would ask for a voicing the half-diminished does not have.
+  const fitting = $derived(progressionShapes(settings.progression, settings.key) as string[]);
 
   const named = (quality: string) => quality || t('training.major');
   // The shape inside a sentence: "no drop 2 voicing".
@@ -86,6 +89,22 @@
     </button>
   </div>
 
+  {#snippet shapes(onProgression: boolean)}
+    <div class="field">
+      <h2>{t('training.shape')}</h2>
+      <div class="chips" role="group" aria-label={t('training.shape')}>
+        {#each SHAPES as entry (entry.id)}
+          {@const fits = !onProgression || fitting.includes(entry.id)}
+          <button type="button" class="chip" class:on={settings.shape === entry.id && fits}
+                  aria-pressed={settings.shape === entry.id && fits}
+                  disabled={!fits}
+                  title={fits ? undefined : t('training.noShapeOnProgression')}
+                  onclick={() => (settings.shape = entry.id)}>{sayShape(entry)}</button>
+        {/each}
+      </div>
+    </div>
+  {/snippet}
+
   <div class="card">
     {#if settings.mode === 'drill'}
       <div class="field">
@@ -121,16 +140,7 @@
         </div>
       </div>
 
-      <div class="field">
-        <h2>{t('training.shape')}</h2>
-        <div class="chips" role="group" aria-label={t('training.shape')}>
-          {#each SHAPES as entry (entry.id)}
-            <button type="button" class="chip" class:on={settings.shape === entry.id}
-                    aria-pressed={settings.shape === entry.id}
-                    onclick={() => (settings.shape = entry.id)}>{sayShape(entry)}</button>
-          {/each}
-        </div>
-      </div>
+      {@render shapes(false)}
     {:else}
       <div class="field">
         <h2>{t('training.progression')}</h2>
@@ -156,6 +166,8 @@
              is played. In Db and Gb a minor tune is written from C# and F#, and this shows it. -->
         <p class="chart">| {chart.bars.map(bar => bar.chords.map(chord => chord.symbol).join(' ')).join(' | ')} |</p>
       </div>
+
+      {@render shapes(true)}
     {/if}
 
     <div class="field">

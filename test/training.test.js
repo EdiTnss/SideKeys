@@ -7,7 +7,7 @@ import { plainName } from '../src/theory/notes.js';
 import { getProgression, PROGRESSIONS } from '../src/theory/progressions.js';
 import {
   QUALITY_GROUPS, KEYS, SHAPES, DEFAULT_TRAINING, DRILL_BARS,
-  drillPool, shapeQualities, drawDrill, progressionFor, trainingPlan,
+  drillPool, shapeQualities, drawDrill, progressionFor, trainingPlan, progressionShapes,
   sanitizeTraining, loadTraining, saveTraining,
 } from '../src/game/training.js';
 
@@ -152,12 +152,13 @@ test('trainingPlan: a drill is one chord to the bar, long enough to never notice
   assert.deepEqual(plan.progression.timeSignature, [4, 4]);
 });
 
-test('trainingPlan: a progression keeps its own bars, loops, and demands no shape', () => {
+test('trainingPlan: a progression keeps its own bars, loops, and the shape asked for when it fits', () => {
   const plan = trainingPlan({ ...DEFAULT_TRAINING, mode: 'progression', progression: 'turnaround', key: 'Bb', tempo: 140, shape: 'shell' });
   assert.equal(plan.endless, true);
   assert.equal(plan.mode, 'progression');
   assert.equal(plan.tempo, 140);
-  assert.equal(plan.texture, null, 'the shape belongs to the drill');
+  // Until 2026-10-28 the shape belonged to the drill alone; Edi asked for it on progressions.
+  assert.equal(plan.texture, 'shell', 'Bbmaj7, G7, Cm7, F7 all have a shell');
   assert.deepEqual(barsOf(plan.progression), barsOf(getProgression('turnaround', 'Bb')));
   assert.match(plan.name, /Turnaround/);
   assert.match(plan.name, /Bb/);
@@ -197,4 +198,23 @@ test('the choices survive a save and a load, and a broken file starts from the d
   assert.deepEqual(loadTraining(storage), chosen);
   assert.deepEqual(loadTraining(fakeStorage({ 'sidekeys.training': 'not json' })), DEFAULT_TRAINING);
   assert.deepEqual(loadTraining(undefined), DEFAULT_TRAINING, 'no storage at all is not a crash');
+});
+
+test('progressionShapes: a shape is offered on a progression only if every chord in it has one', () => {
+  // ii–V–I in C is maj7, m7, 7: every shape the drill offers exists for all three.
+  assert.deepEqual(progressionShapes('ii-V-I', 'C'), SHAPES.map(shape => shape.id));
+  // The minor ii–V–i starts on a half-diminished: no shell, no quartal for it.
+  const minor = progressionShapes('ii-V-i', 'C');
+  assert.ok(minor.includes('rootless-A'));
+  assert.ok(!minor.includes('shell'));
+  assert.ok(!minor.includes('quartal'));
+  assert.ok(minor.includes('any'), 'any voicing is always there');
+});
+
+test('trainingPlan: a progression carries the shape when it fits, and none when it does not', () => {
+  const plan = trainingPlan({ ...DEFAULT_TRAINING, mode: 'progression', progression: 'ii-V-I', key: 'C', shape: 'rootless-A' });
+  assert.equal(plan.texture, 'rootless-A');
+  assert.equal(plan.shape, 'rootless-A');
+  const unfit = trainingPlan({ ...DEFAULT_TRAINING, mode: 'progression', progression: 'ii-V-i', key: 'C', shape: 'shell' });
+  assert.equal(unfit.texture, null, 'a shell ii–V–i would ask for a voicing the half-diminished does not have');
 });

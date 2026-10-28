@@ -330,7 +330,7 @@
       {/if}
 
       {#if analysis && !level.timed && !star}
-        <p class="move">{t('game.tryAgain')}</p>
+        <p class="move">{t(practice ? 'game.tryAgainPractice' : 'game.tryAgain')}</p>
       {:else if analysis && !counted && level.timed}
         <!-- Said in so many words, because the verdict above is true and still changes nothing:
              the bar had its answer, and on the clock the first one stands. -->

@@ -56,6 +56,7 @@ export default {
       'Toate trei notele trebuie să fie acolo: fundamentala, terța și cvinta.',
       'Terța decide ce triadă e: un C cu Eb în el nu e C.',
       'Pe un sus4, cvarta stă acolo unde ar sta terța, iar terța nu are voie să-i ia locul.',
+      'Nicio altă notă: un 9 sau o septimă adăugată face din ea alt acord, iar jocul o numără greșită.',
       'Așezarea e a ta: o mână sau două, în orice octavă.',
     ],
   },

@@ -29,6 +29,9 @@
   // Which theory page is open (null is the list of them), and the screen to go back to from it.
   let lesson = $state<string | null>(null);
   let beforeTheory: 'today' | 'path' | 'training' = 'today';
+  // A page reached from the list goes back to the list; one opened from the path or a level goes
+  // back there, where the question was asked.
+  let fromList = false;
   let playing = $state<{ unit: Unit; plan: LevelPlan | PracticePlan } | null>(null);
   // What the stretch of training just finished came to, said once on the way back to its screen.
   let lastTraining = $state<{ minutes: number; played: number; clean: number } | null>(null);
@@ -136,6 +139,7 @@
     if (screen !== 'theory') beforeTheory = screen;
     playing = null;
     lesson = unit;
+    fromList = false;
     screen = 'theory';
   }
 
@@ -168,6 +172,13 @@
       <span class="dot" aria-hidden="true"></span>{instrument.hardware.join(', ')}
     {:else}
       <button type="button" class="connect" onclick={() => instrument.connect()}>{t('header.connect')}</button>
+      <!-- Said here, on every screen: the status line under the keyboard exists only while
+           playing, and a press with no answer reads as a button that does not work. -->
+      {#if instrument.status.level === 'warn'}
+        <span class="warn" role="status">
+          {instrument.status.key === 'status.noInput' ? t('header.noInput') : t(instrument.status.key, instrument.status.params)}
+        </span>
+      {/if}
     {/if}
   </span>
   <!-- Each language is named in itself, so someone who cannot read the other one still finds
@@ -195,8 +206,8 @@
   {:else if screen === 'path'}
     <Path stars={progress.stars} onplay={(unit, plan) => (playing = { unit, plan })} ontheory={openTheory} />
   {:else if screen === 'theory'}
-    <Theory unit={lesson} instrument={instrument} onopen={unit => (lesson = unit)} onplay={playLevel}
-            onback={() => (screen = beforeTheory)} />
+    <Theory unit={lesson} instrument={instrument} onopen={unit => { lesson = unit; fromList = true; }} onplay={playLevel}
+            onback={() => { if (lesson !== null && fromList) lesson = null; else screen = beforeTheory; }} />
   {:else if screen === 'training'}
     <Training last={lastTraining} onstart={startTraining} onback={() => (screen = 'today')} />
   {:else}
@@ -240,6 +251,7 @@
     padding: 6px 12px; border: 1px solid var(--accent); border-radius: 8px;
     background: none; color: var(--ink); font: inherit; font-size: 13px; cursor: pointer;
   }
+  .warn { max-width: 300px; font-size: 12px; line-height: 1.35; color: var(--avoid); }
   .connect:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .language { display: inline-flex; align-items: center; gap: 2px; font-size: 13px; color: var(--ink-muted); }
   .language button {

@@ -189,7 +189,7 @@ export const GLOSSARY = [
     group: 'chords',
     name: 'Avoid note',
     short: 'Notă care se bate cu acordul și îi strică sunetul.',
-    long: 'Tehnic face parte din gamă, dar ținută peste acord intră în conflict cu o notă esențială. Cazul clasic e 11 pe maj7 sau pe dominantă, la un semiton peste terță. Pe un sus4, terța e avoid.',
+    long: 'Tehnic face parte din gamă, dar ținută peste acord intră în conflict cu o notă esențială. Cazul clasic e 11 pe maj7 sau pe dominantă, la un semiton peste terță. Pe un 7sus4, terța e avoid; pe un sus4 cerut ca triadă, jocul o numără notă greșită.',
     examples: [{ symbol: 'Cmaj7', notes: 'C4 E4 F4 B4', says: 'Avoid note: F (11)', caption: 'Cmaj7 = C4 E4 F4 B4 → „Avoid note: F (11)”' }],
     match: ['avoid note', 'avoid notes'],
   },

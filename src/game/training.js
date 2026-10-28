@@ -167,6 +167,20 @@ export function progressionFor(id, key) {
   return awkward(sharp) < awkward(flat) ? sharp : flat;
 }
 
+/**
+ * The shapes a progression can be practised in: those the engine has a voicing for on every
+ * chord of it, in that key. Any voicing is always among them (Edi, 2026-10-28: a shape on a
+ * progression, where it fits).
+ *
+ * @param {string} id A key of PROGRESSIONS.
+ * @param {string} key
+ * @returns {string[]} shape ids, in the order SHAPES offers them
+ */
+export function progressionShapes(id, key) {
+  const symbols = [...new Set(progressionFor(id, key).bars.flatMap(bar => bar.chords.map(chord => chord.symbol)))];
+  return SHAPES.filter(shape => symbols.every(symbol => canPlay(symbol, shape.texture))).map(shape => shape.id);
+}
+
 const clampTempo = tempo => (Number.isFinite(tempo)
   ? Math.min(TEMPO_RANGE.max, Math.max(TEMPO_RANGE.min, Math.round(tempo)))
   : DEFAULT_TRAINING.tempo);
@@ -188,17 +202,20 @@ export function trainingPlan(settings, { random = Math.random } = {}) {
   const tempo = clampTempo(settings.tempo);
   if (settings.mode === 'progression') {
     const progression = progressionFor(settings.progression, settings.key);
+    // A shape the progression cannot be played in is dropped rather than refused: the screen
+    // greys it out, and a saved choice from another progression must not leave nothing to play.
+    const fits = progressionShapes(settings.progression, settings.key).includes(settings.shape);
+    const shape = fits ? SHAPES.find(entry => entry.id === settings.shape) : null;
     return {
-      name: `${progression.name} in ${progression.key}`,
+      name: shape?.texture ? `${progression.name} in ${progression.key} · ${shape.label}` : `${progression.name} in ${progression.key}`,
       tempo,
       endless: true,
       mode: 'progression',
       // What the name is made of, so another language can make it too (src/i18n/names.js).
-      shape: null,
+      shape: shape?.texture ? shape.id : null,
       progressionId: settings.progression,
       key: progression.key,
-      // The shape is the drill's: a blues has dominants, and a quartal blues is no blues here.
-      texture: null,
+      texture: shape?.texture ?? null,
       progression: { timeSignature: progression.timeSignature, bars: progression.bars },
     };
   }

@@ -9,7 +9,7 @@
 // Which chord a voicing answers is decided exactly as in a level, by `snapshotTarget`, so the
 // anticipation rule is one rule here, on the path and in the harness.
 
-import { parseChord, analyzeVoicing, judgeAsk, isRight, isClean, counts, compareVoicings } from '../bridge/theory';
+import { parseChord, analyzeVoicing, judgeAsk, isRight, isClean, rateStep, movementThreshold, counts, compareVoicings } from '../bridge/theory';
 import { createMetronome, createSession, snapshotTarget, isAnticipated } from '../bridge/time';
 import type { Answer, Ask, Attempt, Run } from './level.svelte';
 
@@ -20,13 +20,15 @@ export type PracticePlan = {
   tempo: number;
   endless: true;
   mode: 'drill' | 'progression';
-  /** The shape a drill demands of every chord, or null. A progression demands none. */
+  /** Which progression from the library, for its Smooth threshold; null in a drill. */
+  progressionId?: string | null;
+  /** The shape demanded of every chord, or null: a drill's, or a progression's where it fits. */
   texture: string | string[] | null;
   progression: { timeSignature: number[]; bars: Array<{ chords: Array<{ symbol: string; beat: number }> }> };
 };
 
 /** How far the voices travelled from the chord before, for a progression: its whole point. */
-export type Movement = { from: string; average: number; rating: 'smooth' | 'ok' | 'jumpy' };
+export type Movement = { from: string; average: number; rating: 'smooth' | 'close' | 'ok' | 'jumpy' };
 
 export type Practice = Run & {
   readonly mode: 'drill' | 'progression';
@@ -150,13 +152,16 @@ export function createPractice(plan: PracticePlan): Practice {
         return { ...where, texture: plan.texture, analysis, counted };
       }
       if (timed) standing.set(target.slot, chorus);
-      const before = history.at(-1);
-      // Only a change of chord is a step to measure: the same chord struck twice went nowhere.
-      const compared = plan.mode === 'progression' && before && before.symbol !== target.symbol && before.notes.length
+      // The step is measured from the last chord before this one. Not from the last attempt: a
+      // miss now stays on its chord, so the attempt before a right answer is often the same chord
+      // missed, and the same chord struck twice went nowhere.
+      const before = [...history].reverse().find(entry => entry.symbol !== target.symbol);
+      const compared = plan.mode === 'progression' && before && before.notes.length
         ? compareVoicings(before.notes, notes)
         : null;
       movement = compared?.rating
-        ? { from: before!.symbol, average: compared.averageMove, rating: compared.rating as Movement['rating'] }
+        ? { from: before!.symbol, average: compared.averageMove,
+            rating: rateStep(compared.averageMove, compared.rating as 'smooth' | 'ok' | 'jumpy', movementThreshold(plan.progressionId ?? '')) as Movement['rating'] }
         : null;
       history.push({ symbol: target.symbol, notes, analysis, texture: plan.texture });
       played += 1;

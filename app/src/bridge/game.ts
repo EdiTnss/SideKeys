@@ -14,7 +14,7 @@ export {
 // Training: free practice off the path — a drill or a looped progression, with no stars.
 export {
   QUALITY_GROUPS, KEYS, SHAPES, TEMPO_RANGE, DEFAULT_TRAINING,
-  drillPool, shapeQualities, progressionFor, trainingPlan, loadTraining, saveTraining,
+  drillPool, shapeQualities, progressionFor, progressionShapes, trainingPlan, loadTraining, saveTraining,
 } from '../../../src/game/training.js';
 export { PROGRESSIONS } from '../../../src/theory/progressions.js';
 

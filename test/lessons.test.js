@@ -7,14 +7,15 @@ import assert from 'node:assert/strict';
 import { parseChord } from '../src/theory/chords.js';
 import { nameToMidi } from '../src/theory/notes.js';
 import { analyzeVoicing, inversionOf } from '../src/theory/analyzer.js';
-import { isRight, isClean, movementThreshold } from '../src/theory/stars.js';
+import { isRight, isClean, movementThreshold, judgeAsk } from '../src/theory/stars.js';
 import { compareVoicings } from '../src/theory/voiceLeading.js';
 import { PATH } from '../src/game/path.js';
 import { LESSONS, lessonFor, lessonForTexture, exampleNotes, lessonIn } from '../src/game/lessons.js';
 import LESSONS_RO from '../src/game/lessons.ro.js';
 import { describeMessage } from '../src/i18n/messages.js';
 
-const analyze = (symbol, names) => analyzeVoicing(names.split(' ').map(nameToMidi), parseChord(symbol));
+// Judged as the game judges an ask, since that is what the pages describe: strictly on a triad.
+const analyze = (symbol, names) => judgeAsk(names.split(' ').map(nameToMidi), symbol);
 const warnings = analysis => analysis.messages.filter(message => message.level === 'warning').map(message => message.text);
 
 // ---- The pages themselves --------------------------------------------------------------------
@@ -85,6 +86,10 @@ test('triads: all three notes are needed, the third decides which triad, and the
   assert.ok(isClean(analyze('C', 'C2 G3 E4')));
   // A sus4 has its fourth where the third would be.
   assert.ok(!isRight(analyze('Csus4', 'C4 E4 G4')));
+  // Nothing else: a 9 or a seventh on top makes it another chord, and the game counts it wrong.
+  assert.ok(!isRight(analyze('C', 'C4 E4 G4 D5')), 'an added 9');
+  assert.ok(!isRight(analyze('C', 'C4 E4 G4 Bb4')), 'an added seventh');
+  assert.deepEqual(warnings(analyze('C', 'C4 E4 G4 D5')), ['Wrong note: D is not in C']);
 });
 
 test('inversions: only the lowest note is checked against the slash, in any octave', () => {

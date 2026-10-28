@@ -89,3 +89,10 @@ test('jazz names stay English in Romanian; the words around them do not', () => 
 test('something with no name of its own keeps the one it came with', () => {
   assert.equal(levelName('ro', { id: 'nowhere', name: 'As it was' }), 'As it was');
 });
+
+test('a training progression with a shape says the shape in both languages', () => {
+  const plan = { name: 'ii–V–I (major) in C · Rootless A', mode: 'progression', progressionId: 'ii-V-I', key: 'C', shape: 'rootless-A' };
+  assert.match(levelName('en', plan), / in C · /);
+  assert.match(levelName('ro', plan), / în C · /);
+  assert.equal(levelName('en', { ...plan, shape: null }).includes('·'), false);
+});

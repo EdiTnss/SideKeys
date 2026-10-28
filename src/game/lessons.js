@@ -70,6 +70,7 @@ export const LESSONS = [
       'All three notes have to be there: the root, the third and the fifth.',
       'The third decides which triad it is: C with an E flat in it is not C.',
       'On a sus4 the fourth stands where the third would, and the third must not take its place.',
+      'Nothing else: a 9 or a seventh on top makes it another chord, and the game counts it wrong.',
       'The spacing is yours: one hand or two, any octave.',
     ],
     level: 'triads-major',

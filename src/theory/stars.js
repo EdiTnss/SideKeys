@@ -150,3 +150,18 @@ export function judgeAsk(notes, symbol) {
   const chord = parseChord(symbol);
   return analyzeVoicing(notes, chord, { strict: chord.chordTones.length === 3 });
 }
+
+/**
+ * The word for one change in a Training progression, held to the progression's own Smooth
+ * threshold so that "smooth" there means what the third star means: at or under it, smooth;
+ * over it but still smooth by the generic measure, "close"; anything else as compareVoicings
+ * rated it.
+ * @param {number} average  semitones per voice
+ * @param {'smooth' | 'ok' | 'jumpy'} rating  compareVoicings' own word
+ * @param {number} threshold  movementThreshold(progressionId)
+ * @returns {'smooth' | 'close' | 'ok' | 'jumpy'}
+ */
+export function rateStep(average, rating, threshold) {
+  if (average <= threshold) return 'smooth';
+  return rating === 'smooth' ? 'close' : rating;
+}

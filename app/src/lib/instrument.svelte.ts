@@ -138,6 +138,9 @@ export function createInstrument({
     asked = true;
     try {
       await addHardware();
+      // Granted, with nothing plugged in: the device list did not change, so nothing else would
+      // say so, and the button would look as if it had done nothing.
+      if (!hardware.length) status = { key: 'status.noInput', level: 'warn' };
     } catch (error) {
       status = { key: 'status.refused', params: { message: (error as Error).message }, level: 'warn' };
     }
