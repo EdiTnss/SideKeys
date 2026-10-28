@@ -17,3 +17,6 @@ worker/.env*
 # OS files
 Thumbs.db
 .DS_Store
+
+# Reel-making workspace: holds an ElevenLabs key, never committed
+Reels/

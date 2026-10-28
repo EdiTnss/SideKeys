@@ -255,8 +255,11 @@ pachetul servit de Pages conține textul românesc și glosarul.
 ### Ce așteaptă pe Edi
 
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
-- **Clipul** pentru README: formularul există (Buttondown, 2026-10-28), deci clipul e singurul
-  care mai lipsește ca să pornească ceasul porții P1.
+- **Să posteze reel-ul** (`Reels/out/sidekeys-reel.mp4`, aprobat de Edi pe 2026-10-28) și să
+  spună unde merge în README. Postarea cere întâi planul **Starter** la ElevenLabs: pe gratuit,
+  vocea și muzica nu au licență comercială. Ziua primei postări pornește ceasul porții P1.
+- **Să șteargă cheia API ElevenLabs** din cont și fișierul `Reels/cheie api eleven labs.txt`:
+  a apărut în conversația din 2026-10-28, din greșeala lui Claude. Conectorul nu are nevoie de ea.
 - **Să încerce formularul cu adresa lui**, după publicare: Claude nu a trimis nicio adresă de probă.
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick".
 
@@ -284,12 +287,21 @@ pachetul servit de Pages conține textul românesc și glosarul.
 - **Creditul pianului stă jos pe lista din Teorie**, mic: licența CC BY 3.0 cere atribuirea pe
   site, deci nu se scoate de tot (README-ul nu ajunge la cine aude pianul).
 - **Necommis**: `Voicing Lab ca produs.pdf`, care nu intră în repo.
+- **`Reels/` e ignorat de git**: mașinăria de reel-uri (captura jocului publicat cu o clapă MIDI
+  simulată, compoziția HTML cadru cu cadru, mixajul ffmpeg) și o cheie API. Se reface cu
+  `node Reels/capture.mjs`, apoi `node Reels/render.mjs` (`mux` remixează doar sunetul).
+  ffmpeg e instalat prin winget, dar nu e în PATH-ul sesiunilor deja pornite.
+- **ElevenLabs, prin conector, rulează o singură generare odată**: mai multe deodată dau 429
+  („too many requests”) și nu taxează nimic. Se pornesc pe rând, cu câte o variantă.
+- **Verdictul din joc scrie „Clean— Rootless A”**, fără spațiu înaintea liniei (`Game.svelte`,
+  blocul `{#if shape}`). Se vede în prim-planurile reel-ului; nereparat.
 
 ## Următorul pas
 
-**Clipul de 15 s pentru README**, cu Edi la Genos: toată lista P1 e bifată, iar clipul e ultimul
-lucru care pornește ceasul porții (40 de adrese în 4 săptămâni). Formularul Buttondown e pe Azi
-și în README din 2026-10-28.
+**Reel-ul în README și pe rețele**: clipul există (39 s, vertical, aprobat pe 2026-10-28), deci
+mai trebuie pus în README și postat. Ziua primei postări pornește ceasul porții P1 (40 de adrese
+în 4 săptămâni); se scrie în `PRODUCT.md`. De întrebat pe Edi: un GIF mut în repo sau video-ul
+încărcat prin interfața GitHub.
 
 Ce se poate face fără Edi, în ordinea asta:
 

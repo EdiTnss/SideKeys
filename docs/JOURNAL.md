@@ -456,3 +456,21 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   trimisă de probă**: ar fi ajuns la un serviciu extern. 408 teste, `svelte-check` curat. Punctul
   din P1 bifat; rămâne clipul, care pornește ceasul porții. **Împins și publicat** la cererea lui
   Edi (`4389314`); pachetul de pe Pages conține formularul, în ambele limbi.
+- **2026-10-28 (reel-ul)** — Edi a cerut un clip pe care să-l genereze Claude, în stilul unui
+  reel de referință trimis de el (61 s, explicativ, cu subtitrare pe cuvânt și autocolante).
+  **Deciziile lui Edi**: fără prezentator (clapa e personajul), CTA „Comment PLAY”, engleză, voce
+  AI bună (ElevenLabs, vocea Matt), apoi „mai animat” și muzică cu efecte sonore. **Cum e făcut**,
+  totul în `Reels/` (ignorat de git): `capture.mjs` deschide jocul **publicat** în Chrome fără
+  fereastră, la 1080×1920, cu o clapă MIDI simulată în locul lui `requestMIDIAccess`, iar notele
+  le alege motorul (`suggestVoicings`, legate prin voice leading). Pe ii–V–I · Four flat keys a ieșit
+  întâi o trecere liberă cu o greșeală intenționată (B pe C7: „Missing Bb (b7)”), care se oprește
+  la 2 stele, cum spune jocul, apoi una pe tempo cu 3 stele, „Smooth”, 12/12, 0,82. `reel.html`
+  desenează fiecare cadru dintr-un `t`; `render.mjs` îl randează la 30 fps și mixează vocea, muzica
+  (coborâtă sub voce prin sidechain), cinci efecte pe 41 de momente, la −14 LUFS. Timpii frazelor
+  vin din pauzele găsite de ffmpeg în voce: 26 de pauze pentru 26 de fraze. **Nivelurile s-au
+  reglat din măsurători**, nu din ascultare: buzz-ul ieșea peste voce, whoosh-ul se repetă de 16
+  ori. **Ce a mers prost**: o comandă a lui Claude a afișat cheia API ElevenLabs în conversație;
+  `Reels/` a intrat în `.gitignore`, iar Edi trebuie s-o șteargă din cont. ElevenLabs refuză cu 429
+  orice a doua generare simultană; efectul „thunk” e făcut local cu ffmpeg. **Cost**: ~1.950 de
+  credite (~0,20 $). **Rămas**: planul Starter înainte de postare (licența comercială), reel-ul în
+  README, spațiul lipsă din „Clean— Rootless A” în joc.
