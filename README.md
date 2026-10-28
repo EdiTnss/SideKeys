@@ -17,7 +17,7 @@ Everything in that answer is computed, not guessed. No model is asked what a Dm7
 
 **39 seconds, sound on:** the real game, judged by the real analyzer.
 
-https://github.com/user-attachments/assets/a6ce1ef3-d2ab-4800-bfbe-5f13845b4394
+https://github.com/user-attachments/assets/b52b84ad-0746-494c-9b96-29746f0d6d32
 
 ## What you actually do with it
 
