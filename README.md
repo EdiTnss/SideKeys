@@ -15,7 +15,9 @@ too low to sound clear, and how smoothly you moved from the chord before.
 
 Everything in that answer is computed, not guessed. No model is asked what a Dm7 is.
 
-<!-- demo.gif -->
+**39 seconds, sound on:** the real game, judged by the real analyzer.
+
+https://github.com/user-attachments/assets/a6ce1ef3-d2ab-4800-bfbe-5f13845b4394
 
 ## What you actually do with it
 
