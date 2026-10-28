@@ -129,6 +129,7 @@ export default {
   'common.chords': { one: '{count} acord', few: '{count} acorduri', other: '{count} de acorduri' },
 
   'status.idle': 'Dă clic pe clape ca să le armezi, apoi Enter ca să le cânți. Sau tastează: A S D F G H J.',
+  'status.idleTouch': 'Atinge clapele ca să le armezi, apoi „Cântă notele armate”. Săgețile mută clapa cu o octavă.',
   'status.midiIn': 'Intrare MIDI: {devices}',
   'status.noInput': 'Nu s-a găsit nicio intrare MIDI. Verifică cablul sau cântă pe clapele de mai jos.',
   'status.refused': 'Web MIDI a fost refuzat: {message}',
@@ -206,6 +207,8 @@ export default {
   'game.stopRun': 'Oprește trecerea',
   'game.startTimed': 'Pornește trecerea pe metronom',
   'game.playArmed': 'Cântă notele armate',
+  'game.octaveDown': 'Clapa cu o octavă mai jos',
+  'game.octaveUp': 'Clapa cu o octavă mai sus',
   'game.clear': 'Șterge',
   'game.skip': 'Sari peste',
   'game.done': 'Gata',

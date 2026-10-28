@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { onDestroy } from 'svelte';
+  import { onDestroy, untrack } from 'svelte';
+  import { fitWindow } from '../../../src/ui/keyboard.js';
   import Keyboard from '../lib/Keyboard.svelte';
   import Glossed from '../lib/Glossed.svelte';
   import Result from './Result.svelte';
@@ -156,6 +157,31 @@
     }, FADE_MS);
     return () => clearTimeout(timer);
   });
+
+  // On a phone the full C2–C6 keyboard leaves a key 11 px wide, so a narrow screen shows two
+  // octaves at a time, moved with the arrows (Edi, 2026-10-28). The window follows the notes
+  // the verdict colours when they fall outside it, so the answer is never off screen.
+  const FULL = { from: 36, to: 84 };
+  const SPAN = 24;
+  let narrow = $state(false);
+  let touch = $state(false);
+  let low = $state(48);
+  $effect(() => {
+    const width = matchMedia('(max-width: 640px)');
+    const finger = matchMedia('(pointer: coarse)');
+    const read = () => { narrow = width.matches; touch = finger.matches; };
+    read();
+    width.addEventListener('change', read);
+    finger.addEventListener('change', read);
+    return () => { width.removeEventListener('change', read); finger.removeEventListener('change', read); };
+  });
+  const shown = $derived({ ...classes, ...armedClasses(instrument.armed) });
+  $effect(() => {
+    const notes = Object.keys(shown).map(Number);
+    // Untracked: an arrow press moves the window on purpose, and must not be undone here.
+    if (narrow) low = fitWindow(untrack(() => low), notes, { span: SPAN, ...{ min: FULL.from, max: FULL.to } });
+  });
+  const shift = (by: number) => { low = Math.min(FULL.to - SPAN, Math.max(FULL.from, low + by)); };
 
   // Held notes show grey while the chord is being built; the verdict paints over them when the
   // capture fires, and a release leaves the verdict standing.
@@ -333,9 +359,19 @@
       {/if}
     </div>
 
-    <Keyboard classes={{ ...classes, ...armedClasses(instrument.armed) }} onkey={instrument.toggle} />
+    {#if narrow}
+      <!-- The arrows sit above the keys, not beside them: on 375 px every pixel of width is key. -->
+      <div class="window">
+        <button type="button" class="arrow" onclick={() => shift(-12)} disabled={low <= FULL.from} aria-label={t('game.octaveDown')}>‹</button>
+        <span class="range">{midiToName(low)}–{midiToName(low + SPAN)}</span>
+        <button type="button" class="arrow" onclick={() => shift(12)} disabled={low >= FULL.to - SPAN} aria-label={t('game.octaveUp')}>›</button>
+      </div>
+      <Keyboard classes={shown} onkey={instrument.toggle} from={low} to={low + SPAN} />
+    {:else}
+      <Keyboard classes={shown} onkey={instrument.toggle} from={FULL.from} to={FULL.to} />
+    {/if}
 
-    <div class="controls">
+    <div class="controls" class:touch>
       {#if practice && level.timed}
         <!-- Stops the clock, not the practice: it goes on without it, from the chord it was on. -->
         <button type="button" onclick={() => level.stop()}>{t('game.stopMetronome')}</button>
@@ -356,11 +392,13 @@
       {#if practice}
         <button type="button" onclick={leave}>{t('game.done')}</button>
       {/if}
-      <span class="octave">{t('game.octave', { note: midiToName(instrument.octave) })} <kbd>Z</kbd><kbd>X</kbd></span>
+      {#if !touch}
+        <span class="octave">{t('game.octave', { note: midiToName(instrument.octave) })} <kbd>Z</kbd><kbd>X</kbd></span>
+      {/if}
     </div>
 
     <p class="status {instrument.status.level}">
-      {t(instrument.status.key, instrument.status.params)}
+      {t(touch && instrument.status.key === 'status.idle' ? 'status.idleTouch' : instrument.status.key, instrument.status.params)}
       <span class="sound">· {instrument.sound === 'piano' ? t('game.piano') : t('game.synth')}</span>
     </p>
   </section>
@@ -395,6 +433,15 @@
   .waiting { margin: 0; font-size: 24px; color: var(--ink-muted); }
   .messages { margin: 0; padding-left: 20px; color: var(--ink-muted); font-size: 14px; }
   .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
+  /* A finger has no Enter key: the shortcuts are noise on a phone. */
+  .controls.touch kbd { display: none; }
+  .window { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 8px; }
+  .range { font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); min-width: 64px; text-align: center; }
+  .arrow { width: 44px; height: 36px; padding: 0; border-radius: 10px; font-size: 22px; display: grid; place-items: center; line-height: 1; }
+  .arrow:disabled { opacity: 0.3; }
+  @media (max-width: 640px) {
+    .game { padding: 16px 16px 40px; }
+  }
   button {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 10px 18px; border: 1px solid var(--border); border-radius: 10px;

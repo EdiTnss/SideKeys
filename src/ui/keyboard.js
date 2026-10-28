@@ -76,3 +76,20 @@ export function createKeyboard(svg, { from = 28, to = 103, onKey = null } = {}) 
 
   return { highlight };
 }
+
+/**
+ * Where a narrow keyboard's window starts (the MIDI number of its lowest C), so that the notes
+ * being shown are on it. Notes already inside leave it alone, or it would jump under the finger;
+ * otherwise it starts on the C at or below the lowest note, within the full keyboard's edges.
+ *
+ * @param {number} low  where the window starts now
+ * @param {number[]} notes  the notes that have to be seen
+ * @param {{ span?: number, min?: number, max?: number }} [options]  window width in semitones,
+ *   and the full keyboard's lowest and highest notes
+ * @returns {number}
+ */
+export function fitWindow(low, notes, { span = 24, min = 36, max = 84 } = {}) {
+  if (!notes.length || notes.every(note => note >= low && note <= low + span)) return low;
+  const start = 12 * Math.floor(Math.min(...notes) / 12);
+  return Math.min(max - span, Math.max(min, start));
+}

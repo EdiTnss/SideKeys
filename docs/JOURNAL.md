@@ -547,3 +547,14 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   one place.” în locul lui „Three things. Nothing else.” (pe ecran sunt șase carduri). Verificat în
   browser: textul de bun venit pe profil gol, celălalt după o trecere; butonul evidențiat pe un
   nivel cu două stele, simplu pe unul nejucat. **Următorul**: clapa pe telefon.
+- **2026-10-28 (clapa pe telefon)** — Varianta A, aleasă de Edi: sub 640 px, două octave (C3–C5)
+  în loc de patru, cu săgeți deasupra clapei (nu lângă: pe 375 px fiecare pixel de lățime e clapă)
+  și marginile ecranului reduse la 16 px. Rezultat măsurat la 375×812: clapa de 343 px, albele de
+  23 px (erau 11), înălțimea 96 px (era 45), fără derulare orizontală. Fereastra se mută singură
+  când notele colorate cad în afara ei (`fitWindow`, testat), dar nu anulează o săgeată apăsată.
+  Pe ecran tactil dispar scurtăturile și textul despre litere; în loc apare „Tap the keys to arm
+  them, then Play armed…”. `Keyboard.svelte` își redesenează SVG-ul sub `{#key}` când se schimbă
+  intervalul, ca handler-ul de atingere să nu se atașeze de două ori. Verificat în browser cu
+  emulare de telefon (atingeri reale: C E G armate, „C Clean”; săgeți; un F jos mută fereastra pe
+  C2–C4) și pe desktop (neschimbat). **Neverificat pe un telefon adevărat.** Edi a cerut tot pe
+  2026-10-28 ca Claude să vorbească numai în română, inclusiv în rândurile scurte și rezumate.

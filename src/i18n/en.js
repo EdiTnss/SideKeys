@@ -135,6 +135,7 @@ export default {
 
   // The instrument's status line (app/src/lib/instrument.svelte.ts).
   'status.idle': 'Click the keys to arm them, Enter to play. Or type: A S D F G H J.',
+  'status.idleTouch': 'Tap the keys to arm them, then Play armed. The arrows move the keyboard an octave.',
   'status.midiIn': 'MIDI in: {devices}',
   'status.noInput': 'No MIDI input found. Check the cable, or play the keys below.',
   'status.refused': 'Web MIDI was refused: {message}',
@@ -211,6 +212,8 @@ export default {
   'game.stopRun': 'Stop the run',
   'game.startTimed': 'Start the timed run',
   'game.playArmed': 'Play armed',
+  'game.octaveDown': 'Keyboard an octave down',
+  'game.octaveUp': 'Keyboard an octave up',
   'game.clear': 'Clear',
   'game.skip': 'Skip',
   'game.done': 'Done',
