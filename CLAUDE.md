@@ -255,9 +255,11 @@ pachetul servit de Pages conține textul românesc și glosarul.
 ### Ce așteaptă pe Edi
 
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
-- **Să posteze reel-ul** (`Reels/out/sidekeys-reel.mp4`, aprobat de Edi pe 2026-10-28) și să
-  spună unde merge în README. Postarea cere întâi planul **Starter** la ElevenLabs: pe gratuit,
-  vocea și muzica nu au licență comercială. Ziua primei postări pornește ceasul porții P1.
+- **Să posteze reel-ul** pe TikTok și Instagram (`Reels/out/sidekeys-reel.mp4`, aprobat pe
+  2026-10-28; în README e din aceeași zi, ca video încărcat pe GitHub, în copia comprimată
+  `sidekeys-reel-web.mp4`, sub limita de 10 MB). Postarea cere întâi planul **Starter** la
+  ElevenLabs: pe gratuit, vocea și muzica nu au licență comercială. Ziua primei postări pornește
+  ceasul porții P1.
 - **Să șteargă cheia API ElevenLabs** din cont și fișierul `Reels/cheie api eleven labs.txt`:
   a apărut în conversația din 2026-10-28, din greșeala lui Claude. Conectorul nu are nevoie de ea.
 - **Să încerce formularul cu adresa lui**, după publicare: Claude nu a trimis nicio adresă de probă.
@@ -298,10 +300,9 @@ pachetul servit de Pages conține textul românesc și glosarul.
 
 ## Următorul pas
 
-**Reel-ul în README și pe rețele**: clipul există (39 s, vertical, aprobat pe 2026-10-28), deci
-mai trebuie pus în README și postat. Ziua primei postări pornește ceasul porții P1 (40 de adrese
-în 4 săptămâni); se scrie în `PRODUCT.md`. De întrebat pe Edi: un GIF mut în repo sau video-ul
-încărcat prin interfața GitHub.
+**Ziua în care Edi postează reel-ul**: clipul e gata și e în README (2026-10-28), deci postarea pe
+rețele pornește ceasul porții P1 (40 de adrese în 4 săptămâni). Data se scrie în `PRODUCT.md`, la
+poarta P1, iar ceasul se urmărește de acolo.
 
 Ce se poate face fără Edi, în ordinea asta:
 

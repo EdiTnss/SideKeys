@@ -472,5 +472,7 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   ori. **Ce a mers prost**: o comandă a lui Claude a afișat cheia API ElevenLabs în conversație;
   `Reels/` a intrat în `.gitignore`, iar Edi trebuie s-o șteargă din cont. ElevenLabs refuză cu 429
   orice a doua generare simultană; efectul „thunk” e făcut local cu ffmpeg. **Cost**: ~1.950 de
-  credite (~0,20 $). **Rămas**: planul Starter înainte de postare (licența comercială), reel-ul în
-  README, spațiul lipsă din „Clean— Rootless A” în joc.
+  credite (~0,20 $). **În README** din aceeași zi (`6267056`, la cererea lui Edi, prin editorul web
+  din Chrome-ul lui): video încărcat pe GitHub, în copia de 5 MB (originalul de 10,8 MB trecea de
+  limita de 10 MB), cu linia „39 seconds, sound on”. **Rămas**: planul Starter înainte de postare
+  (licența comercială), postarea însăși, spațiul lipsă din „Clean— Rootless A” în joc.
