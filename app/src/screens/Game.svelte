@@ -11,7 +11,7 @@
     analyzeVoicing, inversionOf, parseChord, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
-  import { sayLevel, sayMessage, sayVoicing, sayInversion, sayUnit, t } from '../lib/locale.svelte';
+  import { sayLevel, sayMessage, sayVoicing, sayInversion, sayUnit, sayDecimal, t } from '../lib/locale.svelte';
 
   let { unit, plan, instrument, onfinish, onpractice = () => {}, ontheory = () => {}, onnext = null, onexit }: {
     unit: { id: string; name: string };
@@ -263,7 +263,7 @@
       {:else if star}
         <p class="star {star.toLowerCase()}">
           <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
-          {star}{#if shape} — <Glossed text={shape} />{/if}
+          {star}{#if shape}{' — '}<Glossed text={shape} />{/if}
         </p>
       {:else if shapeMiss}
         <p class="star none">
@@ -290,7 +290,7 @@
         <p class="move">
           {t('game.movement', {
             from: practice.movement.from,
-            average: practice.movement.average.toFixed(2),
+            average: sayDecimal(practice.movement.average, 2),
             rating: t(`rating.${practice.movement.rating}`),
           })}
         </p>
