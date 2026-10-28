@@ -96,7 +96,14 @@
   <div class="fix">
     <p class="kicker">{t('result.fix')}</p>
     {#if weakness}
-      <p class="what">{t('result.on')} <code>{weakness.key || t('common.majorTriad')}</code> {t('result.weakness', { problem: sayProblem(weakness), count: weakness.count })}</p>
+      <!-- A plain major triad has no suffix to show in code type, so it is said in words. -->
+      {#if weakness.key}
+        <p class="what">{t('result.on')} <code>{weakness.key}</code> {t('result.weakness', { problem: sayProblem(weakness), count: weakness.count })}</p>
+      {:else}
+        <p class="what">{t('result.onMajor', { problem: sayProblem(weakness), count: weakness.count })}</p>
+      {/if}
+    {:else if score.played === 0}
+      <p class="what">{t('result.nothingPlayed')}</p>
     {:else}
       <p class="what">{t('result.nothing')}</p>
     {/if}

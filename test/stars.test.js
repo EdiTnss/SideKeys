@@ -201,3 +201,12 @@ test('counts: the score is the one the first answers earn, whatever was played a
   // What used to happen: the last voicing in each bar won, and the run lost its stars.
   assert.equal(scoreRun({ attempts: early, timed: true, movementThreshold: 1.25 }).stars, 0);
 });
+
+test('scoreRun: counts the chords actually played, apart from the ones asked', () => {
+  // A pass skipped from end to end asked ten chords and judged none: the result screen must not
+  // call that "every chord you played came back clean".
+  const skipped = Array.from({ length: 10 }, () => ({ symbol: 'C', notes: [], analysis: null }));
+  assert.equal(scoreRun({ attempts: skipped }).played, 0);
+  assert.equal(scoreRun({ attempts: skipped }).total, 10);
+  assert.equal(scoreRun({ attempts: SMOOTH, timed: true }).played, SMOOTH.length);
+});

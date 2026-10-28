@@ -39,7 +39,7 @@ export function weakSpots(stats, { limit = 3 } = {}) {
   const spots = [];
   for (const [key, bucket] of Object.entries(stats.byKey)) {
     for (const [degree, count] of Object.entries(bucket.missing)) {
-      spots.push({ key, problem: `${degree} missing`, count, kind: 'missing', degree });
+      spots.push({ key, problem: `missing the ${degree}`, count, kind: 'missing', degree });
     }
     if (bucket.wrong) spots.push({ key, problem: 'wrong notes', count: bucket.wrong, kind: 'wrong', degree: null });
     if (bucket.avoid) spots.push({ key, problem: 'avoid notes', count: bucket.avoid, kind: 'avoid', degree: null });

@@ -115,7 +115,7 @@ export default {
   'progression.turnaround': 'Turnaround I–VI–ii–V',
   'progression.coltrane': 'Coltrane changes',
 
-  'problem.missing': 'lipsește {degree}',
+  'problem.missing': 'lipsește treapta {degree}',
   'problem.wrong': 'note greșite',
   'problem.avoid': 'avoid notes',
 
@@ -138,6 +138,7 @@ export default {
   'today.sub': 'Trei lucruri. Nimic altceva.',
   'today.continue': 'Continuă drumul',
   'today.notPlayed': 'Nejucat încă.',
+  'today.noStars': 'Jucat, încă fără stele.',
   'today.starsSoFar': '{count} din 3 stele până acum.',
   'today.tempo': '{tempo} bpm, un acord pe măsură.',
   'today.play': 'Joacă',
@@ -223,7 +224,9 @@ export default {
   'result.fix': 'Un singur lucru de reparat',
   'result.on': 'La acordurile',
   'result.weakness': { one: '— {problem}, o dată', few: '— {problem}, de {count} ori', other: '— {problem}, de {count} de ori' },
+  'result.onMajor': { one: 'La triadele majore — {problem}, o dată', few: 'La triadele majore — {problem}, de {count} ori', other: 'La triadele majore — {problem}, de {count} de ori' },
   'result.nothing': 'Nimic de semnalat. Fiecare acord cântat a ieșit curat.',
+  'result.nothingPlayed': 'N-ai cântat niciun acord, deci n-am ce judeca. Data viitoare, măcar unul-două.',
   'result.noClock': 'Provocarea n-are metronom, intenționat: grila compară notele, nu viteza.',
   'result.needTimed': 'A treia stea cere trecerea pe metronom — fără metronom, până aici se poate.',
   'result.needSmooth': 'Pe metronom și curat. A treia stea vrea ca vocile să se miște mai puțin: {movement} semitonuri fiecare, iar nivelul ăsta cere {threshold}.',

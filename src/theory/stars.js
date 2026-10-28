@@ -74,7 +74,7 @@ const LABELS = [null, 'Right', 'Clean', 'Smooth'];
  *   movementThreshold?: number,
  *   texture?: string | string[] | null,
  * }} run
- * @returns {{ stars: number, label: string | null, total: number, right: number, clean: number,
+ * @returns {{ stars: number, label: string | null, total: number, played: number, right: number, clean: number,
  *             rightShare: number, cleanShare: number, movement: number | null }}
  */
 export function scoreRun({ attempts, timed = false, movementThreshold: limit = DEFAULT_MOVEMENT, texture = null }) {
@@ -95,7 +95,7 @@ export function scoreRun({ attempts, timed = false, movementThreshold: limit = D
   if (stars === 1 && cleanShare >= CLEAN_SHARE) stars = 2;
   if (stars === 2 && timed && movement !== null && movement <= limit) stars = 3;
 
-  return { stars, label: LABELS[stars], total, right, clean, rightShare, cleanShare, movement };
+  return { stars, label: LABELS[stars], total, played: answered.length, right, clean, rightShare, cleanShare, movement };
 }
 
 /**

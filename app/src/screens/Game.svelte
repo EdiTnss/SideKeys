@@ -191,6 +191,9 @@
     analysis && !star && !warnings.length
       ? sayVoicing(analysis.voicing) ?? t('voicing.other')
       : null);
+  // The rest of the warnings, under the headline: when the headline is the first warning itself,
+  // listing it again only says it twice ("Missing C (5)" over "Missing C (5)").
+  const listed = $derived(star || shapeMiss ? warnings : warnings.slice(1));
   // A shape demanded, by the name a verdict gives it: "Drop 2", "Rootless A or Rootless B".
   const shapeOf = (texture: string | string[] | null | undefined) =>
     texture
@@ -316,10 +319,10 @@
         </p>
       {/if}
 
-      {#if analysis && warnings.length}
+      {#if analysis && listed.length}
         <ul class="messages">
           <!-- Keyed by what the message says, not how: the text changes with the language. -->
-          {#each warnings as message (`${message.code}:${JSON.stringify(message.params)}`)}
+          {#each listed as message (`${message.code}:${JSON.stringify(message.params)}`)}
             <li><Glossed text={sayMessage(message)} /></li>
           {/each}
         </ul>

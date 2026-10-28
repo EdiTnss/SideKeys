@@ -16,7 +16,7 @@
     streak: number;
     minutes: number;
     goal: number;
-    next: { unit: Unit; level: LevelPlan; stars: number } | null;
+    next: { unit: Unit; level: LevelPlan; stars: number; played: boolean } | null;
     reviews: Review[];
     /** Queued but not due yet — missed today, back tomorrow. Saying "nothing due" would lie. */
     pending: number;
@@ -58,7 +58,7 @@
           <p class="kicker">{t('today.continue')}</p>
           <h2><Glossed text={`${sayUnit(next.unit)} — ${sayLevel(next.level)}`} /></h2>
           <p class="line">
-            {#if next.stars === 0}{t('today.notPlayed')}{:else}{t('today.starsSoFar', { count: next.stars })}{/if}
+            {#if !next.played}{t('today.notPlayed')}{:else if next.stars === 0}{t('today.noStars')}{:else}{t('today.starsSoFar', { count: next.stars })}{/if}
             {t('today.tempo', { tempo: next.level.tempo })}
           </p>
           <button type="button" class="go" onclick={() => onplay(next.unit, next.level)}>

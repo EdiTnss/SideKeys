@@ -119,7 +119,7 @@ export default {
   'progression.coltrane': 'Coltrane changes',
 
   // A weak spot (src/ui/stats.js). Must read as `problem` there (test/messages.test.js).
-  'problem.missing': '{degree} missing',
+  'problem.missing': 'missing the {degree}',
   'problem.wrong': 'wrong notes',
   'problem.avoid': 'avoid notes',
 
@@ -144,6 +144,7 @@ export default {
   'today.sub': 'Three things. Nothing else.',
   'today.continue': 'Continue the path',
   'today.notPlayed': 'Not played yet.',
+  'today.noStars': 'Played, no stars yet.',
   'today.starsSoFar': '{count} of 3 stars so far.',
   'today.tempo': '{tempo} bpm, one chord to the bar.',
   'today.play': 'Play',
@@ -229,7 +230,9 @@ export default {
   'result.fix': 'One thing to fix',
   'result.on': 'On',
   'result.weakness': { one: 'chords — {problem}, {count} time', other: 'chords — {problem}, {count} times' },
+  'result.onMajor': { one: 'On major triads — {problem}, {count} time', other: 'On major triads — {problem}, {count} times' },
   'result.nothing': 'Nothing to report. Every chord you played came back clean.',
+  'result.nothingPlayed': 'Nothing played, so nothing to judge. Play a chord or two next time.',
   'result.noClock': 'No clock on the challenge, on purpose: the grid compares the notes, not the speed.',
   'result.needTimed': 'The third star needs the timed run — free play tops out here.',
   'result.needSmooth': 'Timed and clean. The third star wants the voices moving less: {movement} semitones each, and this level asks for {threshold}.',

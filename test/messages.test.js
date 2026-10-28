@@ -116,7 +116,13 @@ test('a weak spot reads as stats.js writes it in English, and in Romanian from i
   const spots = weakSpots(stats, { limit: 10 });
   assert.deepEqual([...new Set(spots.map(spot => spot.kind))].sort(), ['avoid', 'missing', 'wrong']);
   for (const spot of spots) assert.equal(describeProblem('en', spot), spot.problem);
-  assert.equal(describeProblem('ro', { kind: 'missing', degree: '7' }), 'lipsește 7');
+  assert.equal(describeProblem('ro', { kind: 'missing', degree: '7' }), 'lipsește treapta 7');  // "lipsește 7" read as seven missing notes
   assert.equal(describeProblem('ro', { kind: 'wrong', degree: null }), 'note greșite');
   assert.equal(describeProblem('ro', { kind: 'avoid', degree: null }), 'avoid notes');
+});
+
+test('a missing degree reads as a degree, not as a count', () => {
+  // "5 missing, 1 time" read as five notes missing. The article makes the 5 a name.
+  assert.equal(describeProblem('en', { kind: 'missing', degree: '5' }), 'missing the 5');
+  assert.equal(describeProblem('ro', { kind: 'missing', degree: '5' }), 'lipsește treapta 5');
 });

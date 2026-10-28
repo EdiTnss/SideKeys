@@ -513,3 +513,18 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   răspunsul altui acord decât cel cerut: un verdict pe acordul nou îl oprește, iar unul anticipat
   (în timed) se oprește singur când îi vine măsura. Notele ținute nu sunt șterse. Verificat în
   browser: colorate la 1,6 s, albe la 2,8 s, verdictul neatins.
+- **2026-10-28 (turul ca utilizator nou)** — La cererea lui Edi, Claude a jucat site-ul publicat ca
+  un vizitator nou (Azi, un nivel, Rezultatul, Drumul, Training, Teoria, provocarea; EN și RO;
+  desktop și telefon) și a găsit 11 probleme. Edi a ales întâi cele patru mesaje greșite, rezolvate:
+  (1) provocarea sărită în întregime spunea „every chord you played came back clean”; acum
+  `scoreRun` întoarce și `played`, iar 0 cântate are mesajul lui. (2) Azi spunea „Not played yet”
+  după o trecere cu 0 stele; `nextLevel` întoarce `played` (cheia există în `stars` chiar cu 0),
+  iar Azi spune „Played, no stars yet”. (3) „5 missing, 1 time” se citea ca cinci note lipsă: acum
+  „missing the 5” / „lipsește treapta 5”, la fel și în statisticile Laboratorului (un test le ține
+  identice), iar triada majoră se spune în cuvinte, fără font de cod („On major triads — …”). (4)
+  Verdictul repeta primul avertisment sub titlu; lista îl sare când e chiar titlul. Verificat în
+  browser, în ambele limbi. **Rămase din tur**, în așteptare: clapa pe telefon (cea mai gravă,
+  fiindcă reel-ul aduce oameni de pe telefon), greșeala care trece mai departe fără a doua
+  încercare, cifra de mișcare pe trecerea liberă, butonul principal „Start the timed run”, „Three
+  things” cu șase carduri, plus două întrebări de teorie pentru Edi (Si pe F într-un nivel de
+  triade; 7#11 la „Altered dominants”).

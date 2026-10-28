@@ -236,3 +236,10 @@ test('outcomesFor: the quality is the symbol without its root and its bass, and 
   assert.deepEqual(filed('C/E'), [''], 'an inversion is filed under the chord it inverts');
   assert.deepEqual(filed('C#m/E'), ['m']);
 });
+
+test('nextLevel: says whether the level was played, so a pass with no star is not "not played yet"', () => {
+  assert.equal(nextLevel({})?.played, false);
+  const after = recordRun(emptyProgress(), { levelId: 'triads-major', stars: 0, today: '2026-10-28' });
+  assert.equal(nextLevel(after.stars, after.last)?.level.id, 'triads-major');
+  assert.equal(nextLevel(after.stars, after.last)?.played, true);
+});

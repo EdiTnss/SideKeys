@@ -166,12 +166,12 @@ export function dueReviews(progress, today) {
  *
  * @param {Record<string, number>} stars
  * @param {string | null} [last] The level played last, or anything else to start from the top.
- * @returns {{ unit: any, level: any, stars: number } | null}
+ * @returns {{ unit: any, level: any, stars: number, played: boolean } | null}
  */
 export function nextLevel(stars, last = null) {
   const open = pathState(stars).flatMap(entry => entry.levels
     .filter(item => item.unlocked)
-    .map(item => ({ unit: entry.unit, level: item.level, stars: item.stars })));
+    .map(item => ({ unit: entry.unit, level: item.level, stars: item.stars, played: item.level.id in stars })));
   const from = Math.max(0, open.findIndex(item => item.level.id === last));
   return [...open.slice(from), ...open.slice(0, from)].find(item => item.stars < 3) ?? null;
 }

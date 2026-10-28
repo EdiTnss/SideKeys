@@ -203,7 +203,7 @@
       streak={streak(progress, today)}
       minutes={Math.round(secondsOn(progress, today) / 60)}
       goal={GOAL_MINUTES}
-      next={next as { unit: Unit; level: LevelPlan; stars: number } | null}
+      next={next as { unit: Unit; level: LevelPlan; stars: number; played: boolean } | null}
       reviews={due}
       pending={pending}
       challenge={challenge}
