@@ -632,4 +632,4 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   și un răspuns corect cu ceva în plus („C Clean — root position / You played Cmaj7”, verificat în
   browser). Tabelul rămâne cum e: pe C majoră, Bb e tot notă greșită, iar F e notă de evitat.
   Pagina de triade spune noua regulă, în ambele limbi. 434 → **435 de teste**, reluarea
-  neschimbată (110 din 110). **Întrebare pentru Edi**: Bb pe C (triadă majoră) rămâne greșit?
+  neschimbată (110 din 110). Edi: Bb pe C (triadă majoră) **rămâne greșit**.
