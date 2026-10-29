@@ -484,6 +484,28 @@ lui e într-un cont, nu în browserul ăsta.
 Challenge-ul **numără ca orice trecere** în restul: minutele zilei, streak-ul și punctele slabe pe
 care le-a scos (o calitate ratată pe challenge revine mâine în antrenament, ca de oriunde).
 
+## Ce spune ecranul de joc pe lângă stea (2026-10-29)
+
+Din raportul celor două personaje (începător și jazzman), primul val, aprobat de Edi:
+
+- **Play fără acord**: cu nicio notă armată (și niciun acord cântat înainte) sau cu **una
+  singură**, `onscreen.play()` nu cântă nimic și întoarce `false`; ecranul spune de ce, în locul
+  verdictului. Nota singură rămâne armată pentru celelalte. Motivul: captura nu raportează o notă
+  singură (`capture.js`, regula ≥ 2 note, neschimbată — pe Genos o notă singură e de obicei o
+  corectură), deci un Play cu o notă dispărea fără răspuns. Două note se cântă și primesc verdictul
+  analizorului.
+- **Răspunsul, după o greșeală**: când verdictul are o notă lipsă sau greșită, sub el apare
+  acordul scris: „Bb = Bb · D · F” (`chordToneNames`, în `chords.js`, cu ortografia verdictului).
+  „(1)” din „Missing Bb (1)” **nu** s-a schimbat în „(root)”: textul englezesc trebuie să fie
+  cuvânt cu cuvânt al analizorului, iar schimbarea lui ar atinge referința harness-ului.
+- **„How is it built?”** lângă „Play it. Any voicing that works counts.”: pagina de teorie a
+  unității; în Training, challenge și Review, pagina felului de acord de pe ecran (slash →
+  Inversions, trei note → Triads, altfel Sevenths). Ca „What is that?”, deschiderea ei părăsește
+  nivelul.
+- **Scala mișcării**, sub „From Dm7: 1.60 semitones a voice”: „smooth ≤ 1.25 · close ≤ 1.50 · ok ≤
+  3 · jumpy > 3”, din pragul progresiei și din `compareVoicings`; „close” apare doar unde pragul
+  e sub 1,5. Rezumatul sesiunii de pe Training adaugă media mișcării pe toată sesiunea.
+
 ## Ce nu intră aici
 
 - Clasamentul challenge-ului zilei — singura excepție admisă la „fără clasamente" (`DIRECTION.md`),

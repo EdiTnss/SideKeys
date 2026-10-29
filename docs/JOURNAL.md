@@ -588,3 +588,17 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   încercări. **Rămas deschis**: nimic din 28 n-a fost încercat pe Genos; cazul „permisiune dată,
   nicio clapă”, trecerea în timp și Recapitularea nu sunt verificate. **Următorul pas**: Edi
   încearcă pe Genos lista din `docs/session-log/2026-10-29-1008.md` și postează reel-ul.
+- **2026-10-29 (raportul celor două personaje, primul val)** — Edi a adus un raport scris de alt
+  Claude, care a jucat sidekeys.app ca începător și ca jazzman, fără MIDI (21 de probleme). Claude
+  l-a citit contra codului: Review „0 due” după o greșeală e regula din DoD (revine mâine), litera
+  ținută ca pe pian e intenționată, „Rootless, A or B” exista deja, iar clapele mai late pe telefon
+  contrazic încercarea lui Edi din 28. Primul val, aprobat de Edi („Da, primul val”): **BUG-02** —
+  Play cu zero sau o notă spune de ce nu s-a întâmplat nimic (nota singură rămâne armată);
+  **BEG-04** — după o notă lipsă sau greșită apare „Bb = Bb · D · F” (`chordToneNames`, testat);
+  **BEG-02** — „How is it built?” lângă „Play it…”, spre pagina unității sau a felului de acord;
+  **JAZZ-07** — scala mișcării sub cifră și media pe sesiune în rezumatul Training. Regulile, în
+  `spec-game.md`. 424 → **426 de teste**, reluarea neschimbată (110 din 110), `npm run check`
+  curat. Verificat în browser, în engleză și română. **Neschimbat intenționat**: „(1)” rămâne în
+  „Missing Bb (1)”. **Observat, nereparat**: „Shell , cvinta în bas” are un spațiu înainte de
+  virgulă în română. **Rămas deschis**: BUG-01 (un nivel abandonat nu salvează minutele și
+  greșelile), JAZZ-02 (6/9 pe maj7, decizie de teorie a lui Edi), BUG-07 (propun să nu se facă).
