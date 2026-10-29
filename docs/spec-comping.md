@@ -160,10 +160,12 @@ se scrie pe bandă, ca reluarea să judece la fel.
 Ieșirea e un obiect simplu, ca la analizor:
 
 ```js
-compingReport(attacks, form, options) → {
-  choruses, bars, attacks: n,        // ce s-a judecat
-  findings: [{ code, level, count, of, bars, params }],   // în ordinea secțiunilor de mai sus
-  perChorus: [{ center, topRange, types, pattern }],      // cifrele brute, pentru verificare
+compingReport(attacks, form, { limits = COMPING_LIMITS }) → {
+  choruses, bars, attacks: n,        // ce s-a judecat (attacks: fără mișcări)
+  findings: [{ level, code, count, of, bars, params, text }],   // în ordinea secțiunilor de mai sus
+  judged: [...],                     // fiecare atac: acordul judecat, anticipat sau nu, analiza
+  changes: [...],                    // fiecare schimbare de acord comparată, cu ratingul ei
+  perChorus: [{ chorus, attacks, center, topRange }],           // cifrele brute, pentru verificare
 }
 ```
 
@@ -184,6 +186,34 @@ Gig Mode din joc, cu tobe, vine după, ca forma lui plătită; el cere întâi b
   tot pură și testată.
 - Pragurile stau într-un **tabel de date** exportat, ca `LOW_INTERVAL_LIMITS`, ca să fie mutate
   după calibrare fără să se schimbe codul.
+
+## Precizări din implementare (2026-10-29)
+
+Scrise în `src/theory/comping.js` (raportul) și `src/ui/attacks.js` (banda → atacuri), cu
+`test/comping.test.js` și `test/attacks.test.js` scrise întâi.
+
+- **„Curat” e `isClean` din `stars.js`**: corect și fără niciun avertisment, aceeași regulă ca
+  steaua Clean. Raportul și jocul nu pot ajunge să numească „curat” lucruri diferite.
+- **Mișcările** (o notă nouă peste un acord ținut) contează pentru voice leading, pentru linia de
+  sus și pentru „ai cântat acordul”, dar **nu** pentru obiceiurile de note, registru, varietate și
+  ritm. Acolo se numără numai atacurile.
+- **Un atac numărat ca `stale-chord` nu se mai numără și ca notă lipsă** pe acordul nou. Altfel
+  același gest s-ar spune de două ori.
+- **O notă greșită se grupează după distanța de la fundamentală** (în semitonuri), pe calitate,
+  fiindcă nu are treaptă. Notele lipsă și cele de evitat se grupează după treaptă.
+- **`muddy` are două forme**: perechea care se repetă (aceleași două note, de cel puțin 3 ori) și,
+  numai când nicio pereche nu e obicei, totalul (cel puțin 10% din atacuri).
+- **Tiparul de ritm cere cel puțin 8 măsuri** (`minBars`). Pe mai puține, orice tipar pare repetat.
+- **O schimbare între două acorduri cu același simbol** (o măsură `%`) nu e schimbare și nu se
+  compară. Anticipările se numără numai pe schimbări reale.
+- Toate pragurile stau în `COMPING_LIMITS`, un tabel de date.
+
+**Capcana de știut la calibrare: latența.** `rushing`, `dragging` și `timing-loose` măsoară față
+de momentul în care metronomul *programează* click-ul (`bar1At`), nu față de cel în care se aude.
+Un difuzor sau o placă audio cu latență mare te face să pari întârziat cu exact acea latență.
+Prima rulare, pe sesiunea reală din `harness/sessions/genos-2026-09-19-drill-blues-rhythm.json`
+(un drill, nu comping), a spus „52 ms înainte, ±69 ms”. Nu e confirmat. Până nu se măsoară
+latența pe aparatul lui Edi, constatările de timp **nu se arată**: o constatare falsă pică DoD-ul.
 
 ## Cum se calibrează (înainte de a numi raportul gata)
 

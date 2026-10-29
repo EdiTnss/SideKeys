@@ -104,6 +104,7 @@ src/
   theory/progressions.js   biblioteca de progresii generice + parser de grilă text
   theory/timing.js         timp ↔ (bar, beat), cuantizare; folosit de metronom, recorder și player
   theory/stars.js          stelele: isRight / isClean pe acord, scoreRun pe trecere (docs/spec-game.md)
+  theory/comping.js        raportul de comping: atacuri + formă → constatări cu măsurile lor (docs/spec-comping.md); testat
   game/path.js             unitățile și nivelele ca date, cererile lor și regulile de deblocare; testat
   game/progress.js         stelele, zilele, streak-ul, coada de recapitulare, grila zilei și ultimul nivel jucat; testat
   game/challenge.js        challenge-ul zilei: seed din dată, rampa de 10, grila și textul partajat; testat
@@ -118,6 +119,7 @@ src/
   ui/session.js            o trecere prin progresie: sloturi, locate(bar, beat), record, summary (testat)
   ui/stats.js              statistici: încercări, curate, probleme pe calitate; sesiune + cumulativ în localStorage (testat)
   ui/tape.js               banda sesiunii: ultima oră de cântat și verdictele; reluarea ei (harness), testată
+  ui/attacks.js            banda → atacuri pentru raportul de comping: note grupate la 50 ms, poziția din metronom; testat
   theory/piece.js          modelul unei piese (grilă + melodie), cuantizare, validare reharm
   theory/analysis.js       analiză armonică: trepte, funcții, cadențe, fraze, note-țintă (Faza 3a)
   theory/candidates.js     generează acordurile compatibile cu melodia, etichetate pe tehnică (Faza 3a)
@@ -175,7 +177,10 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **435 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **464 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+- **Raportul de comping** (P2, 2026-10-29): motorul, fără interfață. Banda sesiunii se taie în
+  atacuri, iar raportul spune ce se repetă la acorduri, registru, voice leading și varietate.
+  Pragurile sunt propuneri, încă necalibrate. Regulile: [docs/spec-comping.md](docs/spec-comping.md).
 - **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5): Azi, Drumul, Jocul, Rezultatul, plus
   **Training** și **Theory**, peste opt unități (Triade → ii–V–I), **toate deschise**. Stele
   Right/Clean/Smooth, streak, Review zilnic pe calități, challenge zilnic partajabil, PWA care
@@ -347,9 +352,11 @@ Postarea pornește ceasul porții P1 (40 de adrese în 4 săptămâni); ceasul s
 
 Ce se poate face fără Edi, în ordinea asta:
 
-1. **Raportul de comping**: `src/theory/comping.js` și segmentarea bandei în atacuri, testul
-   întâi; apoi, în Laborator, basul cântat singur și panoul de raport. Calibrarea cere sesiunile
-   lui Edi (4 chorusuri bune + unul prost intenționat, pe o progresie originală).
+1. **Raportul de comping, în Laborator**: motorul există (`src/theory/comping.js`,
+   `src/ui/attacks.js`, testate). Lipsesc basul cântat singur (`parts` din `player.js`), setarea
+   swing/drept scrisă pe bandă și panoul de raport. Constatările de timp nu se arată până nu se
+   măsoară latența audio (`spec-comping.md`). Calibrarea cere sesiunile lui Edi: 4 chorusuri bune
+   și unul prost intenționat, pe o progresie originală.
 2. **Un om cronometrat** la prima vizită: pornirea la rece e măsurată doar pe partea mașinii.
    Cere un om care n-a văzut jocul; Claude nu-l poate face singur.
 

@@ -27,7 +27,8 @@ test('placeAttack: straight eighths snap to the half, so a swung "and" reads lat
 });
 
 function round(placed) {
-  return { ...placed, beat: Math.round(placed.beat * 1000) / 1000, offsetMs: Math.round(placed.offsetMs) };
+  // `+ 0` turns the -0 of a float a hair under zero into 0, which deepEqual tells apart.
+  return { ...placed, beat: Math.round(placed.beat * 1000) / 1000, offsetMs: Math.round(placed.offsetMs) + 0 };
 }
 
 // ---- Which chord an attack answers -------------------------------------------------------------

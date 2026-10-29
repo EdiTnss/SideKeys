@@ -654,3 +654,14 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   calibrare pe 4 chorusuri bune plus unul prost intenționat. Pragurile marcate _propunere_ se mută
   după calibrare. Fără cod, testele neatinse (435). **Următorul pas**: `src/theory/comping.js` și
   segmentarea bandei, testul întâi.
+- **2026-10-29 (P2, motorul raportului de comping)** — Testele întâi (`19b5afc`), apoi codul:
+  `src/ui/attacks.js` taie banda în atacuri (note-on grupate la 50 ms, mișcarea de o notă peste un
+  acord ținut, poziția din ceasul metronomului, ultima trecere în timp), iar `src/theory/comping.js`
+  scrie raportul în ordinea din spec, cu pragurile într-un tabel de date (`COMPING_LIMITS`).
+  **435 → 464 de teste**, reluarea harness-ului neschimbată (110 din 110). **Decizii ale lui
+  Claude**, scrise în spec: „curat” e `isClean` din `stars.js`; un atac `stale-chord` nu se mai
+  numără și ca notă lipsă; nota greșită se grupează după distanța de la fundamentală. **Găsit pe
+  drum**: constatările de timp se măsoară față de click-ul programat, nu de cel auzit, deci
+  latența audio le poate face false. Prima rulare, pe sesiunea Genos din 2026-09-19 (un drill),
+  a spus „52 ms înainte, ±69 ms”, neconfirmat. Regula: nu se arată până nu se măsoară latența.
+  **Următorul pas**: în Laborator, basul cântat singur, swing/drept pe bandă și panoul de raport.
