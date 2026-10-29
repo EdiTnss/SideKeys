@@ -606,3 +606,7 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   închis, fără cod) și 6/9 nu e acceptat pe maj7 (JAZZ-02 închis, fără cod). Scrise în
   `spec-game.md`. Primul val e împins și publicat (`b1817ea`): testele și publicarea au trecut pe
   GitHub, iar pachetul de pe sidekeys.app conține textele noi.
+- **2026-10-29 („ai cântat C6/9”)** — Edi a cerut ca o greșeală care e alt acord pe aceeași
+  fundamentală să fie numită. `playedInstead` în `stars.js`, test întâi; regula, în
+  `spec-game.md`. 426 → **428 de teste**, `npm run check` curat. Verificat în browser: Cmaj7 cu
+  E G A D dă „You played C6/9 · Cmaj7 = C · E · G · B”.

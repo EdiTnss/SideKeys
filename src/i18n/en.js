@@ -204,6 +204,7 @@ export default {
   'game.whatIsThat': 'What is that?',
   'game.playAny': 'Play it. Any voicing that works counts.',
   'game.howBuilt': 'How is it built?',
+  'game.youPlayed': 'You played {chord}',
   'game.anticipated': ', anticipated',
   'game.wrongShape': 'Right notes, wrong shape — that is {shape}.',
   'game.whatAsked': 'What was asked for?',

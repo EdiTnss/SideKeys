@@ -5,7 +5,7 @@
 // observations (info), and a star that disagreed with it would be a second source of truth.
 
 import { compareVoicings } from './voiceLeading.js';
-import { parseChord } from './chords.js';
+import { parseChord, qualityIds, chartSymbol } from './chords.js';
 import { analyzeVoicing } from './analyzer.js';
 
 /**
@@ -149,6 +149,35 @@ export function counts({ timed, answered }) {
 export function judgeAsk(notes, symbol) {
   const chord = parseChord(symbol);
   return analyzeVoicing(notes, chord, { strict: chord.chordTones.length === 3 });
+}
+
+/**
+ * What a voicing that missed its chord is instead, when it is another quality on the same root:
+ * a C6/9 played for Cmaj7. Still a miss — a 6/9 is not a maj7 (Edi, 2026-10-29) — but one the
+ * verdict can name. Only the root asked for is tried, never a reading on another root (C6 is
+ * also Am7/C), because the player was aiming at this root. Of the qualities the voicing is Right
+ * for, the one whose chord tones it covers most wins, so C E G A is a C6 and not a C with an A.
+ * Null when the voicing was right, when the ask is a slash chord (its bass is the exercise), or
+ * when no quality fits.
+ * @param {number[]} notes  MIDI numbers
+ * @param {string} symbol  the chord asked for
+ * @returns {string | null}
+ */
+export function playedInstead(notes, symbol) {
+  const asked = parseChord(symbol);
+  if (asked.bass !== null || isRight(judgeAsk(notes, symbol))) return null;
+  const played = new Set(notes.map(note => note % 12));
+  const same = new Set(asked.chordTones);
+  let best = null;
+  for (const quality of qualityIds()) {
+    const candidate = chartSymbol(asked.root, quality === 'maj' ? '' : quality);
+    const chord = parseChord(candidate);
+    if (chord.chordTones.length === same.size && chord.chordTones.every(pc => same.has(pc))) continue;
+    if (!isRight(judgeAsk(notes, candidate))) continue;
+    const covered = chord.chordTones.filter(pc => played.has(pc)).length;
+    if (!best || covered > best.covered) best = { symbol: candidate, covered };
+  }
+  return best?.symbol ?? null;
 }
 
 /**

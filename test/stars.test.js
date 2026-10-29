@@ -51,7 +51,7 @@ test('isClean implies isRight, so a star never skips the one below it', () => {
 
 // ---- The run: how a whole pass turns into stars (docs/spec-game.md) ----------------------
 
-import { scoreRun, movementThreshold, counts, judgeAsk, rateStep } from '../src/theory/stars.js';
+import { scoreRun, movementThreshold, counts, judgeAsk, rateStep, playedInstead } from '../src/theory/stars.js';
 
 const attempt = (symbol, notes) => ({ symbol, notes, analysis: notes.length ? on(symbol, notes) : null });
 
@@ -232,4 +232,23 @@ test('rateStep: "smooth" in Training means what the Smooth star means for that p
   assert.equal(rateStep(4, 'jumpy', 1.25), 'jumpy');
   // The turnaround's star allows 1.75, above the generic 1.5: there 1.6 is smooth too.
   assert.equal(rateStep(1.6, 'ok', 1.75), 'smooth');
+});
+
+test('playedInstead: a miss on the same root is named by the quality it fits', () => {
+  // The case from the walkthrough: a 6/9 on the tonic is not a maj7 (Edi, 2026-10-29), but it is
+  // something, and the verdict says what.
+  assert.equal(playedInstead([48, 64, 69, 74, 79], 'Cmaj7'), 'C6/9');
+  // The richest fit wins: C E G A is a C6, not just a C with a stray A.
+  assert.equal(playedInstead([48, 64, 67, 69], 'Cmaj7'), 'C6');
+  // Triads both ways: a major third on a minor ask, a seventh on a triad ask.
+  assert.equal(playedInstead([60, 64, 67], 'Cm'), 'C');
+  assert.equal(playedInstead([60, 64, 67, 71], 'C'), 'Cmaj7');
+  assert.equal(playedInstead([61, 64, 68], 'C#'), 'C#m');
+});
+
+test('playedInstead: nothing to name when the chord was right, or fits no quality on that root', () => {
+  assert.equal(playedInstead([48, 64, 67, 71], 'Cmaj7'), null);
+  assert.equal(playedInstead([60, 61, 62], 'C'), null);
+  // A slash chord is asked for its bass, which no other quality on the root would answer.
+  assert.equal(playedInstead([60, 64, 67], 'C/E'), null);
 });

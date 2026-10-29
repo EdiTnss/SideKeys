@@ -199,6 +199,7 @@ export default {
   'game.whatIsThat': 'Ce e asta?',
   'game.playAny': 'Cântă-l. Orice voicing care merge e bun.',
   'game.howBuilt': 'Cum se construiește?',
+  'game.youPlayed': 'Ai cântat {chord}',
   'game.anticipated': ', anticipat',
   'game.wrongShape': 'Note corecte, formă greșită — asta e {shape}.',
   'game.whatAsked': 'Ce se cerea?',

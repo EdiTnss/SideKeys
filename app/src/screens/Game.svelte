@@ -9,7 +9,7 @@
   import { createPractice, type PracticePlan } from '../game/practice.svelte';
   import { lessonFor, lessonForTexture } from '../bridge/game';
   import {
-    analyzeVoicing, inversionOf, parseChord, chordToneNames, isRight, isClean,
+    analyzeVoicing, inversionOf, parseChord, chordToneNames, isRight, isClean, playedInstead,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
   import { sayLevel, sayMessage, sayVoicing, sayInversion, sayUnit, sayDecimal, t } from '../lib/locale.svelte';
@@ -59,6 +59,8 @@
 
   let analysis = $state<ReturnType<typeof analyzeVoicing> | null>(null);
   let judged = $state<string | null>(null);
+  // What a miss was instead, when it is another chord on the same root: "You played C6/9".
+  let instead = $state<string | null>(null);
   let anticipated = $state(false);
   // False when the voicing was judged but not filed: on the clock, its bar already had an answer.
   let counted = $state(true);
@@ -116,6 +118,7 @@
     nudge = null;
     analysis = answered.analysis;
     judged = answered.symbol;
+    instead = playedInstead(notes, answered.symbol);
     anticipated = answered.anticipated;
     counted = answered.counted;
     judgedTexture = answered.texture;
@@ -150,6 +153,7 @@
     instrument.cancelCapture();
     analysis = null;
     judged = null;
+    instead = null;
     anticipated = false;
     counted = true;
     judgedTexture = null;
@@ -374,7 +378,7 @@
       {/if}
 
       {#if spelled && !nudge}
-        <p class="spelled">{spelled}</p>
+        <p class="spelled">{#if instead}{t('game.youPlayed', { chord: instead })}{' · '}{/if}{spelled}</p>
       {/if}
 
       {#if analysis && !level.timed && !star}

@@ -513,6 +513,15 @@ Două propuneri din același raport, **respinse de Edi** pe 2026-10-29:
 - **6/9 nu e un răspuns pentru maj7** (JAZZ-02), nici ca „echivalent de funcție” pe tonică, nici
   sub un comutator: se cere septima mare.
 
+**Ce ai cântat în loc** (cerut de Edi tot pe 2026-10-29, după decizia de mai sus): un voicing
+ratat care e altă calitate **pe aceeași fundamentală** e numit, tot ca greșeală: „You played C6/9
+· Cmaj7 = C · E · G · B”. `playedInstead` (`stars.js`) încearcă fiecare calitate din tabel pe
+fundamentala cerută și o păstrează doar dacă voicing-ul e Right pentru ea; dintre cele care se
+potrivesc, câștigă cea care acoperă cele mai multe note ale acordului (C E G A e C6, nu C cu un
+A). Nu se încearcă alte fundamentale (C6 e și Am7/C): jucătorul ținea spre fundamentala asta.
+Nimic pe un acord slash, unde basul e exercițiul. Calitățile din afara tabelului (7b9, 7alt) nu
+sunt încercate.
+
 ## Ce nu intră aici
 
 - Clasamentul challenge-ului zilei — singura excepție admisă la „fără clasamente" (`DIRECTION.md`),
