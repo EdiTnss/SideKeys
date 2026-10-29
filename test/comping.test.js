@@ -211,3 +211,20 @@ test('four well-played choruses of a ii–V–I: no problem with the chords, reg
   assert.equal(report.choruses, 4);
   assert.ok(report.findings.every(f => typeof f.text === 'string' && f.text.length > 0));
 });
+
+// ---- What the panel shows ------------------------------------------------------------------------
+
+test('presentReport: three problems first, then the strengths, then the rest; timing held back', async () => {
+  const { presentReport } = await import('../src/theory/comping.js');
+  const f = (level, code) => ({ level, code, count: 1, of: null, bars: [], params: {}, text: code });
+  const report = { findings: [
+    f('problem', 'missed-change'), f('problem', 'too-high'), f('strength', 'register-ok'),
+    f('problem', 'jumpy-spot'), f('problem', 'one-type'), f('problem', 'dragging'), f('strength', 'smooth-overall'),
+  ] };
+  const shown = presentReport(report);
+  assert.deepEqual(shown.first.map(x => x.code), ['missed-change', 'too-high', 'jumpy-spot']);
+  assert.deepEqual(shown.strengths.map(x => x.code), ['register-ok', 'smooth-overall']);
+  assert.deepEqual(shown.rest.map(x => x.code), ['one-type']);
+  // Until the audio latency is measured, a timing finding could be false (spec-comping.md).
+  assert.deepEqual(shown.heldBack.map(x => x.code), ['dragging']);
+});

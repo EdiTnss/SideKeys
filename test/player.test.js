@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { arrangementMessages, DEFAULT_CHANNELS } from '../src/midi/player.js';
+import { arrangementMessages, repeatEvents, DEFAULT_CHANNELS } from '../src/midi/player.js';
 
 const events = [
   { beat: 0, duration: 4, part: 'bass', midi: 38, velocity: 80 },
@@ -35,4 +35,19 @@ test('parts can be muted, channels moved, and the tempo sets the spacing', () =>
   const slow = arrangementMessages(events, { tempo: 60, startMs: 500 });
   assert.deepEqual(slow.at(-1), { time: 4500, data: [0x80, 65, 0] });    // four beats of a second each
   assert.deepEqual(arrangementMessages([], { tempo: 120, startMs: 0 }), []);
+});
+
+test('repeatEvents: one part, the form played again and again, each time a form later', () => {
+  const looped = repeatEvents(events, { totalBeats: 4, times: 3, part: 'bass' });
+  assert.deepEqual(looped.map(e => [e.beat, e.part, e.midi]), [[0, 'bass', 38], [4, 'bass', 38], [8, 'bass', 38]]);
+  assert.equal(repeatEvents(events, { totalBeats: 4, times: 0 }).length, 0);
+  // Without a part, every part repeats.
+  assert.equal(repeatEvents(events, { totalBeats: 4, times: 2 }).length, 8);
+});
+
+test('loopTimes: enough choruses for the minutes asked, one when the form does not loop', async () => {
+  const { loopTimes } = await import('../src/midi/player.js');
+  // 12 bars of 4/4 at 120 bpm: 24 s a chorus, so 20 minutes is 50 choruses.
+  assert.equal(loopTimes({ totalBeats: 48, tempo: 120, minutes: 20 }), 50);
+  assert.equal(loopTimes({ totalBeats: 48, tempo: 120, minutes: 20, loop: false }), 1);
 });
