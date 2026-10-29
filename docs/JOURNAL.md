@@ -665,3 +665,13 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   latența audio le poate face false. Prima rulare, pe sesiunea Genos din 2026-09-19 (un drill),
   a spus „52 ms înainte, ±69 ms”, neconfirmat. Regula: nu se arată până nu se măsoară latența.
   **Următorul pas**: în Laborator, basul cântat singur, swing/drept pe bandă și panoul de raport.
+- **2026-10-29 (P2, raportul de comping în Laborator)** — În tab-ul Progression, pe o trecere
+  timed: „bass from the app” (numai basul aranjamentului, forma repetată cât pentru 20 de minute,
+  oprit curat la Stop) și „Feel” (swing / straight, scris pe bandă în `start`). După Stop, raportul
+  trecerii apare sub sumarul chorusului: cel mult trei probleme, punctele tari, restul strâns,
+  constatările de timp ascunse. Testele întâi pentru `repeatEvents`, `loopTimes` și
+  `presentReport`; **464 → 467 de teste**, reluarea neschimbată (110 din 110). Verificat în
+  browser cu `?midi=virtual`: basul pe canalul 3, All Notes Off la Stop, raport corect pe ce s-a
+  cântat, consola curată. **Neîncercat pe Genos.** **Următorul pas**: Edi înregistrează pe Genos
+  4 chorusuri bune și unul prost intenționat, pe o progresie originală, cu „Save session”; din ele
+  se calibrează pragurile.

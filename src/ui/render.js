@@ -451,3 +451,27 @@ export function withSuggestion(classes, notes) {
   for (const midi of notes) merged[midi] = merged[midi] ? `${merged[midi]} suggested` : 'suggested';
   return merged;
 }
+
+/**
+ * The comping report after a timed run: at most three problems, the strengths, the rest folded
+ * away, and a line saying what was held back. `shown` comes from presentReport, so the choice of
+ * what to show stays in theory/, tested; this only writes it.
+ */
+export function renderCompingReport(container, report, shown) {
+  const where = finding => (finding.bars.length ? ` (${finding.bars.length === 1 ? 'bar' : 'bars'} ${finding.bars.join(', ')})` : '');
+  const item = finding => h('li', { class: finding.level }, finding.text, h('span', { class: 'bars' }, where(finding)));
+  const choruses = `${report.choruses} chorus${report.choruses === 1 ? '' : 'es'}`;
+  const nodes = [h('h3', {}, `Comping report — ${choruses}, ${report.attacks} attacks`)];
+  if (!shown.first.length && !shown.strengths.length && !shown.rest.length) {
+    nodes.push(h('p', { class: 'hint' }, 'Nothing to say with certainty yet: play a few full choruses.'));
+  }
+  if (shown.first.length) nodes.push(h('h4', {}, 'To fix'), h('ul', {}, ...shown.first.map(item)));
+  if (shown.strengths.length) nodes.push(h('h4', {}, 'Going well'), h('ul', {}, ...shown.strengths.map(item)));
+  if (shown.rest.length) {
+    nodes.push(h('details', {}, h('summary', {}, `${shown.rest.length} more`), h('ul', {}, ...shown.rest.map(item))));
+  }
+  if (shown.heldBack.length) {
+    nodes.push(h('p', { class: 'hint' }, 'Timing is not reported yet: it needs the audio latency of this setup measured first.'));
+  }
+  container.replaceChildren(...nodes);
+}

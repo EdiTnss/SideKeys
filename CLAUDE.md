@@ -177,10 +177,11 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **464 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
-- **Raportul de comping** (P2, 2026-10-29): motorul, fără interfață. Banda sesiunii se taie în
-  atacuri, iar raportul spune ce se repetă la acorduri, registru, voice leading și varietate.
-  Pragurile sunt propuneri, încă necalibrate. Regulile: [docs/spec-comping.md](docs/spec-comping.md).
+  **467 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+- **Raportul de comping** (P2, 2026-10-29), în **Laborator**: o trecere timed cu „bass from the
+  app” cântă basul aranjamentului în buclă, iar după Stop apare raportul (acorduri, registru,
+  voice leading, varietate). Pragurile sunt propuneri, încă necalibrate; timpul nu se arată.
+  Probat doar cu MIDI virtual, **nu pe Genos**. Regulile: [docs/spec-comping.md](docs/spec-comping.md).
 - **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5): Azi, Drumul, Jocul, Rezultatul, plus
   **Training** și **Theory**, peste opt unități (Triade → ii–V–I), **toate deschise**. Stele
   Right/Clean/Smooth, streak, Review zilnic pe calități, challenge zilnic partajabil, PWA care
@@ -352,11 +353,10 @@ Postarea pornește ceasul porții P1 (40 de adrese în 4 săptămâni); ceasul s
 
 Ce se poate face fără Edi, în ordinea asta:
 
-1. **Raportul de comping, în Laborator**: motorul există (`src/theory/comping.js`,
-   `src/ui/attacks.js`, testate). Lipsesc basul cântat singur (`parts` din `player.js`), setarea
-   swing/drept scrisă pe bandă și panoul de raport. Constatările de timp nu se arată până nu se
-   măsoară latența audio (`spec-comping.md`). Calibrarea cere sesiunile lui Edi: 4 chorusuri bune
-   și unul prost intenționat, pe o progresie originală.
+1. **Calibrarea raportului de comping**: totul e în Laborator (timed + „bass from the app” +
+   „Feel”, raportul după Stop). Cere sesiunile lui Edi pe Genos: 4 chorusuri bune și unul prost
+   intenționat, pe o progresie originală, salvate cu „Save session”. Apoi pragurile se mută după
+   ce confirmă Edi. Constatările de timp rămân ascunse până se măsoară latența audio.
 2. **Un om cronometrat** la prima vizită: pornirea la rece e măsurată doar pe partea mașinii.
    Cere un om care n-a văzut jocul; Claude nu-l poate face singur.
 

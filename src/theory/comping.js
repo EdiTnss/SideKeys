@@ -416,3 +416,27 @@ function mostCommon(counts) {
 const unique = items => [...new Set(items)];
 const share = (n, of) => `${Math.round((n / of) * 100)}%`;
 const barsText = bars => (bars.length === 1 ? `bar ${bars[0]}` : `bars ${bars.join(', ')}`);
+
+// Measured against the click as scheduled, not as heard: until the audio latency is measured on
+// the player's own setup, these could be false, and a false finding fails the report.
+export const TIMING_CODES = ['rushing', 'dragging', 'timing-loose'];
+
+/**
+ * What the panel shows, in order: at most `firstProblems` problems first (the report's order is
+ * already the spec's), then the strengths, then the other problems; timing findings held back.
+ *
+ * @param {{ findings: Finding[] }} report
+ * @param {{ firstProblems?: number }} [options]
+ * @returns {{ first: Finding[], strengths: Finding[], rest: Finding[], heldBack: Finding[] }}
+ */
+export function presentReport(report, { firstProblems = 3 } = {}) {
+  const heldBack = report.findings.filter(f => TIMING_CODES.includes(f.code));
+  const shown = report.findings.filter(f => !TIMING_CODES.includes(f.code));
+  const problems = shown.filter(f => f.level === 'problem');
+  return {
+    first: problems.slice(0, firstProblems),
+    strengths: shown.filter(f => f.level === 'strength'),
+    rest: problems.slice(firstProblems),
+    heldBack,
+  };
+}

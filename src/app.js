@@ -25,11 +25,13 @@ import { explainVoicing } from './ai/explain.js';
 import { reharmonize } from './ai/pipeline.js';
 import { STYLES } from './theory/candidates.js';
 import { realize, BASS_REGISTERS } from './theory/realize.js';
-import { arrangementMessages } from './midi/player.js';
+import { arrangementMessages, repeatEvents, loopTimes } from './midi/player.js';
+import { attacksFromTape } from './ui/attacks.js';
+import { compingReport, presentReport } from './theory/comping.js';
 import {
   renderChord, renderStatus, renderAnalysis, renderComparison, clearFeedback, renderSettings,
   roleClasses, heldClasses, armedClasses, missingClasses, renderGrid, renderSummary, renderError, fillSelect, renderSuggestion, withSuggestion, renderMelody,
-  renderStats, useStatsSummary, renderAiStatus, renderAiSuggestions, renderReharm,
+  renderStats, useStatsSummary, renderAiStatus, renderAiSuggestions, renderReharm, renderCompingReport,
 } from './ui/render.js';
 
 const $ = id => document.getElementById(id);
@@ -68,6 +70,7 @@ let asking = false;
 let piece = null;                   // the piece on screen (grid + recorded melody)
 let reharmResult = null;            // the last reharmonization, for the A/B buttons
 let playback = null;                // { which, bars, voicings } while an arrangement plays
+let bassPlaying = false;            // a timed run with the app's bass under it
 let recorder = null;                // active while a melody pass is being recorded
 const heldWhileRecording = new Set();
 let sessionStats = emptyStats();    // this session only
@@ -590,7 +593,8 @@ function startProgression() {
   if (progressionMode() === 'timed') {
     metronome = createMetronome({ tempo: Number($('prog-tempo').value) || 120, timeSignature: timeSignature(), onBeat });
     metronome.start();
-    tape.event('start', { timed: true, tempo: metronome.tempo, bar1At: tape.at(metronome.performanceTimeOf(1, 1)) });
+    tape.event('start', { timed: true, tempo: metronome.tempo, bar1At: tape.at(metronome.performanceTimeOf(1, 1)), swing: $('prog-feel').value !== 'straight' });
+    if ($('prog-bass').checked) startBass();
   } else {
     tape.event('start', { timed: false });
   }
@@ -598,18 +602,62 @@ function startProgression() {
 }
 
 function stopProgression() {
+  const timed = progressionMode() === 'timed';
   tape.event('stop');
   metronome?.stop();
   metronome = null;
-  if (session) chorusDone(progressionMode() === 'timed' ? `Chorus ${chorus}` : 'Pass');
+  stopBass();
+  if (session) chorusDone(timed ? `Chorus ${chorus}` : 'Pass');
+  if (timed) showCompingReport();
   setProgressionControls(false);
   showMidiStatus();
+}
+
+// The bass line of the arrangement, alone, under a timed run: the form looped for as long as one
+// could comp over it. Stop silences whatever is still waiting.
+function startBass() {
+  if (!output?.port) {
+    renderStatus($('status'), 'No MIDI output selected: the bass needs one (Settings, MIDI out).', 'warn');
+    return;
+  }
+  try {
+    const source = createPiece({ title: pieceTitle(), key: $('prog-key').value, timeSignature: timeSignature(), tempo: metronome.tempo, grid: $('prog-grid').value });
+    const { events, totalBeats } = realize(source, { bassRegister: BASS_REGISTERS[settings.bassRegister] });
+    const times = loopTimes({ totalBeats, tempo: metronome.tempo, loop: $('prog-loop').checked });
+    const bass = repeatEvents(events, { totalBeats, times, part: 'bass' });
+    output.sendScheduled(arrangementMessages(bass, { tempo: metronome.tempo, startMs: metronome.performanceTimeOf(1, 1), channels: settings.channels }));
+    bassPlaying = true;
+  } catch (error) {
+    console.warn('No bass line:', error.message);
+  }
+}
+
+function stopBass() {
+  if (!bassPlaying) return;
+  bassPlaying = false;
+  output?.silence([settings.channels.bass]);
+}
+
+// The report on the run that just stopped, read back from the tape (docs/spec-comping.md).
+function showCompingReport() {
+  const split = attacksFromTape(tape.toJSON());
+  if (!split || !split.attacks.length) {
+    $('comping-report').replaceChildren();
+    return;
+  }
+  try {
+    const report = compingReport(split.attacks, split.form);
+    renderCompingReport($('comping-report'), report, presentReport(report));
+  } catch (error) {
+    console.warn('No comping report:', error.message);
+    $('comping-report').replaceChildren();
+  }
 }
 
 function setProgressionControls(running) {
   $('prog-start').disabled = running;
   $('prog-stop').disabled = !running;
-  for (const id of ['prog-library', 'prog-key', 'prog-time', 'prog-tempo', 'prog-loop', 'prog-grid']) $(id).disabled = running;
+  for (const id of ['prog-library', 'prog-key', 'prog-time', 'prog-tempo', 'prog-loop', 'prog-grid', 'prog-bass', 'prog-feel']) $(id).disabled = running;
   for (const radio of document.querySelectorAll('input[name="prog-mode"]')) radio.disabled = running;
   $('rec-start').disabled = running;
 }

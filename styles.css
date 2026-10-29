@@ -245,3 +245,11 @@ select, option { background-color: Canvas; color: CanvasText; }
 .ai-rejected { margin: .4rem 0 0; font-size: .85rem; color: var(--muted); }
 .settings-form label.wide { flex-basis: 100%; }
 .settings-form label.wide input[type="url"] { flex: 1; min-width: 12rem; font: inherit; padding: .2rem .4rem; border-radius: 6px; border: 1px solid var(--line); background: transparent; color: inherit; }
+
+/* The comping report */
+.comping-report h3 { margin: 1rem 0 .25rem; font-size: 1rem; }
+.comping-report h4 { margin: .5rem 0 .1rem; font-size: .9rem; color: var(--muted); }
+.comping-report ul { margin: 0; padding-left: 1.2rem; }
+.comping-report li.problem { color: var(--warn); }
+.comping-report li.strength { color: var(--ok); }
+.comping-report .bars { color: var(--muted); }

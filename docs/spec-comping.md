@@ -208,6 +208,20 @@ Scrise în `src/theory/comping.js` (raportul) și `src/ui/attacks.js` (banda →
   compară. Anticipările se numără numai pe schimbări reale.
 - Toate pragurile stau în `COMPING_LIMITS`, un tabel de date.
 
+**În Laborator** (tab-ul Progression), pe o trecere **timed**:
+- **„bass from the app”** cântă numai basul aranjamentului (`realize.js`), pe canalul de bas din
+  setări, cu forma repetată cât pentru 20 de minute (`repeatEvents`, `loopTimes` din
+  `player.js`). Fără `loop`, o singură dată. Stop oprește tot ce mai aștepta (`output.silence`).
+  Fără ieșire MIDI aleasă, bara de stare o spune, iar trecerea merge fără bas.
+- **„Feel”** (swing / straight) se scrie pe bandă, în evenimentul `start` (`swing`), așa că o
+  sesiune salvată se judecă la fel și mai târziu.
+- **După Stop**, raportul se calculează din banda trecerii care tocmai s-a oprit și apare sub
+  sumarul chorusului: cel mult trei probleme, punctele tari, restul strâns. Ce se arată alege
+  `presentReport`, în `theory/` și testat; `renderCompingReport` doar scrie. Pe o trecere fără
+  niciun atac, panoul rămâne gol.
+- Verificat în browser cu `?midi=virtual` (2026-10-29): basul pleacă pe canalul 3, Stop trimite
+  note-off și All Notes Off, raportul apare și spune ce s-a cântat. **Neîncercat pe Genos.**
+
 **Capcana de știut la calibrare: latența.** `rushing`, `dragging` și `timing-loose` măsoară față
 de momentul în care metronomul *programează* click-ul (`bar1At`), nu față de cel în care se aude.
 Un difuzor sau o placă audio cu latență mare te face să pari întârziat cu exact acea latență.

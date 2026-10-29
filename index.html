@@ -94,12 +94,20 @@
       <span class="modes">
         <label class="check"><input type="radio" name="prog-mode" value="free" checked> free (Space / E1 moves on)</label>
         <label class="check"><input type="radio" name="prog-mode" value="timed"> timed (metronome)</label>
+        <label class="check" title="Timed only: the app plays the bass line while you comp, and a report follows Stop"><input id="prog-bass" type="checkbox"> bass from the app</label>
+        <label>Feel
+          <select id="prog-feel">
+            <option value="swing">swing</option>
+            <option value="straight">straight</option>
+          </select>
+        </label>
       </span>
       <button id="prog-start" type="button">Start</button>
       <button id="prog-stop" type="button" disabled>Stop</button>
     </div>
     <div id="grid-view" class="grid-view"></div>
     <div id="summary" class="summary"></div>
+    <div id="comping-report" class="comping-report" aria-live="polite"></div>
     <div class="row piece-row">
       <button id="rec-start" type="button">Record melody</button>
       <button id="rec-stop" type="button" disabled>Stop recording</button>
