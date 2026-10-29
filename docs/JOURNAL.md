@@ -626,3 +626,10 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   pornește sunet; oprit, nu; alegerea rămâne salvată. **Neîncercat pe un controller adevărat**, nici
   pe Genos (unde trebuie oprit o dată). Neacoperite: pedala de sustain, sunetul înainte de primul
   clic la o reconectare automată.
+- **2026-10-29 (înapoi la triada citită ca jazz)** — Edi: Gm7 pe Gm nu trebuie să fie greșit;
+  notele în plus să apară ca extensii, iar dedesubt să scrie ce ai cântat. Decizia din 2026-10-28
+  (triada strictă) e întoarsă: `judgeAsk` citește triadele după tabel, iar `playedInstead` numește
+  și un răspuns corect cu ceva în plus („C Clean — root position / You played Cmaj7”, verificat în
+  browser). Tabelul rămâne cum e: pe C majoră, Bb e tot notă greșită, iar F e notă de evitat.
+  Pagina de triade spune noua regulă, în ambele limbi. 434 → **435 de teste**, reluarea
+  neschimbată (110 din 110). **Întrebare pentru Edi**: Bb pe C (triadă majoră) rămâne greșit?

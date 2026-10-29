@@ -212,15 +212,23 @@ test('scoreRun: counts the chords actually played, apart from the ones asked', (
   assert.equal(scoreRun({ attempts: SMOOTH, timed: true }).played, SMOOTH.length);
 });
 
-test('judgeAsk: a triad asked for is judged strictly, a seventh chord as jazz', () => {
-  const midi = names => names.map(name => ({ C: 60, E: 64, F: 65, G: 67, A: 69, B: 71, D: 74 })[name]);
-  // F A B on F: the B is wrong, and the answer is not right.
+test('judgeAsk: a triad keeps its tensions, as a seventh chord does (Edi, 2026-10-29)', () => {
+  const midi = names => names.map(name => ({ C: 60, E: 64, F: 65, G: 67, A: 69, Bb: 70, B: 71, D: 74 })[name]);
+  // Gm7 played for Gm: the F is the b7, a colour on top, and the answer is right and clean.
+  const minor = judgeAsk([55, 58, 62, 65], 'Gm');
+  assert.deepEqual(minor.wrong, []);
+  assert.equal(minor.roles.find(role => role.pc === 5).role, 'tension');
+  assert.equal(isClean(minor, {}), true);
+  // F A B on F still misses its fifth, but the B is a #11, not a wrong note.
   const triad = judgeAsk(midi(['F', 'A', 'B']), 'F');
-  assert.deepEqual(triad.wrong, [11]);
-  assert.equal(isRight(triad, {}), false);
-  // Slash triads and sus4 are triads too; a 9 on a C/E is wrong.
-  assert.deepEqual(judgeAsk(midi(['E', 'G', 'C', 'D']), 'C/E').wrong, [2]);
-  // A seventh chord keeps its tensions: the 9 on Cmaj7 is colour, not a mistake.
+  assert.deepEqual(triad.wrong, []);
+  assert.deepEqual(triad.missing, [0]);
+  // Slash triads alike: a 9 on a C/E is colour.
+  assert.deepEqual(judgeAsk(midi(['E', 'G', 'C', 'D']), 'C/E').wrong, []);
+  // The table's reading of a major triad is a tonic: a b7 or a b3 on C is still wrong.
+  assert.deepEqual(judgeAsk(midi(['C', 'E', 'G', 'Bb']), 'C').wrong, [10]);
+  assert.deepEqual(judgeAsk([60, 63, 64, 67], 'C').wrong, [3]);
+  // A seventh chord keeps its tensions, as it always did.
   assert.deepEqual(judgeAsk(midi(['C', 'E', 'B', 'D']), 'Cmaj7').wrong, []);
 });
 
@@ -251,4 +259,15 @@ test('playedInstead: nothing to name when the chord was right, or fits no qualit
   assert.equal(playedInstead([60, 61, 62], 'C'), null);
   // A slash chord is asked for its bass, which no other quality on the root would answer.
   assert.equal(playedInstead([60, 64, 67], 'C/E'), null);
+});
+
+test('playedInstead: a right answer with more on top is named, a plain right one is not (Edi, 2026-10-29)', () => {
+  // Gm7 for Gm is right — the F is a tension — and the line under it says what it was.
+  assert.equal(playedInstead([55, 58, 62, 65], 'Gm'), 'Gm7');
+  assert.equal(playedInstead([60, 64, 67, 69, 74], 'C'), 'C6/9');
+  // Exactly the chord asked for: nothing to add.
+  assert.equal(playedInstead([60, 64, 67], 'C'), null);
+  assert.equal(playedInstead([55, 58, 62], 'Gm'), null);
+  // A tension no quality in the table holds as a chord tone names nothing: C with a 9 is still C.
+  assert.equal(playedInstead([60, 64, 67, 74], 'C'), null);
 });

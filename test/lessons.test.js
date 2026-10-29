@@ -14,7 +14,7 @@ import { LESSONS, lessonFor, lessonForTexture, exampleNotes, lessonIn } from '..
 import LESSONS_RO from '../src/game/lessons.ro.js';
 import { describeMessage } from '../src/i18n/messages.js';
 
-// Judged as the game judges an ask, since that is what the pages describe: strictly on a triad.
+// Judged as the game judges an ask, since that is what the pages describe.
 const analyze = (symbol, names) => judgeAsk(names.split(' ').map(nameToMidi), symbol);
 const warnings = analysis => analysis.messages.filter(message => message.level === 'warning').map(message => message.text);
 
@@ -86,10 +86,13 @@ test('triads: all three notes are needed, the third decides which triad, and the
   assert.ok(isClean(analyze('C', 'C2 G3 E4')));
   // A sus4 has its fourth where the third would be.
   assert.ok(!isRight(analyze('Csus4', 'C4 E4 G4')));
-  // Nothing else: a 9 or a seventh on top makes it another chord, and the game counts it wrong.
-  assert.ok(!isRight(analyze('C', 'C4 E4 G4 D5')), 'an added 9');
-  assert.ok(!isRight(analyze('C', 'C4 E4 G4 Bb4')), 'an added seventh');
-  assert.deepEqual(warnings(analyze('C', 'C4 E4 G4 D5')), ['Wrong note: D is not in C']);
+  // Notes on top are colour (Edi, 2026-10-29): a 9, a 13 or a seventh that fits is a tension.
+  assert.ok(isClean(analyze('C', 'C4 E4 G4 D5')), 'an added 9');
+  assert.ok(isClean(analyze('C', 'C4 E4 G4 B4')), 'an added major seventh');
+  assert.ok(isClean(analyze('Gm', 'G3 Bb3 D4 F4')), 'a minor seventh on a minor triad');
+  // On a major triad the flat seventh makes it a dominant, and that is still wrong.
+  assert.ok(!isRight(analyze('C', 'C4 E4 G4 Bb4')), 'a flat seventh on major');
+  assert.deepEqual(warnings(analyze('C', 'C4 E4 G4 Bb4')), ['Wrong note: Bb is not in C']);
 });
 
 test('inversions: only the lowest note is checked against the slash, in any octave', () => {

@@ -139,35 +139,36 @@ export function counts({ timed, answered }) {
 }
 
 /**
- * A voicing judged against the chord the game asked for. A triad is asked for as just the
- * triad, so a note outside it is a mistake, not a tension (Edi, 2026-10-28: F A B on F is
- * wrong on a triad level); a seventh chord and up keeps the analyzer's jazz reading.
+ * A voicing judged against the chord the game asked for, in the analyzer's jazz reading, triads
+ * included: a b7 on Gm is a tension, coloured as one, not a wrong note (Edi, 2026-10-29, going
+ * back on the strict triad of 2026-10-28). A triad still needs all three of its notes.
  * @param {number[]} notes  MIDI numbers
  * @param {string} symbol
  * @returns {ReturnType<typeof analyzeVoicing>}
  */
 export function judgeAsk(notes, symbol) {
-  const chord = parseChord(symbol);
-  return analyzeVoicing(notes, chord, { strict: chord.chordTones.length === 3 });
+  return analyzeVoicing(notes, parseChord(symbol));
 }
 
 /**
- * What a voicing that missed its chord is instead, when it is another quality on the same root:
- * a C6/9 played for Cmaj7. Still a miss — a 6/9 is not a maj7 (Edi, 2026-10-29) — but one the
- * verdict can name. Only the root asked for is tried, never a reading on another root (C6 is
- * also Am7/C), because the player was aiming at this root. Of the qualities the voicing is Right
- * for, the one whose chord tones it covers most wins, so C E G A is a C6 and not a C with an A.
- * Null when the voicing was right, when the ask is a slash chord (its bass is the exercise), or
- * when no quality fits.
+ * What a voicing is, when it is another quality on the same root than the one asked for. On a
+ * miss, a C6/9 played for Cmaj7 — still a miss, a 6/9 is not a maj7 (Edi, 2026-10-29). On a
+ * right answer, a Gm7 played for Gm: right, with the F as a tension, and the line under the
+ * star says what it was (Edi, 2026-10-29). Only the root asked for is tried, never a reading on
+ * another root (C6 is also Am7/C), because the player was aiming at this root. Of the qualities
+ * the voicing is Right for, the one whose chord tones it covers most wins, so C E G A is a C6 and
+ * not a C with an A; on a right answer it has to cover more than the chord asked for, or it says
+ * nothing new. Null when the ask is a slash chord (its bass is the exercise) or no quality fits.
  * @param {number[]} notes  MIDI numbers
  * @param {string} symbol  the chord asked for
  * @returns {string | null}
  */
 export function playedInstead(notes, symbol) {
   const asked = parseChord(symbol);
-  if (asked.bass !== null || isRight(judgeAsk(notes, symbol))) return null;
+  if (asked.bass !== null) return null;
   const played = new Set(notes.map(note => note % 12));
   const same = new Set(asked.chordTones);
+  const floor = isRight(judgeAsk(notes, symbol)) ? asked.chordTones.filter(pc => played.has(pc)).length : 0;
   let best = null;
   for (const quality of qualityIds()) {
     const candidate = chartSymbol(asked.root, quality === 'maj' ? '' : quality);
@@ -175,6 +176,7 @@ export function playedInstead(notes, symbol) {
     if (chord.chordTones.length === same.size && chord.chordTones.every(pc => same.has(pc))) continue;
     if (!isRight(judgeAsk(notes, candidate))) continue;
     const covered = chord.chordTones.filter(pc => played.has(pc)).length;
+    if (covered <= floor) continue;
     if (!best || covered > best.covered) best = { symbol: candidate, covered };
   }
   return best?.symbol ?? null;

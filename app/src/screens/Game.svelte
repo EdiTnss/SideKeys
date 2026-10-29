@@ -377,6 +377,10 @@
         </p>
       {/if}
 
+      {#if star && instead && !nudge}
+        <!-- Right, with more on top: the star stands, and this says what was played (Edi, 2026-10-29). -->
+        <p class="spelled">{t('game.youPlayed', { chord: instead })}</p>
+      {/if}
       {#if spelled && !nudge}
         <p class="spelled">{#if instead}{t('game.youPlayed', { chord: instead })}{' · '}{/if}{spelled}</p>
       {/if}

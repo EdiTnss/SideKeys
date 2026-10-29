@@ -70,7 +70,7 @@ export const LESSONS = [
       'All three notes have to be there: the root, the third and the fifth.',
       'The third decides which triad it is: C with an E flat in it is not C.',
       'On a sus4 the fourth stands where the third would, and the third must not take its place.',
-      'Nothing else: a 9 or a seventh on top makes it another chord, and the game counts it wrong.',
+      'Notes on top are colour, not mistakes: a 9, a 13 or a seventh that fits lights up as a tension, and the line under the star names what you played — Gm7 on Gm. On a major triad the seventh that fits is the major one; a flat seventh makes it a dominant, and that counts as wrong.',
       'The spacing is yours: one hand or two, any octave.',
     ],
     level: 'triads-major',
