@@ -167,7 +167,7 @@ Regula de dependență: `app/` importă din `src/`, niciodată invers. `theory/`
 
 ## Starea curentă
 
-La 2026-10-27. **Cum s-a ajuns aici stă în [docs/JOURNAL.md](docs/JOURNAL.md)**, nu aici: secțiunea
+La 2026-10-29. **Cum s-a ajuns aici stă în [docs/JOURNAL.md](docs/JOURNAL.md)**, nu aici: secțiunea
 asta se citește la fiecare sesiune, deci ține doar ce e adevărat acum, ce e nedecis și ce așteaptă
 pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a produs.
 
@@ -222,6 +222,9 @@ măsurat): împins, cu testele și publicarea trecute pe GitHub.
 ultimul commit, fără să-l treacă în jurnal (corectat pe 2026-10-28). Verificat pe 2026-10-28:
 pachetul servit de Pages conține textul românesc și glosarul.
 
+**Tot ce s-a făcut pe 2026-10-28 e împins și publicat** (ultimul commit `f028089`, al doilea
+tur), cu testele și publicarea trecute pe GitHub.
+
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
@@ -240,7 +243,8 @@ pachetul servit de Pages conține textul românesc și glosarul.
   regulă"): conexiunea care rămâne între nivele, acordul următor în timed, Training.
 - **Clapa de ecran pe telefon** (două octave, săgeți, fără scurtături) a fost încercată de Edi pe
   telefonul lui pe 2026-10-28: „E bine așa”. Tot din 2026-10-28, fără Genos: click-ul care sună,
-  albirea după 1,5 s, greșeala care te ține pe acord, triada strictă.
+  albirea după 1,5 s, greșeala care te ține pe acord, triada strictă, mesajul de conectare din
+  antet, forma cerută pe progresiile din Training.
 - **Româna n-a fost văzută pe Genos**: e probată doar în browser, cu clapa de ecran, deși e
   deja publicată.
 - **Neauzit de nimeni altcineva decât Edi**: Claude a verificat sunetul (metronom, exemplele din
@@ -266,6 +270,10 @@ pachetul servit de Pages conține textul românesc și glosarul.
 - **Să șteargă cheia API ElevenLabs** din cont și fișierul `Reels/cheie api eleven labs.txt`:
   a apărut în conversația din 2026-10-28, din greșeala lui Claude. Conectorul nu are nevoie de ea.
 - **Să încerce formularul cu adresa lui**, după publicare: Claude nu a trimis nicio adresă de probă.
+- **Să încerce pe Genos ce s-a făcut pe 2026-10-28**: lista e în
+  `docs/session-log/2026-10-29-1008.md`, la „Rămas deschis”.
+- **Să confirme o decizie a lui Claude**: primul răspuns rămâne și fără ceas (o greșeală te ține pe
+  acord, dar stelele le dă prima încercare). Regula e în `spec-game.md`.
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick".
 
 ### Cioburi de care te lovești dacă nu le știi
@@ -303,9 +311,11 @@ pachetul servit de Pages conține textul românesc și glosarul.
 
 ## Următorul pas
 
-**Ziua în care Edi postează reel-ul**: clipul e gata și e în README (2026-10-28), deci postarea pe
-rețele pornește ceasul porții P1 (40 de adrese în 4 săptămâni). Data se scrie în `PRODUCT.md`, la
-poarta P1, iar ceasul se urmărește de acolo.
+**Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1008.md`
+(„Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data
+postării se scrie în `docs/PRODUCT.md`, la poarta P1.**
+
+Postarea pornește ceasul porții P1 (40 de adrese în 4 săptămâni); ceasul se urmărește de acolo.
 
 Ce se poate face fără Edi, în ordinea asta:
 
@@ -329,5 +339,5 @@ Regula „niciun feature care nu e pe lista fazei curente" se aplică.
 | [docs/spec-i18n.md](docs/spec-i18n.md) | cele două limbi: ce se traduce și ce nu, unde stau cheile, regula „cheie nouă în ambele limbi”, pluralul, glosarul și cum se adaugă un termen | orice text nou pe ecranele jocului, o pagină de teorie, un termen de glosar |
 | [docs/spec-mic.md](docs/spec-mic.md) | prototipul de microfon: ce s-a măsurat, cum, cifrele și verdictul | `mic-proto/`; dacă se reia vreodată modul microfon |
 | [docs/PHASES.md](docs/PHASES.md) | planul inițial pe faze 0–5, cu DoD-urile și vechiul scope guard | **istoric**: toate fazele de acolo sunt bifate. Se citește doar dacă se caută un DoD vechi |
-| [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi (ultimul: `2026-10-13-1047.md`) | când o sesiune se închide cu mult context de predat |
+| [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi (ultimul: `2026-10-29-1008.md`) | când o sesiune se închide cu mult context de predat |
 | [docs/JOURNAL.md](docs/JOURNAL.md) | jurnalul sesiunilor, cu deciziile și cifrele măsurate | la final (intrare nouă); istoricul, la nevoie |

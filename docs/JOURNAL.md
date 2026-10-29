@@ -576,3 +576,15 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   acum se măsoară de la ultimul acord diferit. Testul vechi „a progression demands no shape” cerea
   decizia schimbată și a fost rescris. Verificat în browser; 424 de teste. **Neverificat**: cazul
   „permisiune dată, nicio clapă” (browserul de test refuză MIDI); trecerea în timp și Recapitularea.
+- **2026-10-29 (închiderea sesiunii din 28)** — Al doilea tur e împins (`f028089`), la cuvântul lui
+  Edi: testele și publicarea au trecut pe GitHub, iar pachetul servit de sidekeys.app conține „No
+  MIDI keyboard found”. Toată sesiunea, de la `d5b54ce` la `f028089`: 15 commit-uri, **408 → 424
+  de teste**, reluarea harness-ului neschimbată (110 din 110). **Decizii ale lui Edi**: clicul
+  care sună, albirea la 1,5 s, greșeala care te ține pe acord, triada strictă, 7#11 rămâne la
+  „Altered dominants”, varianta A pe telefon, „fă tot ce ai zis” pe al doilea tur, vorbitul numai
+  în română. **Decizii ale lui Claude, acceptate de Edi**: cifra de mișcare doar după o trecere în
+  timp, butonul de timed secundar până la două stele, textul de bun venit. **Decizie a lui Claude,
+  neconfirmată explicit**: primul răspuns rămâne și fără ceas, ca stelele să nu se câștige prin
+  încercări. **Rămas deschis**: nimic din 28 n-a fost încercat pe Genos; cazul „permisiune dată,
+  nicio clapă”, trecerea în timp și Recapitularea nu sunt verificate. **Următorul pas**: Edi
+  încearcă pe Genos lista din `docs/session-log/2026-10-29-1008.md` și postează reel-ul.
