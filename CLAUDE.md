@@ -342,9 +342,15 @@ postării se scrie în `docs/PRODUCT.md`, la poarta P1.**
 
 Postarea pornește ceasul porții P1 (40 de adrese în 4 săptămâni); ceasul se urmărește de acolo.
 
+**P2 a început** (2026-10-29), cu specificația raportului de comping, aprobată:
+[docs/spec-comping.md](docs/spec-comping.md). Plățile și conturile din P2 așteaptă poarta P1.
+
 Ce se poate face fără Edi, în ordinea asta:
 
-1. **Un om cronometrat** la prima vizită: pornirea la rece e măsurată doar pe partea mașinii.
+1. **Raportul de comping**: `src/theory/comping.js` și segmentarea bandei în atacuri, testul
+   întâi; apoi, în Laborator, basul cântat singur și panoul de raport. Calibrarea cere sesiunile
+   lui Edi (4 chorusuri bune + unul prost intenționat, pe o progresie originală).
+2. **Un om cronometrat** la prima vizită: pornirea la rece e măsurată doar pe partea mașinii.
    Cere un om care n-a văzut jocul; Claude nu-l poate face singur.
 
 Idei care **nu** sunt lucru aprobat și nu se încep fără Edi: exemplele din Theory în alte
@@ -362,6 +368,7 @@ Regula „niciun feature care nu e pe lista fazei curente" se aplică.
 | [docs/spec-reharm.md](docs/spec-reharm.md) | piesa, recorder-ul, analiza, candidații, pipeline-ul AI și Worker-ul, scorurile, validarea, realizarea, partenerul de studiu, evaluarea | `piece.js`, `recorder.js`, `analysis.js`, `candidates.js`, `scoring.js`, `realize.js`, `player.js`, `ai/`, `worker/`, `eval/` |
 | [docs/spec-game.md](docs/spec-game.md) | stelele (Right · Clean · Smooth) cu pragurile măsurate, ce e deschis pe drum, antrenamentul zilnic și challenge-ul zilei | logica de scor a jocului, `src/game/`, orice progresie nouă în bibliotecă |
 | [docs/spec-i18n.md](docs/spec-i18n.md) | cele două limbi: ce se traduce și ce nu, unde stau cheile, regula „cheie nouă în ambele limbi”, pluralul, glosarul și cum se adaugă un termen | orice text nou pe ecranele jocului, o pagină de teorie, un termen de glosar |
+| [docs/spec-comping.md](docs/spec-comping.md) | raportul de comping (P2): intrarea din bandă, atacurile, ce raportează în ordine, pragurile și calibrarea | orice cod al raportului de comping sau al lui Gig Mode |
 | [docs/spec-mic.md](docs/spec-mic.md) | prototipul de microfon: ce s-a măsurat, cum, cifrele și verdictul | `mic-proto/`; dacă se reia vreodată modul microfon |
 | [docs/PHASES.md](docs/PHASES.md) | planul inițial pe faze 0–5, cu DoD-urile și vechiul scope guard | **istoric**: toate fazele de acolo sunt bifate. Se citește doar dacă se caută un DoD vechi |
 | [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi (ultimul: `2026-10-29-1207.md`) | când o sesiune se închide cu mult context de predat |

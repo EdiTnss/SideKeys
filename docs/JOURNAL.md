@@ -643,3 +643,14 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   acord încercat doar pe fundamentala cerută. **Rămas deschis**: Gm7 pe Gm și comutatorul de sunet
   pe Genos; valurile 3 și 4 din raport. **Următorul pas**: Edi încearcă pe Genos lista din
   `docs/session-log/2026-10-29-1207.md` și postează reel-ul.
+- **2026-10-29 (P2, specificația raportului de comping)** — Edi a cerut trecerea în P2. Claude a
+  semnalat că poarta P1 n-a pornit (reel-ul nepostat); Edi: postează reel-ul, iar între timp se scrie
+  specificația, primul punct din P2, care e document, nu cod. Scrisă și **aprobată** în aceeași
+  sesiune: `docs/spec-comping.md`. **Decizii ale lui Edi**: două mâini cu basul din aplicație, fără
+  melodie; sus până la G5, jos limitele de interval, centrul F3–G4; varietatea pe patru axe (tipuri,
+  densitate, linia de sus, ritm); fără anticipare în mijlocul măsurii; swing în triolet implicit,
+  drept ca setare; raportul apare întâi în Laborator. **Decizii ale lui Claude, acceptate**: intrarea
+  e banda sesiunii, nu captura de 300 ms (atacuri grupate la 50 ms); precizia bate acoperirea;
+  calibrare pe 4 chorusuri bune plus unul prost intenționat. Pragurile marcate _propunere_ se mută
+  după calibrare. Fără cod, testele neatinse (435). **Următorul pas**: `src/theory/comping.js` și
+  segmentarea bandei, testul întâi.
