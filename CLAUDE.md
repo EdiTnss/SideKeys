@@ -195,8 +195,15 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 - **Theory**: o pagină pe unitate, cu exemple colorate de analizor și cântate la clic. Textul l-a
   scris Claude; Edi l-a citit și l-a acceptat pe 2026-10-12.
 - **O triadă cere toate trei notele** (fundamentală, terță, cvintă); septacordurile lasă în
-  continuare fundamentala și cvinta altcuiva. **Dominantul quartal** (7, 3, 13, 9) e construit de
-  generator, deci unitatea Quartal și Training îl pot cere.
+  continuare fundamentala și cvinta altcuiva. **Notele în plus pe o triadă sunt tensiuni** din
+  2026-10-29 (citirea jazz a tabelului; Bb pe C major rămâne greșit), iar sub stea se scrie ce ai
+  cântat („You played Gm7”). **Dominantul quartal** (7, 3, 13, 9) e construit de generator, deci
+  unitatea Quartal și Training îl pot cere.
+- **Verdictul ajută după o greșeală** (2026-10-29): notele acordului („Bb = Bb · D · F”), ce ai
+  cântat în loc când e alt acord pe aceeași fundamentală („You played C6/9”), un mesaj când Play nu
+  are ce cânta, „How is it built?” spre pagina de teorie, scala mișcării sub cifra de voice leading.
+- **O clapă MIDI se poate auzi prin pianul aplicației** (2026-10-29): comutatorul „Sound in the
+  app” din antet, ținut minte pe clapă, pornit pentru o clapă nouă ([docs/spec-capture.md](docs/spec-capture.md)).
 - **Ortografia**: niciun Cb, Fb, B#, E# sau dublu accident în ce citește jucătorul; acordurile cu
   terță mică pe Db și Gb se scriu din C# și F# (`C#m/E`, `F#m/A`). `Abm` rămâne `Abm`.
 - **Laboratorul** (`index.html` + `src/ui/`), publicat la **`/lab/`**: grila scrisă de mână,
@@ -226,6 +233,10 @@ pachetul servit de Pages conține textul românesc și glosarul.
 **Tot ce s-a făcut pe 2026-10-28 e împins și publicat** (ultimul commit `f028089`, al doilea
 tur), cu testele și publicarea trecute pe GitHub.
 
+**Tot ce s-a făcut pe 2026-10-29 e împins și publicat** (ultimul commit de cod `85e49c6`), cu
+testele și publicarea trecute pe GitHub la fiecare push; pachetul servit a fost verificat de
+fiecare dată.
+
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
@@ -244,13 +255,16 @@ tur), cu testele și publicarea trecute pe GitHub.
   regulă"): conexiunea care rămâne între nivele, acordul următor în timed, Training.
 - **Clapa de ecran pe telefon** (două octave, săgeți, fără scurtături) a fost încercată de Edi pe
   telefonul lui pe 2026-10-28: „E bine așa”. Tot din 2026-10-28, fără Genos: click-ul care sună,
-  albirea după 1,5 s, greșeala care te ține pe acord, triada strictă, mesajul de conectare din
-  antet, forma cerută pe progresiile din Training.
+  albirea după 1,5 s, greșeala care te ține pe acord, triada strictă (întoarsă pe 2026-10-29),
+  mesajul de conectare din antet, forma cerută pe progresiile din Training.
 - **Româna n-a fost văzută pe Genos**: e probată doar în browser, cu clapa de ecran, deși e
   deja publicată.
 - **Confirmat de Edi pe clapă, pe 2026-10-29** („am verificat eu acum pe clapa. este ok”): ce a
   venit din raportul celor două personaje — mesajele de la Play, „Bb = Bb · D · F”, „How is it
   built?”, scala mișcării și „You played C6/9”. Mesajele de la Play țin de clapa de ecran.
+  Tot pe 2026-10-29 a spus „e ok” despre nota lipsă mai vizibilă și „e bine” după comutatorul de
+  sunet, fără să fie clar dacă l-a încercat pe Genos. **Neîncercate pe clapă**: triada citită ca
+  jazz și „You played Gm7” sub stea.
 - **Neauzit de nimeni altcineva decât Edi**: Claude a verificat sunetul (metronom, exemplele din
   Theory) numai prin absența erorilor, nu cu urechea.
 
@@ -281,6 +295,10 @@ tur), cu testele și publicarea trecute pe GitHub.
 - **Să oprească o dată „Sound in the app” pe Genos** (pornește implicit pe orice clapă nouă) și,
   dacă are la îndemână, să încerce un controller fără sunete: comutatorul e probat doar cu un
   controller simulat.
+- **Să cânte pe Genos Gm7 pe Gm și C7 pe C**: primul trebuie să iasă Clean cu „You played Gm7”,
+  al doilea greșit (Bb roșu).
+- **Restul raportului celor două personaje** (valurile 3 și 4, toate feature-uri noi, în afara
+  P1): nu se începe fără Edi. BUG-04 (o clapă rămasă „held”) e sub observație.
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick".
 
 ### Cioburi de care te lovești dacă nu le știi
@@ -318,7 +336,7 @@ tur), cu testele și publicarea trecute pe GitHub.
 
 ## Următorul pas
 
-**Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1008.md`
+**Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`
 („Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data
 postării se scrie în `docs/PRODUCT.md`, la poarta P1.**
 
@@ -346,5 +364,5 @@ Regula „niciun feature care nu e pe lista fazei curente" se aplică.
 | [docs/spec-i18n.md](docs/spec-i18n.md) | cele două limbi: ce se traduce și ce nu, unde stau cheile, regula „cheie nouă în ambele limbi”, pluralul, glosarul și cum se adaugă un termen | orice text nou pe ecranele jocului, o pagină de teorie, un termen de glosar |
 | [docs/spec-mic.md](docs/spec-mic.md) | prototipul de microfon: ce s-a măsurat, cum, cifrele și verdictul | `mic-proto/`; dacă se reia vreodată modul microfon |
 | [docs/PHASES.md](docs/PHASES.md) | planul inițial pe faze 0–5, cu DoD-urile și vechiul scope guard | **istoric**: toate fazele de acolo sunt bifate. Se citește doar dacă se caută un DoD vechi |
-| [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi (ultimul: `2026-10-29-1008.md`) | când o sesiune se închide cu mult context de predat |
+| [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi (ultimul: `2026-10-29-1207.md`) | când o sesiune se închide cu mult context de predat |
 | [docs/JOURNAL.md](docs/JOURNAL.md) | jurnalul sesiunilor, cu deciziile și cifrele măsurate | la final (intrare nouă); istoricul, la nevoie |

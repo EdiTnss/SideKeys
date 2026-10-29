@@ -633,3 +633,13 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   browser). Tabelul rămâne cum e: pe C majoră, Bb e tot notă greșită, iar F e notă de evitat.
   Pagina de triade spune noua regulă, în ambele limbi. 434 → **435 de teste**, reluarea
   neschimbată (110 din 110). Edi: Bb pe C (triadă majoră) **rămâne greșit**.
+- **2026-10-29 (închiderea sesiunii)** — Toată sesiunea, de la `cee1bfb` la `85e49c6`: 9
+  commit-uri, **424 → 435 de teste**, reluarea harness-ului neschimbată (110 din 110), totul împins
+  și publicat, cu testele și publicarea trecute pe GitHub la fiecare push. **Decizii ale lui Edi**:
+  primul val din raport, nivelul abandonat nu se salvează, 6/9 nu e maj7, „numește-l”, BUG-03 pe
+  textul de ajutor, BUG-04 sub observație, BUG-06 și JAZZ-01 respinse, comutatorul de sunet pornit
+  pentru o clapă nouă, triada citită iar ca jazz, Bb pe C major rămâne greșit. **Decizii ale lui
+  Claude, acceptate**: un comutator în loc de meniu, ținut minte pe clapă după nume; numele unui
+  acord încercat doar pe fundamentala cerută. **Rămas deschis**: Gm7 pe Gm și comutatorul de sunet
+  pe Genos; valurile 3 și 4 din raport. **Următorul pas**: Edi încearcă pe Genos lista din
+  `docs/session-log/2026-10-29-1207.md` și postează reel-ul.
