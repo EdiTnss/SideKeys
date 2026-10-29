@@ -34,7 +34,7 @@
   let fromList = false;
   let playing = $state<{ unit: Unit; plan: LevelPlan | PracticePlan } | null>(null);
   // What the stretch of training just finished came to, said once on the way back to its screen.
-  let lastTraining = $state<{ minutes: number; played: number; clean: number } | null>(null);
+  let lastTraining = $state<{ minutes: number; played: number; clean: number; movement: number | null } | null>(null);
   let trainingRuns = 0;
 
   const today = $derived(dayStamp());
@@ -109,7 +109,8 @@
    * It does not look at `playing`: the logo clears that first, and the screen only reports the
    * stretch as it is torn down.
    */
-  function finishTraining({ attempts, seconds }: { attempts: Attempt[]; seconds: number }) {
+  function finishTraining({ attempts, seconds, movement }:
+                          { attempts: Attempt[]; seconds: number; movement: number | null }) {
     const { missed, cleared } = outcomesFor(attempts);
     progress = recordPractice(progress, { today, seconds, missed, cleared });
     saveProgress(progress);
@@ -118,6 +119,7 @@
       played: attempts.length,
       clean: attempts.filter(attempt =>
         attempt.analysis && isClean(attempt.analysis, { texture: attempt.texture ?? null })).length,
+      movement,
     };
   }
 

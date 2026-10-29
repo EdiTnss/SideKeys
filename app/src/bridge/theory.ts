@@ -6,7 +6,7 @@
 // Keeping the imports in one file means that rule is visible in one diff instead of scattered
 // through the screens.
 
-export { parseChord, ChordParseError } from '../../../src/theory/chords.js';
+export { parseChord, chordToneNames, ChordParseError } from '../../../src/theory/chords.js';
 export { analyzeVoicing, inversionOf } from '../../../src/theory/analyzer.js';
 export { isRight, isClean, scoreRun, movementThreshold, counts, judgeAsk, rateStep } from '../../../src/theory/stars.js';
 export { getProgression, PROGRESSIONS } from '../../../src/theory/progressions.js';

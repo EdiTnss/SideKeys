@@ -96,10 +96,14 @@ export function createOnScreen({
     changed();
   }
 
-  /** Plays what is armed as one chord — or, with nothing armed, the chord played last. */
+  /**
+   * Plays what is armed as one chord — or, with nothing armed, the chord played last. One armed
+   * note is not played: the capture drops a single note, so it would vanish without an answer.
+   * It stays armed for the others, and false tells the caller to say so.
+   */
   function play() {
     const notes = armed.size ? sorted(armed) : last;
-    if (notes.length === 0) return false;
+    if (notes.length < 2) return false;
     // A preview still ringing would be let go by its own timer in the middle of the chord.
     for (const note of [...previews.keys()]) silence(note);
     release();

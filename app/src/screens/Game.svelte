@@ -7,9 +7,9 @@
   import type { Instrument } from '../lib/instrument.svelte';
   import { createLevel, type Attempt, type Finished, type LevelPlan, type Run } from '../game/level.svelte';
   import { createPractice, type PracticePlan } from '../game/practice.svelte';
-  import { lessonForTexture } from '../bridge/game';
+  import { lessonFor, lessonForTexture } from '../bridge/game';
   import {
-    analyzeVoicing, inversionOf, parseChord, isRight, isClean,
+    analyzeVoicing, inversionOf, parseChord, chordToneNames, isRight, isClean,
     roleClasses, missingClasses, armedClasses, midiToName,
   } from '../bridge/theory';
   import { sayLevel, sayMessage, sayVoicing, sayInversion, sayUnit, sayDecimal, t } from '../lib/locale.svelte';
@@ -24,7 +24,7 @@
     best?: number;
     onfinish: (run: { stars: number; attempts: Attempt[]; seconds: number }) => Finished;
     /** A stretch of training is over: what was played, and for how long. No stars come back. */
-    onpractice?: (run: { attempts: Attempt[]; seconds: number }) => void;
+    onpractice?: (run: { attempts: Attempt[]; seconds: number; movement: number | null }) => void;
     /** Opens the page that explains a shape. It leaves this screen: the run in hand is given up. */
     ontheory?: (unit: string) => void;
     /** Straight on to the level after this one, once this run has opened it. Null when it has not. */
@@ -70,6 +70,18 @@
   // a CSS animation does not restart for a class the element already carries.
   let strike = 'strike-a';
 
+  // A press on Play that played nothing, said where the verdict goes: a button with no answer
+  // reads as one that does not work. Gone with the next verdict or the next key armed.
+  let nudge = $state<'empty' | 'one' | null>(null);
+  function playArmed() {
+    const armedNow = instrument.armed.length;
+    nudge = instrument.play() ? null : armedNow === 1 ? 'one' : 'empty';
+  }
+  $effect(() => {
+    instrument.armed;
+    nudge = null;
+  });
+
   // This screen is the one being played to for as long as it is mounted, and no longer.
   // svelte-ignore state_referenced_locally
   onDestroy(instrument.listen({ onVoicing: judge, onNext: skip }));
@@ -81,7 +93,9 @@
     if (!practice || recorded) return;
     recorded = true;
     practice.end();
-    if (practice.attempts.length) onpractice({ attempts: practice.attempts, seconds: practice.seconds });
+    if (practice.attempts.length) {
+      onpractice({ attempts: practice.attempts, seconds: practice.seconds, movement: practice.averageMovement });
+    }
   }
 
   function leave() {
@@ -99,6 +113,7 @@
     // started in the last half beat of a bar belongs to the next one.
     const answered = level.answer(notes, startedAt);
     if (!answered) return;        // played during the count-in, or after the last bar
+    nudge = null;
     analysis = answered.analysis;
     judged = answered.symbol;
     anticipated = answered.anticipated;
@@ -198,7 +213,7 @@
       event.preventDefault();
       return;
     }
-    if (event.code === 'Enter') instrument.play();
+    if (event.code === 'Enter') playArmed();
     else if (event.code === 'Escape') instrument.clear();
     else if (event.code === 'KeyZ') instrument.octaveDown();
     else if (event.code === 'KeyX') instrument.octaveUp();
@@ -219,6 +234,22 @@
     analysis && !star && !warnings.length
       ? sayVoicing(analysis.voicing) ?? t('voicing.other')
       : null);
+  // A wrong or missing note ends on the answer, "Bb = Bb · D · F": the verdict says what is
+  // wrong, and someone who does not know the chord yet still has nothing to play.
+  const spelled = $derived(
+    judged && !star && warnings.some((m: { code: string }) => m.code === 'missing' || m.code === 'wrong')
+      ? `${judged} = ${chordToneNames(parseChord(judged)).join(' · ')}`
+      : null);
+  // The bars a change is rated against, in the rating's own words: smooth up to this
+  // progression's third-star threshold, then compareVoicings' 1.5 and 3 (src/theory/stars.js
+  // `rateStep`). "Close" only exists where the threshold is under 1.5, as on the ii–V–I.
+  const scale = $derived.by(() => {
+    if (!practice) return '';
+    const bars = [`${t('rating.smooth')} ≤ ${sayDecimal(practice.smoothAt, 2)}`];
+    if (practice.smoothAt < 1.5) bars.push(`${t('rating.close')} ≤ ${sayDecimal(1.5, 2)}`);
+    bars.push(`${t('rating.ok')} ≤ 3`, `${t('rating.jumpy')} > 3`);
+    return bars.join(' · ');
+  });
   // The rest of the warnings, under the headline: when the headline is the first warning itself,
   // listing it again only says it twice ("Missing C (5)" over "Missing C (5)").
   const listed = $derived(star || shapeMiss ? warnings : warnings.slice(1));
@@ -234,6 +265,16 @@
   const pageFor = (texture: string | string[] | null | undefined) =>
     (lessonForTexture(texture) as { unit: string } | null)?.unit ?? null;
   const askPage = $derived(pageFor(level.ask?.texture));
+  // With no shape demanded, the page about the chord itself: the unit's own on the path, and
+  // for training, the challenge and the review, the page for the kind of chord on screen.
+  const chordPage = $derived.by(() => {
+    const own = (lessonFor(unit.id) as { unit: string } | null)?.unit;
+    if (own) return own;
+    const symbol = level.ask?.symbol;
+    if (!symbol) return null;
+    if (symbol.includes('/')) return 'inversions';
+    return parseChord(symbol).chordTones.length === 3 ? 'triads' : 'sevenths';
+  });
   const missPage = $derived(pageFor(judgedTexture));
   // The shape the next chord wants, said only when it is not the one already being asked for:
   // a level demands one shape throughout, and repeating it under every chord would be noise.
@@ -305,11 +346,14 @@
         {#if askPage}<button type="button" class="what" onclick={() => ontheory(askPage)}>{t('game.whatIsThat')}</button>{/if}
       {:else}
         {t('game.playAny')}
+        {#if chordPage}<button type="button" class="what" onclick={() => ontheory(chordPage)}>{t('game.howBuilt')}</button>{/if}
       {/if}
     </p>
 
     <div class="verdict" aria-live="polite">
-      {#if !analysis}
+      {#if nudge}
+        <p class="nudge">{t(nudge === 'one' ? 'game.oneNote' : touch ? 'game.armFirstTouch' : 'game.armFirst')}</p>
+      {:else if !analysis}
         <p class="waiting">—</p>
       {:else if star}
         <p class="star {star.toLowerCase()}">
@@ -327,6 +371,10 @@
           <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
           <Glossed text={sayMessage(warnings[0])} />
         </p>
+      {/if}
+
+      {#if spelled && !nudge}
+        <p class="spelled">{spelled}</p>
       {/if}
 
       {#if analysis && !level.timed && !star}
@@ -347,6 +395,8 @@
             rating: t(`rating.${practice.movement.rating}`),
           })}
         </p>
+        <!-- The yardstick under the number: 1.60 means nothing until it is set against the bars. -->
+        <p class="scale">{scale}</p>
       {/if}
 
       {#if analysis && listed.length}
@@ -384,7 +434,7 @@
              once the level has two stars, when the timed run is the only way to the third. -->
         <button type="button" class:start={best >= 2} onclick={startTimed}>{t('game.startTimed')}</button>
       {/if}
-      <button type="button" onclick={() => instrument.play()}>{t('game.playArmed')} <kbd>Enter</kbd></button>
+      <button type="button" onclick={playArmed}>{t('game.playArmed')} <kbd>Enter</kbd></button>
       <button type="button" onclick={() => instrument.clear()}>{t('game.clear')} <kbd>Esc</kbd></button>
       {#if !level.timed}
         <button type="button" onclick={skip}>{t('game.skip')} <kbd>Space</kbd></button>
@@ -431,6 +481,9 @@
   .star.none { color: var(--avoid); }
   .judged { font-family: ui-monospace, monospace; font-size: 15px; color: var(--ink-muted); margin-right: 6px; }
   .waiting { margin: 0; font-size: 24px; color: var(--ink-muted); }
+  .nudge { margin: 0; font-size: 18px; color: var(--ink); }
+  .scale { margin: -4px 0 8px; font-family: ui-monospace, monospace; font-size: 12px; color: var(--ink-muted); }
+  .spelled { margin: 0 0 8px; font-family: ui-monospace, monospace; font-size: 15px; color: var(--ink); }
   .messages { margin: 0; padding-left: 20px; color: var(--ink-muted); font-size: 14px; }
   .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
   /* A finger has no Enter key: the shortcuts are noise on a phone. */

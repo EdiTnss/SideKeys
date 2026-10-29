@@ -58,6 +58,16 @@ test('Enter with nothing armed plays the last chord again', () => {
   assert.equal(harness().onscreen.play(), false, 'with nothing armed and nothing played yet, Enter does nothing');
 });
 
+test('one armed note is not played: the capture would drop it, so it stays armed for the rest', () => {
+  const { onscreen, sent } = harness();
+  onscreen.toggle(60);
+  assert.equal(onscreen.play(), false);
+  assert.deepEqual(sent, [], 'nothing reaches the app');
+  assert.deepEqual(onscreen.armed, [60], 'the note waits for the others');
+  onscreen.toggle(64);
+  assert.equal(onscreen.play(), true, 'two notes are a voicing the analyser can answer');
+});
+
 test('a new chord released the one still sounding, so the voicings do not pile up', () => {
   const { onscreen, sent } = harness();
   onscreen.toggle(60);

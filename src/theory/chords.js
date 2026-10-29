@@ -3,7 +3,7 @@
 // Degree labels follow the Berklee / Real Book convention:
 // 7 = major seventh, b7 = minor seventh, bb7 = diminished seventh.
 
-import { parseNoteName, DEGREE_SEMITONES } from './notes.js';
+import { parseNoteName, DEGREE_SEMITONES, spellPlain } from './notes.js';
 
 // One row per quality. Every list holds degree labels; parseChord turns them into pitch classes.
 // `required` is what the drill demands. On a seventh chord that is never the root, and never a
@@ -268,6 +268,17 @@ export function classifyPc(chord, pc) {
   if (chord.tensions.altered.includes(pc)) return { role: 'altered', degree, caution };
   if (chord.avoid.includes(pc)) return { role: 'avoid', degree, caution };
   return { role: 'wrong', degree: null, caution: false };
+}
+
+/**
+ * The chord tones by name, root first, spelled as the verdict spells them: plain, so the b7 of
+ * Db7 reads B rather than Cb. For a mistake to end on the answer: "Bb = Bb · D · F".
+ *
+ * @param {ReturnType<typeof parseChord>} chord
+ * @returns {string[]}
+ */
+export function chordToneNames(chord) {
+  return chord.chordTones.map(pc => spellPlain(chord.root, chord.degrees[pc]));
 }
 
 /** Canonical quality ids in table order: ['maj7', '6', '6/9', 'm7', …] */

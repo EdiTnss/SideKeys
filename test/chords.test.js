@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseChord, classifyPc, qualityIds, chartSymbol, QUALITIES, ChordParseError } from '../src/theory/chords.js';
+import { parseChord, classifyPc, qualityIds, chartSymbol, chordToneNames, QUALITIES, ChordParseError } from '../src/theory/chords.js';
 
 test('Cmaj7: full output shape', () => {
   assert.deepEqual(parseChord('Cmaj7'), {
@@ -259,4 +259,14 @@ test('chartSymbol: a chord with a minor third on Db or Gb is written from C# and
   assert.equal(chartSymbol('C', 'm'), 'Cm');
   // The same pitches either way: only the name changes.
   assert.deepEqual(parseChord(chartSymbol('Db', 'm7')).chordTones, parseChord('Dbm7').chordTones);
+});
+
+test('chordToneNames: the notes of a chord, root first, spelled as the player reads them', () => {
+  assert.deepEqual(chordToneNames(parseChord('Bb')), ['Bb', 'D', 'F']);
+  assert.deepEqual(chordToneNames(parseChord('C')), ['C', 'E', 'G']);
+  assert.deepEqual(chordToneNames(parseChord('C#m')), ['C#', 'E', 'G#']);
+  assert.deepEqual(chordToneNames(parseChord('F#m7b5')), ['F#', 'A', 'C', 'E']);
+  // Plain, like the verdict: the b7 of Db7 is B here, not Cb.
+  assert.deepEqual(chordToneNames(parseChord('Db7')), ['Db', 'F', 'Ab', 'B']);
+  assert.deepEqual(chordToneNames(parseChord('Cmaj7')), ['C', 'E', 'G', 'B']);
 });

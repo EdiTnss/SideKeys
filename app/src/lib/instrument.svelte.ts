@@ -204,7 +204,8 @@ export function createInstrument({
     /** Lets go of an example that is still ringing, for when its page is left. */
     hush: stopAudition,
     toggle: (midi: number) => onscreen.toggle(midi),
-    play: () => onscreen.play(),
+    /** False when nothing was played: no notes armed, or only one. */
+    play: () => onscreen.play() as boolean,
     clear: () => onscreen.clear(),
     keyDown: (code: string) => onscreen.keyDown(code) as boolean,
     keyUp: (code: string) => onscreen.keyUp(code),

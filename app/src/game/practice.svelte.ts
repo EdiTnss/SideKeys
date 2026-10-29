@@ -35,6 +35,10 @@ export type Practice = Run & {
   readonly played: number;
   readonly clean: number;
   readonly movement: Movement | null;
+  /** Semitones a voice at or under which a change is smooth: the third star's own bar. */
+  readonly smoothAt: number;
+  /** The mean of every change measured in this stretch, or null before the first. */
+  readonly averageMovement: number | null;
   /** Ends the stretch: the clock stops and the seconds played are worked out. */
   end(): void;
 };
@@ -50,6 +54,10 @@ export function createPractice(plan: PracticePlan): Practice {
   let played = $state(0);
   let clean = $state(0);
   let movement = $state<Movement | null>(null);
+  const smoothAt = movementThreshold(plan.progressionId ?? '');
+  // Every change measured, for the stretch's mean. Read once, when the stretch is filed.
+  let movedTotal = 0;
+  let moves = 0;
   let current = $state(0);
   let finished = $state(false);
   let timed = $state(false);
@@ -122,6 +130,8 @@ export function createPractice(plan: PracticePlan): Practice {
     get played() { return played; },
     get clean() { return clean; },
     get movement() { return movement; },
+    get smoothAt() { return smoothAt; },
+    get averageMovement() { return moves ? movedTotal / moves : null; },
     get finished() { return finished; },
     get timed() { return timed; },
     get countIn() { return countIn; },
@@ -161,8 +171,9 @@ export function createPractice(plan: PracticePlan): Practice {
         : null;
       movement = compared?.rating
         ? { from: before!.symbol, average: compared.averageMove,
-            rating: rateStep(compared.averageMove, compared.rating as 'smooth' | 'ok' | 'jumpy', movementThreshold(plan.progressionId ?? '')) as Movement['rating'] }
+            rating: rateStep(compared.averageMove, compared.rating as 'smooth' | 'ok' | 'jumpy', smoothAt) as Movement['rating'] }
         : null;
+      if (movement) { movedTotal += movement.average; moves += 1; }
       history.push({ symbol: target.symbol, notes, analysis, texture: plan.texture });
       played += 1;
       if (isClean(analysis, { texture: plan.texture })) clean += 1;

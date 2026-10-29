@@ -4,7 +4,7 @@
     QUALITY_GROUPS, KEYS, SHAPES, TEMPO_RANGE, PROGRESSIONS,
     drillPool, shapeQualities, progressionFor, progressionShapes, trainingPlan, loadTraining, saveTraining,
   } from '../bridge/game';
-  import { sayGroup, sayProgression, sayShape, t } from '../lib/locale.svelte';
+  import { sayDecimal, sayGroup, sayProgression, sayShape, t } from '../lib/locale.svelte';
 
   type Settings = {
     mode: 'drill' | 'progression';
@@ -18,7 +18,7 @@
 
   let { last = null, onstart, onback }: {
     /** The stretch just finished, said once on the way back in. */
-    last?: { minutes: number; played: number; clean: number } | null;
+    last?: { minutes: number; played: number; clean: number; movement: number | null } | null;
     onstart: (plan: Omit<PracticePlan, 'id'>) => void;
     onback: () => void;
   } = $props();
@@ -72,7 +72,7 @@
         time: last.minutes < 1 ? t('training.underMinute') : t('training.minutes', { count: last.minutes }),
         chords: t('common.chords', { count: last.played }),
         clean: last.clean,
-      })}
+      })}{#if last.movement !== null}{' · '}{t('training.lastMovement', { average: sayDecimal(last.movement, 2) })}{/if}
     </p>
   {/if}
 
