@@ -612,3 +612,9 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   E G A D dă „You played C6/9 · Cmaj7 = C · E · G · B”.
 - **2026-10-29 (confirmat pe clapă)** — Edi a încercat pe clapă tot ce a venit azi din raport,
   publicat în `9f64a07`: „am verificat eu acum pe clapa. este ok”.
+- **2026-10-29 (nota lipsă și literele)** — Edi, după încercarea pe clapă: nota lipsă abia se vede
+  pe claviatură. Acum e umplută cu un verde palid și respiră în culoare (`app/src/app.css`; doar
+  jocul, Laboratorul rămâne cu conturul gri). BUG-03: textul de sub clapă spune că literele se țin
+  împreună, cu exemplul A D G = C E G și Z/X. BUG-04 sub observație, BUG-06 și JAZZ-01 respinse.
+  Verificat în browser prin stilul calculat (panoul rulează în fundal, deci tranziția conturului nu
+  se termină acolo; fără tranziție iese verde). Teste neatinse: doar CSS și text.

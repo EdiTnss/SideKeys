@@ -130,7 +130,7 @@ export default {
   'common.majorTriad': 'triadă majoră',
   'common.chords': { one: '{count} acord', few: '{count} acorduri', other: '{count} de acorduri' },
 
-  'status.idle': 'Dă clic pe clape ca să le armezi, apoi Enter ca să le cânți. Sau tastează: A S D F G H J.',
+  'status.idle': 'Dă clic pe clape ca să le armezi, apoi Enter ca să le cânți. Sau ține apăsate literele împreună, ca un acord: A D G e C E G. Z și X mută literele cu o octavă.',
   'status.idleTouch': 'Atinge clapele ca să le armezi, apoi „Cântă notele armate”. Săgețile mută clapa cu o octavă.',
   'status.midiIn': 'Intrare MIDI: {devices}',
   'status.noInput': 'Nu s-a găsit nicio intrare MIDI. Verifică cablul sau cântă pe clapele de mai jos.',

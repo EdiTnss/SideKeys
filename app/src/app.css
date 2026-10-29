@@ -58,7 +58,12 @@ body {
 .key.role-wrong { fill: var(--wrong); }
 .key.caution { stroke: var(--warn, #d97706); stroke-width: 3; }
 .key.armed { fill: var(--armed); }
-.key.missing { stroke: var(--held); stroke-width: 3; stroke-dasharray: 3 3; }
+/* A missing note is a chord tone nobody played: the chord-tone green, paler than a played one and
+   dashed, so it reads as "this one" without being mistaken for a note under a finger. A grey
+   dashed outline alone all but vanished on a white key (Edi, at the Genos, 2026-10-29). */
+.key.missing { stroke: var(--chord-tone); stroke-width: 2; stroke-dasharray: 4 3; }
+.key.white.missing { fill: color-mix(in srgb, var(--chord-tone) 45%, #fff); }
+.key.black.missing { fill: color-mix(in srgb, var(--chord-tone) 55%, #222); }
 
 /* ---- Feedback with some weight behind it ----
 
@@ -91,16 +96,21 @@ body {
 
 /* What the chord asked for and did not get: it breathes, so the eye finds it without a label
    pointing at it. Slow on purpose — this is the one thing here that repeats. */
-.key.missing { animation: key-missing 1.8s ease-in-out infinite; }
+.key.white.missing { animation: key-missing-white 1.8s ease-in-out infinite; }
+.key.black.missing { animation: key-missing-black 1.8s ease-in-out infinite; }
 
-@keyframes key-missing {
-  0%, 100% { stroke-opacity: 1; }
-  50% { stroke-opacity: 0.3; }
+@keyframes key-missing-white {
+  0%, 100% { fill: color-mix(in srgb, var(--chord-tone) 45%, #fff); }
+  50% { fill: color-mix(in srgb, var(--chord-tone) 15%, #fff); }
+}
+@keyframes key-missing-black {
+  0%, 100% { fill: color-mix(in srgb, var(--chord-tone) 55%, #222); }
+  50% { fill: color-mix(in srgb, var(--chord-tone) 25%, #222); }
 }
 
 /* Someone who has asked their system for less movement gets the colours and none of this. */
 @media (prefers-reduced-motion: reduce) {
-  .key, .key.strike-a, .key.strike-b, .key.missing { transition: none; animation: none; }
+  .key, .key.strike-a, .key.strike-b, .key.white.missing, .key.black.missing { transition: none; animation: none; }
   .key.held, .key.armed { transform: none; }
 }
 .key-label { font-size: 9px; fill: #555; pointer-events: none; }

@@ -522,6 +522,21 @@ A). Nu se încearcă alte fundamentale (C6 e și Am7/C): jucătorul ținea spre 
 Nimic pe un acord slash, unde basul e exercițiul. Calitățile din afara tabelului (7b9, 7alt) nu
 sunt încercate.
 
+**Nota lipsă pe claviatură** (Edi, pe clapă, 2026-10-29: „nu se vede aproape deloc”): era doar un
+contur gri punctat, care respira până la 30%. Acum e umplută cu verdele notei de acord, amestecat
+cu culoarea clapei (45% pe albă, 55% pe neagră), cu contur verde punctat, și respiră în umplere,
+nu în contur. Rămâne mai palidă decât o notă cântată, deci nu se confundă cu una apăsată.
+**Doar în joc**: Laboratorul (`styles.css`) păstrează conturul gri, cu regula lui scrisă acolo.
+
+**Literele**: rămân ținute împreună, ca pe pian (BUG-03, Edi a mers pe recomandare). Textul de sub
+clapă o spune acum: „hold letters down together, like a chord: A D G is C E G. Z and X move the
+letters an octave.”
+
+**Restul raportului, decis de Edi pe 2026-10-29**: BUG-04 (o clapă rămasă „held”) **sub
+observație**, se repară dacă se mai vede; BUG-06 (contrastul clapelor armate) **respins**;
+JAZZ-01 (rootless voice-led) **respins**, „Rootless, A or B” rămâne cum e, fără schimbare de
+preset.
+
 ## Ce nu intră aici
 
 - Clasamentul challenge-ului zilei — singura excepție admisă la „fără clasamente" (`DIRECTION.md`),

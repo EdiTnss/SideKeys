@@ -136,7 +136,7 @@ export default {
   'common.chords': { one: '{count} chord', other: '{count} chords' },
 
   // The instrument's status line (app/src/lib/instrument.svelte.ts).
-  'status.idle': 'Click the keys to arm them, Enter to play. Or type: A S D F G H J.',
+  'status.idle': 'Click the keys to arm them, Enter to play. Or hold letters down together, like a chord: A D G is C E G. Z and X move the letters an octave.',
   'status.idleTouch': 'Tap the keys to arm them, then Play armed. The arrows move the keyboard an octave.',
   'status.midiIn': 'MIDI in: {devices}',
   'status.noInput': 'No MIDI input found. Check the cable, or play the keys below.',
