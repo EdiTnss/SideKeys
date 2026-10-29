@@ -247,6 +247,9 @@ tur), cu testele și publicarea trecute pe GitHub.
   antet, forma cerută pe progresiile din Training.
 - **Româna n-a fost văzută pe Genos**: e probată doar în browser, cu clapa de ecran, deși e
   deja publicată.
+- **Confirmat de Edi pe clapă, pe 2026-10-29** („am verificat eu acum pe clapa. este ok”): ce a
+  venit din raportul celor două personaje — mesajele de la Play, „Bb = Bb · D · F”, „How is it
+  built?”, scala mișcării și „You played C6/9”. Mesajele de la Play țin de clapa de ecran.
 - **Neauzit de nimeni altcineva decât Edi**: Claude a verificat sunetul (metronom, exemplele din
   Theory) numai prin absența erorilor, nu cu urechea.
 

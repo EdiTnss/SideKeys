@@ -610,3 +610,5 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   fundamentală să fie numită. `playedInstead` în `stars.js`, test întâi; regula, în
   `spec-game.md`. 426 → **428 de teste**, `npm run check` curat. Verificat în browser: Cmaj7 cu
   E G A D dă „You played C6/9 · Cmaj7 = C · E · G · B”.
+- **2026-10-29 (confirmat pe clapă)** — Edi a încercat pe clapă tot ce a venit azi din raport,
+  publicat în `9f64a07`: „am verificat eu acum pe clapa. este ok”.
