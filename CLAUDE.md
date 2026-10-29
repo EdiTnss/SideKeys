@@ -93,6 +93,7 @@ src/
   midi/input.js            requestMIDIAccess (sau accesul primit), toate intrările/canalele, parseMidiMessage
   midi/virtual.js          acces MIDI fără hardware (?midi=virtual, harness) și mergeAccess:
                            porturile virtuale lângă cele reale
+  midi/through.js          o clapă reală cântată prin pianul aplicației, pornit sau oprit pe clapă; testat
   midi/recorder.js         înregistrează melodia cântată în timp muzical (bar, beat, durată în timpi), pozițiile vin din metronom; testat
   midi/output.js           trimite voicings spre Genos (Faza 2), mesaje programate în timp și oprire curată (Faza 3b)
   midi/player.js           evenimentele aranjamentului → mesaje MIDI cu timp, un canal pe voce (Faza 3b)
@@ -174,7 +175,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **428 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **434 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Jocul**, în shell-ul din `app/` (Vite + TS + Svelte 5): Azi, Drumul, Jocul, Rezultatul, plus
   **Training** și **Theory**, peste opt unități (Triade → ii–V–I), **toate deschise**. Stele
   Right/Clean/Smooth, streak, Review zilnic pe calități, challenge zilnic partajabil, PWA care
@@ -277,6 +278,9 @@ tur), cu testele și publicarea trecute pe GitHub.
   `docs/session-log/2026-10-29-1008.md`, la „Rămas deschis”.
 - **Să confirme o decizie a lui Claude**: primul răspuns rămâne și fără ceas (o greșeală te ține pe
   acord, dar stelele le dă prima încercare). Regula e în `spec-game.md`.
+- **Să oprească o dată „Sound in the app” pe Genos** (pornește implicit pe orice clapă nouă) și,
+  dacă are la îndemână, să încerce un controller fără sunete: comutatorul e probat doar cu un
+  controller simulat.
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick".
 
 ### Cioburi de care te lovești dacă nu le știi

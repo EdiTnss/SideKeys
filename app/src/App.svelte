@@ -172,6 +172,17 @@
   <span class="midi">
     {#if instrument.hardware.length}
       <span class="dot" aria-hidden="true"></span>{instrument.hardware.join(', ')}
+      <!-- A controller has no sound of its own, a Genos has: the app cannot tell which, so the
+           player says, once per keyboard. On until they do (Edi, 2026-10-29). -->
+      {#each instrument.hardware as name (name)}
+        {@const on = instrument.soundFor(name)}
+        <button type="button" class="sound" aria-pressed={on} title={t('header.soundHint')}
+                aria-label={instrument.hardware.length > 1 ? `${t('header.sound')}: ${name}` : t('header.sound')}
+                onclick={() => instrument.setSoundFor(name, !on)}>
+          <span aria-hidden="true">{on ? '🔈' : '🔇'}</span>
+          {t('header.sound')}: {on ? t('header.soundOn') : t('header.soundOff')}
+        </button>
+      {/each}
     {:else}
       <button type="button" class="connect" onclick={() => instrument.connect()}>{t('header.connect')}</button>
       <!-- Said here, on every screen: the status line under the keyboard exists only while
@@ -253,6 +264,14 @@
     padding: 6px 12px; border: 1px solid var(--accent); border-radius: 8px;
     background: none; color: var(--ink); font: inherit; font-size: 13px; cursor: pointer;
   }
+  .sound {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border: 1px solid var(--border); border-radius: 8px;
+    background: none; color: var(--ink-muted); font: inherit; font-size: 12px; cursor: pointer;
+  }
+  .sound[aria-pressed='true'] { color: var(--ink); }
+  .sound:hover { border-color: var(--ink-muted); }
+  .sound:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .warn { max-width: 300px; font-size: 12px; line-height: 1.35; color: var(--avoid); }
   .connect:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .language { display: inline-flex; align-items: center; gap: 2px; font-size: 13px; color: var(--ink-muted); }

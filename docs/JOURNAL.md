@@ -618,3 +618,11 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   împreună, cu exemplul A D G = C E G și Z/X. BUG-04 sub observație, BUG-06 și JAZZ-01 respinse.
   Verificat în browser prin stilul calculat (panoul rulează în fundal, deci tranziția conturului nu
   se termină acolo; fără tranziție iese verde). Teste neatinse: doar CSS și text.
+- **2026-10-29 (sunetul unei clape în aplicație)** — Edi: un controller MIDI nu se aude în
+  aplicație. Claude a propus un comutator în antet, nu un meniu, ținut minte pe clapă și pornit
+  pentru o clapă nouă; Edi: „mergem cum ai zis tu”. `src/midi/through.js` (testat) și portul de
+  origine în `connectMidi`; regulile, în `spec-capture.md`. 428 → **434 de teste**, `npm run
+  check` curat. Verificat în browser cu un controller simulat („Arturia KeyStep”): pornit, nota
+  pornește sunet; oprit, nu; alegerea rămâne salvată. **Neîncercat pe un controller adevărat**, nici
+  pe Genos (unde trebuie oprit o dată). Neacoperite: pedala de sustain, sunetul înainte de primul
+  clic la o reconectare automată.

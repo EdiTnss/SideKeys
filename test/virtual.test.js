@@ -108,3 +108,21 @@ test('mergeAccess shows the virtual ports next to the real ones, and hardware th
   genos.access.onstatechange({ port: { name: 'Genos' } });
   assert.equal(seen.length, 3);
 });
+
+test('connectMidi says which input a note came from, so a keyboard can be told from the screen', async () => {
+  const midi = createVirtualMidi({ inputs: ['On-screen keyboard', 'Arturia KeyStep'] });
+  const heard = [];
+  await connectMidi({
+    access: midi.access,
+    onNoteOn: (note, velocity, port) => heard.push(['on', note, velocity, port.name]),
+    onNoteOff: (note, port) => heard.push(['off', note, port.name]),
+  });
+  midi.send([0x90, 60, 90], { input: 'virtual-input-2' });
+  midi.send([0x80, 60, 0], { input: 'virtual-input-2' });
+  midi.send([0x90, 64, 70], { input: 'virtual-input-1' });
+  assert.deepEqual(heard, [
+    ['on', 60, 90, 'Arturia KeyStep'],
+    ['off', 60, 'Arturia KeyStep'],
+    ['on', 64, 70, 'On-screen keyboard'],
+  ]);
+});

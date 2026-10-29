@@ -11,7 +11,19 @@
 
 import {
   connectMidi, VoicingCapture, createVirtualMidi, mergeAccess, createSynth, createOnScreen, loadPiano,
+  createThrough, soundOn, setSound, storageKey,
 } from '../bridge/midi';
+
+const SOUND_KEY = storageKey('keyboardSound');
+
+/** Which keyboards are played through the app, by name. A convenience of this browser. */
+function loadSoundSettings(): Record<string, boolean> {
+  try {
+    return JSON.parse(localStorage.getItem(SOUND_KEY) ?? '{}') ?? {};
+  } catch {
+    return {};
+  }
+}
 
 /** The status line, as a dictionary key and its params: the screen says it in the player's language. */
 export type Status = { key: string; params?: Record<string, string>; level: 'ok' | 'warn' | '' };
@@ -81,6 +93,14 @@ export function createInstrument({
     },
   });
 
+  // A real keyboard played through the app's piano, unless the player said it sounds by itself.
+  // The drawn keyboard is not among them: it already sounds through the echo above.
+  let soundSettings = $state(loadSoundSettings());
+  const through = createThrough({
+    voice: () => voice,
+    enabled: port => !virtual.access.inputs.has(port.id) && soundOn(soundSettings, port.name),
+  });
+
   const capture = new VoicingCapture({
     debounceMs,
     nextNote,
@@ -94,6 +114,8 @@ export function createInstrument({
   function showDevices({ inputs }: { inputs: Device[] }) {
     hardware = inputs.filter(input => !virtual.access.inputs.has(input.id)).map(input => input.name);
     if (hardware.length) onscreen.releaseKeys();
+    // A keyboard played through the app wants the piano before its first note, not after.
+    if (hardware.some(name => soundOn(soundSettings, name))) loadSound();
     typeToPlay = hardware.length === 0;
     status = hardware.length
       ? { key: 'status.midiIn', params: { devices: hardware.join(', ') }, level: 'ok' }
@@ -106,8 +128,14 @@ export function createInstrument({
   // added, with no second code path for either.
   connectMidi({
     access: ports.access,
-    onNoteOn: (midi: number, velocity: number) => capture.noteOn(midi, velocity),
-    onNoteOff: (midi: number) => capture.noteOff(midi),
+    onNoteOn: (midi: number, velocity: number, port: Device) => {
+      through.noteOn(midi, velocity, port);
+      capture.noteOn(midi, velocity);
+    },
+    onNoteOff: (midi: number, port: Device) => {
+      through.noteOff(midi, port);
+      capture.noteOff(midi);
+    },
     onDevices: showDevices,
   }).catch((error: Error) => {
     status = { key: 'status.error', params: { message: error.message }, level: 'warn' };
@@ -169,6 +197,15 @@ export function createInstrument({
     get typeToPlay() { return typeToPlay; },
     get sound() { return sound; },
     connect,
+    /** Whether the keyboard called `name` is played through the app's piano. */
+    soundFor: (name: string) => soundOn(soundSettings, name),
+    /** The player says whether a keyboard sounds through the app. Remembered in this browser. */
+    setSoundFor(name: string, on: boolean) {
+      soundSettings = setSound(soundSettings, name, on);
+      try { localStorage.setItem(SOUND_KEY, JSON.stringify(soundSettings)); } catch { /* private window */ }
+      if (on) loadSound();
+      else through.silence(name);
+    },
     /**
      * A screen starts receiving voicings; what comes back stops it. Leaving also drops whatever
      * was armed or half captured, so the notes of one level never land in the next.

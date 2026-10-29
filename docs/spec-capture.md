@@ -51,3 +51,27 @@ Un singur instrument pe toată vizita, construit de `App.svelte` și împrumutat
 - **Reconectarea singură.** Chrome ține minte răspunsul la dialogul MIDI, pe site. La pornire se întreabă `navigator.permissions.query({ name: "midi" })` și, **numai** dacă răspunsul e deja `granted`, se cere accesul — fără dialog, deci clapa e acolo la fiecare vizită următoare. Când permisiunea n-a fost dată niciodată nu se cere nimic: un dialog la încărcarea paginii ar cere un răspuns înainte ca vizitatorul să fi văzut întrebarea. O reconectare făcută de pagină nu e o întrebare pusă de jucător, deci o clapă stinsă nu produce mesajul „No MIDI input found".
 - **Accesul real se adaugă o singură dată** în `mergeAccess`: un al doilea `add` ar lista fiecare port de două ori. Un refuz nu se ține minte, ca jucătorul să poată accepta la următorul clic.
 - **Pianul rămâne leneș**: cele ~3 MB de sample-uri se cer la primul `listen`, adică la intrarea în primul nivel, nu la deschiderea paginii. Mutarea instrumentului în `App` nu a mutat și descărcarea pe drumul către primul ecran.
+
+## Sunetul unei clape în aplicație (2026-10-29)
+
+Cerut de Edi: un controller MIDI nu are sunete proprii, iar notele lui ajungeau doar la analizor,
+deci cine cânta pe el nu auzea nimic. Un Genos sună singur și, trecut și prin aplicație, s-ar auzi
+de două ori, la câteva milisecunde distanță. Aplicația nu poate întreba o clapă din care fel e,
+deci întreabă jucătorul:
+
+- **Comutatorul „Sound in the app: on / off”** stă în antet, lângă numele clapei, după conectare.
+  Un singur comutator, nu un meniu: deocamdată e singura setare.
+- **Ținut minte pe clapă, după nume** (`sidekeys.keyboardSound`, în localStorage), nu după id: un
+  browser poate da aceleiași clape alt id în altă zi, iar numele e ce vede jucătorul.
+- **O clapă nouă pornește cu sunet** (decizia lui Edi): liniștea pare stricată, un sunet dublat se
+  aude și se oprește în două secunde.
+- **Velocitatea trece mai departe**, deci pianul are tăria cu care s-a apăsat clapa.
+- `connectMidi` spune acum și portul de la care vine o notă (al treilea argument al lui
+  `onNoteOn`, al doilea al lui `onNoteOff`), ca să se deosebească o clapă reală de clapa de ecran,
+  care sună deja prin ecou. Logica e în `src/midi/through.js`, testată: o notă e oprită de vocea
+  care a pornit-o (synth-ul, înainte să se încarce pianul), iar oprirea sunetului lasă imediat
+  notele care încă sună de la clapa aceea.
+- **Nu sunt acoperite**: pedala de sustain (pianul nu știe de CC64, deci un legato cu pedală se aude
+  sec) și pornirea sunetului fără niciun clic: la o reconectare automată, browserul poate ține
+  sunetul suspendat până la primul clic în pagină. Și latența: sunetul din browser vine cu întârziere
+  față de clapă (de obicei 20–40 ms pe Windows), deci o clapă cu sunete proprii sună mereu mai bine.

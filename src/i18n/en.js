@@ -4,6 +4,10 @@
 export default {
   'header.connect': 'Connect a MIDI keyboard',
   'header.noInput': 'No MIDI keyboard found. Check the cable — or play on screen, no keyboard needed.',
+  'header.sound': 'Sound in the app',
+  'header.soundOn': 'on',
+  'header.soundOff': 'off',
+  'header.soundHint': 'For a keyboard with no sound of its own. Switch it off if yours plays by itself.',
 
   // The analyzer's messages (src/i18n/messages.js). In English they must read exactly as the
   // analyzer's own `text`; test/messages.test.js compares them.

@@ -4,6 +4,10 @@
 export default {
   'header.connect': 'Conectează o clapă MIDI',
   'header.noInput': 'Nu găsesc nicio clapă MIDI. Verifică cablul — sau cântă pe ecran, nu ai nevoie de clapă.',
+  'header.sound': 'Sunet în aplicație',
+  'header.soundOn': 'pornit',
+  'header.soundOff': 'oprit',
+  'header.soundHint': 'Pentru o clapă fără sunet propriu. Oprește-l dacă a ta sună singură.',
 
   // The analyzer's messages. "Avoid note" and "rootless" are jazz words and stay English;
   // "muddy" is said as what it means (Edi, 2026-10-27).

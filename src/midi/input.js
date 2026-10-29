@@ -21,11 +21,13 @@ export function parseMidiMessage(data) {
  * Asks for MIDI access, listens to every input on every channel and keeps listening as
  * devices come and go. Resolves with the MIDIAccess object; rejects with a readable message.
  * `access` replaces the browser's (a virtual one from virtual.js); `onMessage(data, timeStamp)`
- * sees every message before it is parsed, pedals and all.
+ * sees every message before it is parsed, pedals and all. The note handlers are also told which
+ * input the note came from: a controller with no sound of its own is played through the app, the
+ * drawn keyboard already is, and a Genos sounds by itself.
  *
  * @param {{
- *   onNoteOn: (note: number, velocity: number) => void,
- *   onNoteOff: (note: number) => void,
+ *   onNoteOn: (note: number, velocity: number, port: MidiPortInfo) => void,
+ *   onNoteOff: (note: number, port: MidiPortInfo) => void,
  *   onMessage?: (data: Uint8Array | number[], timeStamp: number) => void,
  *   onDevices?: (devices: { inputs: MidiPortInfo[], outputs: MidiPortInfo[] }) => void,
  *   access?: MidiLikeAccess | null,
@@ -38,15 +40,15 @@ export async function connectMidi({ onNoteOn, onNoteOff, onMessage: onRaw = () =
   }
   const midi = access ?? await navigator.requestMIDIAccess();
 
-  const onMessage = event => {
+  const listenTo = port => event => {
     onRaw(event.data, event.timeStamp);
     const message = parseMidiMessage(event.data);
-    if (message.type === 'noteOn') onNoteOn(message.note, message.velocity);
-    else if (message.type === 'noteOff') onNoteOff(message.note);
+    if (message.type === 'noteOn') onNoteOn(message.note, message.velocity, port);
+    else if (message.type === 'noteOff') onNoteOff(message.note, port);
   };
   const refresh = () => {
     const inputs = [...midi.inputs.values()];
-    for (const input of inputs) input.onmidimessage = onMessage;
+    for (const input of inputs) input.onmidimessage = listenTo(describe(input));
     onDevices({ inputs: inputs.map(describe), outputs: [...midi.outputs.values()].map(describe) });
   };
 
