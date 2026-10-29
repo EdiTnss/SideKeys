@@ -506,6 +506,13 @@ Din raportul celor două personaje (începător și jazzman), primul val, aproba
   3 · jumpy > 3”, din pragul progresiei și din `compareVoicings`; „close” apare doar unde pragul
   e sub 1,5. Rezumatul sesiunii de pe Training adaugă media mișcării pe toată sesiunea.
 
+Două propuneri din același raport, **respinse de Edi** pe 2026-10-29:
+
+- **Un nivel abandonat nu se salvează** (BUG-01): nici minutele, nici greșelile. Un nivel intră în
+  progres doar terminat (`recordRun`). Training-ul rămâne cum era: se salvează la ieșire, oricum.
+- **6/9 nu e un răspuns pentru maj7** (JAZZ-02), nici ca „echivalent de funcție” pe tonică, nici
+  sub un comutator: se cere septima mare.
+
 ## Ce nu intră aici
 
 - Clasamentul challenge-ului zilei — singura excepție admisă la „fără clasamente" (`DIRECTION.md`),

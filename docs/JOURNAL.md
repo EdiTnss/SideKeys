@@ -602,3 +602,7 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   „Missing Bb (1)”. **Observat, nereparat**: „Shell , cvinta în bas” are un spațiu înainte de
   virgulă în română. **Rămas deschis**: BUG-01 (un nivel abandonat nu salvează minutele și
   greșelile), JAZZ-02 (6/9 pe maj7, decizie de teorie a lui Edi), BUG-07 (propun să nu se facă).
+- **2026-10-29 (două decizii din raport)** — Edi: un nivel abandonat nu se salvează (BUG-01
+  închis, fără cod) și 6/9 nu e acceptat pe maj7 (JAZZ-02 închis, fără cod). Scrise în
+  `spec-game.md`. Primul val e împins și publicat (`b1817ea`): testele și publicarea au trecut pe
+  GitHub, iar pachetul de pe sidekeys.app conține textele noi.
