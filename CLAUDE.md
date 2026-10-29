@@ -239,7 +239,7 @@ pachetul servit de Pages conține textul românesc și glosarul.
 **Tot ce s-a făcut pe 2026-10-28 e împins și publicat** (ultimul commit `f028089`, al doilea
 tur), cu testele și publicarea trecute pe GitHub.
 
-**Tot ce s-a făcut pe 2026-10-29 e împins și publicat** (ultimul commit de cod `85e49c6`), cu
+**Tot ce s-a făcut pe 2026-10-29 e împins și publicat** (ultimul commit de cod `18df7c8`, raportul de comping în Laborator), cu
 testele și publicarea trecute pe GitHub la fiecare push; pachetul servit a fost verificat de
 fiecare dată.
 

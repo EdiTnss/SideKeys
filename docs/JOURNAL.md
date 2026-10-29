@@ -675,3 +675,6 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   cântat, consola curată. **Neîncercat pe Genos.** **Următorul pas**: Edi înregistrează pe Genos
   4 chorusuri bune și unul prost intenționat, pe o progresie originală, cu „Save session”; din ele
   se calibrează pragurile.
+- **2026-10-29 (publicare)** — Împins `6ef3de0..18df7c8` la cererea lui Edi; testele și publicarea
+  trecute pe GitHub. Verificat pe site: `/lab/` servește „bass from the app”, panoul de raport și
+  `src/theory/comping.js`.
