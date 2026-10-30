@@ -13,121 +13,116 @@
     levels: Array<{ level: LevelPlan; stars: number; unlocked: boolean }>;
   };
 
-  let { stars, onplay, ontheory }: {
+  // The path as a list under the day's step, on the Play door: one row a unit, opened to its
+  // levels on a press. The unit with the next level in it starts open.
+  let { stars, current = null, onplay, ontheory }: {
     stars: Record<string, number>;
+    /** The level "Continue" points at, so its unit can start open and be marked. */
+    current?: string | null;
     onplay: (unit: Unit, level: LevelPlan) => void;
     /** The page that explains a unit: every unit on the path has one. */
     ontheory: (unit: string) => void;
   } = $props();
 
   const units = $derived(pathState(stars) as Entry[]);
+  const here = $derived(units.find(entry => entry.levels.some(item => item.level.id === current))?.unit.id ?? null);
+  // svelte-ignore state_referenced_locally
+  let open = $state<string | null>(here);
 </script>
 
-<section class="path">
-  <header class="head">
-    <div>
-      <h1>{t('path.title')}</h1>
-      <p class="sub">{t('path.sub')}</p>
-    </div>
-  </header>
+<ol class="units">
+  {#each units as entry (entry.unit.id)}
+    {@const done = entry.stars === entry.maxStars}
+    {@const isHere = entry.unit.id === here}
+    <li class="unit" class:here={isHere}>
+      <button type="button" class="head" aria-expanded={open === entry.unit.id}
+              onclick={() => (open = open === entry.unit.id ? null : entry.unit.id)}>
+        <span class="badge" class:done class:current={isHere && !done}>
+          {#if done}
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>
+          {:else}{entry.number}{/if}
+        </span>
+        <span class="name">
+          <span class="title"><Glossed text={sayUnit(entry.unit)} /></span>
+          <span class="bar"><span class="fill" class:done style="width: {(100 * entry.stars) / entry.maxStars}%"></span></span>
+        </span>
+        <span class="count">{entry.stars}/{entry.maxStars} ★</span>
+      </button>
 
-  <ol class="units">
-    {#each units as entry (entry.unit.id)}
-      <li class="unit">
-        <div class="rail">
-          <span class="dot" class:done={entry.stars > 0}>{entry.number}</span>
-          <span class="line"></span>
-        </div>
-
-        <div class="card">
-          <div class="title">
-            <h2><Glossed text={sayUnit(entry.unit)} /></h2>
-            <span class="count">{t('path.stars', { stars: entry.stars, max: entry.maxStars })}</span>
-          </div>
+      {#if open === entry.unit.id}
+        <div class="body">
           <p class="blurb">
             {sayBlurb(entry.unit)}
             <button type="button" class="theory" onclick={() => ontheory(entry.unit.id)}>{t('path.what')}</button>
           </p>
-
           <ul class="levels">
             {#each entry.levels as item (item.level.id)}
-              <li class="level">
-                {#if item.unlocked}
-                  <button type="button" onclick={() => onplay(entry.unit, item.level)}>
-                    <span class="name">{sayLevel(item.level)}</span>
-                    <span class="stars" aria-label={t('common.starsOf3', { count: item.stars })}>
-                      {#each [1, 2, 3] as position (position)}
-                        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"
-                             fill={position <= item.stars ? '#f4f2ee' : 'none'}
-                             stroke={position <= item.stars ? 'none' : '#3a4046'} stroke-width="2">
-                          <path d="M12 2.6l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.7l-5.9 3.1 1.2-6.6L2.5 9.6l6.6-.9z"></path>
-                        </svg>
-                      {/each}
-                    </span>
-                    <span class="tempo">{item.level.tempo} bpm</span>
-                  </button>
-                {:else}
-                  <span class="shut">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                      <rect x="5" y="11" width="14" height="9" rx="2"></rect>
-                      <path d="M8.5 11V8a3.5 3.5 0 017 0v3"></path>
-                    </svg>
+              <li>
+                <!-- Every unit is open, but a level inside one may still wait for the one before it. -->
+                <button type="button" class="level" class:next={item.level.id === current}
+                        disabled={!item.unlocked} onclick={() => onplay(entry.unit, item.level)}>
+                  <span class="level-name">
+                    {#if !item.unlocked}
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8.5 11V8a3.5 3.5 0 017 0v3"></path></svg>
+                    {/if}
                     {sayLevel(item.level)}
                   </span>
-                {/if}
+                  <span class="stars" aria-label={t('common.starsOf3', { count: item.stars })}>
+                    {#each [1, 2, 3] as position (position)}
+                      <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"
+                           fill={position <= item.stars ? '#f4f2ee' : 'none'}
+                           stroke={position <= item.stars ? 'none' : '#3a4046'} stroke-width="2">
+                        <path d="M12 2.6l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.7l-5.9 3.1 1.2-6.6L2.5 9.6l6.6-.9z"></path>
+                      </svg>
+                    {/each}
+                  </span>
+                </button>
               </li>
             {/each}
           </ul>
         </div>
-      </li>
-    {/each}
-  </ol>
-</section>
+      {/if}
+    </li>
+  {/each}
+</ol>
 
 <style>
-  .path { max-width: 860px; margin: 0 auto; padding: 32px 32px 56px; }
-  .head { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px; margin-bottom: 30px; }
-  .head div { flex: 999 1 380px; }
-  h1 { margin: 0 0 6px; font-size: 30px; font-weight: 600; letter-spacing: -0.03em; }
-  .sub { margin: 0; color: var(--ink-muted); font-size: 15px; }
-  .units { list-style: none; margin: 0; padding: 0; }
-  .unit { display: flex; gap: 20px; }
-  .rail { display: flex; flex-direction: column; align-items: center; width: 36px; flex-shrink: 0; }
-  .dot {
-    width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border); background: var(--surface);
-    display: flex; align-items: center; justify-content: center;
-    font-family: ui-monospace, monospace; font-size: 14px; color: var(--ink-muted);
-  }
-  .dot.done { border-color: var(--chord-tone); color: var(--chord-tone); }
-  .line { flex-grow: 1; width: 2px; background: var(--border); }
-  .unit:last-child .line { display: none; }
-  .card {
-    flex-grow: 1; min-width: 0; border: 1px solid var(--border); border-radius: 14px;
-    background: var(--surface); padding: 18px 20px; margin-bottom: 18px;
-  }
-  .title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
-  h2 { margin: 0; font-size: 18px; font-weight: 600; flex-grow: 1; }
-  .count { font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
-  .blurb { margin: 4px 0 14px; font-size: 14px; color: var(--ink-muted); }
-  .levels { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-  button {
-    width: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
-    padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px;
-    background: #16191c; color: var(--ink); font: inherit; font-size: 14px; text-align: left; cursor: pointer;
-  }
-  button:hover { border-color: var(--ink-muted); }
+  .units { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .unit { border: 1px solid transparent; border-radius: 12px; }
+  .unit.here { background: #14171a; border-color: #3d4247; }
+  button { font: inherit; color: var(--ink); cursor: pointer; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  /* A link in the sentence, not another row of the unit: the levels are what the card is for. */
-  button.theory {
-    width: auto; display: inline; margin-left: 6px; padding: 0; border: none; background: none;
-    font-size: 13px; color: var(--ink-muted); text-decoration: underline;
+  .head {
+    width: 100%; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 6px 10px;
+    border: none; border-radius: 12px; background: none; text-align: left;
   }
-  button.theory:hover { color: var(--ink); }
-  .name { flex-grow: 1; }
-  .stars { display: inline-flex; gap: 3px; }
-  .tempo { font-family: ui-monospace, monospace; font-size: 12px; color: var(--ink-muted); }
-  .shut {
-    display: flex; align-items: center; gap: 10px; padding: 11px 14px;
-    font-size: 14px; color: #5c646b;
+  .head:hover { background: #121518; }
+  .unit.here .head:hover { background: none; }
+  .badge {
+    flex: none; width: 28px; height: 28px; border-radius: 50%; border: 1px solid #3d4247;
+    display: grid; place-items: center; font-size: 12px; color: var(--ink-muted);
   }
+  .badge.done { border: none; background: var(--chord-tone); color: #0a0b0c; }
+  .badge.current { border: none; background: var(--ink); color: #0a0b0c; font-weight: 600; }
+  .name { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .title { font-size: 14px; }
+  .unit.here .title { font-weight: 600; }
+  .bar { height: 3px; border-radius: 2px; background: var(--border); overflow: hidden; }
+  .fill { display: block; height: 100%; background: var(--ink); }
+  .fill.done { background: var(--chord-tone); }
+  .count { flex: none; width: 58px; text-align: right; font-size: 12px; color: var(--ink-muted); }
+  .body { padding: 0 10px 12px 50px; }
+  .blurb { margin: 2px 0 10px; font-size: 13px; line-height: 1.45; color: var(--ink-muted); }
+  .theory { display: inline; margin-left: 4px; padding: 0; border: none; background: none; font-size: 13px; color: var(--ink-muted); text-decoration: underline; }
+  .theory:hover { color: var(--ink); }
+  .levels { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+  .level {
+    width: 100%; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px;
+    border: 1px solid var(--border); border-radius: 10px; background: #16191c; text-align: left; font-size: 14px;
+  }
+  .level:hover:not(:disabled) { border-color: var(--ink-muted); }
+  .level.next { border-color: var(--ink); }
+  .level:disabled { cursor: default; color: #5c646b; background: none; }
+  .level-name { flex: 1; display: inline-flex; align-items: center; gap: 8px; }
+  .stars { display: inline-flex; gap: 2px; }
 </style>

@@ -1,20 +1,23 @@
 <script lang="ts">
   import Game from './screens/Game.svelte';
-  import Path from './screens/Path.svelte';
-  import Today from './screens/Today.svelte';
+  import Home from './screens/Home.svelte';
+  import Practice from './screens/Practice.svelte';
+  import Settings from './screens/Settings.svelte';
   import Theory from './screens/Theory.svelte';
   import Training from './screens/Training.svelte';
+  import Welcome from './screens/Welcome.svelte';
+  import Nav, { type Tab } from './lib/Nav.svelte';
   import type { Attempt, Finished, LevelPlan, Unit } from './game/level.svelte';
   import type { PracticePlan } from './game/practice.svelte';
   import { createInstrument } from './lib/instrument.svelte';
-  import { locale, setLocale, t } from './lib/locale.svelte';
   import { isClean } from './bridge/theory';
   import {
     loadProgress, saveProgress, recordRun, recordPractice, dayStamp,
     streak, secondsOn, outcomesFor, dueReviews, nextLevel, levelAfter, levelById, reviewLevel,
     recordChallenge, challengeResult, challengeLevel, challengeNumber, challengeStates,
-    shareText,
+    shareText, loadTraining, trainingPlan, KEYS, SHAPES, shapeQualities, DEFAULT_TRAINING,
   } from './bridge/game';
+  import { storageKey } from '../../src/storage.js';
 
   /** Fifteen minutes is the daily goal until someone asks to change it. */
   const GOAL_MINUTES = 15;
@@ -25,22 +28,36 @@
 
   // Progress lives in this browser and nowhere else for now: no account, nothing to sign up to.
   let progress = $state(loadProgress());
-  let screen = $state<'today' | 'path' | 'training' | 'theory'>('today');
-  // Which theory page is open (null is the list of them), and the screen to go back to from it.
+  // The three doors and the settings behind the gear (docs/spec-ui.md).
+  let tab = $state<Tab>('play');
+  // Inside Practice: the choices for one kind of practice, or the door itself.
+  let choosing = $state<'drill' | 'progression' | null>(null);
+  // Which theory page is open (null is the list of them), and the door to go back to from it.
   let lesson = $state<string | null>(null);
-  let beforeTheory: 'today' | 'path' | 'training' = 'today';
+  let beforeTheory: Tab = 'learn';
   // A page reached from the list goes back to the list; one opened from the path or a level goes
   // back there, where the question was asked.
   let fromList = false;
-  let playing = $state<{ unit: Unit; plan: LevelPlan | PracticePlan } | null>(null);
+  let playing = $state<{ unit: Unit; plan: LevelPlan | PracticePlan; coach?: boolean } | null>(null);
   // What the stretch of training just finished came to, said once on the way back to its screen.
   let lastTraining = $state<{ minutes: number; played: number; clean: number; movement: number | null } | null>(null);
   let trainingRuns = 0;
 
+  // The first visit is three presses to a first chord, once per browser (docs/spec-ui.md). Someone
+  // with progress already never sees it. Storage can throw; then it is simply shown again.
+  const WELCOMED = storageKey('welcomed');
+  function readWelcomed() {
+    try { return localStorage.getItem(WELCOMED) === '1'; } catch { return false; }
+  }
+  // svelte-ignore state_referenced_locally
+  let welcomed = $state(readWelcomed() || Object.keys(progress.days ?? {}).length > 0);
+
   const today = $derived(dayStamp());
   const due = $derived(dueReviews(progress, today));
-  const pending = $derived(Object.keys(progress.review ?? {}).length - due.length);
   const next = $derived(nextLevel(progress.stars, progress.last));
+  const played = $derived(Object.keys(progress.days ?? {}).length > 0);
+  const days = $derived(streak(progress, today));
+  const minutes = $derived(Math.round(secondsOn(progress, today) / 60));
 
   // The level after the one being played, offered once this one has a star. Inside a unit that
   // is what opens the next level; across units nothing is locked, but a run that earned nothing
@@ -106,7 +123,7 @@
   /**
    * A stretch of training, filed. It is playing, so the minutes and the weak spots count; it is
    * not the path, so no star is filed and "continue" stays where it was (Edi, 2026-10-12).
-   * It does not look at `playing`: the logo clears that first, and the screen only reports the
+   * It does not look at `playing`: leaving clears that first, and the screen only reports the
    * stretch as it is torn down.
    */
   function finishTraining({ attempts, seconds, movement }:
@@ -132,153 +149,122 @@
     };
   }
 
+  /** "Pick up where you left off": the saved choices, straight into a stretch. */
+  function resumeTraining() {
+    const plan = trainingPlan(loadTraining()) as Omit<PracticePlan, 'id'> | null;
+    if (plan) startTraining(plan);
+  }
+
+  /**
+   * "Practise maj7" from a result: a drill on the weak quality, in all twelve keys, in the
+   * level's shape when that shape has a voicing for it. The saved choices of Training are left
+   * as they were (docs/spec-ui.md).
+   */
+  function practiseWeak(quality: string, texture: string | string[] | null, tempo: number) {
+    const wanted = JSON.stringify(texture ?? null);
+    const shape = SHAPES.find(entry => JSON.stringify(entry.texture) === wanted)?.id ?? 'any';
+    const fits = (shapeQualities(shape) as string[]).includes(quality);
+    const plan = trainingPlan({
+      ...DEFAULT_TRAINING, mode: 'drill', qualities: [quality], keys: [...KEYS], shape: fits ? shape : 'any', tempo,
+    }) as Omit<PracticePlan, 'id'> | null;
+    tab = 'practice';
+    choosing = null;
+    if (plan) startTraining(plan);
+  }
+
   /**
    * Opens a theory page, or the list of them. From inside a level this leaves the level: the
    * question "what is a drop 2?" is worth more than the run it interrupts, and a stretch of
    * training is filed by its screen as it goes.
    */
   function openTheory(unit: string | null) {
-    if (screen !== 'theory') beforeTheory = screen;
+    if (tab !== 'learn') beforeTheory = tab;
     playing = null;
     lesson = unit;
     fromList = false;
-    screen = 'theory';
+    tab = 'learn';
   }
 
-  /** "Play it" on a theory page: the first level of the unit the page is about. */
-  function playLevel(id: string) {
+  /** "Play it" on a theory page, or a start picked on the first visit: that level, now. */
+  function playLevel(id: string, coach = false) {
     const found = levelById(id) as { unit: Unit; level: LevelPlan } | null;
-    if (found) playing = { unit: found.unit, plan: found.level };
+    if (found) playing = { unit: found.unit, plan: found.level, coach };
   }
 
+  function welcome(level: string, coach: boolean) {
+    try { localStorage.setItem(WELCOMED, '1'); } catch { /* shown again next time, no harm */ }
+    welcomed = true;
+    playLevel(level, coach);
+  }
+
+  function navigate(to: Tab) {
+    playing = null;
+    if (to === 'learn' && tab === 'learn') lesson = null;
+    if (to === 'practice') choosing = null;
+    tab = to;
+  }
+
+  // A new screen starts at its top: a result read at the bottom must not open the path halfway down.
+  $effect(() => {
+    tab; choosing; lesson; playing;
+    window.scrollTo(0, 0);
+  });
+
+  /** Leaving a level or a stretch goes back to the door it was opened from. */
   function leaveGame() {
     playing = null;
-    screen = 'today';
   }
 </script>
 
-<header>
-  <button type="button" class="logo" onclick={leaveGame}>
-    <svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true">
-      <rect x="14" y="16" width="7" height="32" rx="2" fill="currentColor"></rect>
-      <rect x="24" y="16" width="7" height="32" rx="2" fill="currentColor"></rect>
-      <rect x="34" y="16" width="7" height="32" rx="2" fill="currentColor"></rect>
-      <rect x="45" y="22" width="7" height="32" rx="2" fill="var(--accent)"></rect>
-    </svg>
-    Side<span class="accent">Keys</span>
-  </button>
-  <!-- The keyboard is the app's, not a level's, so it is connected here and shown on every
-       screen. Once the browser has been told yes, later visits find it without being asked. -->
-  <span class="midi">
-    {#if instrument.hardware.length}
-      <span class="dot" aria-hidden="true"></span>{instrument.hardware.join(', ')}
-      <!-- A controller has no sound of its own, a Genos has: the app cannot tell which, so the
-           player says, once per keyboard. On until they do (Edi, 2026-10-29). -->
-      {#each instrument.hardware as name (name)}
-        {@const on = instrument.soundFor(name)}
-        <button type="button" class="sound" aria-pressed={on} title={t('header.soundHint')}
-                aria-label={instrument.hardware.length > 1 ? `${t('header.sound')}: ${name}` : t('header.sound')}
-                onclick={() => instrument.setSoundFor(name, !on)}>
-          <span aria-hidden="true">{on ? '🔈' : '🔇'}</span>
-          {t('header.sound')}: {on ? t('header.soundOn') : t('header.soundOff')}
-        </button>
-      {/each}
-    {:else}
-      <button type="button" class="connect" onclick={() => instrument.connect()}>{t('header.connect')}</button>
-      <!-- Said here, on every screen: the status line under the keyboard exists only while
-           playing, and a press with no answer reads as a button that does not work. -->
-      {#if instrument.status.level === 'warn'}
-        <span class="warn" role="status">
-          {instrument.status.key === 'status.noInput' ? t('header.noInput') : t(instrument.status.key, instrument.status.params)}
-        </span>
-      {/if}
-    {/if}
-  </span>
-  <!-- Each language is named in itself, so someone who cannot read the other one still finds
-       their own. The choice is remembered; the first visit follows the browser. -->
-  <span class="language">
-    <button type="button" lang="en" aria-label="English" aria-pressed={locale() === 'en'}
-            onclick={() => setLocale('en')}>EN</button>
-    <span aria-hidden="true">|</span>
-    <button type="button" lang="ro" aria-label="Română" aria-pressed={locale() === 'ro'}
-            onclick={() => setLocale('ro')}>RO</button>
-  </span>
-</header>
-
-<main>
-  {#if playing}
+{#if !welcomed && !playing}
+  <Welcome instrument={instrument} onstart={welcome} />
+{:else if playing}
+  <!-- A level has no navigation: the way out, the chord, the keys (docs/spec-ui.md). -->
+  <main class="focus">
     {#key playing.plan.id}
-      <!-- Leaving a level goes back to the screen it was opened from; the logo goes to Today. -->
       <Game unit={playing.unit} plan={playing.plan} instrument={instrument} onfinish={finish}
             best={progress.stars[playing.plan.id] ?? 0}
+            coach={playing.coach ?? false}
             onpractice={finishTraining}
             ontheory={openTheory}
+            onweak={practiseWeak}
             onnext={following ? () => (playing = following) : null}
-            onexit={() => (playing = null)} />
+            onexit={leaveGame} />
     {/key}
-  {:else if screen === 'path'}
-    <Path stars={progress.stars} onplay={(unit, plan) => (playing = { unit, plan })} ontheory={openTheory} />
-  {:else if screen === 'theory'}
-    <Theory unit={lesson} instrument={instrument} onopen={unit => { lesson = unit; fromList = true; }} onplay={playLevel}
-            onback={() => { if (lesson !== null && fromList) lesson = null; else screen = beforeTheory; }} />
-  {:else if screen === 'training'}
-    <Training last={lastTraining} onstart={startTraining} onback={() => (screen = 'today')} />
-  {:else}
-    <Today
-      streak={streak(progress, today)}
-      minutes={Math.round(secondsOn(progress, today) / 60)}
-      goal={GOAL_MINUTES}
-      next={next as { unit: Unit; level: LevelPlan; stars: number; played: boolean } | null}
-      reviews={due}
-      pending={pending}
-      challenge={challenge}
-      fresh={Object.keys(progress.days ?? {}).length === 0}
-      onplay={(unit, plan) => (playing = { unit, plan })}
-      onreview={startReview}
-      onchallenge={startChallenge}
-      ontraining={() => (screen = 'training')}
-      ontheory={() => openTheory(null)}
-      onpath={() => (screen = 'path')} />
-  {/if}
-</main>
+  </main>
+{:else}
+  <Nav tab={tab} instrument={instrument} streak={days} onnav={navigate} />
+  <main class="door">
+    {#if tab === 'practice' && choosing}
+      <Training mode={choosing} last={lastTraining} onstart={startTraining} onback={() => (choosing = null)} />
+    {:else if tab === 'practice'}
+      <Practice last={lastTraining} onresume={resumeTraining} onchoose={mode => { lastTraining = null; choosing = mode; }} />
+    {:else if tab === 'learn'}
+      <Theory unit={lesson} instrument={instrument} onopen={unit => { lesson = unit; fromList = true; }} onplay={id => playLevel(id)}
+              onback={() => { if (lesson !== null && fromList) lesson = null; else if (beforeTheory === 'learn') lesson = null; else { lesson = null; tab = beforeTheory; } }} />
+    {:else if tab === 'settings'}
+      <Settings instrument={instrument} streak={days} minutes={minutes} goal={GOAL_MINUTES} />
+    {:else}
+      <Home
+        stars={progress.stars}
+        minutes={minutes}
+        goal={GOAL_MINUTES}
+        played={played}
+        next={next as { unit: Unit; level: LevelPlan; stars: number; played: boolean } | null}
+        reviews={due}
+        challenge={challenge}
+        onplay={(unit, plan) => (playing = { unit, plan })}
+        onreview={startReview}
+        onchallenge={startChallenge}
+        ontheory={openTheory} />
+    {/if}
+  </main>
+{/if}
 
 <style>
-  header {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
-    padding: 16px 32px; border-bottom: 1px solid var(--border);
+  /* Room for the doors: along the bottom on a narrow screen, down the left from 760 px. */
+  .door { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  @media (min-width: 760px) {
+    .door { padding-bottom: 0; margin-left: 248px; }
   }
-  .logo {
-    display: flex; align-items: center; gap: 10px;
-    padding: 0; border: none; background: none; cursor: pointer;
-    font-family: inherit; font-weight: 600; font-size: 17px; letter-spacing: -0.03em; color: var(--ink);
-  }
-  .logo:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
-  .accent { color: var(--accent); }
-  .midi {
-    margin-left: auto; display: inline-flex; align-items: center; gap: 8px;
-    font-size: 13px; color: var(--ink-muted);
-  }
-  /* The same green the status line under the keyboard already uses for "MIDI in". */
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--chord-tone); }
-  .connect {
-    padding: 6px 12px; border: 1px solid var(--accent); border-radius: 8px;
-    background: none; color: var(--ink); font: inherit; font-size: 13px; cursor: pointer;
-  }
-  .sound {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 5px 10px; border: 1px solid var(--border); border-radius: 8px;
-    background: none; color: var(--ink-muted); font: inherit; font-size: 12px; cursor: pointer;
-  }
-  .sound[aria-pressed='true'] { color: var(--ink); }
-  .sound:hover { border-color: var(--ink-muted); }
-  .sound:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .warn { max-width: 300px; font-size: 12px; line-height: 1.35; color: var(--avoid); }
-  .connect:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .language { display: inline-flex; align-items: center; gap: 2px; font-size: 13px; color: var(--ink-muted); }
-  .language button {
-    padding: 4px 6px; border: none; border-radius: 6px; background: none; cursor: pointer;
-    font: inherit; font-weight: 500; color: var(--ink-muted);
-  }
-  .language button[aria-pressed='true'] { color: var(--ink); font-weight: 600; }
-  .language button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 </style>

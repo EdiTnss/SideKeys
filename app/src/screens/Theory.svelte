@@ -219,10 +219,10 @@
   {:else}
     <header class="head">
       <div>
-        <h1>{t('theory.title')}</h1>
+        <!-- The list is the Learn door itself, so it is named like the door and has nowhere to go back to. -->
+        <h1>{t('nav.learn')}</h1>
         <p class="lead">{t('theory.lead')}</p>
       </div>
-      <button type="button" onclick={onback}>{t('common.back')}</button>
     </header>
 
     <ol class="lessons">

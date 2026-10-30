@@ -354,8 +354,9 @@ sunt ortografiate din acord cu `spellPlain` și scrise „F (b3)", ca în verdic
 paranteze, F și b3 se citeau „Fa bemol". Un clic pe exemplu îl cântă prin vocea paginii
 (`instrument.audition`), fără să treacă prin captură, deci se aude și nu se notează.
 
-**De unde se ajunge la o pagină**: cardul „Theory" de pe Today (lista), „What is it?" de pe
-fiecare unitate a hărții, „What is that?" lângă forma cerută de un nivel și „What was asked for?"
+**De unde se ajunge la o pagină**: ușa „Learn" din navigare (lista, din 2026-10-30; înainte,
+cardul „Theory" de pe Today), „What is it?" de pe fiecare unitate a drumului, „How is it built?"
+din Rezultat, „What is that?" lângă forma cerută de un nivel și „What was asked for?"
 în verdictul „Right notes, wrong shape". Din interiorul unui nivel, legătura **părăsește
 nivelul**: întrebarea „ce e un drop 2?" valorează mai mult decât trecerea pe care o întrerupe.
 „Play it" de pe pagină pornește primul nivel al unității, care e mereu deschis.

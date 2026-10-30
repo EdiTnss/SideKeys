@@ -8,13 +8,15 @@
   type Score = NonNullable<ReturnType<typeof scoreRun>>;
   type Weakness = { key: string; problem: string; count: number; kind: string; degree: string | null } | null;
 
-  let { name, score, weakness, timed, threshold, grid = null, share = null,
-        official = true, onagain, onnext = null, onexit }: {
+  let { name, score, weakness, timed, threshold, tempo, grid = null, share = null,
+        official = true, onagain, ontimed = null, onpractise = null, onhow = null, onnext = null, onexit }: {
     name: string;
     score: Score;
     weakness: Weakness;
     timed: boolean;
     threshold: number;
+    /** The level's tempo, said on the way to the third star. */
+    tempo: number;
     /** One square per chord, for the daily challenge. A level has none. */
     grid?: string[] | null;
     /** The text the button copies — always the official pass, so a replay cannot inflate it. */
@@ -22,6 +24,12 @@
     /** False on a replay of a challenge already played today. */
     official?: boolean;
     onagain: () => void;
+    /** The same level on the clock: offered when two stars are in and the third needs it. */
+    ontimed?: (() => void) | null;
+    /** A drill on the weak spot, when there is one. */
+    onpractise?: (() => void) | null;
+    /** The page that explains what this level asks for. */
+    onhow?: (() => void) | null;
     /** The level after this one, when this run opened it (or it was open already). */
     onnext?: (() => void) | null;
     onexit: () => void;
@@ -41,6 +49,7 @@
 </script>
 
 <section class="result">
+ <div class="summary">
   <!-- White, not magenta and not a theory colour: the accent never lands in a verdict, and an
        amber star would read as "avoid note" (assets/BRAND.md). -->
   <div class="stars" role="img" aria-label={t('common.starsOf3', { count: score.stars })}>
@@ -96,9 +105,13 @@
       </div>
     {/if}
   </div>
+ </div>
 
+ <!-- Every ending leads somewhere (docs/spec-ui.md): the thing to fix, the third star, the next level. -->
+ <div class="next">
+  <p class="kicker">{t('result.whatNext')}</p>
   <div class="fix">
-    <p class="kicker">{t('result.fix')}</p>
+    {#if weakness}<p class="kicker warn">{t('result.fix')}</p>{/if}
     {#if weakness}
       <!-- A plain major triad has no suffix to show in code type, so it is said in words. -->
       {#if weakness.key}
@@ -111,10 +124,28 @@
     {:else}
       <p class="what">{t('result.nothing')}</p>
     {/if}
+    {#if (weakness && onpractise) || onhow}
+      <div class="row left">
+        {#if weakness && onpractise}
+          <button type="button" class="small" onclick={onpractise}>{t('result.practise', { chord: weakness.key || t('common.majorTriad') })}</button>
+        {/if}
+        {#if onhow}
+          <button type="button" class="small" onclick={onhow}>{t('game.howBuilt')}</button>
+        {/if}
+      </div>
+    {/if}
   </div>
 
   {#if grid}
     <p class="locked">{t('result.noClock')}</p>
+  {:else if ontimed}
+    <div class="card timed">
+      <span class="words">
+        <span class="title">{t('result.timedTitle')}</span>
+        <span class="locked">{t('result.timedLine', { tempo })}</span>
+      </span>
+      <button type="button" class="small" onclick={ontimed}>{t('result.try')}</button>
+    </div>
   {:else if score.stars === 2 && !timed}
     <p class="locked">{t('result.needTimed')}</p>
   {:else if score.stars === 2 && timed && score.movement !== null}
@@ -125,15 +156,35 @@
        be a single press away from the next, not a trip back to the map (Edi, 2026-10-12). -->
   <div class="buttons">
     {#if onnext}
-      <button type="button" class="primary" onclick={onnext}>{t('result.next')}</button>
+      <button type="button" class="primary" onclick={onnext}>{t('result.next')} →</button>
     {/if}
     <button type="button" class:primary={!onnext} onclick={onagain}>{t('result.again')}</button>
-    <button type="button" onclick={onexit}>{t('common.backPlain')}</button>
+    <button type="button" class="quiet" onclick={onexit}>{t('result.backToPath')}</button>
   </div>
+ </div>
 </section>
 
 <style>
-  .result { max-width: 760px; margin: 0 auto; padding: 52px 32px 48px; text-align: center; }
+  .result {
+    max-width: 1080px; margin: 0 auto; padding: 52px 40px 48px;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 56px; align-items: center;
+  }
+  .summary { text-align: center; }
+  .next { display: flex; flex-direction: column; gap: 12px; }
+  .next > .kicker { margin: 0; }
+  .kicker.warn { color: var(--avoid); }
+  .row.left { justify-content: flex-start; margin-top: 14px; flex-wrap: wrap; }
+  button.small { padding: 10px 16px; font-size: 14px; border-color: #3d4247; }
+  .card { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 16px 18px; }
+  .timed { display: flex; align-items: center; gap: 14px; }
+  .words { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .title { font-size: 15px; font-weight: 600; }
+  .timed .locked { margin: 0; }
+  button.quiet { border: none; background: none; color: var(--ink-muted); }
+  button.quiet:hover { color: var(--ink); }
+  @media (max-width: 860px) {
+    .result { grid-template-columns: minmax(0, 1fr); gap: 28px; padding: 32px 16px 40px; }
+  }
   .stars { display: flex; justify-content: center; gap: 12px; margin-bottom: 22px; }
   h2 { margin: 0 0 6px; font-size: 32px; font-weight: 600; letter-spacing: -0.03em; }
   .sub { margin: 0 0 30px; color: var(--ink-muted); font-size: 15px; }

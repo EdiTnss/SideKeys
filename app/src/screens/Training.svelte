@@ -16,7 +16,9 @@
     tempo: number;
   };
 
-  let { last = null, onstart, onback }: {
+  let { mode, last = null, onstart, onback }: {
+    /** Which kind of practice was picked on the Practice door: this screen holds only its choices. */
+    mode: 'drill' | 'progression';
     /** The stretch just finished, said once on the way back in. */
     last?: { minutes: number; played: number; clean: number; movement: number | null } | null;
     onstart: (plan: Omit<PracticePlan, 'id'>) => void;
@@ -25,7 +27,8 @@
 
   // The choices are remembered from one visit to the next: nobody wants to untick nine keys
   // again every morning. A convenience of this browser, nothing more.
-  let settings = $state(loadTraining() as Settings);
+  // svelte-ignore state_referenced_locally
+  let settings = $state({ ...(loadTraining() as Settings), mode });
   $effect(() => saveTraining($state.snapshot(settings)));
 
   const shape = $derived(SHAPES.find(entry => entry.id === settings.shape) ?? SHAPES[0]);
@@ -60,7 +63,7 @@
 <section class="training">
   <header class="head">
     <div>
-      <h1>{t('training.title')}</h1>
+      <h1>{settings.mode === 'drill' ? t('practice.drill') : t('practice.loop')}</h1>
       <p class="sub">{t('training.sub')}</p>
     </div>
     <button type="button" class="back" onclick={onback}>{t('common.back')}</button>
@@ -76,18 +79,6 @@
     </p>
   {/if}
 
-  <div class="modes" role="group" aria-label={t('training.modes')}>
-    <button type="button" class:on={settings.mode === 'drill'} aria-pressed={settings.mode === 'drill'}
-            onclick={() => (settings.mode = 'drill')}>
-      {t('training.drill')}
-      <span>{t('training.drillAbout')}</span>
-    </button>
-    <button type="button" class:on={settings.mode === 'progression'} aria-pressed={settings.mode === 'progression'}
-            onclick={() => (settings.mode = 'progression')}>
-      {t('training.progression')}
-      <span>{t('training.progressionAbout')}</span>
-    </button>
-  </div>
 
   {#snippet shapes(onProgression: boolean)}
     <div class="field">
@@ -207,13 +198,6 @@
   h1 { margin: 0 0 6px; font-size: 30px; font-weight: 600; letter-spacing: -0.03em; }
   .sub { margin: 0; max-width: 60ch; color: var(--ink-muted); font-size: 15px; }
   .last { margin: 0 0 18px; font-family: ui-monospace, monospace; font-size: 13px; color: var(--ink-muted); }
-  .modes { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
-  .modes button {
-    flex: 1 1 240px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
-    padding: 16px 20px; border-radius: 14px; font-size: 17px; font-weight: 600; text-align: left;
-  }
-  .modes button span { font-size: 13px; font-weight: 400; color: var(--ink-muted); }
-  .modes button.on { border-color: var(--ink); background: #16191c; }
   .card { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); padding: 22px 24px; }
   .field { margin-bottom: 24px; }
   h2 {

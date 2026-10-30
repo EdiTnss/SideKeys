@@ -686,3 +686,18 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   Genos și sesiunile de calibrare a raportului de comping.
 - **2026-10-30** — La cererea lui Edi, Claude a șters `Reels/cheie api eleven labs.txt` de pe disc.
   Cheia era deja ștearsă din cont; fișierul nu fusese niciodată în repo (`Reels/` e ignorat).
+- **2026-10-30 (interfața nouă: trei uși)** — Edi a spus că interfața e „prea basic” și greu de
+  înțeles pentru cineva nou. Claude a trecut prin joc ca un vizitator nou pe telefon, a desenat
+  propunerea pe claude.ai (9 ecrane de telefon, apoi 5 de desktop, la cererea lui Edi) și Edi a
+  aprobat-o: „sunt de acord cu interfața, hai să o integrăm”. Regulile sunt în `docs/spec-ui.md`.
+  În shell: navigare cu trei uși (Play / Practice / Learn), jos pe telefon, în stânga pe desktop;
+  ecranul Play cu un singur pas evident, challenge-ul, Review-ul doar când are ceva și drumul
+  dedesubt; Practice cu „Reia ultima” și trei feluri de exercițiu; Settings cu sunetul clapei,
+  limba, Laboratorul și formularul; prima vizită în trei pași; nivelul fără navigare, cu
+  „Arată notele” și fără Play/Clear cât e conectată o clapă; Rezultatul cu „Ce urmează”
+  (exersează punctul slab, cum se construiește, a treia stea în timp). Stelele și regulile nu s-au
+  schimbat. **Decizii ale lui Claude**, scrise în spec: „Arată notele” scrie notele, nu colorează
+  clape; butonul de timed apare în nivel doar de la a doua stea. `tools/cold-start.mjs` urmează
+  acum prima vizită nouă (356 ms până la primul buton, 826 ms până la verdict, local). 467 de
+  teste, `npm run check` curat. Verificat în browser la 375 px și 1280 px, în engleză și română.
+  **Neîncercat pe Genos**: mai ales dispariția butoanelor cu clapa conectată.

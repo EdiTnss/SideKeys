@@ -4,7 +4,7 @@
 //
 // Each run starts headless Chrome on a brand-new profile — no HTTP cache, no service worker, no
 // stored progress — loads the page over the real network, and drives it the way a new visitor
-// has to: wait for the Play button, press it, wait for the chord, play it on the letter keys,
+// has to: wait for the first-visit buttons, press two of them, wait for the chord, play it on the letter keys,
 // wait for the verdict. It does all of that as fast as a machine can, so what comes out is the
 // floor. Everything a person adds on top is reading and deciding, which this cannot measure.
 //
@@ -36,9 +36,13 @@ const DRIVER = `(() => {
   const until = async find => { for (;;) { const found = find(); if (found) return found; await new Promise(r => setTimeout(r, 4)); } };
   const LETTERS = { C: ['KeyA','KeyD','KeyG'], F: ['KeyF','KeyH','KeyK'], G: ['KeyG','KeyJ','KeyL'], D: ['KeyS','KeyT','KeyH'] };
   (async () => {
-    const play = await until(() => document.querySelector('.hero .go'));
+    // The first visit since 2026-10-30 (docs/spec-ui.md): "the screen", then "just starting".
+    // The first of those buttons on screen is what "Play button" times now.
+    const screen = await until(() => document.querySelectorAll('.welcome .choice')[1]);
     marks.playButton = performance.now();
-    play.click();
+    screen.click();
+    const start = await until(() => document.querySelector('.welcome .choice.row'));
+    start.click();
     await until(() => document.querySelector('.ask'));
     marks.chordAsked = performance.now();
     marks.asked = document.querySelector('.ask').textContent.trim();

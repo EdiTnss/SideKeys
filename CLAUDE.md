@@ -68,9 +68,13 @@ app/                       shell-ul (Vite + TS + Svelte 5), cu package.json prop
   src/screens/Training.svelte  alegerea pentru Training: drill (calități, tonalități, formă) sau progresie în buclă
   src/bridge/time.ts       ușa spre ceas: metronomul, sesiunea, regula de anticipare
   src/bridge/game.ts       ușa spre drum: unitățile, ce e deschis, stelele salvate
-  src/screens/Path.svelte  harta: unități, nivele, lacăte, stele, legătura spre pagina de teorie a fiecărei unități
-  src/screens/Theory.svelte  teoria: lista lecțiilor și o pagină pe unitate, cu exemple colorate de analizor și cântate la clic
-  src/screens/Today.svelte ecranul de start: streak, minute, „continuă drumul", Review, ușa spre Training
+  src/lib/Nav.svelte       cele trei uși (docs/spec-ui.md): taburi jos pe telefon, coloană în stânga de la 760 px
+  src/screens/Home.svelte  ușa Play: pasul următor, challenge-ul, Review-ul când are ceva, drumul dedesubt
+  src/screens/Path.svelte  drumul ca listă în Home: o unitate pe rând, deschisă la nivelele ei, stele, „What is it?"
+  src/screens/Practice.svelte  ușa Practice: „Reia ultima" și cele trei feluri de exercițiu (comping-ul duce la Laborator)
+  src/screens/Settings.svelte  seria, sunetul clapei, limba, Laboratorul, formularul de noutăți
+  src/screens/Welcome.svelte   prima vizită: ce face, cu ce cânți, de unde pornești
+  src/screens/Theory.svelte  ușa Learn: lista lecțiilor și o pagină pe unitate, cu exemple colorate de analizor și cântate la clic
   src/lib/Keyboard.svelte  învelește src/ui/keyboard.js; Svelte decide când se colorează
   src/lib/clipboard.ts     copiază un text și spune dacă a reușit (grila zilei, în două ecrane)
   src/lib/locale.svelte.ts limba aleasă (EN | RO), ținută minte; t() și numele traduse pentru ecrane
@@ -187,6 +191,11 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
   Right/Clean/Smooth, streak, Review zilnic pe calități, challenge zilnic partajabil, PWA care
   merge fără rețea. **Fără XP și fără „boss"** (scoase pe 2026-10-12). Regulile:
   [docs/spec-game.md](docs/spec-game.md).
+- **Interfața cu trei uși** (2026-10-30, aprobată de Edi): **Play / Practice / Learn**, jos pe
+  telefon, în stânga pe desktop, plus Settings din rotiță. Play ține pasul următor, challenge-ul,
+  Review-ul (doar când are ceva) și drumul; prima vizită are trei pași până la primul acord;
+  nivelul n-are navigare; Rezultatul spune ce urmează. Regulile: [docs/spec-ui.md](docs/spec-ui.md).
+  Prototipul: https://claude.ai/artifact/CT8iZX6ukr31WvyqF2L1FN. **Neîncercată pe Genos.**
 - **Jocul vorbește română** (2026-10-27): ecranele, mesajele analizorului, numele unităților și
   nivelelor, paginile de teorie, plus un **Glosar** (pagină în Teorie și termeni subliniați în joc).
   Engleza rămâne implicită; comutatorul `EN | RO` e în antet. Regulile:
@@ -299,6 +308,8 @@ fiecare dată.
 - **Să oprească o dată „Sound in the app” pe Genos** (pornește implicit pe orice clapă nouă) și,
   dacă are la îndemână, să încerce un controller fără sunete: comutatorul e probat doar cu un
   controller simulat.
+- **Să încerce interfața nouă pe Genos**: cu clapa conectată, nivelul nu mai are Play și Clear;
+  „Sound in the app” s-a mutat în Settings (rotița).
 - **Să aleagă animația și sunetul** pentru acord corect și greșit (3 + 3 variante), în sesiunea
   separată pornită pe 2026-10-29; pagina e în `Claude outputs/verdict-fx/index.html`.
 - **Să înregistreze sesiunile de calibrare a raportului de comping** (vezi „Următorul pas”).
@@ -374,6 +385,7 @@ Regula „niciun feature care nu e pe lista fazei curente" se aplică.
 | [docs/spec-reharm.md](docs/spec-reharm.md) | piesa, recorder-ul, analiza, candidații, pipeline-ul AI și Worker-ul, scorurile, validarea, realizarea, partenerul de studiu, evaluarea | `piece.js`, `recorder.js`, `analysis.js`, `candidates.js`, `scoring.js`, `realize.js`, `player.js`, `ai/`, `worker/`, `eval/` |
 | [docs/spec-game.md](docs/spec-game.md) | stelele (Right · Clean · Smooth) cu pragurile măsurate, ce e deschis pe drum, antrenamentul zilnic și challenge-ul zilei | logica de scor a jocului, `src/game/`, orice progresie nouă în bibliotecă |
 | [docs/spec-i18n.md](docs/spec-i18n.md) | cele două limbi: ce se traduce și ce nu, unde stau cheile, regula „cheie nouă în ambele limbi”, pluralul, glosarul și cum se adaugă un termen | orice text nou pe ecranele jocului, o pagină de teorie, un termen de glosar |
+| [docs/spec-ui.md](docs/spec-ui.md) | interfața jocului: cele trei uși, un pas evident pe ecran, prima vizită, ce apare când | orice ecran nou al jocului sau o mutare de buton |
 | [docs/spec-comping.md](docs/spec-comping.md) | raportul de comping (P2): intrarea din bandă, atacurile, ce raportează în ordine, pragurile și calibrarea | orice cod al raportului de comping sau al lui Gig Mode |
 | [docs/spec-mic.md](docs/spec-mic.md) | prototipul de microfon: ce s-a măsurat, cum, cifrele și verdictul | `mic-proto/`; dacă se reia vreodată modul microfon |
 | [docs/PHASES.md](docs/PHASES.md) | planul inițial pe faze 0–5, cu DoD-urile și vechiul scope guard | **istoric**: toate fazele de acolo sunt bifate. Se citește doar dacă se caută un DoD vechi |
