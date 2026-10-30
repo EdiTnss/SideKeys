@@ -7,7 +7,8 @@
   import type { Instrument } from '../lib/instrument.svelte';
   import { createLevel, type Attempt, type Finished, type LevelPlan, type Run } from '../game/level.svelte';
   import { createPractice, type PracticePlan } from '../game/practice.svelte';
-  import { lessonFor, lessonForTexture } from '../bridge/game';
+  import { lessonFor, lessonForTexture, nextPraise } from '../bridge/game';
+  import { verdictSound } from '../lib/verdictSound.svelte';
   import {
     analyzeVoicing, inversionOf, parseChord, chordToneNames, isRight, isClean, playedInstead,
     roleClasses, missingClasses, armedClasses, midiToName,
@@ -76,6 +77,12 @@
   // Alternates with every verdict so the keys animate again when the same chord comes back:
   // a CSS animation does not restart for a class the element already carries.
   let strike = 'strike-a';
+  // Every verdict remounts the line that says it, so its own animation plays again (the pop of
+  // the praise word, the shake of a miss); `burst` makes the keys throw their sparks.
+  let verdicts = $state(0);
+  let burst = $state(0);
+  // The word beside a chord played right: an id, said in the language of the moment.
+  let praise = $state<string | null>(null);
 
   // A press on Play that played nothing, said where the verdict goes: a button with no answer
   // reads as one that does not work. Gone with the next verdict or the next key armed.
@@ -134,6 +141,16 @@
       .map(([midi, role]) => [midi, `${role} ${strike}`]);
     classes = { ...Object.fromEntries(played), ...missingClasses(answered.analysis) };
     paintedSlot = answered.slot;
+    // Right or not, said with movement and a sound as well as the colours (Edi, 2026-10-30).
+    // Nothing waits on it: the colours above are already set, the sound only starts.
+    verdicts += 1;
+    if (isRight(answered.analysis, { texture: answered.texture })) {
+      praise = nextPraise(praise);
+      burst += 1;
+      verdictSound.right(parseChord(answered.symbol).rootPc);
+    } else {
+      verdictSound.wrong();
+    }
   }
 
   function skip() {
@@ -395,6 +412,7 @@
     {/if}
 
     <div class="verdict" aria-live="polite">
+      {#key verdicts}
       {#if nudge}
         <p class="nudge">{t(nudge === 'one' ? 'game.oneNote' : touch ? 'game.armFirstTouch' : 'game.armFirst')}</p>
       {:else if !analysis}
@@ -403,19 +421,21 @@
         <p class="star {star.toLowerCase()}">
           <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
           {star}{#if shape}{' — '}<Glossed text={shape} />{/if}
+          {#if praise}<span class="praise">{t(`praise.${praise}`)}</span>{/if}
         </p>
       {:else if shapeMiss}
-        <p class="star none">
+        <p class="star none shake">
           <span class="judged">{judged}</span>
           <Glossed text={t('game.wrongShape', { shape: shapeMiss })} />
           {#if missPage}<button type="button" class="what" onclick={() => ontheory(missPage)}>{t('game.whatAsked')}</button>{/if}
         </p>
       {:else}
-        <p class="star none">
+        <p class="star none shake">
           <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
           <Glossed text={sayMessage(warnings[0])} />
         </p>
       {/if}
+      {/key}
 
       {#if star && instead && !nudge}
         <!-- Right, with more on top: the star stands, and this says what was played (Edi, 2026-10-29). -->
@@ -464,9 +484,9 @@
         <span class="range">{midiToName(low)}–{midiToName(low + SPAN)}</span>
         <button type="button" class="arrow" onclick={() => shift(12)} disabled={low >= FULL.to - SPAN} aria-label={t('game.octaveUp')}>›</button>
       </div>
-      <Keyboard classes={shown} onkey={instrument.toggle} from={low} to={low + SPAN} />
+      <Keyboard classes={shown} onkey={instrument.toggle} from={low} to={low + SPAN} {burst} />
     {:else}
-      <Keyboard classes={shown} onkey={instrument.toggle} from={FULL.from} to={FULL.to} />
+      <Keyboard classes={shown} onkey={instrument.toggle} from={FULL.from} to={FULL.to} {burst} />
     {/if}
 
     <div class="controls" class:touch>
@@ -557,6 +577,15 @@
   .star.clean { color: var(--chord-tone); }
   .star.right { color: var(--ink); }
   .star.none { color: var(--avoid); }
+  /* The word beside a star pops in; a miss shakes, with the wrong key under it (app.css). */
+  .praise { display: inline-block; margin-left: 10px; color: var(--ink); animation: praise-pop 300ms ease-out both; }
+  @keyframes praise-pop { 0% { opacity: 0; transform: scale(1.35); } 60% { opacity: 1; } 100% { transform: none; } }
+  .shake { animation: verdict-shake 280ms ease-out; }
+  @keyframes verdict-shake {
+    0%, 100% { transform: none; } 20% { transform: translateX(-4px); } 40% { transform: translateX(4px); }
+    60% { transform: translateX(-2px); } 80% { transform: translateX(1px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .praise, .shake { animation: none; } }
   .judged { font-family: ui-monospace, monospace; font-size: 15px; color: var(--ink-muted); margin-right: 6px; }
   .waiting { margin: 0; font-size: 24px; color: var(--ink-muted); }
   .nudge { margin: 0; font-size: 18px; color: var(--ink); }

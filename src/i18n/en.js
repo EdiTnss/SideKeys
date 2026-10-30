@@ -70,6 +70,18 @@ export default {
   'settings.keyboard': 'Keyboard',
   'settings.noKeyboard': 'No MIDI keyboard connected. The on-screen keyboard always works.',
   'settings.language': 'Language',
+  'settings.verdictSound': 'Verdict sounds',
+  'settings.verdictSoundHint': 'A knock when a chord is right, a thud when it is not. The chord itself always sounds.',
+
+  // Said beside the star when a chord is right (src/game/praise.js). Never a star's own name.
+  'praise.nice': 'Nice',
+  'praise.goodJob': 'Good job',
+  'praise.neat': 'Neat!',
+  'praise.sweet': 'Sweet',
+  'praise.lovely': 'Lovely',
+  'praise.yes': 'Yes!',
+  'praise.tasty': 'Tasty',
+  'praise.beautiful': 'Beautiful',
   'settings.lab': 'The Lab',
   'settings.labLine': 'Your own chart, the arrangement on your keyboard, the comping report. For advanced players, in English.',
 

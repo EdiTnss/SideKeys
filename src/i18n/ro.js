@@ -69,6 +69,17 @@ export default {
   'settings.keyboard': 'Clapa',
   'settings.noKeyboard': 'Nicio clapă MIDI conectată. Clapa de pe ecran merge oricând.',
   'settings.language': 'Limba',
+  'settings.verdictSound': 'Sunetele verdictului',
+  'settings.verdictSoundHint': 'O bătaie când acordul e bun, un „tuc” când nu e. Acordul se aude oricum.',
+
+  'praise.nice': 'Frumos',
+  'praise.goodJob': 'Bravo',
+  'praise.neat': 'Super!',
+  'praise.sweet': 'Așa da',
+  'praise.lovely': 'Excelent',
+  'praise.yes': 'Da!',
+  'praise.tasty': 'Gustos',
+  'praise.beautiful': 'Minunat',
   'settings.lab': 'Laboratorul',
   'settings.labLine': 'Grila ta, aranjamentul pe clapă, raportul de comping. Pentru avansați, în engleză.',
 

@@ -30,3 +30,6 @@ export { LESSONS, lessonFor, lessonForTexture, lessonIn, exampleNotes } from '..
 
 // The glossary: the jazz words, explained in Romanian, with examples the analyzer has graded.
 export { GLOSSARY, GLOSSARY_GROUPS, glossaryTerm } from '../../../src/game/glossary.js';
+
+// The word beside a chord played right, never the same one twice running.
+export { nextPraise } from '../../../src/game/praise.js';

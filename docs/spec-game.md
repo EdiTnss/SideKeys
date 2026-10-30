@@ -539,6 +539,33 @@ observație**, se repară dacă se mai vede; BUG-06 (contrastul clapelor armate)
 JAZZ-01 (rootless voice-led) **respins**, „Rootless, A or B” rămâne cum e, fără schimbare de
 preset.
 
+## Verdictul, cu mișcare și sunet (2026-10-30)
+
+Cerut de Edi pe 2026-10-29: un verdict care să se simtă. Claude a făcut o pagină cu trei variante
+pentru „corect” și trei pentru „greșit” (în afara repo-ului, `Claude outputs/verdict-fx/`), iar
+Edi a ales pe 2026-10-30 **R3 (Sparks)** cu **W1 (Shake)**.
+
+- **Corect** (`isRight`, deci și Clean): fiecare clapă cântată aruncă patru scântei în sus, în
+  culoarea ei de teorie (`Keyboard.svelte`, prop-ul `burst`). Lângă stea apare un cuvânt de
+  laudă, cu un mic „pop”. Sunetul e format din două bătăi de marimba: **fundamentala acordului
+  cerut, apoi cvinta ei, din octava 5** (`chimeNotes`, în `src/audio/verdict.js`). Sunetul e făcut
+  din acord, nu peste el, și stă deasupra registrului în care cântă mâinile.
+- **Greșit** (orice verdict fără stea, inclusiv forma greșită): clapa greșită tremură două
+  oscilații de 2 px în 280 ms (înainte, 1 px în 200 ms), iar rândul verdictului tremură odată cu
+  ea. Sunetul e un „tuc” grav, fără înălțime (o sinusoidă care cade de la 150 la 55 Hz, plus un
+  zgomot filtrat), ca să n-aibă cu ce să se certe.
+- **Cuvântul de laudă** (`src/game/praise.js`): opt id-uri, cu textul în `praise.<id>`, în ambele
+  dicționare. **Niciodată de două ori la rând.** Niciunul nu e numele unei stele, pentru că
+  „Clean” și „Smooth” au deja un înțeles pe ecran. Cuvintele românești le-a ales Claude; Edi încă
+  nu le-a citit.
+- **Nimic nu întârzie verdictul**: culorile se pun întâi, iar sunetul și scânteile doar pornesc
+  (scânteile, în cadrul următor). Sunetele merg pe singurul `AudioContext` al paginii, lângă pian.
+- **Sunetele se pot opri** din Setări („Sunetele verdictului”). Alegerea se ține minte sub
+  `sidekeys.verdictSound` și e pornită implicit. Animațiile rămân. Cu „reduce motion”, nici
+  scânteile, nici tremuratul nu apar; culorile rămân.
+- **Neîncercat pe Genos**: dacă bătaia se aude bine lângă clapă, și dacă într-o trecere în timp,
+  cu un sunet pe fiecare măsură peste metronom, nu devine prea mult.
+
 ## Ce nu intră aici
 
 - Clasamentul challenge-ului zilei — singura excepție admisă la „fără clasamente" (`DIRECTION.md`),

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Instrument } from '../lib/instrument.svelte';
   import { locale, setLocale, t } from '../lib/locale.svelte';
+  import { verdictSound } from '../lib/verdictSound.svelte';
 
   /** The Buttondown newsletter the form subscribes to (README links the same one). */
   const BUTTONDOWN = 'EdiTns';
@@ -60,6 +61,13 @@
         <button type="button" lang="ro" aria-label="Română" aria-pressed={locale() === 'ro'} onclick={() => setLocale('ro')}>RO</button>
       </span>
     </div>
+    <div class="item">
+      <span class="label">{t('settings.verdictSound')}</span>
+      <button type="button" class="switch" role="switch" aria-checked={verdictSound.on}
+              aria-label={t('settings.verdictSound')} title={t('settings.verdictSoundHint')}
+              onclick={() => verdictSound.set(!verdictSound.on)}><span></span></button>
+    </div>
+    <p class="muted small pad">{t('settings.verdictSoundHint')}</p>
   </section>
 
   <a class="card lab" href="./lab/">

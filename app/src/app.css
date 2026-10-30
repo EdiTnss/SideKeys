@@ -84,14 +84,29 @@ body {
   to { filter: none; transform: none; }
 }
 
-/* A wrong note gets the one gesture nobody has to be taught. One unit, 200 ms: a correction,
-   not a telling-off — the jazz pianist is not being scolded by a cartoon. */
-.key.role-wrong.strike-a, .key.role-wrong.strike-b { animation: key-wrong 200ms ease-out; }
+/* A wrong note gets the one gesture nobody has to be taught: a shake, two swings of 2 px dying
+   away, with the verdict line shaking beside it (Game.svelte) and a low thud under both. Edi
+   chose it on 2026-10-30 from three; one unit and 200 ms had been too polite to notice. */
+.key.role-wrong.strike-a, .key.role-wrong.strike-b { animation: key-wrong 280ms ease-out; }
 
 @keyframes key-wrong {
   0%, 100% { transform: none; }
-  25% { transform: translateX(-1px); }
-  75% { transform: translateX(1px); }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-1.5px); }
+  80% { transform: translateX(1px); }
+}
+
+/* A chord played right: a few sparks fly up out of every played key, each in its key's own
+   theory colour (Keyboard.svelte throws them). Edi chose it on 2026-10-30 from three. */
+.spark {
+  position: absolute; width: 5px; height: 5px; border-radius: 50%; pointer-events: none;
+  animation: key-spark 620ms cubic-bezier(.15, .7, .3, 1) both;
+}
+
+@keyframes key-spark {
+  from { opacity: 1; transform: translate(0, 0) scale(1); }
+  to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.4); }
 }
 
 /* What the chord asked for and did not get: it breathes, so the eye finds it without a label
@@ -110,7 +125,8 @@ body {
 
 /* Someone who has asked their system for less movement gets the colours and none of this. */
 @media (prefers-reduced-motion: reduce) {
-  .key, .key.strike-a, .key.strike-b, .key.white.missing, .key.black.missing { transition: none; animation: none; }
+  .key, .key.strike-a, .key.strike-b, .key.white.missing, .key.black.missing, .spark { transition: none; animation: none; }
+  .spark { display: none; }
   .key.held, .key.armed { transform: none; }
 }
 .key-label { font-size: 9px; fill: #555; pointer-events: none; }

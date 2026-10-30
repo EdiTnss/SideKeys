@@ -10,6 +10,7 @@ export { VoicingCapture } from '../../../src/midi/capture.js';
 export { createVirtualMidi, mergeAccess } from '../../../src/midi/virtual.js';
 export { createSynth } from '../../../src/audio/synth.js';
 export { loadPiano } from '../../../src/audio/piano.js';
+export { createVerdictSound } from '../../../src/audio/verdict.js';
 export { createOnScreen } from '../../../src/ui/onscreen.js';
 export { createThrough, soundOn, setSound } from '../../../src/midi/through.js';
 export { storageKey } from '../../../src/storage.js';
