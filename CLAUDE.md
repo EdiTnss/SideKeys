@@ -262,6 +262,10 @@ cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-YyD3l25I.js
 browser care a mai vizitat site-ul poate arăta o dată interfața veche, până își înnoiește
 service worker-ul.
 
+**Verdictul cu mișcare și sunet (2026-10-30) e împins și publicat** (`04cada7`, la cererea lui
+Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-cKFl.js`, cache
+`sidekeys-aadc32f86afb`) e cel construit local.
+
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
@@ -307,8 +311,8 @@ service worker-ul.
 ### Ce așteaptă pe Edi
 
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
-- **Să spună „împinge”** pentru verdictul cu sunet (încercat pe Genos pe 2026-10-30, în commit,
-  neîmpins) și să citească cele opt cuvinte de laudă în română.
+- **Să citească cele opt cuvinte de laudă în română** (verdictul cu sunet e publicat din
+  2026-10-30; cuvintele le-a ales Claude).
 - **Să posteze reel-ul** pe TikTok și Instagram (`Reels/out/sidekeys-reel.mp4`, aprobat pe
   2026-10-28; în README e din aceeași zi, ca video încărcat pe GitHub, în copia comprimată
   `sidekeys-reel-web.mp4`, sub limita de 10 MB). Postarea cere întâi planul **Starter** la

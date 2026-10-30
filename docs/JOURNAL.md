@@ -725,3 +725,7 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   schimbat nimic acolo; Gig Mode-ul care va veni merge pe metronom, deci regula îl acoperă.
   Verificat în browser: fără ceas se aude „tuc”-ul de 150 Hz; pe ceas, „Clean · Bravo” și
   tremuratul apar fără niciun sunet. Neîmpins.
+- **2026-10-30 (publicare)** — Împins `cf98a7b..04cada7` la cererea lui Edi („Da, împinge”);
+  testele și publicarea trecute pe GitHub. Verificat pe site: pachetul servit e cel construit
+  local (`index-Bzm-cKFl.js`, cache `sidekeys-aadc32f86afb`) și conține sunetele verdictului,
+  comutatorul din Setări și cuvintele de laudă, în engleză și română.
