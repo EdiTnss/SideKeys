@@ -134,35 +134,67 @@ export const PATH = [
  * is a ramp and sets one per rung. Both arrive here in the same form, so nothing downstream
  * has to know which it is reading. `count` keeps a long cross product playable.
  *
+ * Given `random`, the order is drawn anew (review of 2026-10-30, #12: a fixed order is learnt by
+ * the second pass, and then the chord is remembered instead of read). The chords stay the same;
+ * a progression moves as a whole, so only its keys change places. Without it, the order is the
+ * one the level is written in.
+ *
  * @param {any} level
+ * @param {{ random?: (() => number) | null }} [options]
  * @returns {Array<{ symbol: string, texture: string | string[] | null }>}
  */
-export function asksFor(level) {
+export function asksFor(level, { random = null } = {}) {
   const source = level.asks;
   // Already drawn, each with its own shape: the daily challenge's ramp comes through here.
   if (source.kind === 'fixed') return source.asks;
-  const symbols = buildAsks(source);
-  const asked = source.count ? symbols.slice(0, source.count) : symbols;
-  return asked.map(symbol => ({ symbol, texture: level.texture ?? null }));
+  const units = buildAsks(source);
+  const asked = source.count ? units.slice(0, source.count) : units;
+  const ordered = random ? shuffled(asked, random) : asked;
+  return ordered.flat().map(symbol => ({ symbol, texture: level.texture ?? null }));
 }
 
+/** What a level asks for, in units that keep together: one progression in one key, or one chord. */
 function buildAsks(source) {
   if (source.kind === 'progression') {
-    const symbols = source.keys.flatMap(key =>
-      getProgression(source.progressionId, key).bars.flatMap(bar => bar.chords.map(chord => chord.symbol)));
-    // The library writes ii–V–I as '| Dm7 | G7 | Cmaj7 | % |', because a tune holds the I for two
-    // bars. A drill asks for it once: a repeat here would be a chord you already answered.
-    return symbols.filter((symbol, at) => symbol !== symbols[at - 1]);
+    return source.keys.map(key => {
+      const symbols = getProgression(source.progressionId, key).bars.flatMap(bar => bar.chords.map(chord => chord.symbol));
+      // The library writes ii–V–I as '| Dm7 | G7 | Cmaj7 | % |', because a tune holds the I for
+      // two bars. A drill asks for it once: a repeat here would be a chord you already answered.
+      return symbols.filter((symbol, at) => symbol !== symbols[at - 1]);
+    });
   }
   if (source.kind === 'slash') {
     // The bass is spelled from the chord itself, so Eb/Gb never comes out as Eb/F#, and the
     // chord is named the way a chart names it, so the minor on Db is C#m/E and never Dbm/Fb.
     return across(source, source.shapes, (key, shape) => {
       const chord = parseChord(chartSymbol(key, shape.quality));
-      return `${chord.symbol}/${spellPlain(chord.root, shape.degree)}`;
+      return [`${chord.symbol}/${spellPlain(chord.root, shape.degree)}`];
     });
   }
-  return across(source, source.qualities, (key, quality) => chartSymbol(key, quality));
+  return across(source, source.qualities, (key, quality) => [chartSymbol(key, quality)]);
+}
+
+/**
+ * The units in a random order where no unit starts on the root the one before ended on: C then
+ * Cm is one note moved, not a chord read. A draw can corner itself (the last two left share a
+ * root), so it draws again; a level that cannot be ordered that way at all keeps its own order.
+ */
+function shuffled(units, random) {
+  const first = units.map(unit => parseChord(unit[0]).rootPc);
+  const last = units.map(unit => parseChord(unit.at(-1)).rootPc);
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    const left = units.map((_, at) => at);
+    const order = [];
+    while (left.length) {
+      const allowed = order.length ? left.filter(at => first[at] !== last[order.at(-1)]) : left;
+      if (!allowed.length) break;
+      const pick = allowed[Math.min(allowed.length - 1, Math.floor(random() * allowed.length))];
+      left.splice(left.indexOf(pick), 1);
+      order.push(pick);
+    }
+    if (!left.length) return order.map(at => units[at]);
+  }
+  return units;
 }
 
 /**

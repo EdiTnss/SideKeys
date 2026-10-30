@@ -762,3 +762,13 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   to get”), care spunea exact opusul deciziei, s-a rescris cu acordul lui Edi. Textul „a treia
   stea e pe ceas” din Play apare în continuare, dar doar când tot drumul are două stele. Tot
   476 de teste. Regula, în `spec-game.md`. Neîmpins.
+- **2026-10-31 (#12: altă ordine la fiecare trecere)** — Edi a ales (a), „Da, la fiecare”.
+  `asksFor(level, { random })` trage ordinea din nou; jocul îi dă `Math.random` la intrarea în
+  nivel, la „Once more” și la pornirea pe ceas (`level.svelte.ts` reface și sesiunea, ca măsurile
+  să cadă pe noua ordine). Acordurile rămân aceleași; o progresie se mută întreagă, deci la ii–V–I
+  se amestecă doar tonalitățile. Nicio fundamentală de două ori la rând, nici la granița dintre
+  două progresii (Cmaj7 apoi Cm7). **Decizie a lui Claude**: generator în loc de `seed` (forma lui
+  `drawDrill`), iar fără el ordinea rămâne cea scrisă, deci testele vechi n-au fost atinse.
+  Provocarea zilei nu se amestecă. Test întâi; 476 → **477 de teste**, `npm run check` și build
+  curate. Văzut în browser: trei treceri prin „Triade majore”, trei ordini, iar pe ceas acordul de
+  pe ecran și cel următor urmează noua ordine. Neîmpins, neîncercat pe Genos.

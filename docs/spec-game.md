@@ -242,6 +242,15 @@ câștigă acolo, iar o trecere liberă cu acorduri sărite măsoară cel mult d
   cădea înainte de diezi: „All four, twelve keys” cerea doar C, F, Bb și Eb, iar Recapitularea,
   doar șase tonalități. Se aplică și inversiunilor (formele țin locul calităților) și
   Recapitulării.
+- **Ordinea se trage din nou la fiecare trecere** (Edi, 2026-10-31, review #12): la intrarea în
+  nivel, la „Once more” și la pornirea pe ceas (`asksFor(level, { random })`, chemat din
+  `level.svelte.ts`). Acordurile rămân aceleași, doar ordinea se schimbă; o progresie se mută
+  întreagă, deci la ii–V–I se amestecă doar tonalitățile. Regula: niciun acord nu începe pe
+  fundamentala pe care s-a terminat cel dinainte (C apoi Cm e o notă mutată, nu un acord citit),
+  nici la granița dintre două progresii (Cmaj7 apoi Cm7). O tragere care se blochează se reia; un
+  nivel care nu se poate ordona așa își păstrează ordinea scrisă. Fără `random`, ordinea e cea
+  scrisă: testele și ecranele care numără acordurile o folosesc pe aceea. Provocarea zilei
+  (`fixed`) nu se amestecă: e aceeași pentru toți.
 - **„Continue the path" pornește de la nivelul jucat ultima dată** (`progress.last`, ținut numai
   pentru nivelele de pe drum): primul nivel deschis cu mai puțin de **două** stele, căutat de
   acolo înainte și, la capăt, de la început; abia când toate nivelele deschise au două, primul cu

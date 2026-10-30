@@ -181,7 +181,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **476 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **477 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Raportul de comping** (P2, 2026-10-29), în **Laborator**: o trecere timed cu „bass from the
   app” cântă basul aranjamentului în buclă, iar după Stop apare raportul (acorduri, registru,
   voice leading, varietate). Pragurile sunt propuneri, încă necalibrate; timpul nu se arată.
@@ -369,9 +369,9 @@ Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-c
 ## Următorul pas
 
 **Turul din 2026-10-30** ([docs/review-2026-10-30.md](docs/review-2026-10-30.md)): valul 1 și
-#1 (toate tonalitățile) și #11 („Continuă” după două stele) sunt făcute și neîmpinse. Urmează,
-cu câte o alegere scurtă de la Edi: #12 (ordinea amestecată), apoi deciziile de design, în ordinea
-din fișier.
+#1 (toate tonalitățile), #11 („Continuă” după două stele) și #12 (ordinea amestecată la fiecare
+trecere) sunt făcute și neîmpinse. Urmează, cu câte o alegere scurtă de la Edi, deciziile de
+design, în ordinea din fișier (13, 14, 15…).
 
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`
 („Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data

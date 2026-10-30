@@ -83,14 +83,17 @@ export type Run = {
 };
 
 export function createLevel(plan: LevelPlan): Run {
-  const asks = asksFor(plan) as Ask[];
-  const threshold = thresholdFor(plan) as number;
+  // A new order on every pass, here and on every restart: an order that stays put is learnt by
+  // the second pass (review of 2026-10-30, #12). The chords themselves stay the level's.
+  const draw = () => asksFor(plan, { random: Math.random }) as Ask[];
   // One chord per bar, no loop: the pass ends when the metronome walks past the last bar.
-  const progression = {
+  const sessionFor = (list: Ask[]) => createSession({
     timeSignature: [4, 4],
-    bars: asks.map(ask => ({ chords: [{ symbol: ask.symbol, beat: 1 }] })),
-  };
-  const session = createSession(progression, { loop: false });
+    bars: list.map(ask => ({ chords: [{ symbol: ask.symbol, beat: 1 }] })),
+  }, { loop: false });
+  let asks = $state.raw(draw());
+  let session = sessionFor(asks);
+  const threshold = thresholdFor(plan) as number;
 
   let answers = $state<Array<Attempt | null>>(asks.map(() => null));
   // Minutes practised count playing, not the screen being open: the clock starts on the first
@@ -227,6 +230,8 @@ export function createLevel(plan: LevelPlan): Run {
     restart() {
       metronome?.stop();
       metronome = null;
+      asks = draw();
+      session = sessionFor(asks);
       answers = asks.map(() => null);
       firstAnswerAt = null;
       seconds = 0;
@@ -235,7 +240,6 @@ export function createLevel(plan: LevelPlan): Run {
       timed = false;
       countIn = null;
       at = null;
-      session.reset?.();
     },
 
     // Leaving a level in the middle of a timed pass used to leave its metronome clicking, with
