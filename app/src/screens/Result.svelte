@@ -192,8 +192,10 @@
   .tile { flex: 1 1 150px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 16px; }
   .big { margin: 0 0 4px; font-family: ui-monospace, monospace; font-size: 24px; font-weight: 600; }
   .label { margin: 0; font-size: 13px; color: var(--ink-muted); }
-  .share { margin: -10px 0 26px; }
-  .squares { margin: 0 0 14px; font-size: 30px; line-height: 1.1; letter-spacing: 2px; word-break: break-all; }
+  /* The ten squares stay on one row: a square is about 1.37 em wide plus its 2 px of spacing, so
+     the size follows the width the grid has (review of 2026-10-30, #6). */
+  .share { margin: -10px 0 26px; container-type: inline-size; }
+  .squares { margin: 0 0 14px; font-size: min(30px, calc(7cqi - 2px)); line-height: 1.1; letter-spacing: 2px; white-space: nowrap; }
   .row { display: flex; justify-content: center; gap: 12px; }
   .row button { padding: 10px 20px; font-size: 14px; }
   .note { margin: 0 0 12px; font-size: 13px; color: var(--ink-muted); }

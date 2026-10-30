@@ -146,7 +146,7 @@
   .track { flex: 1; max-width: 220px; height: 5px; border-radius: 999px; background: var(--border); overflow: hidden; }
   .fill { display: block; height: 100%; border-radius: 999px; background: var(--ink); }
   .columns { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; align-items: start; }
-  .main { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .main { display: flex; flex-direction: column; gap: 18px; min-width: 0; container-type: inline-size; }
   .hero {
     border: 1px solid var(--border); border-radius: 20px; padding: 26px 28px;
     background: linear-gradient(180deg, #16191c 0%, #101214 100%);
@@ -162,8 +162,8 @@
   }
   .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .tiles.single { grid-template-columns: minmax(0, 1fr); }
-  .tile { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); padding: 18px; }
-  .title { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .tile { border: 1px solid var(--border); border-radius: 16px; background: var(--surface); padding: 18px; container-type: inline-size; }
+  .title { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 10px; }
   .tile h2, .side h2 { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
   .side h2 { font-size: 18px; }
   .number { font-family: ui-monospace, monospace; font-size: 12px; font-weight: 400; color: var(--ink-muted); }
@@ -173,7 +173,9 @@
   }
   .due { font-size: 14px; font-weight: 600; color: var(--avoid); }
   .small { margin: 0 0 14px; font-size: 13px; line-height: 1.45; }
-  .squares { margin: 4px 0 12px; font-size: 22px; line-height: 1.15; letter-spacing: 2px; word-break: break-all; }
+  /* The ten squares stay on one row: a square is about 1.37 em wide plus its 2 px of spacing, so
+     the size follows the tile's width (review of 2026-10-30, #6). */
+  .squares { margin: 4px 0 12px; font-size: min(22px, calc(7cqi - 2px)); line-height: 1.15; letter-spacing: 2px; white-space: nowrap; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; }
   .text {
     margin: 12px 0 0; padding: 12px; border: 1px solid var(--border); border-radius: 10px;
@@ -190,8 +192,14 @@
   button.go:hover { border-color: var(--ink); filter: brightness(0.95); }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  @media (max-width: 960px) {
+  /* Two columns only where the path gets room to read: at 1024 px, with the doors' column beside
+     it, the Romanian names broke over three lines (review of 2026-10-30, #34). */
+  @media (max-width: 1099px) {
     .columns { grid-template-columns: minmax(0, 1fr); }
+  }
+  /* The challenge and the review side by side only while each has room for its button. */
+  @container (max-width: 579px) {
+    .tiles { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 759px) {
     .home { padding: 16px 16px 28px; }
@@ -201,8 +209,5 @@
     .tile { padding: 14px; }
     .side { border: none; background: none; padding: 6px 0 0; }
     .side .title { padding: 0 0 6px; }
-  }
-  @media (max-width: 420px) {
-    .tiles { grid-template-columns: minmax(0, 1fr); }
   }
 </style>
