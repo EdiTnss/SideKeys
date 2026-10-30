@@ -261,7 +261,7 @@ path" rămâne unde era.
 
 - **Drill**: calitățile (triade, septacorduri, dominante alterate — cele din drum plus cele din
   drill-ul vechi), tonalitățile și, opțional, **forma** (shell, rootless A, rootless B, rootless A
-  sau B, drop 2, quartal). Acordurile se trag la întâmplare, niciodată același de două ori la rând.
+  sau B, drop 2, quartal). Acordurile se trag la întâmplare, iar un acord nu revine mai devreme de trei acorduri după el (cât permite mulțimea: trei acorduri se țin la două, două alternează). Până pe 2026-10-30 se evita doar acordul dinainte, iar Ab, B, Ab din douăsprezece se citea ca o repetare (review #20).
 - **Progression**: o progresie din bibliotecă, într-o tonalitate, în buclă, **cu măsurile ei cum
   sunt scrise** — două acorduri pe măsură unde le are, și o măsură repetată rămâne o măsură. (Pe
   drum, `asksFor` le aplatizează la un acord pe măsură și sare repetările; acolo e un exercițiu,

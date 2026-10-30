@@ -115,9 +115,13 @@ export function shapeQualities(shape) {
   return QUALITIES.filter(quality => KEYS.some(key => canPlay(chartSymbol(key, quality), texture)));
 }
 
+/** How far back a chord is kept from coming again: Ab, B, Ab out of twelve read as a repeat. */
+const APART = 3;
+
 /**
- * `count` chords drawn from the pool, never the same one twice running. The run loops, so the
- * last one also avoids the first. A pool of one has nothing else to offer and repeats.
+ * `count` chords drawn from the pool, none of them within three of itself — or within as many
+ * as the pool allows: three chords can only keep two apart, two simply alternate. The run
+ * loops, so the last ones also keep apart from the first. A pool of one repeats.
  *
  * @template T
  * @param {Array<T & { symbol: string }>} pool
@@ -127,12 +131,15 @@ export function shapeQualities(shape) {
  */
 export function drawDrill(pool, count, random = Math.random) {
   if (!pool.length) return [];
+  const apart = Math.min(APART, new Set(pool.map(ask => ask.symbol)).size - 1);
   const drawn = [];
   for (let at = 0; at < count; at += 1) {
-    const before = drawn[at - 1]?.symbol;
-    const after = at === count - 1 ? drawn[0]?.symbol : undefined;
-    let candidates = pool.filter(ask => ask.symbol !== before && ask.symbol !== after);
-    if (!candidates.length) candidates = pool.filter(ask => ask.symbol !== before);
+    const before = drawn.slice(Math.max(0, at - apart), at).map(ask => ask.symbol);
+    // Round the loop: the bars after this one, past the end, are the first ones again.
+    const after = drawn.slice(0, Math.max(0, at + apart - count + 1)).map(ask => ask.symbol);
+    let candidates = pool.filter(ask => !before.includes(ask.symbol) && !after.includes(ask.symbol));
+    if (!candidates.length) candidates = pool.filter(ask => !before.includes(ask.symbol));
+    if (!candidates.length) candidates = pool.filter(ask => ask.symbol !== drawn[at - 1]?.symbol);
     if (!candidates.length) candidates = pool;
     drawn.push(candidates[Math.min(candidates.length - 1, Math.floor(random() * candidates.length))]);
   }
