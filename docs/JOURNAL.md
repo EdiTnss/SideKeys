@@ -684,3 +684,5 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   ElevenLabs e ștearsă din cont; fișierul `Reels/cheie api eleven labs.txt` e încă pe disc
   (ignorat de git). Rămân la Edi: animația, reel-ul, formularul, pianul, „Sound in the app” pe
   Genos și sesiunile de calibrare a raportului de comping.
+- **2026-10-30** — La cererea lui Edi, Claude a șters `Reels/cheie api eleven labs.txt` de pe disc.
+  Cheia era deja ștearsă din cont; fișierul nu fusese niciodată în repo (`Reels/` e ignorat).

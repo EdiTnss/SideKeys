@@ -293,9 +293,6 @@ fiecare dată.
   `sidekeys-reel-web.mp4`, sub limita de 10 MB). Postarea cere întâi planul **Starter** la
   ElevenLabs: pe gratuit, vocea și muzica nu au licență comercială. Ziua primei postări pornește
   ceasul porții P1.
-- **Să șteargă fișierul `Reels/cheie api eleven labs.txt`** (ignorat de git, deci nu e în repo):
-  cheia din el a fost ștearsă din contul ElevenLabs pe 2026-10-30, deci nu mai merge, dar
-  fișierul e încă pe disc. Claude nu șterge fișiere fără confirmare.
 - **Să încerce formularul cu adresa lui**, după publicare: Claude nu a trimis nicio adresă de probă.
 - **Să încerce pe Genos ce s-a făcut pe 2026-10-28**: lista e în
   `docs/session-log/2026-10-29-1008.md`, la „Rămas deschis”.
@@ -333,7 +330,7 @@ fiecare dată.
   site, deci nu se scoate de tot (README-ul nu ajunge la cine aude pianul).
 - **Necommis**: `Voicing Lab ca produs.pdf`, care nu intră în repo.
 - **`Reels/` e ignorat de git**: mașinăria de reel-uri (captura jocului publicat cu o clapă MIDI
-  simulată, compoziția HTML cadru cu cadru, mixajul ffmpeg) și o cheie API. Se reface cu
+  simulată, compoziția HTML cadru cu cadru, mixajul ffmpeg). Cheia API care stătea aici a fost ștearsă pe 2026-10-30. Se reface cu
   `node Reels/capture.mjs`, apoi `node Reels/render.mjs` (`mux` remixează doar sunetul).
   ffmpeg e instalat prin winget, dar nu e în PATH-ul sesiunilor deja pornite.
 - **ElevenLabs, prin conector, rulează o singură generare odată**: mai multe deodată dau 429
