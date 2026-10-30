@@ -97,6 +97,34 @@ test('drawDrill: as many chords as asked for, and never the same one twice runni
   assert.deepEqual(drawDrill([], 3), []);
 });
 
+test('drawDrill: a chord does not come back within three of itself, and a small pool still draws', () => {
+  // Ab, B, Ab out of twelve chords was allowed while only the chord just before was avoided
+  // (review of 2026-10-30, #20).
+  const pool = drillPool({ qualities: [''], keys: KEYS, shape: 'any' });
+  assert.equal(pool.length, 12);
+  for (let run = 0; run < 20; run += 1) {
+    const drawn = symbols(drawDrill(pool, 48));
+    drawn.forEach((symbol, at) => {
+      // Round the loop as well: the bars after the last one are the first ones again.
+      for (let back = 1; back <= 3; back += 1) {
+        const before = drawn[(at - back + drawn.length) % drawn.length];
+        assert.notEqual(symbol, before, `${symbol} again ${back} after itself, at ${at}`);
+      }
+    });
+  }
+  // A pool of three can only keep two apart: each chord differs from the two before it.
+  const three = drillPool({ qualities: [''], keys: ['C', 'F', 'G'], shape: 'any' });
+  const drawn = symbols(drawDrill(three, 30));
+  drawn.forEach((symbol, at) => {
+    if (at >= 1) assert.notEqual(symbol, drawn[at - 1]);
+    if (at >= 2) assert.notEqual(symbol, drawn[at - 2]);
+  });
+  // Two chords simply alternate.
+  const two = drillPool({ qualities: [''], keys: ['C', 'F'], shape: 'any' });
+  const alternating = symbols(drawDrill(two, 6));
+  alternating.forEach((symbol, at) => { if (at) assert.notEqual(symbol, alternating[at - 1]); });
+});
+
 test('drawDrill: the same random numbers give the same chords', () => {
   const pool = drillPool({ qualities: ['maj7', 'm7'], keys: ['C', 'F'], shape: 'any' });
   const first = drawDrill(pool, 12, sequence([0.1, 0.7, 0.4, 0.95]));
