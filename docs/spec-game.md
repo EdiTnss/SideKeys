@@ -563,8 +563,13 @@ Edi a ales pe 2026-10-30 **R3 (Sparks)** cu **W1 (Shake)**.
 - **Sunetele se pot opri** din Setări („Sunetele verdictului”). Alegerea se ține minte sub
   `sidekeys.verdictSound` și e pornită implicit. Animațiile rămân. Cu „reduce motion”, nici
   scânteile, nici tremuratul nu apar; culorile rămân.
-- **Neîncercat pe Genos**: dacă bătaia se aude bine lângă clapă, și dacă într-o trecere în timp,
-  cu un sunet pe fiecare măsură peste metronom, nu devine prea mult.
+- **Pe ceas, fără sunet** (Edi, pe Genos, 2026-10-30: „când cântăm progresii pe metronom,
+  acolo încurcă”): cât timp merge metronomul (`level.timed`, adică un nivel jucat în timp sau
+  Training cu metronomul pornit), nu se aude nici bătaia, nici „tuc”-ul. Scânteile, cuvântul și
+  tremuratul rămân. Oprit metronomul în Training, sunetul revine. Laboratorul n-a avut niciodată
+  sunetele astea, deci comping-ul cu bas de acolo nu se schimbă. Comping-ul care va veni în joc
+  (Gig Mode) merge tot pe metronom, deci regula îl acoperă de la sine.
+- **Încercat de Edi pe Genos** pe 2026-10-30: „e bine”, cu excepția de mai sus.
 
 ## Ce nu intră aici
 

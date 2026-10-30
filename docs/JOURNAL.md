@@ -719,3 +719,9 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   12 scântei, „Minunat” și frecvențele Do5/Sol5; C–C#–G pe F dă tremuratul și 150 Hz. Cu sunetul
   oprit nu se aude nimic. Sunetul n-a fost ascultat de Claude, doar măsurat. **Neîncercat pe
   Genos.** Neîmpins.
+- **2026-10-30 (verdictul, pe Genos)** — Edi l-a încercat pe clapă: „e bine”, dar pe metronom
+  sunetul încurcă, atât la progresii, cât și la comping-ul cu bas. Acum, cât merge metronomul, nu
+  se aude nimic; mișcarea și cuvântul rămân. Laboratorul n-avea sunetele astea, deci nu s-a
+  schimbat nimic acolo; Gig Mode-ul care va veni merge pe metronom, deci regula îl acoperă.
+  Verificat în browser: fără ceas se aude „tuc”-ul de 150 Hz; pe ceas, „Clean · Bravo” și
+  tremuratul apar fără niciun sunet. Neîmpins.

@@ -219,7 +219,8 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
   are ce cânta, „How is it built?” spre pagina de teorie, scala mișcării sub cifra de voice leading.
 - **Verdictul are mișcare și sunet** (2026-10-30, ales de Edi dintre șase variante): scântei, un
   cuvânt de laudă și o bătaie de marimba pe fundamentala acordului când e corect, iar când e greșit,
-  un tremurat și un „tuc” grav. Sunetele se opresc din Setări. Regulile sunt în `spec-game.md`.
+  un tremurat și un „tuc” grav. Pe metronom nu se aude nimic (Edi, pe Genos), iar sunetele se
+  opresc și din Setări. Regulile sunt în `spec-game.md`.
 - **O clapă MIDI se poate auzi prin pianul aplicației** (2026-10-29): comutatorul „Sound in the
   app” din antet, ținut minte pe clapă, pornit pentru o clapă nouă ([docs/spec-capture.md](docs/spec-capture.md)).
 - **Ortografia**: niciun Cb, Fb, B#, E# sau dublu accident în ce citește jucătorul; acordurile cu
@@ -306,8 +307,8 @@ service worker-ul.
 ### Ce așteaptă pe Edi
 
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
-- **Să încerce pe Genos verdictul cu sunet** (în commit, dar neîmpins) și să citească cele opt cuvinte
-  de laudă în română: bătaia lângă clapă, și dacă într-o trecere în timp nu e prea mult.
+- **Să spună „împinge”** pentru verdictul cu sunet (încercat pe Genos pe 2026-10-30, în commit,
+  neîmpins) și să citească cele opt cuvinte de laudă în română.
 - **Să posteze reel-ul** pe TikTok și Instagram (`Reels/out/sidekeys-reel.mp4`, aprobat pe
   2026-10-28; în README e din aceeași zi, ca video încărcat pe GitHub, în copia comprimată
   `sidekeys-reel-web.mp4`, sub limita de 10 MB). Postarea cere întâi planul **Starter** la

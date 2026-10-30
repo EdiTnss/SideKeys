@@ -142,13 +142,16 @@
     classes = { ...Object.fromEntries(played), ...missingClasses(answered.analysis) };
     paintedSlot = answered.slot;
     // Right or not, said with movement and a sound as well as the colours (Edi, 2026-10-30).
-    // Nothing waits on it: the colours above are already set, the sound only starts.
+    // Nothing waits on it: the colours above are already set, the sound only starts. On the
+    // clock the sound stays out: a knock or a thud every bar, over the metronome, gets in the way
+    // of the time being kept (Edi, at the Genos, the same day). The movement stays.
     verdicts += 1;
+    const sound = !level.timed;
     if (isRight(answered.analysis, { texture: answered.texture })) {
       praise = nextPraise(praise);
       burst += 1;
-      verdictSound.right(parseChord(answered.symbol).rootPc);
-    } else {
+      if (sound) verdictSound.right(parseChord(answered.symbol).rootPc);
+    } else if (sound) {
       verdictSound.wrong();
     }
   }
