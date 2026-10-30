@@ -137,6 +137,38 @@ test('a level cut short by its count still reaches every key it names, every qua
   }
 });
 
+test('asksFor with a random draw: the same chords in another order, never the same root twice running', () => {
+  // Review of 2026-10-30, #12 (Edi: "a new order every pass"). A fixed order is learnt by the
+  // second pass, and then the chord on screen is remembered instead of read.
+  let state = 7;
+  const random = () => (state = (state * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const sorted = list => [...list].sort();
+  const rootsOf = symbols => symbols.map(symbol => parseChord(symbol).rootPc);
+  for (const level of [...PATH.flatMap(unit => unit.levels), reviewLevel(['m7', '7', 'maj7'])]) {
+    const canonical = asksFor(level).map(ask => ask.symbol);
+    for (let run = 0; run < 5; run += 1) {
+      const drawn = asksFor(level, { random });
+      assert.deepEqual(sorted(drawn.map(ask => ask.symbol)), sorted(canonical), `${level.id}: the same chords`);
+      assert.ok(drawn.every(ask => ask.texture === (level.texture ?? null)), `${level.id}: the shape travels with it`);
+      const roots = rootsOf(drawn.map(ask => ask.symbol));
+      roots.forEach((root, at) => {
+        if (at) assert.notEqual(root, roots[at - 1], `${level.id}: ${drawn[at].symbol} after ${drawn[at - 1].symbol}`);
+      });
+      // A progression moves as a whole: only the keys change places.
+      if (level.asks.kind === 'progression') {
+        const blocks = list => Array.from({ length: list.length / 3 }, (_, at) => list.slice(at * 3, at * 3 + 3).join(' '));
+        assert.deepEqual(sorted(blocks(drawn.map(ask => ask.symbol))), sorted(blocks(canonical)), level.id);
+      }
+    }
+  }
+  // And the order does change from one pass to the next.
+  const triads = levelById('triads-major').level;
+  const orders = new Set(Array.from({ length: 20 }, () => asksFor(triads, { random }).map(ask => ask.symbol).join(' ')));
+  assert.ok(orders.size > 10, `only ${orders.size} orders in 20 passes`);
+  const firsts = new Set(Array.from({ length: 20 }, () => asksFor(triads, { random })[0].symbol));
+  assert.ok(firsts.size > 1, 'it does not always open on C');
+});
+
 test('reviewLevel: the queue turned into something playable, in every key', () => {
   const level = reviewLevel(['m7b5', '7']);
   const asks = asksFor(level).map(ask => ask.symbol);
