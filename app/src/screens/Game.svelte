@@ -251,14 +251,29 @@
     if (held.length) classes = Object.fromEntries(held.map(midi => [midi, 'held']));
   });
 
+  // Chrome leaves the focus on the last button clicked, and a focused button took every key: after
+  // any click the letters went dead, and Space pressed that button instead of skipping (review of
+  // 2026-10-30, #2). So a click drops the focus it gave. A click has a detail of one or more;
+  // Enter or Space on a button reached with Tab clicks it with a detail of 0, and keeps it.
+  function dropClickFocus(event: MouseEvent) {
+    if (event.detail > 0) (event.target as Element | null)?.closest('button')?.blur();
+  }
+
+  // Only a field that takes text keeps all its keys.
+  const typing = (target: EventTarget | null) =>
+    target instanceof HTMLElement
+      && (['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.isContentEditable);
+
   function onKeyDown(event: KeyboardEvent) {
-    const target = event.target as HTMLElement | null;
-    if (target && ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'].includes(target.tagName)) return;
+    if (typing(event.target)) return;
     // While the letters are a piano they are not shortcuts: a note beats a shortcut on one key.
     if (instrument.typeToPlay && instrument.keyDown(event.code)) {
       event.preventDefault();
       return;
     }
+    // A button reached with Tab is pressed with Enter or Space, the way it is without a mouse.
+    const onButton = event.target instanceof HTMLElement && event.target.tagName === 'BUTTON';
+    if (onButton && (event.code === 'Enter' || event.code === 'Space')) return;
     if (event.code === 'Enter') playArmed();
     else if (event.code === 'Escape') instrument.clear();
     else if (event.code === 'KeyZ') instrument.octaveDown();
@@ -355,7 +370,7 @@
           onhow={resultPage ? () => ontheory(resultPage) : null}
           onnext={onnext} onexit={onexit} />
 {:else}
-  <section class="game">
+  <section class="game" onclickcapture={dropClickFocus}>
     <!-- No navigation inside a level (docs/spec-ui.md): the way out, where you are, how far. -->
     <div class="progress">
       <button type="button" class="exit" onclick={leave} aria-label={t('game.close')}>
