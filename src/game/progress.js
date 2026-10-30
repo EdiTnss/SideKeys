@@ -160,9 +160,11 @@ export function dueReviews(progress, today) {
 }
 
 /**
- * Where "continue the path" goes: the first open level short of three stars, looked for from the
- * level played last and round to the start again. Every unit is open, so looking from the top
- * would send someone who began at Rootless back to the triads.
+ * Where "continue the path" goes: the first open level short of two stars, looked for from the
+ * level played last and round to the start again; once every open level has two, the first short
+ * of three. Every unit is open, so looking from the top would send someone who began at Rootless
+ * back to the triads. Two stars are enough to move on because the third needs a timed pass, which
+ * kept a beginner on the same level for good (review of 2026-10-30, #11).
  *
  * @param {Record<string, number>} stars
  * @param {string | null} [last] The level played last, or anything else to start from the top.
@@ -173,7 +175,8 @@ export function nextLevel(stars, last = null) {
     .filter(item => item.unlocked)
     .map(item => ({ unit: entry.unit, level: item.level, stars: item.stars, played: item.level.id in stars })));
   const from = Math.max(0, open.findIndex(item => item.level.id === last));
-  return [...open.slice(from), ...open.slice(0, from)].find(item => item.stars < 3) ?? null;
+  const round = [...open.slice(from), ...open.slice(0, from)];
+  return round.find(item => item.stars < 2) ?? round.find(item => item.stars < 3) ?? null;
 }
 
 /** Today, as the key the counts are filed under. Local time: the player's day, not UTC's. */

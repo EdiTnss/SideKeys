@@ -243,9 +243,12 @@ câștigă acolo, iar o trecere liberă cu acorduri sărite măsoară cel mult d
   doar șase tonalități. Se aplică și inversiunilor (formele țin locul calităților) și
   Recapitulării.
 - **„Continue the path" pornește de la nivelul jucat ultima dată** (`progress.last`, ținut numai
-  pentru nivelele de pe drum): primul nivel deschis cu mai puțin de trei stele, căutat de acolo
-  înainte și, la capăt, de la început. Cu toate unitățile deschise, căutarea de sus l-ar fi
-  întors la triade pe cine a început de la Rootless.
+  pentru nivelele de pe drum): primul nivel deschis cu mai puțin de **două** stele, căutat de
+  acolo înainte și, la capăt, de la început; abia când toate nivelele deschise au două, primul cu
+  mai puțin de trei, căutat la fel. Cu toate unitățile deschise, căutarea de sus l-ar fi întors
+  la triade pe cine a început de la Rootless. Două stele ajung (Edi, 2026-10-31, review #11):
+  a treia cere o trecere în timp, iar până atunci un începător primea la nesfârșit același nivel.
+  A treia stea rămâne pe drum (★★☆) și în Rezultat („Try it”).
 - **„Next level"** pe ecranul de rezultat apare când trecerea are măcar o stea și duce la
   nivelul următor, inclusiv peste granița dintre unități (`levelAfter`).
 - **Cele șase tonalități în care începe o unitate sunt `C F Bb Eb G D`** (Edi, 2026-10-13): cele

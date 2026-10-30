@@ -369,8 +369,8 @@ Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-c
 ## Următorul pas
 
 **Turul din 2026-10-30** ([docs/review-2026-10-30.md](docs/review-2026-10-30.md)): valul 1 și
-#1 (toate tonalitățile) sunt făcute și neîmpinse. Urmează, cu câte o alegere scurtă de la Edi:
-#11 („Continuă” după două stele), #12 (ordinea amestecată), apoi deciziile de design, în ordinea
+#1 (toate tonalitățile) și #11 („Continuă” după două stele) sunt făcute și neîmpinse. Urmează,
+cu câte o alegere scurtă de la Edi: #12 (ordinea amestecată), apoi deciziile de design, în ordinea
 din fișier.
 
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`

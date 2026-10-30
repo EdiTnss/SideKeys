@@ -755,3 +755,10 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   care fixa vechea ordine (Cm7b5, C7, Fm7b5, F7), s-a rescris cu acordul lui Edi. Nivelele
   întregi (cele pe șase tonalități) și provocarea zilei nu s-au schimbat. 475 → **476 de teste**.
   Regula, în `spec-game.md`. Neîmpins.
+- **2026-10-31 (#11: două stele ajung)** — Edi a ales (a), „Da, după două”. „Continue the path”
+  caută acum primul nivel deschis cu mai puțin de două stele, de la ultimul jucat; abia când toate
+  au două, pe primul fără a treia. Motivul: a treia cere o trecere în timp la 120 bpm, iar un
+  începător primea la nesfârșit același nivel. Test întâi; testul vechi („two stars still has one
+  to get”), care spunea exact opusul deciziei, s-a rescris cu acordul lui Edi. Textul „a treia
+  stea e pe ceas” din Play apare în continuare, dar doar când tot drumul are două stele. Tot
+  476 de teste. Regula, în `spec-game.md`. Neîmpins.
