@@ -140,6 +140,7 @@
     const played = Object.entries(roleClasses(answered.analysis) as Record<string, string>)
       .map(([midi, role]) => [midi, `${role} ${strike}`]);
     classes = { ...Object.fromEntries(played), ...missingClasses(answered.analysis) };
+    heldOnly = false;
     paintedSlot = answered.slot;
     // Right or not, said with movement and a sound as well as the colours (Edi, 2026-10-30).
     // Nothing waits on it: the colours above are already set, the sound only starts. On the
@@ -200,6 +201,7 @@
     counted = true;
     judgedTexture = null;
     classes = {};
+    heldOnly = false;
     paintedSlot = null;
   }
 
@@ -245,10 +247,25 @@
   const shift = (by: number) => { low = Math.min(FULL.to - SPAN, Math.max(FULL.from, low + by)); };
 
   // Held notes show grey while the chord is being built; the verdict paints over them when the
-  // capture fires, and a release leaves the verdict standing.
+  // capture fires, and a release leaves the verdict standing. A release that no verdict follows
+  // — one note alone is not a chord — used to leave its key grey until the next chord (review of
+  // 2026-10-30, #38). Not reactive: the effect below must not run again for setting it.
+  let heldOnly = false;
+  const HELD_MS = 700;   // the capture's 300 ms after the release, and room to spare
   $effect(() => {
     const held = instrument.held;
-    if (held.length) classes = Object.fromEntries(held.map(midi => [midi, 'held']));
+    if (held.length) {
+      classes = Object.fromEntries(held.map(midi => [midi, 'held']));
+      heldOnly = true;
+      return;
+    }
+    if (!heldOnly) return;
+    const timer = setTimeout(() => {
+      if (!heldOnly) return;
+      classes = {};
+      heldOnly = false;
+    }, HELD_MS);
+    return () => clearTimeout(timer);
   });
 
   // Chrome leaves the focus on the last button clicked, and a focused button took every key: after
