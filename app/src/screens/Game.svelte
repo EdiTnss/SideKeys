@@ -84,6 +84,22 @@
   // The word beside a chord played right: an id, said in the language of the moment.
   let praise = $state<string | null>(null);
 
+  // The last chord's own verdict — the sparks, the word, the sound — used to be cut off by the
+  // result, which came in the same frame (review of 2026-10-30, #4). So the result waits a
+  // second after a verdict. Not on the clock, where the run ends a bar after the last chord, and
+  // not after a skip, which leaves nothing on screen to read.
+  const SETTLE_MS = 1000;
+  let settled = $state(false);
+  $effect(() => {
+    if (!level.finished) { settled = false; return; }
+    if (level.timed || !analysis) { settled = true; return; }
+    const timer = setTimeout(() => { settled = true; }, SETTLE_MS);
+    return () => clearTimeout(timer);
+  });
+  // The chord on screen while that second passes: a finished level asks for nothing.
+  let lastAsk = $state<string | undefined>(undefined);
+  $effect(() => { if (level.ask) lastAsk = level.ask.symbol; });
+
   // A press on Play that played nothing, said where the verdict goes: a button with no answer
   // reads as one that does not work. Gone with the next verdict or the next key armed.
   let nudge = $state<'empty' | 'one' | null>(null);
@@ -377,7 +393,7 @@
 
 <svelte:window onkeydown={onKeyDown} onkeyup={event => instrument.keyUp(event.code)} />
 
-{#if level.finished && level.score}
+{#if level.finished && level.score && settled}
   {@const weak = level.weakness}
   <Result name={title} score={level.score} weakness={weak}
           timed={level.timed} threshold={level.threshold} tempo={level.plan.tempo} grid={grid} share={share}
@@ -416,7 +432,7 @@
          what the earlier idea, showing it only inside the anticipation window, was turned down
          for. The count-in used to stand where the first chord is, so even that one came late. -->
     <div class="asks">
-      <p class="ask">{level.ask?.symbol}</p>
+      <p class="ask">{level.ask?.symbol ?? lastAsk}</p>
       {#if level.next}
         <p class="next">
           <span class="then">{t('game.then')}</span>{level.next.symbol}{#if nextShape}<span class="as"><Glossed text={t('game.as', { shape: nextShape })} /></span>{/if}
