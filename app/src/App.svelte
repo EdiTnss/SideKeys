@@ -52,7 +52,20 @@
   // svelte-ignore state_referenced_locally
   let welcomed = $state(readWelcomed() || Object.keys(progress.days ?? {}).length > 0);
 
-  const today = $derived(dayStamp());
+  // A derived with nothing to depend on was read once: an app left open overnight kept
+  // yesterday's challenge, streak and review, and filed today's minutes under yesterday (review
+  // of 2026-10-30, #5). Read again at midnight, and whenever the app comes back to the front,
+  // since a sleeping phone may have slept through the timer.
+  let today = $state(dayStamp());
+  $effect(() => {
+    today;   // a new day sets the timer for the one after it
+    const refresh = () => { today = dayStamp(); };
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const timer = setTimeout(refresh, midnight.getTime() - now.getTime() + 1000);
+    document.addEventListener('visibilitychange', refresh);
+    return () => { clearTimeout(timer); document.removeEventListener('visibilitychange', refresh); };
+  });
   const due = $derived(dueReviews(progress, today));
   const next = $derived(nextLevel(progress.stars, progress.last));
   const played = $derived(Object.keys(progress.days ?? {}).length > 0);
