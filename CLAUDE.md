@@ -252,6 +252,12 @@ tur), cu testele și publicarea trecute pe GitHub.
 testele și publicarea trecute pe GitHub la fiecare push; pachetul servit a fost verificat de
 fiecare dată.
 
+**Interfața cu trei uși (2026-10-30) e împinsă și publicată** (`0713104`, la cererea lui Edi),
+cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-YyD3l25I.js`, cache
+`sidekeys-7adeaa427d80`) e cel construit local și conține ecranele noi în ambele limbi. Un
+browser care a mai vizitat site-ul poate arăta o dată interfața veche, până își înnoiește
+service worker-ul.
+
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.

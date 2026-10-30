@@ -701,3 +701,7 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   acum prima vizită nouă (356 ms până la primul buton, 826 ms până la verdict, local). 467 de
   teste, `npm run check` curat. Verificat în browser la 375 px și 1280 px, în engleză și română.
   **Neîncercat pe Genos**: mai ales dispariția butoanelor cu clapa conectată.
+- **2026-10-30 (publicare)** — Împins `de51c00..0713104` la cererea lui Edi („Da, împinge”);
+  testele și publicarea trecute pe GitHub. Verificat pe site: pachetul servit e cel construit
+  local (`index-YyD3l25I.js`, cache `sidekeys-7adeaa427d80`) și conține prima vizită, Exersează
+  și Setările, în engleză și română.
