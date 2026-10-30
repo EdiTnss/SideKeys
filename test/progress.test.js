@@ -136,13 +136,23 @@ test('recordRun: remembers the last level played on the path, and only on the pa
   assert.equal(p.last, 'shell-dom');
 });
 
-test('nextLevel: the first open level that is not yet three stars', () => {
+test('nextLevel: two stars move on, and the third is looked for only once every open level has two', () => {
+  // Rewritten with Edi's yes to #11 of the review of 2026-10-30: two stars used to keep "continue"
+  // on the same level, and the third needs a timed pass at 120 bpm, so a beginner never left it.
   const first = nextLevel({});
   assert.equal(first?.level.id, 'triads-major');
   const after = nextLevel({ 'triads-major': 3 });
   assert.equal(after?.level.id, 'triads-minor', 'a finished level is behind you');
-  const partial = nextLevel({ 'triads-major': 2 });
-  assert.equal(partial?.level.id, 'triads-major', 'two stars still has one to get');
+  assert.equal(nextLevel({ 'triads-major': 2 }, 'triads-major')?.level.id, 'triads-minor', 'two stars is enough to go on');
+  assert.equal(nextLevel({ 'triads-major': 1 }, 'triads-major')?.level.id, 'triads-major', 'one star is not');
+  // Every level at two stars: back for the third, from the level played last and round again.
+  const allTwo = Object.fromEntries(PATH.flatMap(unit => unit.levels).map(level => [level.id, 2]));
+  assert.equal(nextLevel(allTwo, 'rootless-a')?.level.id, 'rootless-a');
+  assert.equal(nextLevel({ ...allTwo, 'rootless-a': 3 }, 'rootless-a')?.level.id, 'rootless-b');
+  const lastId = PATH.at(-1).levels.at(-1).id;
+  assert.equal(nextLevel({ ...allTwo, [lastId]: 3 }, lastId)?.level.id, 'triads-major');
+  const allThree = Object.fromEntries(Object.keys(allTwo).map(id => [id, 3]));
+  assert.equal(nextLevel(allThree, lastId), null, 'nothing left to get');
 });
 
 // ---- The daily challenge, filed once (2026-10-11) -----------------------------------------
