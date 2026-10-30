@@ -106,11 +106,44 @@ test('no level runs past 36 chords, and none is dressed up as a boss', () => {
   }
 });
 
+test('a level cut short by its count still reaches every key it names, every quality evenly', () => {
+  // The cut used to fall on a list built key by key, so "All four, twelve keys" asked for C, F,
+  // Bb and Eb only, and no twelve-key level ever reached G, D, A, E or B (review of 2026-10-30,
+  // #1). The qualities now turn over the keys: one round of the keys, then the next.
+  const short = PATH.flatMap(unit => unit.levels)
+    .filter(level => ['chords', 'slash'].includes(level.asks.kind))
+    .filter(level => level.asks.count
+      && level.asks.count < level.asks.keys.length * (level.asks.qualities ?? level.asks.shapes).length);
+  assert.ok(short.length >= 8, `only ${short.length} levels are cut short`);
+  for (const level of [...short, reviewLevel(['m7', '7', 'maj7'])]) {
+    const asks = asksFor(level).map(ask => parseChord(ask.symbol));
+    const roots = new Set(asks.map(chord => chord.rootPc));
+    const keys = Math.min(level.asks.keys.length, level.asks.count);
+    assert.equal(roots.size, keys, `${level.id} reaches ${roots.size} of ${keys} keys`);
+    // Evenly: no quality (or inversion) asked for more than once over any other.
+    const kinds = (level.asks.qualities ?? level.asks.shapes).length;
+    const tally = new Map();
+    for (const chord of asks) {
+      const kind = `${chord.quality}/${chord.bass === null ? '' : (chord.bassPc - chord.rootPc + 12) % 12}`;
+      tally.set(kind, (tally.get(kind) ?? 0) + 1);
+    }
+    assert.equal(tally.size, kinds, `${level.id} asks for ${tally.size} of ${kinds} kinds`);
+    const counts = [...tally.values()];
+    assert.ok(Math.max(...counts) - Math.min(...counts) <= 1, `${level.id}: ${counts.join(', ')}`);
+    // And never the same root twice running, which is what made the old order a one-note drill.
+    asks.forEach((chord, at) => {
+      if (at) assert.notEqual(chord.rootPc, asks[at - 1].rootPc, `${level.id}: ${chord.symbol} after ${asks[at - 1].symbol}`);
+    });
+  }
+});
+
 test('reviewLevel: the queue turned into something playable, in every key', () => {
   const level = reviewLevel(['m7b5', '7']);
   const asks = asksFor(level).map(ask => ask.symbol);
   assert.equal(asks.length, 12, 'long enough to be a session, short enough to finish');
-  assert.deepEqual(asks.slice(0, 4), ['Cm7b5', 'C7', 'Fm7b5', 'F7']);
+  // Rewritten with Edi's yes to #1 of the review of 2026-10-30: it read Cm7b5, C7, Fm7b5, F7,
+  // and the twelve chords stopped at Db. The qualities now turn over all twelve keys.
+  assert.deepEqual(asks.slice(0, 4), ['Cm7b5', 'F7', 'Bbm7b5', 'Eb7']);
   for (const symbol of asks) assert.doesNotThrow(() => parseChord(symbol), symbol);
   assert.equal(asksFor(reviewLevel([])).length, 0, 'nothing due is nothing to play');
 });
