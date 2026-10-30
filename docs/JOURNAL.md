@@ -729,3 +729,21 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   testele și publicarea trecute pe GitHub. Verificat pe site: pachetul servit e cel construit
   local (`index-Bzm-cKFl.js`, cache `sidekeys-aadc32f86afb`) și conține sunetele verdictului,
   comutatorul din Setări și cuvintele de laudă, în engleză și română.
+- **2026-10-30 (turul de utilizator și de developer)** — Edi a cerut ca Claude să joace aplicația
+  ca un utilizator nou și ca un developer și să spună tot ce se poate îmbunătăți. Claude a jucat
+  local, pe profil gol, la 1024 și 375 px, în EN și RO, cu clapa de ecran, literele și o clapă MIDI
+  simulată, și a citit codul ecranelor: **37 de probleme**, fiecare cu locul din cod și rezolvarea
+  propusă, în `docs/review-2026-10-30.md` (cerut de Edi ca fișier). Cele mai mari: nivelele
+  „twelve keys” și Recapitularea nu ajung niciodată în partea cu diezi (#1), „Continuă” te ține pe
+  un nivel până la a treia stea (#11), nivelele au mereu aceeași ordine (#12), claviatura sare 59 px
+  pe telefon între verdicte (#3). **Valul 1, fără decizii** (Edi: „Da, începe”): după un clic pe un
+  buton literele nu mai cântau și Space apăsa butonul (#2); „Once more” după timed rămâne pe ceas
+  (#17); ziua se schimbă la miezul nopții într-o aplicație lăsată deschisă (#5); grila provocării
+  pe un rând și ecranul Play pe o coloană sub 1100 px (#6, #34); numele clapei întreg în meniu (#7);
+  textele care spuneau altceva decât se întâmpla (#8, #9, #35); verdictul ultimului acord stă o
+  secundă înainte de Rezultat (#4); în Training un acord nu revine mai devreme de trei (#20, test
+  întâi). Găsit pe drum și reparat: o notă singură rămânea gri pe clapă (#38). **Decizie a lui
+  Claude**: #33 nu se face (ar bloca alegerea „întâi forma”). 474 → **475 de teste**,
+  `npm run check` și build curate; fiecare reparație verificată în browser. **Neîmpins, neîncercat
+  pe Genos.** **Rămân la Edi**: alegerea „Practice / Practise” (#8) și deciziile din valurile
+  următoare, în ordinea din fișier (1, 11, 12, apoi designul).

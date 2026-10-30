@@ -181,7 +181,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **474 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **475 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Raportul de comping** (P2, 2026-10-29), în **Laborator**: o trecere timed cu „bass from the
   app” cântă basul aranjamentului în buclă, iar după Stop apare raportul (acorduri, registru,
   voice leading, varietate). Pragurile sunt propuneri, încă necalibrate; timpul nu se arată.
@@ -368,6 +368,11 @@ Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-c
 
 ## Următorul pas
 
+**Turul din 2026-10-30** ([docs/review-2026-10-30.md](docs/review-2026-10-30.md)): valul 1 e
+făcut și neîmpins. Urmează, cu câte o alegere scurtă de la Edi: #1 (nivelele „twelve keys” și
+Recapitularea în toate tonalitățile), #11 („Continuă” după două stele), #12 (ordinea amestecată),
+apoi deciziile de design, în ordinea din fișier.
+
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`
 („Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data
 postării se scrie în `docs/PRODUCT.md`, la poarta P1.**
@@ -406,4 +411,5 @@ Regula „niciun feature care nu e pe lista fazei curente" se aplică.
 | [docs/spec-mic.md](docs/spec-mic.md) | prototipul de microfon: ce s-a măsurat, cum, cifrele și verdictul | `mic-proto/`; dacă se reia vreodată modul microfon |
 | [docs/PHASES.md](docs/PHASES.md) | planul inițial pe faze 0–5, cu DoD-urile și vechiul scope guard | **istoric**: toate fazele de acolo sunt bifate. Se citește doar dacă se caută un DoD vechi |
 | [docs/session-log/](docs/session-log/) | rapoarte de predare, scrise la finalul sesiunilor lungi (ultimul: `2026-10-29-1207.md`) | când o sesiune se închide cu mult context de predat |
+| [docs/review-2026-10-30.md](docs/review-2026-10-30.md) | turul de utilizator și de developer: 38 de probleme, fiecare cu rezolvarea propusă, decizia cerută și starea | când se lucrează la una dintre ele |
 | [docs/JOURNAL.md](docs/JOURNAL.md) | jurnalul sesiunilor, cu deciziile și cifrele măsurate | la final (intrare nouă); istoricul, la nevoie |
