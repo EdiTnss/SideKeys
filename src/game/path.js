@@ -157,12 +157,31 @@ function buildAsks(source) {
   if (source.kind === 'slash') {
     // The bass is spelled from the chord itself, so Eb/Gb never comes out as Eb/F#, and the
     // chord is named the way a chart names it, so the minor on Db is C#m/E and never Dbm/Fb.
-    return source.keys.flatMap(key => source.shapes.map(shape => {
+    return across(source, source.shapes, (key, shape) => {
       const chord = parseChord(chartSymbol(key, shape.quality));
       return `${chord.symbol}/${spellPlain(chord.root, shape.degree)}`;
-    }));
+    });
   }
-  return source.keys.flatMap(key => source.qualities.map(quality => chartSymbol(key, quality)));
+  return across(source, source.qualities, (key, quality) => chartSymbol(key, quality));
+}
+
+/**
+ * Every key with every kind, in the order a level asks for them. Whole, it goes key by key: all
+ * the kinds on C, then on F. Cut short by `count`, it turns the kinds over the keys instead —
+ * one round of the keys, each with the next kind, then another round shifted by one — so the
+ * cut still reaches every key and every kind about as often. Key by key, the cut fell before
+ * the sharp side: "All four, twelve keys" asked for C, F, Bb and Eb only (Edi chose the turning
+ * over the review of 2026-10-30, #1).
+ */
+function across(source, kinds, make) {
+  const { keys, count } = source;
+  const whole = keys.length * kinds.length;
+  if (!count || count >= whole) return keys.flatMap(key => kinds.map(kind => make(key, kind)));
+  return Array.from({ length: whole }, (_, at) => {
+    const round = Math.floor(at / keys.length);
+    const index = at % keys.length;
+    return make(keys[index], kinds[(index + round) % kinds.length]);
+  });
 }
 
 /**

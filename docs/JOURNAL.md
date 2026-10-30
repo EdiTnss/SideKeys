@@ -747,3 +747,11 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   `npm run check` și build curate; fiecare reparație verificată în browser. **Neîmpins, neîncercat
   pe Genos.** **Rămân la Edi**: alegerea „Practice / Practise” (#8) și deciziile din valurile
   următoare, în ordinea din fișier (1, 11, 12, apoi designul).
+- **2026-10-30 (#1: toate tonalitățile)** — Edi a ales rotirea („Da, rotirea (a)”). Un nivel tăiat
+  de `count` ia acum o tură de tonalități, fiecare cu calitatea următoare, apoi încă una decalată
+  (`across` în `path.js`); întreg, merge ca înainte, tonalitate cu tonalitate. Toate cele nouă
+  nivele „twelve keys” tăiate și Recapitularea ajung în cele 12 tonalități, cu calitățile egal
+  împărțite și fără aceeași fundamentală de două ori la rând. Test întâi; testul Recapitulării,
+  care fixa vechea ordine (Cm7b5, C7, Fm7b5, F7), s-a rescris cu acordul lui Edi. Nivelele
+  întregi (cele pe șase tonalități) și provocarea zilei nu s-au schimbat. 475 → **476 de teste**.
+  Regula, în `spec-game.md`. Neîmpins.

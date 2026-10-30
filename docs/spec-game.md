@@ -233,6 +233,15 @@ câștigă acolo, iar o trecere liberă cu acorduri sărite măsoară cel mult d
   twelve keys") și nu mai păzește nimic. Id-urile se termină încă în `-boss`: sunt cheile sub
   care se salvează stelele, iar redenumirea lor ar orfaniza stele deja câștigate, pentru un
   cuvânt pe care jucătorul nu-l vede.
+- **Un nivel tăiat de `count` rotește calitățile peste tonalități** (`across` în `path.js`, Edi,
+  2026-10-30, review #1). Întreg, un nivel merge tonalitate cu tonalitate (toate calitățile pe C,
+  apoi pe F). Când `count` e mai mic decât tonalități × calități, ia o tură de tonalități, fiecare
+  cu calitatea următoare, apoi încă o tură decalată cu una: „All four, twelve keys” e Cmaj7, Fm7,
+  Bb7, Ebm7b5, Abmaj7… Așa tăietura ajunge în toate tonalitățile, fiecare calitate apare cam la
+  fel de des și nicio fundamentală nu vine de două ori la rând. Tonalitate cu tonalitate, tăietura
+  cădea înainte de diezi: „All four, twelve keys” cerea doar C, F, Bb și Eb, iar Recapitularea,
+  doar șase tonalități. Se aplică și inversiunilor (formele țin locul calităților) și
+  Recapitulării.
 - **„Continue the path" pornește de la nivelul jucat ultima dată** (`progress.last`, ținut numai
   pentru nivelele de pe drum): primul nivel deschis cu mai puțin de trei stele, căutat de acolo
   înainte și, la capăt, de la început. Cu toate unitățile deschise, căutarea de sus l-ar fi
