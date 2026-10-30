@@ -269,8 +269,10 @@ fiecare dată.
   venit din raportul celor două personaje — mesajele de la Play, „Bb = Bb · D · F”, „How is it
   built?”, scala mișcării și „You played C6/9”. Mesajele de la Play țin de clapa de ecran.
   Tot pe 2026-10-29 a spus „e ok” despre nota lipsă mai vizibilă și „e bine” după comutatorul de
-  sunet, fără să fie clar dacă l-a încercat pe Genos. **Neîncercate pe clapă**: triada citită ca
-  jazz și „You played Gm7” sub stea.
+  sunet, fără să fie clar dacă l-a încercat pe Genos.
+- **Confirmat de Edi pe Genos, pe 2026-10-30**: Gm7 pe Gm iese Clean cu „You played Gm7” sub stea,
+  iar C7 pe C iese greșit („totul ok cu Gm7”, „totul ok cu C”). Triada citită ca jazz e deci văzută
+  pe clapă.
 - **Neauzit de nimeni altcineva decât Edi**: Claude a verificat sunetul (metronom, exemplele din
   Theory) numai prin absența erorilor, nu cu urechea.
 
@@ -291,18 +293,18 @@ fiecare dată.
   `sidekeys-reel-web.mp4`, sub limita de 10 MB). Postarea cere întâi planul **Starter** la
   ElevenLabs: pe gratuit, vocea și muzica nu au licență comercială. Ziua primei postări pornește
   ceasul porții P1.
-- **Să șteargă cheia API ElevenLabs** din cont și fișierul `Reels/cheie api eleven labs.txt`:
-  a apărut în conversația din 2026-10-28, din greșeala lui Claude. Conectorul nu are nevoie de ea.
+- **Să șteargă fișierul `Reels/cheie api eleven labs.txt`** (ignorat de git, deci nu e în repo):
+  cheia din el a fost ștearsă din contul ElevenLabs pe 2026-10-30, deci nu mai merge, dar
+  fișierul e încă pe disc. Claude nu șterge fișiere fără confirmare.
 - **Să încerce formularul cu adresa lui**, după publicare: Claude nu a trimis nicio adresă de probă.
 - **Să încerce pe Genos ce s-a făcut pe 2026-10-28**: lista e în
   `docs/session-log/2026-10-29-1008.md`, la „Rămas deschis”.
-- **Să confirme o decizie a lui Claude**: primul răspuns rămâne și fără ceas (o greșeală te ține pe
-  acord, dar stelele le dă prima încercare). Regula e în `spec-game.md`.
 - **Să oprească o dată „Sound in the app” pe Genos** (pornește implicit pe orice clapă nouă) și,
   dacă are la îndemână, să încerce un controller fără sunete: comutatorul e probat doar cu un
   controller simulat.
-- **Să cânte pe Genos Gm7 pe Gm și C7 pe C**: primul trebuie să iasă Clean cu „You played Gm7”,
-  al doilea greșit (Bb roșu).
+- **Să aleagă animația și sunetul** pentru acord corect și greșit (3 + 3 variante), în sesiunea
+  separată pornită pe 2026-10-29; pagina e în `Claude outputs/verdict-fx/index.html`.
+- **Să înregistreze sesiunile de calibrare a raportului de comping** (vezi „Următorul pas”).
 - **Restul raportului celor două personaje** (valurile 3 și 4, toate feature-uri noi, în afara
   P1): nu se începe fără Edi. BUG-04 (o clapă rămasă „held”) e sub observație.
 - **La P2, nu acum**: opinie de marcă pe familia „Sidekick".

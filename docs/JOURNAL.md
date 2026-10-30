@@ -678,3 +678,9 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
 - **2026-10-29 (publicare)** — Împins `6ef3de0..18df7c8` la cererea lui Edi; testele și publicarea
   trecute pe GitHub. Verificat pe site: `/lab/` servește „bass from the app”, panoul de raport și
   `src/theory/comping.js`.
+- **2026-10-30 (confirmări de la Edi, de pe telefon)** — Edi confirmă regula lui Claude: și fără
+  ceas, stelele le dă prima încercare (scris în `spec-game.md`). Pe Genos: Gm7 pe Gm iese Clean cu
+  „You played Gm7”, iar C7 pe C iese greșit, deci triada citită ca jazz e văzută pe clapă. Cheia
+  ElevenLabs e ștearsă din cont; fișierul `Reels/cheie api eleven labs.txt` e încă pe disc
+  (ignorat de git). Rămân la Edi: animația, reel-ul, formularul, pianul, „Sound in the app” pe
+  Genos și sesiunile de calibrare a raportului de comping.

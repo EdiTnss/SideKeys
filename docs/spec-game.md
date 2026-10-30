@@ -206,7 +206,8 @@ judecat, corect, pe măsura în care se află — și își ștergea răspunsul 
 **Fără ceas, o greșeală te ține pe acord (Edi, 2026-10-28).** Un acord care nu e Right nu mai
 trece la următorul: rămâi pe el până îl cânți bine, sau apeși Skip. Ca să nu devină stelele un
 premiu pentru încăpățânare, **și fără ceas rămâne primul răspuns**: `counts` întoarce acum
-`!answered` în ambele moduri, iar încercările de după sunt exercițiu. Sub verdict apare
+`!answered` în ambele moduri, iar încercările de după sunt exercițiu. Partea cu primul răspuns a
+fost decizia lui Claude; **Edi a confirmat-o pe 2026-10-30**. Sub verdict apare
 „Play it again to move on, or skip it. Only your first answer counts for the stars.” Training
 face la fel cu trecerea mai departe, dar acolo fiecare încercare se numără (nu are stele). Clapele
 colorate se albesc numai după un răspuns bun, fiindcă doar atunci se schimbă acordul cerut.
