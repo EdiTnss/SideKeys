@@ -122,7 +122,8 @@
               <h2>{t('today.review')}</h2>
               <span class="due">{reviews.length}</span>
             </div>
-            <p class="small">{t('home.reviewLine', { count: reviews.length })}</p>
+            <!-- The queue counts kinds of chord, not chords: "2" sat beside a button saying 12. -->
+            <p class="small">{t('home.reviewLine', { count: reviews.length, list: reviews.map(entry => entry.quality || t('training.major')).join(', ') })}</p>
             <button type="button" onclick={onreview}>{t('today.startReview')}</button>
           </section>
         {/if}

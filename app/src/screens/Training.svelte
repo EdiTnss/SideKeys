@@ -45,8 +45,9 @@
   const fitting = $derived(progressionShapes(settings.progression, settings.key) as string[]);
 
   const named = (quality: string) => quality || t('training.major');
-  // The shape inside a sentence: "no drop 2 voicing".
-  const shapeWord = $derived(sayShape(shape).toLowerCase());
+  // The shape inside a sentence, by its own name: "no Drop 2 voicing". Lower-cased it read
+  // "no rootless a voicing" (review of 2026-10-30, #8).
+  const shapeWord = $derived(sayShape(shape));
   const progressions = Object.entries(PROGRESSIONS as Record<string, { name: string }>);
 
   function toggle(list: 'qualities' | 'keys', item: string) {

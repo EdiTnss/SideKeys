@@ -121,6 +121,10 @@
       {/if}
     {:else if score.played === 0}
       <p class="what">{t('result.nothingPlayed')}</p>
+    {:else if score.played < score.total}
+      <!-- "Every chord you played came back clean" was true and still misleading after nine
+           skipped chords out of ten (review of 2026-10-30, #9). -->
+      <p class="what">{t(timed ? 'result.unanswered' : 'result.skipped', { count: score.total - score.played })}</p>
     {:else}
       <p class="what">{t('result.nothing')}</p>
     {/if}
