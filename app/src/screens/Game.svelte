@@ -381,7 +381,7 @@
   {@const weak = level.weakness}
   <Result name={title} score={level.score} weakness={weak}
           timed={level.timed} threshold={level.threshold} tempo={level.plan.tempo} grid={grid} share={share}
-          official={official} onagain={again}
+          official={official} onagain={level.timed ? againTimed : again}
           ontimed={!grid && !level.timed && !level.plan.free && level.score.stars === 2 ? againTimed : null}
           onpractise={weak ? () => onweak(weak.key, planTexture, level.plan.tempo) : null}
           onhow={resultPage ? () => ontheory(resultPage) : null}
