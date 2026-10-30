@@ -41,7 +41,9 @@
   {#if instrument.hardware.length}
     <span class="chip" title={instrument.hardware.join(', ')}>
       <span class="dot" aria-hidden="true"></span>
-      <span class="name">{instrument.hardware.join(', ')}</span>{#if long}<span class="muted"> · {t('nav.connected')}</span>{/if}
+      <!-- The green dot says "connected"; written out beside the name it cut the name short and
+           fell out of line (review of 2026-10-30, #7). A screen reader still hears it. -->
+      <span class="name">{instrument.hardware.join(', ')}</span><span class="unseen"> · {t('nav.connected')}</span>
     </span>
   {:else}
     <button type="button" class="chip connect" onclick={() => instrument.connect()}>
@@ -129,7 +131,7 @@
   .chip.connect { cursor: pointer; border-color: var(--accent); }
   .chip.streak { font-weight: 600; }
   .dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--chord-tone); }
-  .muted { color: var(--ink-muted); }
+  .unseen { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .icon {
     display: grid; place-items: center; width: 44px; height: 44px; padding: 0;
     border: none; background: none; color: var(--ink-muted); cursor: pointer;
@@ -191,7 +193,7 @@
     }
     .row .chip { height: auto; padding: 0; border: none; font-size: 14px; }
     .row .chip.connect { padding: 6px 12px; border: 1px solid var(--accent); border-radius: 10px; }
-    .row .chip .name { max-width: 150px; }
+    .row .chip .name { max-width: 186px; }
     .foot .warn { padding: 0 10px; }
     .link {
       padding: 10px; border: none; border-radius: 10px; background: none; cursor: pointer;
