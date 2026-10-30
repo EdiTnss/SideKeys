@@ -705,3 +705,17 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   testele și publicarea trecute pe GitHub. Verificat pe site: pachetul servit e cel construit
   local (`index-YyD3l25I.js`, cache `sidekeys-7adeaa427d80`) și conține prima vizită, Exersează
   și Setările, în engleză și română.
+- **2026-10-30 (verdictul cu mișcare și sunet)** — Edi a cerut un verdict care să se simtă: o
+  animație, un sunet și un cuvânt de laudă când acordul e corect, plus o animație și un sunet când
+  e greșit. Claude a făcut o pagină cu trei variante pentru fiecare
+  (`Claude outputs/verdict-fx/`, necommisă), cu clapa și pianul jocului, iar Edi a ales **R3
+  (Sparks)** cu **W1 (Shake)**. Varianta corectă aduce scântei din clapele cântate, un cuvânt de
+  laudă care nu se repetă la rând (`src/game/praise.js`, 8 cuvinte în EN și RO) și două bătăi
+  de marimba pe fundamentala și cvinta acordului cerut, din octava 5 (`src/audio/verdict.js`,
+  `chimeNotes` testat). Varianta greșită aduce un tremurat mai larg pe clapă și pe rândul
+  verdictului, plus un „tuc” grav, fără înălțime. **Decizii ale lui Claude**: sunetele se opresc
+  din Setări (pornite implicit), iar cuvintele românești sunt alese de Claude și încă necitite de
+  Edi. 474 de teste, `npm run check` și build curate. Verificat în browser cu literele: C pe C dă
+  12 scântei, „Minunat” și frecvențele Do5/Sol5; C–C#–G pe F dă tremuratul și 150 Hz. Cu sunetul
+  oprit nu se aude nimic. Sunetul n-a fost ascultat de Claude, doar măsurat. **Neîncercat pe
+  Genos.** Neîmpins.

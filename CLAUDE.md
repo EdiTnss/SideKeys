@@ -181,7 +181,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **467 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **474 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Raportul de comping** (P2, 2026-10-29), în **Laborator**: o trecere timed cu „bass from the
   app” cântă basul aranjamentului în buclă, iar după Stop apare raportul (acorduri, registru,
   voice leading, varietate). Pragurile sunt propuneri, încă necalibrate; timpul nu se arată.
@@ -217,6 +217,9 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 - **Verdictul ajută după o greșeală** (2026-10-29): notele acordului („Bb = Bb · D · F”), ce ai
   cântat în loc când e alt acord pe aceeași fundamentală („You played C6/9”), un mesaj când Play nu
   are ce cânta, „How is it built?” spre pagina de teorie, scala mișcării sub cifra de voice leading.
+- **Verdictul are mișcare și sunet** (2026-10-30, ales de Edi dintre șase variante): scântei, un
+  cuvânt de laudă și o bătaie de marimba pe fundamentala acordului când e corect, iar când e greșit,
+  un tremurat și un „tuc” grav. Sunetele se opresc din Setări. Regulile sunt în `spec-game.md`.
 - **O clapă MIDI se poate auzi prin pianul aplicației** (2026-10-29): comutatorul „Sound in the
   app” din antet, ținut minte pe clapă, pornit pentru o clapă nouă ([docs/spec-capture.md](docs/spec-capture.md)).
 - **Ortografia**: niciun Cb, Fb, B#, E# sau dublu accident în ce citește jucătorul; acordurile cu
@@ -303,6 +306,8 @@ service worker-ul.
 ### Ce așteaptă pe Edi
 
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
+- **Să încerce pe Genos verdictul cu sunet** (în commit, dar neîmpins) și să citească cele opt cuvinte
+  de laudă în română: bătaia lângă clapă, și dacă într-o trecere în timp nu e prea mult.
 - **Să posteze reel-ul** pe TikTok și Instagram (`Reels/out/sidekeys-reel.mp4`, aprobat pe
   2026-10-28; în README e din aceeași zi, ca video încărcat pe GitHub, în copia comprimată
   `sidekeys-reel-web.mp4`, sub limita de 10 MB). Postarea cere întâi planul **Starter** la
