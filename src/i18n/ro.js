@@ -25,7 +25,7 @@ export default {
   'home.continue': 'Continuă',
   'home.startHere': 'Începe de aici',
   'home.levelOf': 'nivelul {at} din {total}',
-  'home.thirdOnClock': 'a treia stea se ia în timp',
+  'home.thirdOnClock': 'a treia stea: pe ceas, cu fiecare voce mișcată cel mult {threshold} semitonuri',
   'home.reviewLine': { one: 'Un fel de acord ratat înainte, înapoi pentru încă o încercare: {list}.', few: '{count} feluri de acord ratate înainte, înapoi pentru încă o încercare: {list}.', other: '{count} de feluri de acord ratate înainte, înapoi pentru încă o încercare: {list}.' },
   'home.challengeLine': 'Aceleași zece acorduri pentru toți, azi.',
   'home.path': 'Drumul tău',
@@ -300,7 +300,7 @@ export default {
   'result.whatNext': 'Ce urmează',
   'result.practise': 'Exersează {chord}',
   'result.timedTitle': 'A treia stea se ia în timp',
-  'result.timedLine': 'Același nivel, cu metronom, la {tempo} bpm.',
+  'result.timedLine': 'Același nivel, cu metronom, la {tempo} bpm. Fiecare voce se mișcă cel mult {threshold} semitonuri.',
   'result.try': 'Încearcă',
   'result.backToPath': 'Înapoi la drum',
 

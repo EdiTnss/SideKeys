@@ -370,8 +370,8 @@ Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-c
 
 **Turul din 2026-10-30** ([docs/review-2026-10-30.md](docs/review-2026-10-30.md)): valul 1 și
 #1 (toate tonalitățile), #11 („Continuă” după două stele), #12 (ordinea amestecată la fiecare
-trecere) și #13 (80 pe clapa de ecran) sunt făcute și neîmpinse. Urmează, cu câte o alegere
-scurtă de la Edi, deciziile de design, în ordinea din fișier (14, 15, 16…).
+trecere), #13 (80 pe clapa de ecran) și #14 (ce cere a treia stea) sunt făcute și neîmpinse.
+Urmează, cu câte o alegere scurtă de la Edi, deciziile de design, în ordinea din fișier (15, 16…).
 
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`
 („Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data

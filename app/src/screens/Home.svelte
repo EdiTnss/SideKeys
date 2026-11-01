@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { LevelPlan, Unit } from '../game/level.svelte';
-  import { SQUARES } from '../bridge/game';
+  import { SQUARES, thresholdFor } from '../bridge/game';
   import { copyText } from '../lib/clipboard';
   import Glossed from '../lib/Glossed.svelte';
   import Path from './Path.svelte';
-  import { sayLevel, sayUnit, t } from '../lib/locale.svelte';
+  import { sayDecimal, sayLevel, sayUnit, t } from '../lib/locale.svelte';
 
   type Review = { quality: string; misses: number; hits: number };
   type Challenge = { number: number; states: string[] | null; share: string | null };
@@ -78,7 +78,7 @@
           {#if next.played}
             <p class="line">
               {@render starRow(next.stars)}
-              {#if next.stars === 2}{t('home.thirdOnClock')}{:else if next.stars === 0}{t('today.noStars')}{/if}
+              {#if next.stars === 2}{t('home.thirdOnClock', { threshold: sayDecimal(thresholdFor(next.level)) })}{:else if next.stars === 0}{t('today.noStars')}{/if}
             </p>
           {/if}
           <button type="button" class="go" onclick={() => onplay(next.unit, next.level)}>

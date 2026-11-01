@@ -780,3 +780,11 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   ecran, deci 80; Training păstrează tempoul ales de jucător. Test întâi; 477 → **478 de teste**,
   `npm run check` curat. Văzut în browser: fără note 80, după litere 120, după un clic pe o clapă
   80. Neîmpins, neîncercat pe Genos.
+- **2026-11-01 (#14: ce cere a treia stea)** — Edi a aprobat formularea („Da, așa”). Pe Play:
+  „the third star: on the clock, each voice moving 1.25 semitones or less” / „a treia stea: pe
+  ceas, cu fiecare voce mișcată cel mult 1,25 semitonuri”; în Rezultat, după tempo: „Each voice
+  moves … semitones or less.” / „Fiecare voce se mișcă cel mult … semitonuri.” **Decizie a lui
+  Claude**: cifra vine din pragul nivelului (`thresholdFor`), nu e scrisă de mână: 1,5 pe un drill,
+  1,25 pe ii–V–I. Văzut în browser pe Play, în ambele limbi; cardul din Rezultat apare doar după o
+  trecere liberă de exact două stele și nu l-am adus pe ecran. 478 de teste, `npm run check`
+  curat. Neîmpins.

@@ -26,7 +26,7 @@ export default {
   'home.continue': 'Continue',
   'home.startHere': 'Start here',
   'home.levelOf': 'level {at} of {total}',
-  'home.thirdOnClock': 'the third star is earned on the clock',
+  'home.thirdOnClock': 'the third star: on the clock, each voice moving {threshold} semitones or less',
   'home.reviewLine': { one: 'One kind of chord you missed before, back for another go: {list}.', other: '{count} kinds of chord you missed before, back for another go: {list}.' },
   'home.challengeLine': 'The same ten chords for everyone, today.',
   'home.path': 'Your path',
@@ -309,7 +309,7 @@ export default {
   'result.whatNext': 'What next',
   'result.practise': 'Practise {chord}',
   'result.timedTitle': 'The third star is earned on the clock',
-  'result.timedLine': 'The same level, with a metronome, at {tempo} bpm.',
+  'result.timedLine': 'The same level, with a metronome, at {tempo} bpm. Each voice moves {threshold} semitones or less.',
   'result.try': 'Try it',
   'result.backToPath': 'Back to the path',
 

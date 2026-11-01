@@ -146,7 +146,7 @@
     <div class="card timed">
       <span class="words">
         <span class="title">{t('result.timedTitle')}</span>
-        <span class="locked">{t('result.timedLine', { tempo })}</span>
+        <span class="locked">{t('result.timedLine', { tempo, threshold: sayDecimal(threshold) })}</span>
       </span>
       <button type="button" class="small" onclick={ontimed}>{t('result.try')}</button>
     </div>
