@@ -22,6 +22,25 @@ export const TWELVE = ['C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'B', 'E', 'A', 'D
 
 // One chord to the bar at 120: two seconds to hear it, find it and play it (Edi, 2026-10-11).
 const TEMPO = 120;
+/**
+ * The clock for a keyboard played on the screen by finger or mouse: three or four taps plus
+ * Play do not fit in two seconds, so at 120 the third star was for MIDI only (Edi, 2026-11-01,
+ * review of 2026-10-30, #13). The letters are a piano and keep the level's tempo.
+ */
+export const SCREEN_TEMPO = 80;
+
+/**
+ * The tempo a timed pass runs at, for the way the notes are going in: 'midi', 'letters',
+ * 'pointer' (a tap or a click on the drawn keys), or null when nothing has been played yet —
+ * then the drawn keyboard is all there is, and it is played by hand.
+ *
+ * @param {number} tempo The level's own tempo.
+ * @param {'midi' | 'letters' | 'pointer' | null} input
+ * @returns {number}
+ */
+export function timedTempo(tempo, input) {
+  return input === 'midi' || input === 'letters' ? tempo : Math.min(tempo, SCREEN_TEMPO);
+}
 
 // A unit's last level used to be called its boss and to guard the unit after it. Both went on
 // 2026-10-12 (Edi): the level stays, named for what it asks, and every unit is open. The ids

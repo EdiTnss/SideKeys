@@ -7,7 +7,7 @@
   import type { Instrument } from '../lib/instrument.svelte';
   import { createLevel, type Attempt, type Finished, type LevelPlan, type Run } from '../game/level.svelte';
   import { createPractice, type PracticePlan } from '../game/practice.svelte';
-  import { lessonFor, lessonForTexture, nextPraise } from '../bridge/game';
+  import { lessonFor, lessonForTexture, nextPraise, timedTempo } from '../bridge/game';
   import { verdictSound } from '../lib/verdictSound.svelte';
   import {
     analyzeVoicing, inversionOf, parseChord, chordToneNames, isRight, isClean, playedInstead,
@@ -178,9 +178,15 @@
     clearVerdict();
   }
 
+  // A level's clock slows for a keyboard played by finger or mouse (timedTempo); Training keeps
+  // the tempo its player chose. Read when the clock starts, and kept for the pass.
+  const clockTempo = $derived(practice ? level.plan.tempo : timedTempo(level.plan.tempo, instrument.input));
+  let passTempo = $state(0);
+
   function startTimed() {
     clearVerdict();
-    level.start();
+    passTempo = clockTempo;
+    level.start(passTempo);
   }
 
   function again() {
@@ -396,7 +402,7 @@
 {#if level.finished && level.score && settled}
   {@const weak = level.weakness}
   <Result name={title} score={level.score} weakness={weak}
-          timed={level.timed} threshold={level.threshold} tempo={level.plan.tempo} grid={grid} share={share}
+          timed={level.timed} threshold={level.threshold} tempo={clockTempo} grid={grid} share={share}
           official={official} onagain={level.timed ? againTimed : again}
           ontimed={!grid && !level.timed && !level.plan.free && level.score.stars === 2 ? againTimed : null}
           onpractise={weak ? () => onweak(weak.key, planTexture, level.plan.tempo) : null}
@@ -411,7 +417,7 @@
       </button>
       <span class="level">
         <Glossed text={title} />
-        {#if level.timed}<span class="timed">· {practice ? '' : t('game.timed')}{level.plan.tempo} bpm</span>{/if}
+        {#if level.timed}<span class="timed">· {practice ? '' : t('game.timed')}{passTempo} bpm</span>{/if}
       </span>
       {#if practice}
         <!-- Nothing to count towards, so the tally stands where the progress bar would. -->

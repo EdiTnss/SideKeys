@@ -772,3 +772,11 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   Provocarea zilei nu se amestecă. Test întâi; 476 → **477 de teste**, `npm run check` și build
   curate. Văzut în browser: trei treceri prin „Triade majore”, trei ordini, iar pe ceas acordul de
   pe ecran și cel următor urmează noua ordine. Neîmpins, neîncercat pe Genos.
+- **2026-11-01 (#13: 80 pe clapa de ecran)** — Edi a ales (a), „Da, 80 pe ecran”. O trecere pe
+  ceas merge la 80 când clapa de ecran e cântată cu degetul sau cu mouse-ul (`timedTempo` și
+  `SCREEN_TEMPO` în `path.js`); literele și o clapă MIDI păstrează 120. Instrumentul ține minte cum
+  au intrat ultimele note (`instrument.input`), iar jocul citește asta când pornește ceasul și
+  scrie tempoul trecerii în antet. **Decizie a lui Claude**: până nu s-a cântat nimic, e clapa de
+  ecran, deci 80; Training păstrează tempoul ales de jucător. Test întâi; 477 → **478 de teste**,
+  `npm run check` curat. Văzut în browser: fără note 80, după litere 120, după un clic pe o clapă
+  80. Neîmpins, neîncercat pe Genos.

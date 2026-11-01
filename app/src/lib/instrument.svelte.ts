@@ -77,6 +77,9 @@ export function createInstrument({
   // While the letters are a piano they are not shortcuts. With an instrument plugged in they go
   // back to being shortcuts, because nobody types a voicing when a Genos is under their hands.
   let typeToPlay = $state(true);
+  // How the drawn keyboard was last played: by its keys on screen or by the letters. A timed
+  // pass by finger or mouse runs slower (timedTempo in src/game/path.js); the letters do not.
+  let drawnBy = $state<'letters' | 'pointer' | null>(null);
   // Whether the *player* asked for the keyboard. A reconnection the page made by itself is not
   // a question anyone put, so a missing cable is not reported as the answer to one.
   let asked = false;
@@ -195,6 +198,8 @@ export function createInstrument({
     get hardware() { return hardware; },
     get status() { return status; },
     get typeToPlay() { return typeToPlay; },
+    /** How the notes are going in: a real keyboard, the letters, the drawn keys, or not yet known. */
+    get input(): 'midi' | 'letters' | 'pointer' | null { return hardware.length ? 'midi' : drawnBy; },
     get sound() { return sound; },
     connect,
     /** Whether the keyboard called `name` is played through the app's piano. */
@@ -240,11 +245,18 @@ export function createInstrument({
     },
     /** Lets go of an example that is still ringing, for when its page is left. */
     hush: stopAudition,
-    toggle: (midi: number) => onscreen.toggle(midi),
+    toggle(midi: number) {
+      drawnBy = 'pointer';
+      onscreen.toggle(midi);
+    },
     /** False when nothing was played: no notes armed, or only one. */
     play: () => onscreen.play() as boolean,
     clear: () => onscreen.clear(),
-    keyDown: (code: string) => onscreen.keyDown(code) as boolean,
+    keyDown(code: string) {
+      const played = onscreen.keyDown(code) as boolean;
+      if (played) drawnBy = 'letters';
+      return played;
+    },
     keyUp: (code: string) => onscreen.keyUp(code),
     octaveUp: () => onscreen.octaveUp(),
     octaveDown: () => onscreen.octaveDown(),

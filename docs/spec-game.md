@@ -88,7 +88,13 @@ m7b5 și dim7; **quartal** nu există pe m7b5, dim7, m6 și mMaj7 (pe dominantă
 Nicio formă nu există pe triadele majore și minore, care își cer toate trei notele.
 
 **Tempoul**: 120 bpm, un acord pe măsură — două secunde ca să-l auzi, să-l găsești și să-l cânți
-(decizie Edi, 2026-10-11).
+(decizie Edi, 2026-10-11). **Pe clapa de ecran cântată cu degetul sau cu mouse-ul, ceasul merge
+la 80** (`SCREEN_TEMPO`, `timedTempo` în `path.js`; Edi, 2026-11-01, review #13): trei-patru
+atingeri plus „Play” nu încap în două secunde, deci la 120 a treia stea era doar pentru MIDI.
+Literele sunt un pian și păstrează 120, ca o clapă MIDI. Ce decide e felul în care au intrat
+ultimele note (`instrument.input`), citit când pornește ceasul; până nu s-a cântat nimic, e
+clapa de ecran, deci 80. Un nivel mai lent de atât își păstrează tempoul, iar Training
+păstrează tempoul ales de jucător. Steaua câștigată la 80 e aceeași stea.
 
 ### ★★★ Smooth — „legat, la tempo"
 

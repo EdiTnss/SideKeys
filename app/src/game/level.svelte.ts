@@ -75,7 +75,8 @@ export type Run = {
   readonly weakness: { key: string; problem: string; count: number; kind: string; degree: string | null } | null;
   answer(notes: number[], startedAt?: number | null): Answer | null;
   skip(): void;
-  start(): void;
+  /** The clock, at the level's tempo unless the screen asks for another (timedTempo). */
+  start(tempo?: number): void;
   stop(): void;
   restart(): void;
   /** The screen is going away: stop the clock. Nothing is scored and nothing is filed. */
@@ -218,10 +219,10 @@ export function createLevel(plan: LevelPlan): Run {
     },
 
     /** Starts the timed pass: a bar of count-in, then one chord per bar at the level's tempo. */
-    start() {
+    start(tempo = plan.tempo) {
       this.restart();
       timed = true;
-      metronome = createMetronome({ tempo: plan.tempo, timeSignature: [4, 4], countInBars: 1, onBeat });
+      metronome = createMetronome({ tempo, timeSignature: [4, 4], countInBars: 1, onBeat });
       metronome.start();
     },
 
