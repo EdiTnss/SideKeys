@@ -7,7 +7,7 @@ import { plainName } from '../src/theory/notes.js';
 import { analyzeVoicing } from '../src/theory/analyzer.js';
 import { suggestVoicings } from '../src/theory/voicings.js';
 import {
-  EPOCH, RUNGS, SQUARES,
+  EPOCH, RUNGS, SQUARES, JAZZ_FROM,
   challengeNumber, dailyChallenge, challengeStates, shareText,
 } from '../src/game/challenge.js';
 
@@ -148,4 +148,15 @@ test('no day of the year asks for a chord a chart would not write', () => {
       assert.ok(!(minorThird && ['Db', 'Gb'].includes(chord.root)), `${date}: ${symbol} is written from C# or F#`);
     }
   }
+});
+
+test('JAZZ_FROM: where the ramp turns to jazz shapes, which a beginner is told to skip', () => {
+  // Review of 2026-10-30, #15 (Edi: variant a). The game says so before the first of them, so the
+  // line has to sit exactly where the shapes begin, and "the last four" has to stay true.
+  assert.equal(JAZZ_FROM, 6);
+  assert.equal(RUNGS.length - JAZZ_FROM, 4, 'the line says "the last four"');
+  RUNGS.forEach((rung, at) => assert.equal(Boolean(rung.texture), at >= JAZZ_FROM, `rung ${at + 1}`));
+  // And every day's ask carries it the same way, since that is what the screen reads.
+  const { asks } = dailyChallenge('2026-11-01');
+  asks.forEach((ask, at) => assert.equal(ask.texture !== null, at >= JAZZ_FROM, ask.symbol));
 });
