@@ -7,7 +7,7 @@
   import type { Instrument } from '../lib/instrument.svelte';
   import { createLevel, type Attempt, type Finished, type LevelPlan, type Run } from '../game/level.svelte';
   import { createPractice, type PracticePlan } from '../game/practice.svelte';
-  import { lessonFor, lessonForTexture, nextPraise, timedTempo } from '../bridge/game';
+  import { lessonFor, lessonForTexture, nextPraise, timedTempo, JAZZ_FROM } from '../bridge/game';
   import { verdictSound } from '../lib/verdictSound.svelte';
   import {
     analyzeVoicing, inversionOf, parseChord, chordToneNames, isRight, isClean, playedInstead,
@@ -464,6 +464,10 @@
         {#if chordPage}<button type="button" class="what" onclick={() => ontheory(chordPage)}>{t('game.howBuilt')}</button>{/if}
       {/if}
     </p>
+    {#if plan.id.startsWith('challenge-') && level.ask && level.index >= JAZZ_FROM}
+      <!-- The challenge climbs to jazz shapes for everyone; a beginner is told they may skip them. -->
+      <p class="jazz">{t('game.jazzRungs')}</p>
+    {/if}
     {#if level.ask && (coach || reveal) && !spelled}
       <p class="spelled notes">{notesOf(level.ask.symbol)}</p>
     {/if}
@@ -629,6 +633,7 @@
   .as { margin-left: 10px; }
   .beat { margin-right: 10px; font-family: ui-monospace, monospace; font-size: 22px; font-weight: 600; color: var(--ink); }
   .hint { margin: 0 0 24px; color: var(--ink-muted); font-size: 15px; }
+  .jazz { margin: -16px 0 24px; color: var(--ink-muted); font-size: 14px; }
   .verdict { min-height: 92px; }
   .star { margin: 0 0 8px; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
   .star.clean { color: var(--chord-tone); }

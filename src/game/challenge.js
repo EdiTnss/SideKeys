@@ -51,6 +51,13 @@ export const RUNGS = [
   { kind: 'chords', qualities: ['m7', 'maj7'], keys: TWELVE, texture: 'quartal' },
 ];
 
+/**
+ * The first rung that demands a jazz shape. A beginner meets them every day, so the game says
+ * before them that they can be skipped (Edi, 2026-11-01, review of 2026-10-30, #15): the ramp
+ * stays the same for everyone, so the grids still compare.
+ */
+export const JAZZ_FROM = RUNGS.findIndex(rung => rung.texture);
+
 /** The squares the grid is pasted as. Green reads as "clean" everywhere; none of these is a
  *  theory colour, so a grid never pretends to be the keyboard's verdict. */
 export const SQUARES = Object.freeze({ clean: '🟩', right: '🟨', missed: '⬛', unplayed: '⬜' });

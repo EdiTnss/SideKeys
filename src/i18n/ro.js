@@ -244,6 +244,7 @@ export default {
   'game.playAs': 'Cântă-l ca {shape}.',
   'game.whatIsThat': 'Ce e asta?',
   'game.playAny': 'Cântă-l, în orice voicing.',
+  'game.jazzRungs': 'Ultimele patru sunt forme de jazz: sari peste ele dacă nu sunt încă ale tale.',
   'game.howBuilt': 'Cum se construiește?',
   'game.youPlayed': 'Ai cântat {chord}',
   'game.anticipated': ', anticipat',

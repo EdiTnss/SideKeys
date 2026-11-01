@@ -69,7 +69,7 @@
     <div class="share">
       <p class="squares" role="img"
          aria-label={t('today.cleanOf', { clean: grid.filter(state => state === 'clean').length, total: grid.length })}>
-        {grid.map(state => SQUARES[state as keyof typeof SQUARES] ?? SQUARES.unplayed).join('')}
+        {#each grid as state, at (at)}<span class:unplayed={!(state in SQUARES) || state === 'unplayed'}>{SQUARES[state as keyof typeof SQUARES] ?? SQUARES.unplayed}</span>{/each}
       </p>
       {#if official}
         <div class="row">
@@ -200,6 +200,9 @@
      the size follows the width the grid has (review of 2026-10-30, #6). */
   .share { margin: -10px 0 26px; container-type: inline-size; }
   .squares { margin: 0 0 14px; font-size: min(30px, calc(7cqi - 2px)); line-height: 1.1; letter-spacing: 2px; white-space: nowrap; }
+  /* A chord skipped is grey on screen, not white: a beginner skips the jazz shapes every day, and
+     a row of white reads as a page left blank. The pasted grid keeps ⬜, since no emoji is grey. */
+  .squares .unplayed { opacity: 0.35; }
   .row { display: flex; justify-content: center; gap: 12px; }
   .row button { padding: 10px 20px; font-size: 14px; }
   .note { margin: 0 0 12px; font-size: 13px; color: var(--ink-muted); }

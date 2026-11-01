@@ -488,7 +488,15 @@ Patru stări, una pe acord:
 `missed` și `unplayed` se deosebesc fiindcă într-o grilă citită de altcineva diferența dintre
 „am greșit" și „n-am ajuns" e informație. Niciun pătrățel nu e o culoare de teorie, deci grila nu
 se dă drept verdictul de pe claviatură. Scorul din text numără **doar** pătrățelele verzi, fiindcă
-curat e ce măsoară aplicația:
+curat e ce măsoară aplicația.
+
+**Treptele de jazz se pot sări, și jocul o spune** (Edi, 2026-11-01, review #15, varianta a).
+Ultimele patru trepte (`JAZZ_FROM` = 6 în `challenge.js`: Shell, Rootless, Drop 2, Quartal) cer
+forme pe care un începător nu le are încă. Pe fiecare dintre ele jocul scrie „The last four are
+jazz shapes: skip them if they are not yours yet.” Rampa rămâne aceeași pentru toți, deci grilele
+se compară în continuare. Pe ecran (Play și Rezultat), un pătrățel `unplayed` e **gri**
+(⬜ la opacitate 0,35), nu alb: un rând alb arăta ca o pagină lăsată goală. Textul partajat
+păstrează ⬜, pentru că nu există emoji pătrat gri.
 
 ```
 SideKeys #1 · 8/10 clean

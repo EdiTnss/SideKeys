@@ -101,7 +101,7 @@
           </div>
           {#if challenge.states}
             <p class="squares" role="img" aria-label={t('today.cleanOf', { clean, total: challenge.states.length })}>
-              {challenge.states.map(state => SQUARES[state as keyof typeof SQUARES] ?? SQUARES.unplayed).join('')}
+              {#each challenge.states as state, at (at)}<span class:unplayed={!(state in SQUARES) || state === 'unplayed'}>{SQUARES[state as keyof typeof SQUARES] ?? SQUARES.unplayed}</span>{/each}
             </p>
             <div class="row">
               <button type="button" onclick={copy}>{copied ? t('common.copied') : t('common.copyResult')}</button>
@@ -177,6 +177,9 @@
   /* The ten squares stay on one row: a square is about 1.37 em wide plus its 2 px of spacing, so
      the size follows the tile's width (review of 2026-10-30, #6). */
   .squares { margin: 4px 0 12px; font-size: min(22px, calc(7cqi - 2px)); line-height: 1.15; letter-spacing: 2px; white-space: nowrap; }
+  /* A chord skipped is grey on screen, not white: a beginner skips the jazz shapes every day, and
+     a row of white reads as a page left blank. The pasted grid keeps ⬜, since no emoji is grey. */
+  .squares .unplayed { opacity: 0.35; }
   .row { display: flex; flex-wrap: wrap; gap: 10px; }
   .text {
     margin: 12px 0 0; padding: 12px; border: 1px solid var(--border); border-radius: 10px;

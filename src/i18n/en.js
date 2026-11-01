@@ -252,6 +252,7 @@ export default {
   'game.playAs': 'Play it as {shape}.',
   'game.whatIsThat': 'What is that?',
   'game.playAny': 'Play it, in any voicing.',
+  'game.jazzRungs': 'The last four are jazz shapes: skip them if they are not yours yet.',
   'game.howBuilt': 'How is it built?',
   'game.youPlayed': 'You played {chord}',
   'game.anticipated': ', anticipated',

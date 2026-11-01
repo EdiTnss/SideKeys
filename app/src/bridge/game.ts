@@ -22,7 +22,7 @@ export { PROGRESSIONS } from '../../../src/theory/progressions.js';
 // so no server and no account — and testable in Node like everything else here.
 export {
   EPOCH, RUNGS, SQUARES, SHARE_URL,
-  challengeNumber, dailyChallenge, challengeLevel, challengeStates, shareText,
+  challengeNumber, dailyChallenge, challengeLevel, challengeStates, shareText, JAZZ_FROM,
 } from '../../../src/game/challenge.js';
 
 // The theory pages: one lesson per unit, with examples the analyzer itself has graded.

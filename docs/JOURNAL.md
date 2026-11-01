@@ -788,3 +788,11 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   1,25 pe ii–V–I. Văzut în browser pe Play, în ambele limbi; cardul din Rezultat apare doar după o
   trecere liberă de exact două stele și nu l-am adus pe ecran. 478 de teste, `npm run check`
   curat. Neîmpins.
+- **2026-11-01 (#15: treptele de jazz din provocare)** — Edi a ales (a). Pe ultimele patru trepte
+  ale provocării (`JAZZ_FROM` = 6 în `challenge.js`, calculat din `RUNGS`), jocul scrie „The last
+  four are jazz shapes: skip them if they are not yours yet.” / „Ultimele patru sunt forme de jazz:
+  sari peste ele dacă nu sunt încă ale tale.” Pe ecran, un pătrățel sărit e gri (⬜ la opacitate
+  0,35), pe Play și în Rezultat. **Decizie a lui Claude**: textul partajat păstrează ⬜, fiindcă nu
+  există emoji pătrat gri; rândul stă pe toate cele patru trepte, nu doar pe prima. Test întâi;
+  478 → **479 de teste**, `npm run check` curat. Văzut în browser: rândul apare de la treapta 7,
+  grila are zece pătrățele gri. Neîmpins.
