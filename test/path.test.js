@@ -2,7 +2,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { PATH, asksFor, pathState, levelById, levelAfter, reviewLevel } from '../src/game/path.js';
+import { PATH, asksFor, pathState, levelById, levelAfter, reviewLevel, timedTempo, SCREEN_TEMPO } from '../src/game/path.js';
 import { parseChord } from '../src/theory/chords.js';
 import { plainName } from '../src/theory/notes.js';
 
@@ -167,6 +167,18 @@ test('asksFor with a random draw: the same chords in another order, never the sa
   assert.ok(orders.size > 10, `only ${orders.size} orders in 20 passes`);
   const firsts = new Set(Array.from({ length: 20 }, () => asksFor(triads, { random })[0].symbol));
   assert.ok(firsts.size > 1, 'it does not always open on C');
+});
+
+test('timedTempo: the clock slows to 80 for a keyboard played by finger or mouse, never for keys or MIDI', () => {
+  // Review of 2026-10-30, #13 (Edi: "80 on screen"). At 120 there are two seconds a chord, and
+  // three or four taps plus Play do not fit in them, so the third star was for MIDI only.
+  assert.equal(SCREEN_TEMPO, 80);
+  assert.equal(timedTempo(120, 'midi'), 120);
+  assert.equal(timedTempo(120, 'letters'), 120, 'the letters are a piano, as quick as one');
+  assert.equal(timedTempo(120, 'pointer'), 80);
+  assert.equal(timedTempo(120, null), 80, 'nothing played yet: the screen is what there is');
+  assert.equal(timedTempo(72, 'pointer'), 72, 'a level slower than that keeps its own');
+  for (const unit of PATH) for (const level of unit.levels) assert.equal(timedTempo(level.tempo, 'midi'), level.tempo);
 });
 
 test('reviewLevel: the queue turned into something playable, in every key', () => {
