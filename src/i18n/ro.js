@@ -238,6 +238,7 @@ export default {
   'game.then': 'apoi',
   'game.as': 'ca {shape}',
   'game.countIn': 'Numărătoare. Primul acord cade pe măsura următoare.',
+  'game.noAnswer': '{symbol} — fără răspuns',
   'game.beat': 'Timpul {beat}. Cântă-l înainte să treacă măsura.',
   'game.barBeat': 'Măsura {bar}, timpul {beat}.',
   'game.barBeatPlay': 'Măsura {bar}, timpul {beat}. Cântă-l înainte să treacă măsura.',

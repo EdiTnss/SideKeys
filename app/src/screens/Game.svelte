@@ -112,6 +112,35 @@
     nudge = null;
   });
 
+  // On the clock a bar can go by with nothing played, and the verdict used to stay "—" as if
+  // nothing had happened. It is said, in grey and without a sound: no notes were wrong, there
+  // were none (review of 2026-10-30, #16). `heard` is every bar answered since it came round.
+  let unanswered = $state<string | null>(null);
+  const heard = new Set<number>();
+  let watching: { index: number; symbol: string } | null = null;
+  $effect(() => {
+    const { index, timed, at } = level;
+    const symbol = level.ask?.symbol;
+    if (!timed || !at || !symbol) { if (!timed) watching = null; return; }
+    if (watching && watching.index !== index) {
+      if (!heard.has(watching.index)) {
+        unanswered = watching.symbol;
+        // The verdict of an earlier bar would read as this one's: its notes and its misses go.
+        analysis = null;
+        judged = null;
+        instead = null;
+      }
+      // The bar that ended is forgotten, so in a loop it comes round unheard. Not the one that
+      // begins: an anticipated voicing may already have answered it.
+      heard.delete(watching.index);
+    }
+    watching = { index, symbol };
+  });
+  // The beats of the bar, drawn under the chord on the clock: the bar is 4/4 on the path, and
+  // whatever the progression says in Training.
+  const beatsPerBar = $derived(('progression' in plan
+    && (plan as { progression?: { timeSignature?: number[] } }).progression?.timeSignature?.[0]) || 4);
+
   // This screen is the one being played to for as long as it is mounted, and no longer.
   // svelte-ignore state_referenced_locally
   onDestroy(instrument.listen({ onVoicing: judge, onNext: skip }));
@@ -144,6 +173,8 @@
     const answered = level.answer(notes, startedAt);
     if (!answered) return;        // played during the count-in, or after the last bar
     nudge = null;
+    heard.add(answered.slot);
+    unanswered = null;
     analysis = answered.analysis;
     judged = answered.symbol;
     instead = playedInstead(notes, answered.symbol);
@@ -216,6 +247,9 @@
 
   function clearVerdict() {
     instrument.cancelCapture();
+    unanswered = null;
+    heard.clear();
+    watching = null;
     analysis = null;
     judged = null;
     instead = null;
@@ -445,6 +479,14 @@
         </p>
       {/if}
     </div>
+    {#if level.timed}
+      <!-- Where the bar is, at a glance: the beat lit, beat one larger, the count-in dimmer. -->
+      <p class="beats" class:counting={level.countIn !== null} aria-hidden="true">
+        {#each Array.from({ length: beatsPerBar }, (_, at) => at + 1) as beat (beat)}
+          <span class="tick" class:one={beat === 1} class:on={beat === (level.countIn ?? level.at?.beat)}></span>
+        {/each}
+      </p>
+    {/if}
     <p class="hint">
       {#if level.countIn !== null || (level.timed && !level.at)}
         <!-- Timed with no position yet is the instant before the first click: already the count-in. -->
@@ -476,6 +518,8 @@
       {#key verdicts}
       {#if nudge}
         <p class="nudge">{t(nudge === 'one' ? 'game.oneNote' : touch ? 'game.armFirstTouch' : 'game.armFirst')}</p>
+      {:else if unanswered}
+        <p class="unanswered">{t('game.noAnswer', { symbol: unanswered })}</p>
       {:else if !analysis}
         <p class="waiting">—</p>
       {:else if star}
@@ -650,6 +694,12 @@
   @media (prefers-reduced-motion: reduce) { .praise, .shake { animation: none; } }
   .judged { font-family: ui-monospace, monospace; font-size: 15px; color: var(--ink-muted); margin-right: 6px; }
   .waiting { margin: 0; font-size: 24px; color: var(--ink-muted); }
+  .unanswered { margin: 0; font-size: 22px; color: var(--ink-muted); }
+  .beats { display: flex; align-items: center; gap: 10px; height: 14px; margin: 0 0 12px; }
+  .tick { width: 9px; height: 9px; border-radius: 50%; background: var(--border); transition: background 60ms; }
+  .tick.one { width: 13px; height: 13px; }
+  .tick.on { background: var(--ink); }
+  .counting .tick.on { background: var(--ink-muted); }
   .nudge { margin: 0; font-size: 18px; color: var(--ink); }
   .scale { margin: -4px 0 8px; font-family: ui-monospace, monospace; font-size: 12px; color: var(--ink-muted); }
   .spelled { margin: 0 0 8px; font-family: ui-monospace, monospace; font-size: 15px; color: var(--ink); }

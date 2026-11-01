@@ -246,6 +246,7 @@ export default {
   'game.then': 'then',
   'game.as': 'as {shape}',
   'game.countIn': 'Count-in. The first chord lands on the next bar.',
+  'game.noAnswer': '{symbol} — no answer',
   'game.beat': 'Beat {beat}. Play it before the bar turns.',
   'game.barBeat': 'Bar {bar}, beat {beat}.',
   'game.barBeatPlay': 'Bar {bar}, beat {beat}. Play it before the bar turns.',

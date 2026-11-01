@@ -64,3 +64,10 @@ ajunge la ele. Nicio regulă din `src/` nu se mută în shell.
   salvate ale Training-ului.
 - **„Comping peste bas”** din Practice duce la Laborator (`lab/`), unde e raportul. Rămâne marcat
   „avansat” și în engleză până ajunge în joc.
+- **Pe ceas, timpul se vede și o măsură tăcută se spune** (Edi, 2026-11-01, review #16). Sub
+  acord stau punctele timpilor (patru pe drum, câți are măsura în Training): timpul curent
+  aprins, timpul 1 mai mare, numărătoarea mai stinsă. Textul „Măsura 3, timpul 2” rămâne
+  dedesubt. Când o măsură trece fără niciun voicing, verdictul scrie „C — fără răspuns”, în gri,
+  fără sunet și fără tremurat, și golește verdictul măsurii de dinainte, ca să nu pară al ei. O
+  măsură e „auzită” și când a răspuns-o un voicing anticipat, început la sfârșitul celei de
+  dinainte; în buclă (Training), o măsură care revine pornește neauzită.

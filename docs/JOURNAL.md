@@ -796,3 +796,11 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   există emoji pătrat gri; rândul stă pe toate cele patru trepte, nu doar pe prima. Test întâi;
   478 → **479 de teste**, `npm run check` curat. Văzut în browser: rândul apare de la treapta 7,
   grila are zece pătrățele gri. Neîmpins.
+- **2026-11-01 (#16: timpul pe ecran și măsura fără răspuns)** — Edi a aprobat („Da, așa”). Pe ceas,
+  sub acord stau punctele timpilor (timpul 1 mai mare, numărătoarea mai stinsă), iar o măsură
+  trecută fără niciun voicing scrie „C — fără răspuns” / „C — no answer”, în gri, fără sunet.
+  Totul în `Game.svelte`, peste `level.index` și `level.at`. **Găsit la probă**: sub mesaj rămâneau
+  notele verdictului de dinainte (Eb = Eb · G · Bb); acum mesajul golește verdictul vechi. **Capcană
+  evitată**: un voicing anticipat răspunde măsurii următoare înainte să înceapă, deci se uită măsura
+  care s-a încheiat, nu cea care începe. Văzut în browser, la 80 și la 120. Tot 479 de teste (nicio
+  logică nouă în `src/`), `npm run check` curat. Neîmpins.
