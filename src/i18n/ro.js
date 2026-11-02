@@ -273,6 +273,7 @@ export default {
   'game.synth': 'synth-ul browserului',
   'game.close': 'Închide',
   'game.showNotes': 'Arată notele',
+  'game.hideNotes': 'Ascunde notele',
   'game.onKeyboard': 'Cântă pe {device}. Nu e nevoie de buton.',
 
   'rating.smooth': 'lin',

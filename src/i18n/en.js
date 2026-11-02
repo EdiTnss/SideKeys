@@ -281,6 +281,7 @@ export default {
   'game.synth': 'browser synth',
   'game.close': 'Close',
   'game.showNotes': 'Show the notes',
+  'game.hideNotes': 'Hide the notes',
   'game.onKeyboard': 'Play on {device}. No button needed.',
 
   // How far the voices moved (theory/voiceLeading.js's rating).

@@ -64,6 +64,9 @@ ajunge la ele. Nicio regulă din `src/` nu se mută în shell.
 - **„Arată notele”** scrie notele acordului cerut, cu aceeași funcție ca verdictul după o
   greșeală (`chordToneNames`). Nu colorează clape: un acord are multe voicing-uri, iar o clapă
   colorată dinainte ar spune că doar acela e corect.
+  Odată apăsat, ține tot nivelul (review 2026-10-30, #19): cine are nevoie de note are nevoie
+  la fiecare acord. Cât e aprins, scrie „Ascunde notele”; nivelul următor pornește cu notele
+  ascunse.
 - **„Exersează X”** din Rezultat pornește un drill de Training pe calitatea slabă, în toate cele
   12 tonalități, în forma nivelului dacă forma există pentru acea calitate. Nu schimbă alegerile
   salvate ale Training-ului.

@@ -239,12 +239,10 @@
 
   // The notes of the chord asked for, "C = C · E · G", on request — or from the start for someone
   // just starting. Written, not coloured on the keys: a coloured key would say that one voicing is
-  // the answer (docs/spec-ui.md). Hidden again when the next chord comes, unless coaching.
+  // the answer (docs/spec-ui.md). Once asked for, they stay for the whole level: someone who needs
+  // them needs them on every chord (review of 2026-10-30, #19). A level remounts this screen, so
+  // the next one starts hidden again.
   let reveal = $state(false);
-  $effect(() => {
-    level.ask?.symbol;
-    reveal = false;
-  });
   const notesOf = (symbol: string | undefined) =>
     symbol ? `${symbol} = ${chordToneNames(parseChord(symbol)).join(' · ')}` : '';
 
@@ -623,7 +621,7 @@
     </div>
     <div class="links" class:touch>
       {#if level.ask && !coach}
-        <button type="button" class="link" aria-pressed={reveal} onclick={() => (reveal = !reveal)}>{t('game.showNotes')}</button>
+        <button type="button" class="link" aria-pressed={reveal} onclick={() => (reveal = !reveal)}>{t(reveal ? 'game.hideNotes' : 'game.showNotes')}</button>
       {/if}
       {#if !instrument.hardware.length && !touch}
         <span class="octave">{t('game.octave', { note: midiToName(instrument.octave) })} <kbd>Z</kbd><kbd>X</kbd></span>

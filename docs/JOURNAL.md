@@ -823,3 +823,9 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   curat. Văzut în browser: două stele la circa 300 ms una de alta, „Record nou” după ele; o
   trecere egală cu recordul nu arată nimic în plus. **Neauzit**: sunetul e probat doar prin lipsa
   erorilor. Neîmpins.
+- **2026-11-02 (#19: „Arată notele” ține tot nivelul)** — Edi a ales (a). Odată apăsat, „Show the
+  notes” / „Arată notele” rămâne aprins până la sfârșitul nivelului, nu se mai stinge la fiecare
+  acord; nivelul următor pornește iar cu notele ascunse (ecranul se remontează). **Decizie a lui
+  Claude**: cât e aprins, butonul scrie „Hide the notes” / „Ascunde notele”, fiindcă acum e un
+  comutator care ține. Văzut în browser: notele au urmat C, Bb, G, iar butonul le-a ascuns. Tot
+  481 de teste (nicio logică nouă în `src/`), `npm run check` curat. Neîmpins.
