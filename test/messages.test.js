@@ -97,11 +97,18 @@ test('the jazz names stay English in Romanian; what is around them does not', ()
   assert.equal(describeVoicing('en', { type: null, detail: null, bass: null }), null);
 });
 
-test('inversions keep their English names in both languages', () => {
-  const inversions = ['root position', '1st inversion', '2nd inversion', '3rd inversion'];
-  for (const name of inversions) {
+// Edi, 2026-11-02 (review 2026-10-30, #37): inversions are basic theory, not jazz jargon, so in
+// Romanian they take the names a Romanian pianist uses. English keeps its own.
+test('inversions: English names in English, Romanian names in Romanian', () => {
+  const inversions = {
+    'root position': 'stare directă',
+    '1st inversion': 'răsturnarea 1',
+    '2nd inversion': 'răsturnarea 2',
+    '3rd inversion': 'răsturnarea 3',
+  };
+  for (const [name, ro] of Object.entries(inversions)) {
     assert.equal(describeInversion('en', name), name);
-    assert.equal(describeInversion('ro', name), name);
+    assert.equal(describeInversion('ro', name), ro);
   }
   assert.equal(describeInversion('ro', null), null);
   assert.equal(describeInversion('en', inversionOf(analyze('C/E', 'E3 G3 C4'))), '1st inversion');

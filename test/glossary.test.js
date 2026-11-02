@@ -147,7 +147,8 @@ test('splitTerms: the game\'s Romanian names and verdicts find their terms', () 
   assert.deepEqual(found('Upper structure triad (A)'), ['upper-structure']);
   assert.deepEqual(found('Prea jos: C2–E2 (terță mare)'), ['muddy']);
   assert.deepEqual(found('Avoid note: F (11)'), ['avoid']);
-  assert.deepEqual(found('1st inversion'), ['inversion']);
+  assert.deepEqual(found('Clean — răsturnarea 1'), ['inversion']);
+  assert.deepEqual(found('Stare directă'), ['inversion']);
   assert.deepEqual(found('Shell voicings'), ['shell', 'voicing']);
   assert.deepEqual(found('Rootless pe ii–V–I'), ['ii-V-I']);
   assert.deepEqual(found('Lipsește E (3)'), []);

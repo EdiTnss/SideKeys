@@ -119,10 +119,11 @@ export default {
   'voicing.bass.5': '{name}, cvinta în bas',
   'voicing.other': 'altă formă',
 
-  'inversion.root': 'root position',
-  'inversion.1st': '1st inversion',
-  'inversion.2nd': '2nd inversion',
-  'inversion.3rd': '3rd inversion',
+  // Basic theory, not jazz jargon: the names a Romanian pianist uses (Edi, 2026-11-02).
+  'inversion.root': 'stare directă',
+  'inversion.1st': 'răsturnarea 1',
+  'inversion.2nd': 'răsturnarea 2',
+  'inversion.3rd': 'răsturnarea 3',
 
   // The path, by id. "Twelve keys" is said as "all the keys"; the jazz names stay English.
   'unit.triads.name': 'Triade',
@@ -146,8 +147,8 @@ export default {
   'level.triads-minor': 'Triade minore',
   'level.triads-both': 'Majore și minore',
   'level.triads-boss': 'Cu sus4, în toate tonalitățile',
-  'level.inv-major-first': '1st inversion',
-  'level.inv-major-second': '2nd inversion',
+  'level.inv-major-first': 'Răsturnarea 1',
+  'level.inv-major-second': 'Răsturnarea 2',
   'level.inv-minor': 'Minore, ambele răsturnări',
   'level.inv-boss': 'Majore și minore, în toate tonalitățile',
   'level.sevenths-maj-min': 'maj7 și m7',

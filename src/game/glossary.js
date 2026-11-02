@@ -165,9 +165,9 @@ export const GLOSSARY = [
     group: 'chords',
     name: 'Inversion (răsturnare)',
     short: 'Ce notă a acordului e în bas.',
-    long: 'Root position înseamnă fundamentala în bas, 1st inversion terța în bas, 2nd inversion cvinta, 3rd inversion septima. E altceva decât tipul de voicing: tipul spune cât de întinse sunt notele, răsturnarea spune care dintre ele e jos.',
-    examples: [{ symbol: 'C/E', notes: 'E3 G3 C4', inversion: '1st inversion', caption: 'C/E = E3 G3 C4 (1st inversion)' }],
-    match: ['root position', '1st inversion', '2nd inversion', '3rd inversion'],
+    long: 'Starea directă înseamnă fundamentala în bas, răsturnarea 1 terța în bas, răsturnarea 2 cvinta, răsturnarea 3 septima. În engleză: root position, 1st, 2nd și 3rd inversion. E altceva decât tipul de voicing: tipul spune cât de întinse sunt notele, răsturnarea spune care dintre ele e jos.',
+    examples: [{ symbol: 'C/E', notes: 'E3 G3 C4', inversion: '1st inversion', caption: 'C/E = E3 G3 C4 (răsturnarea 1)' }],
+    match: ['stare directă', 'răsturnarea 1', 'răsturnarea 2', 'răsturnarea 3'],
   },
   {
     id: 'slash',

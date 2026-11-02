@@ -374,8 +374,10 @@ trecere), #13 (80 pe clapa de ecran), #14 (ce cere a treia stea), #15 (treptele 
 provocare), #16 (timpul pe ecran, măsura fără răspuns) și #18 („Recordul tău rămâne”, stelele
 care se umplu pe rând cu scântei și sunet, „Record nou”), #19 („Arată notele” ține tot
 nivelul), #22 („Check” în engleză), #25 (clapa armată: contur și punct, fără albastru),
-#26 (× și ! pe clapele judecate), #27 (verdictul ca o carte, cu acordul judecat) și #28 (fără
-stare tehnică sub clapă) sunt făcute și neîmpinse. Urmează, în ordinea din fișier, 37….
+#26 (× și ! pe clapele judecate), #27 (verdictul ca o carte, cu acordul judecat), #28 (fără
+stare tehnică sub clapă) și #37 (stare directă, răsturnarea 1–3 în română) sunt făcute și
+neîmpinse. Din tur rămân doar lucrurile care sunt feature-uri noi (29, 36, 30, 31, 32, 10) și
+#8; nu se încep fără Edi.
 
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`
 („Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data

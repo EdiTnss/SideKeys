@@ -872,3 +872,13 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   au ieșit din ambele dicționare. „Loading the piano…” din propunere nu există: synth-ul răspunde
   din primul click, iar pianul îl înlocuiește în tăcere când s-a încărcat, deci nu era nimic de
   arătat. Văzut în browser fără clapă; cu o clapă reală, neîncercat. Tot 483 de teste. Neîmpins.
+- **2026-11-02 (#37: răsturnările în română)** — Edi a ales (a), cu numele lui: în română,
+  „root position” e **stare directă**, iar 1st / 2nd / 3rd inversion sunt **răsturnarea 1 / 2 /
+  3**. „Clean” rămâne nume de stea, iar lauda rămâne românească. Se schimbă peste tot unde le vede
+  jucătorul: verdictul („C/E ✓ Clean — răsturnarea 1”), numele celor două nivele, pagina de teorie
+  Răsturnări și glosarul (termenul se găsește acum după numele românești, iar explicația dă și
+  numele englezești). Engleza rămâne neschimbată. **Test rescris, cu acordul lui Edi** (decizia lui
+  e chiar schimbarea): în `messages.test.js`, „inversions keep their English names in both
+  languages” a devenit „English names in English, Romanian names in Romanian”; în
+  `glossary.test.js`, căutarea după „1st inversion” a devenit căutare după „răsturnarea 1” și
+  „Stare directă”. Același număr de teste, 483. Văzut în browser. Neîmpins.

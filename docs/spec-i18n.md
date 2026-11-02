@@ -11,9 +11,12 @@ Jocul în două limbi: engleză și română. Aprobat de Edi pe 2026-10-27 și c
   comutarea merge, doar nu se ține minte.
 - **Rămân în engleză și în română**: jargonul de jazz (voicing, shell, rootless A/B, drop 2, drop 3,
   drop 2&4, quartal, upper structure triad, close position, spread, avoid note, voice leading,
-  slash chord, guide tones, ii–V–I, root position / 1st / 2nd / 3rd inversion), notele cu litere
-  („Lipsește E (3)", nu Mi), numele stelelor (Right / Clean / Smooth) și textul de share al
-  challenge-ului.
+  slash chord, guide tones, ii–V–I), notele cu litere („Lipsește E (3)", nu Mi), numele
+  stelelor (Right / Clean / Smooth) și textul de share al challenge-ului.
+- **Răsturnările se traduc** (Edi, 2026-11-02, review 2026-10-30, #37): sunt teorie de bază, nu
+  jargon de jazz. În română, root position e **stare directă**, iar 1st / 2nd / 3rd inversion
+  sunt **răsturnarea 1 / 2 / 3**: în verdict, în numele nivelelor, în pagina de teorie și în
+  glosar. Exemplele își scriu așteptarea tot cu numele englezești ale lui `inversionOf`.
 - **Se traduc**: tot restul, inclusiv „muddy" („Prea jos: C2–E2 (terță mare)") și numele
   intervalelor.
 

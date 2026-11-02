@@ -7,8 +7,9 @@
 // claim here stands on the same test as its English twin.
 //
 // Claude translated these on 2026-10-27; Edi reads them before they ship. Jazz vocabulary
-// (voicing, shell, rootless, drop 2, quartal, guide tones, root position, 1st inversion…) and note
-// letters stay English, as everywhere else in the game.
+// (voicing, shell, rootless, drop 2, quartal, guide tones…) and note letters stay English, as
+// everywhere else in the game. Inversions do not: they are basic theory, and take the names a
+// Romanian pianist uses, stare directă and răsturnarea 1, 2, 3 (Edi, 2026-11-02).
 
 /**
  * @typedef {{
@@ -68,7 +69,7 @@ export default {
       {
         heading: 'Trei poziții',
         text: [
-          'Cu fundamentala jos, triada e în root position. Cu terța jos e în 1st inversion, iar cu cvinta jos în 2nd inversion. Ce se întâmplă deasupra notei de jos nu schimbă numele.',
+          'Cu fundamentala jos, triada e în stare directă. Cu terța jos e în răsturnarea 1, iar cu cvinta jos în răsturnarea 2. Ce se întâmplă deasupra notei de jos nu schimbă numele.',
         ],
       },
       {
@@ -85,9 +86,9 @@ export default {
       },
     ],
     captions: [
-      'Root position: C e nota cea mai joasă.',
-      '1st inversion: terța, E, e jos.',
-      '2nd inversion: cvinta, G, e jos.',
+      'Stare directă: C e nota cea mai joasă.',
+      'Răsturnarea 1: terța, E, e jos.',
+      'Răsturnarea 2: cvinta, G, e jos.',
       'O triadă minoră se răstoarnă la fel: terța ei, Eb, e jos.',
       'Pe două mâini: E singur în stânga, restul unde cade.',
     ],
