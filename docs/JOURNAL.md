@@ -811,3 +811,15 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   contează prima trecere a zilei, cu regula ei. Văzut în browser (Triade majore, două stele, o
   trecere fără niciun acord: „Încă nu” și „Recordul tău rămâne ★★”, recordul salvat tot 2). Tot
   479 de teste, `npm run check` curat. Animația stelelor urmează, ca pagină cu variante. Neîmpins.
+- **2026-11-02 (#18, animația stelelor)** — Edi a ales **S1 Sparks** dintre trei variante (pagina
+  din `Claude outputs/stars-fx/`, în afara repo-ului). În Rezultat, stelele trecerii se umplu una
+  câte una (prima la 250 ms, apoi la 300 ms una de alta), fiecare cu un „pop”, șase scântei albe și
+  o bătaie de marimba urcând C5–E5–G5 (`starNote` în `src/audio/verdict.js`). La un record nou,
+  după ultima stea apare „New best” / „Record nou”, cu un clopoțel C6 + G6 (`bestNotes`). Zero
+  stele: nicio mișcare, niciun sunet. Provocarea zilei nu primește „Record nou”. Sunetele urmează
+  comutatorul „Sunetele verdictului” din Setări; „reduce motion” oprește pop-ul și scânteile.
+  **Decizie a lui Claude**: notele nu vin din acordul nivelului (Rezultatul n-are unul), ci din C
+  major, în octava bătăii de la verdict. Test întâi: 479 → **481 de teste**, `npm run check`
+  curat. Văzut în browser: două stele la circa 300 ms una de alta, „Record nou” după ele; o
+  trecere egală cu recordul nu arată nimic în plus. **Neauzit**: sunetul e probat doar prin lipsa
+  erorilor. Neîmpins.

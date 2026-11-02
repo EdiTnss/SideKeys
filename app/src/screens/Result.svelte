@@ -4,6 +4,8 @@
   import { copyText } from '../lib/clipboard';
   import Glossed from '../lib/Glossed.svelte';
   import { sayDecimal, sayProblem, t } from '../lib/locale.svelte';
+  import { verdictSound } from '../lib/verdictSound.svelte';
+  import { onMount } from 'svelte';
 
   type Score = NonNullable<ReturnType<typeof scoreRun>>;
   type Weakness = { key: string; problem: string; count: number; kind: string; degree: string | null } | null;
@@ -39,6 +41,38 @@
 
   const percent = (ratio: number) => `${Math.round(ratio * 100)}%`;
 
+  // The stars fill one by one, each with a knock and a few sparks, and a new record is crowned
+  // after the last (review of 2026-10-30, #18; Edi chose S1 "Sparks" on 2026-11-02). Zero stars
+  // stay still and silent. The challenge has no record of its own here, so it is never crowned.
+  const FIRST = 250;
+  const GAP = 300;
+  const SPARKS = [0, 1, 2, 3, 4, 5];
+  let shown = $state(0);
+  let crowned = $state(false);
+  // `before` arrives a moment after the screen does (Game files the run in an effect), so this is
+  // read when the crown is due, not when the screen opens.
+  const newBest = $derived(!grid && score.stars > before);
+
+  onMount(() => {
+    const count = score.stars;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    for (let n = 0; n < count; n += 1) {
+      timers.push(setTimeout(() => { shown = n + 1; verdictSound.star(n); }, FIRST + n * GAP));
+    }
+    timers.push(setTimeout(() => {
+      if (!newBest) return;
+      crowned = true;
+      verdictSound.best();
+    }, FIRST + count * GAP + 120));
+    return () => timers.forEach(clearTimeout);
+  });
+
+  const spark = (position: number, at: number) => {
+    const angle = (Math.PI * 2 * at) / SPARKS.length + position;
+    const reach = 30 + ((position * 7 + at * 5) % 12);
+    return `--dx: ${(Math.cos(angle) * reach).toFixed(1)}px; --dy: ${(Math.sin(angle) * reach).toFixed(1)}px`;
+  };
+
   let copied = $state(false);
   let showText = $state(false);
 
@@ -56,15 +90,23 @@
        amber star would read as "avoid note" (assets/BRAND.md). -->
   <div class="stars" role="img" aria-label={t('common.starsOf3', { count: score.stars })}>
     {#each [1, 2, 3] as position (position)}
-      <svg width="52" height="52" viewBox="0 0 24 24" aria-hidden="true"
-           fill={position <= score.stars ? '#f4f2ee' : 'none'}
-           stroke={position <= score.stars ? 'none' : '#3a4046'} stroke-width="1.6">
-        <path d="M12 2.6l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.7l-5.9 3.1 1.2-6.6L2.5 9.6l6.6-.9z"></path>
-      </svg>
+      <span class="slot">
+        <svg width="52" height="52" viewBox="0 0 24 24" aria-hidden="true" class:pop={position <= shown}
+             fill={position <= shown ? '#f4f2ee' : 'none'}
+             stroke={position <= shown ? 'none' : '#3a4046'} stroke-width="1.6">
+          <path d="M12 2.6l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.7l-5.9 3.1 1.2-6.6L2.5 9.6l6.6-.9z"></path>
+        </svg>
+        {#if position <= shown}
+          {#each SPARKS as at (at)}<span class="spark" style={spark(position, at)}></span>{/each}
+        {/if}
+      </span>
     {/each}
   </div>
 
   <h2>{score.label ?? t('result.notYet')}</h2>
+  {#if crowned}
+    <p class="best"><span class="crown">{t('result.newBest')}</span></p>
+  {/if}
   <!-- A pass below the record says the record stands: three empty stars after a missed run on
        the clock read as if the two already earned were gone (review of 2026-10-30, #18). The
        challenge keeps its own rule, the first pass of the day. -->
@@ -200,6 +242,23 @@
   .stars { display: flex; justify-content: center; gap: 12px; margin-bottom: 22px; }
   h2 { margin: 0 0 6px; font-size: 32px; font-weight: 600; letter-spacing: -0.03em; }
   .best { margin: 0 0 6px; font-size: 15px; color: var(--ink); }
+  .slot { position: relative; width: 52px; height: 52px; }
+  .slot svg { display: block; overflow: visible; }
+  .pop, .crown { animation: pop 380ms cubic-bezier(.2, 1.6, .4, 1) both; }
+  @keyframes pop { 0% { opacity: 0; transform: scale(.4); } 60% { opacity: 1; transform: scale(1.18); } 100% { opacity: 1; transform: none; } }
+  .crown {
+    display: inline-block; padding: 3px 12px; border: 1px solid var(--ink); border-radius: 999px;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.02em;
+  }
+  .spark {
+    position: absolute; left: 24px; top: 24px; width: 4px; height: 4px; border-radius: 50%;
+    background: #f4f2ee; pointer-events: none; animation: spark 620ms cubic-bezier(.15, .7, .3, 1) forwards;
+  }
+  @keyframes spark { from { opacity: 1; transform: none; } to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.3); } }
+  @media (prefers-reduced-motion: reduce) {
+    .pop, .crown { animation: none; }
+    .spark { display: none; }
+  }
   .sub { margin: 0 0 30px; color: var(--ink-muted); font-size: 15px; }
   .tiles { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
   .tile { flex: 1 1 150px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 16px; }

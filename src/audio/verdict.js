@@ -6,7 +6,11 @@
 //   the hands play, and made of the chord, so they ring with it rather than against it;
 // - wrong: a low muted thud with no pitch, which has nothing to argue with whatever was played.
 //
-// Only chimeNotes is pure and tested in Node; the rest needs a browser.
+// The result of a level borrows the same knock (review of 2026-10-30, #18): one per star, climbing
+// C–E–G, and a bell for a new record.
+//
+// Only the notes (chimeNotes, starNote, bestNotes) are pure and tested in Node; the rest needs a
+// browser.
 
 import { audioContext } from './context.js';
 
@@ -23,12 +27,35 @@ export function chimeNotes(rootPc) {
   return [root, root + 7];
 }
 
+const STAR_NOTES = [72, 76, 79];
+
+/**
+ * The knock for one star of a result, counted from 0: C5, E5, G5, so three stars climb a triad.
+ * The result has no chord to be made of, so it takes the plainest one, in the chime's octave.
+ *
+ * @param {number} index
+ * @returns {number}
+ */
+export function starNote(index) {
+  return STAR_NOTES[Math.min(Math.max(index, 0), STAR_NOTES.length - 1)];
+}
+
+/**
+ * The bell for a new record: C6 and the fifth above it, an octave over the stars.
+ *
+ * @returns {[number, number]}
+ */
+export function bestNotes() {
+  return [84, 91];
+}
+
 /**
  * The verdict's voice. `level` is read at every sound, so a setting changed in between is heard
  * at once; 0 is silence, and nothing is built for it.
  *
  * @param {{ level?: () => number, context?: () => AudioContext }} [options]
- * @returns {{ right: (rootPc: number) => void, wrong: () => void }}
+ * @returns {{ right: (rootPc: number) => void, wrong: () => void,
+ *             star: (index: number) => void, best: () => void }}
  */
 export function createVerdictSound({ level = () => 1, context = audioContext } = {}) {
   let out = null;
@@ -73,18 +100,34 @@ export function createVerdictSound({ level = () => 1, context = audioContext } =
     source.start(at);
   }
 
+  // A marimba-like knock: the fundamental, a short fourth partial and a click of noise.
+  function knock(ctx, midi, at, peak) {
+    tone(ctx, { freq: hz(midi), at, decay: 0.45, peak });
+    tone(ctx, { freq: hz(midi) * 4, at, decay: 0.08, peak: peak * 0.35, attack: 0.001 });
+    noise(ctx, { at, length: 0.015, peak: 0.08, filter: 3000 });
+  }
+
   return {
-    // A marimba-like knock: the fundamental, a short fourth partial and a click of noise.
     right(rootPc) {
       const ctx = start();
       if (!ctx) return;
       const [root, fifth] = chimeNotes(rootPc);
-      for (const [midi, delay, peak] of [[root, 0, 0.18], [fifth, 0.09, 0.2]]) {
-        const at = ctx.currentTime + delay;
-        tone(ctx, { freq: hz(midi), at, decay: 0.45, peak });
-        tone(ctx, { freq: hz(midi) * 4, at, decay: 0.08, peak: peak * 0.35, attack: 0.001 });
-        noise(ctx, { at, length: 0.015, peak: 0.08, filter: 3000 });
-      }
+      knock(ctx, root, ctx.currentTime, 0.18);
+      knock(ctx, fifth, ctx.currentTime + 0.09, 0.2);
+    },
+    star(index) {
+      const ctx = start();
+      if (ctx) knock(ctx, starNote(index), ctx.currentTime, 0.18);
+    },
+    // Two sines a fifth apart, ringing longer than a knock, with a faint bell partial.
+    best() {
+      const ctx = start();
+      if (!ctx) return;
+      const [low, high] = bestNotes();
+      const at = ctx.currentTime;
+      tone(ctx, { freq: hz(low), at, decay: 1.2, peak: 0.12, attack: 0.004 });
+      tone(ctx, { freq: hz(high), at: at + 0.06, decay: 1.1, peak: 0.1, attack: 0.004 });
+      tone(ctx, { freq: hz(low) * 2.76, at, decay: 0.3, peak: 0.03 });
     },
     // A falling sine and a brush of low noise.
     wrong() {

@@ -28,6 +28,8 @@ nu înțelegi de unde s-o iei”).
    O trecere sub recordul nivelului spune sub titlu că recordul rămâne („Recordul tău
    rămâne ★★”): altfel, după un timed ratat, trei stele goale par să fi șters cele două
    câștigate. Provocarea zilei nu-l arată, fiindcă acolo contează prima trecere a zilei.
+   Stelele trecerii se umplu una câte una, iar un record nou se anunță după ultima („Record
+   nou”); mișcarea și sunetul sunt în `spec-game.md`, la verdict.
 5. **În nivel nu e nicio navigare**: doar ieșirea (×), progresul, acordul, clapa.
 6. **Cu o clapă MIDI conectată, butoanele Play și Clear dispar**: se cântă pe clapă. Clapa de
    ecran le păstrează.

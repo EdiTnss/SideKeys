@@ -27,4 +27,8 @@ export const verdictSound = {
   right: (rootPc: number) => voice.right(rootPc),
   /** A chord played wrong: the thud. */
   wrong: () => voice.wrong(),
+  /** One star of a result filling, counted from 0. */
+  star: (index: number) => voice.star(index),
+  /** A new record for the level. */
+  best: () => voice.best(),
 };

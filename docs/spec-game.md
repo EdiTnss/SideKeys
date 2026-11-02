@@ -605,6 +605,16 @@ Edi a ales pe 2026-10-30 **R3 (Sparks)** cu **W1 (Shake)**.
   sunetele astea, deci comping-ul cu bas de acolo nu se schimbă. Comping-ul care va veni în joc
   (Gig Mode) merge tot pe metronom, deci regula îl acoperă de la sine.
 - **Încercat de Edi pe Genos** pe 2026-10-30: „e bine”, cu excepția de mai sus.
+- **Finalul nivelului** (review 2026-10-30, #18; Edi a ales pe 2026-11-02 **S1 Sparks** dintre
+  trei variante, pagina din `Claude outputs/stars-fx/`): în Rezultat, stelele trecerii se umplu
+  una câte una, prima la 250 ms, apoi la 300 ms una de alta. Fiecare face un „pop”, aruncă
+  șase scântei albe și sună cu aceeași bătaie de marimba, pe **C5, E5, G5** (`starNote`).
+  Rezultatul n-are un acord din care să fie făcut sunetul, deci ia triada cea mai simplă, în
+  octava bătăii. Când trecerea întrece recordul nivelului, după ultima stea apare „New best” /
+  „Record nou”, cu un clopoțel **C6 + G6** (`bestNotes`). Cu zero stele nu se mișcă și nu se
+  aude nimic. Provocarea zilei nu primește „Record nou”: acolo contează prima trecere a zilei.
+  Sunetele ascultă de același comutator din Setări; „reduce motion” oprește pop-ul și
+  scânteile, stelele apar tot pe rând.
 
 ## Ce nu intră aici
 
