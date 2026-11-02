@@ -266,6 +266,10 @@ service worker-ul.
 Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-cKFl.js`, cache
 `sidekeys-aadc32f86afb`) e cel construit local.
 
+**Turul din 2026-10-30, lucrat până pe 2026-11-02, e împins și publicat** (`bf0871b`, la
+cererea lui Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit
+(`index-DIXtds1B.js`, cache `sidekeys-798228e006c3`) e cel construit local.
+
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
@@ -326,6 +330,9 @@ Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-c
   controller simulat.
 - **Să încerce interfața nouă pe Genos**: cu clapa conectată, nivelul nu mai are Play și Clear;
   „Sound in the app” s-a mutat în Settings (rotița).
+- **Să încerce turul pe Genos** (publicat pe 2026-11-02): cartea verdictului și zborul
+  acordului în ea (mișcarea n-a văzut-o nimeni rulând), stelele care se umplu cu sunet, × și !
+  pe clape, răsturnările în română, rândul de sub clapă fără numele clapei.
 - **Să aleagă animația și sunetul** pentru acord corect și greșit (3 + 3 variante), în sesiunea
   separată pornită pe 2026-10-29; pagina e în `Claude outputs/verdict-fx/index.html`.
 - **Să înregistreze sesiunile de calibrare a raportului de comping** (vezi „Următorul pas”).
@@ -375,8 +382,8 @@ provocare), #16 (timpul pe ecran, măsura fără răspuns) și #18 („Recordul 
 care se umplu pe rând cu scântei și sunet, „Record nou”), #19 („Arată notele” ține tot
 nivelul), #22 („Check” în engleză), #25 (clapa armată: contur și punct, fără albastru),
 #26 (× și ! pe clapele judecate), #27 (verdictul ca o carte, cu acordul judecat), #28 (fără
-stare tehnică sub clapă) și #37 (stare directă, răsturnarea 1–3 în română) sunt făcute și
-neîmpinse. Din tur rămân doar lucrurile care sunt feature-uri noi (29, 36, 30, 31, 32, 10) și
+stare tehnică sub clapă) și #37 (stare directă, răsturnarea 1–3 în română) sunt făcute,
+împinse și publicate (2026-11-02). Din tur rămân doar lucrurile care sunt feature-uri noi (29, 36, 30, 31, 32, 10) și
 #8; nu se încep fără Edi.
 
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`

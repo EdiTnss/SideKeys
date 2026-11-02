@@ -882,3 +882,10 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   languages” a devenit „English names in English, Romanian names in Romanian”; în
   `glossary.test.js`, căutarea după „1st inversion” a devenit căutare după „răsturnarea 1” și
   „Stare directă”. Același număr de teste, 483. Văzut în browser. Neîmpins.
+- **2026-11-02 (turul, împins și publicat)** — La cererea lui Edi („Da, împinge”). Push-ul a fost
+  refuzat întâi: pe GitHub era `14526fc` (reel-ul nou în README, făcut de Edi din interfața web),
+  pe care local nu-l aveam. L-am adus cu un merge (`bf0871b`), fără să rescriu cele 35 de commit-uri
+  locale, apoi am împins. Testele și publicarea au trecut pe GitHub; pachetul servit
+  (`index-DIXtds1B.js`, cache `sidekeys-798228e006c3`) e cel construit local și conține
+  răsturnările în română, semnele de pe clape, marcajul clapei armate, cartea verdictului și
+  „Check”. Nimic din tur n-a fost încercat pe Genos.
