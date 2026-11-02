@@ -848,3 +848,11 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   Celelalte roluri nu au semn; nota lipsă își păstrează umplerea care respiră. Și în Laborator.
   `keyGlyph` e testată în Node (două teste noi, 483). Văzut în browser: ! pe nota de evitat, apoi ×
   pe nota greșită la acordul următor, iar semnul vechi a dispărut. Neîmpins.
+- **2026-11-02 (#27: acordul judecat deschide rândul verdictului)** — Edi a cerut întâi o
+  comparație între (a) și (b) (pagina e în `Claude outputs/verdict-line/`, în afara repo-ului),
+  apoi a ales (a). Rândul verdictului începe acum cu acordul judecat, la mărimea verdictului (24 px)
+  și în albul textului, urmat de ✓ verde când e corect sau ✗ portocaliu când e greșit: „Eb ✓ Clean
+  — root position”, sub G-ul cerut acum. Înainte era un „Eb” mic, gri, monospace, care se citea ca
+  verdict pentru acordul de pe ecran. **Decizie a lui Claude**: ✗ la greșeală, pentru simetrie;
+  „, anticipated” rămâne mic, lângă acord. Văzut în browser (corect și greșit). Tot 483 de teste,
+  `npm run check` curat. Neîmpins.

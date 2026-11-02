@@ -524,20 +524,22 @@
       {:else if !analysis}
         <p class="waiting">—</p>
       {:else if star}
+        <!-- The chord judged leads the line, as large as the verdict, so it is not read as one for
+             the chord now on screen (review 2026-10-30, #27). -->
         <p class="star {star.toLowerCase()}">
-          <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
+          <span class="judged">{judged}{#if anticipated}<small>{t('game.anticipated')}</small>{/if}<span class="sign">✓</span></span>
           {star}{#if shape}{' — '}<Glossed text={shape} />{/if}
           {#if praise}<span class="praise">{t(`praise.${praise}`)}</span>{/if}
         </p>
       {:else if shapeMiss}
         <p class="star none shake">
-          <span class="judged">{judged}</span>
+          <span class="judged">{judged}<span class="sign">✗</span></span>
           <Glossed text={t('game.wrongShape', { shape: shapeMiss })} />
           {#if missPage}<button type="button" class="what" onclick={() => ontheory(missPage)}>{t('game.whatAsked')}</button>{/if}
         </p>
       {:else}
         <p class="star none shake">
-          <span class="judged">{judged}{anticipated ? t('game.anticipated') : ''}</span>
+          <span class="judged">{judged}{#if anticipated}<small>{t('game.anticipated')}</small>{/if}<span class="sign">✗</span></span>
           <Glossed text={sayMessage(warnings[0])} />
         </p>
       {/if}
@@ -693,7 +695,11 @@
     60% { transform: translateX(-2px); } 80% { transform: translateX(1px); }
   }
   @media (prefers-reduced-motion: reduce) { .praise, .shake { animation: none; } }
-  .judged { font-family: ui-monospace, monospace; font-size: 15px; color: var(--ink-muted); margin-right: 6px; }
+  .judged { color: var(--ink); margin-right: 10px; }
+  .judged small { font-size: 15px; font-weight: 400; color: var(--ink-muted); }
+  .sign { margin-left: 8px; }
+  .star .sign { color: var(--chord-tone); }
+  .star.none .sign { color: var(--avoid); }
   .waiting { margin: 0; font-size: 24px; color: var(--ink-muted); }
   .unanswered { margin: 0; font-size: 22px; color: var(--ink-muted); }
   .beats { display: flex; align-items: center; gap: 10px; height: 14px; margin: 0 0 12px; }

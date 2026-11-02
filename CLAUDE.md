@@ -373,9 +373,9 @@ Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-c
 trecere), #13 (80 pe clapa de ecran), #14 (ce cere a treia stea), #15 (treptele de jazz din
 provocare), #16 (timpul pe ecran, măsura fără răspuns) și #18 („Recordul tău rămâne”, stelele
 care se umplu pe rând cu scântei și sunet, „Record nou”), #19 („Arată notele” ține tot
-nivelul), #22 („Check” în engleză), #25 (clapa armată: contur și punct, fără albastru) și
-#26 (× și ! pe clapele judecate) sunt făcute și neîmpinse. Urmează, în ordinea din fișier,
-27, 28….
+nivelul), #22 („Check” în engleză), #25 (clapa armată: contur și punct, fără albastru),
+#26 (× și ! pe clapele judecate) și #27 („C ✓” deschide rândul verdictului) sunt făcute și
+neîmpinse. Urmează, în ordinea din fișier, 28, 37….
 
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`
 („Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data
