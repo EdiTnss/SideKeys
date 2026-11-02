@@ -67,6 +67,15 @@ body {
 .key-mark.black rect { stroke: #fff; }
 .key-mark.white circle { fill: var(--armed); }
 .key-mark.black circle { fill: #fff; }
+/* The sign on a judged key, so the verdict reads without telling red from green (review
+   2026-10-30, #26): × on a wrong note, ! on one to avoid. White on the red, dark on the amber. */
+.key-glyph {
+  pointer-events: none; font-weight: 700; font-size: 13px; dominant-baseline: central;
+  font-family: Sora, system-ui, sans-serif;
+}
+.key-glyph.black { font-size: 10px; }
+.key-glyph.role-wrong { fill: #fff; }
+.key-glyph.role-avoid { fill: #0a0b0c; }
 /* A missing note is a chord tone nobody played: the chord-tone green, paler than a played one and
    dashed, so it reads as "this one" without being mistaken for a note under a finger. A grey
    dashed outline alone all but vanished on a white key (Edi, at the Genos, 2026-10-29). */

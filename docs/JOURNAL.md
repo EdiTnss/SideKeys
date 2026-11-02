@@ -842,3 +842,9 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   însăși ar fi fost acoperit pe jumătate de vecine; e comun jocului și Laboratorului (`styles.css`
   are aceleași reguli). Văzut în browser, în joc și în Laborator: marcajul apare la click, iar după
   verdict nu rămâne niciunul. Tot 481 de teste, `npm run check` curat. Neîmpins.
+- **2026-11-02 (#26: × și ! pe clapă)** — Edi a ales „mereu”. O clapă judecată greșită poartă un
+  ×, una de evitat un !, desenate de `src/ui/keyboard.js` în locul punctului clapei armate (alb pe
+  roșu, închis pe chihlimbar), ca verdictul să se citească fără să deosebești roșul de verde.
+  Celelalte roluri nu au semn; nota lipsă își păstrează umplerea care respiră. Și în Laborator.
+  `keyGlyph` e testată în Node (două teste noi, 483). Văzut în browser: ! pe nota de evitat, apoi ×
+  pe nota greșită la acordul următor, iar semnul vechi a dispărut. Neîmpins.

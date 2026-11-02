@@ -181,7 +181,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **481 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **483 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Raportul de comping** (P2, 2026-10-29), în **Laborator**: o trecere timed cu „bass from the
   app” cântă basul aranjamentului în buclă, iar după Stop apare raportul (acorduri, registru,
   voice leading, varietate). Pragurile sunt propuneri, încă necalibrate; timpul nu se arată.
@@ -373,8 +373,9 @@ Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-c
 trecere), #13 (80 pe clapa de ecran), #14 (ce cere a treia stea), #15 (treptele de jazz din
 provocare), #16 (timpul pe ecran, măsura fără răspuns) și #18 („Recordul tău rămâne”, stelele
 care se umplu pe rând cu scântei și sunet, „Record nou”), #19 („Arată notele” ține tot
-nivelul), #22 („Check” în engleză) și #25 (clapa armată: contur și punct, fără albastru)
-sunt făcute și neîmpinse. Urmează, în ordinea din fișier, 26, 27….
+nivelul), #22 („Check” în engleză), #25 (clapa armată: contur și punct, fără albastru) și
+#26 (× și ! pe clapele judecate) sunt făcute și neîmpinse. Urmează, în ordinea din fișier,
+27, 28….
 
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`
 („Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data

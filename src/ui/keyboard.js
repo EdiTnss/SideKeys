@@ -27,6 +27,29 @@ function markOf(colour, x, width, height, dotY) {
   return mark;
 }
 
+// The sign on a judged key, so the verdict reads without telling red from green (review
+// 2026-10-30, #26). Drawn where an armed key's dot sits; the other roles carry none.
+const GLYPHS = { 'role-wrong': '×', 'role-avoid': '!' };
+
+function glyphRole(classes = '') {
+  return classes.split(' ').find(name => name in GLYPHS);
+}
+
+/**
+ * The sign drawn on a key with these classes: × on a wrong note, ! on one to avoid, else ''.
+ *
+ * @param {string} [classes]
+ * @returns {string}
+ */
+export function keyGlyph(classes) {
+  const role = glyphRole(classes);
+  return role ? GLYPHS[role] : '';
+}
+
+function glyphOf(colour, x, width, y) {
+  return el('text', { x: x + width / 2, y, 'text-anchor': 'middle', class: `key-glyph ${colour}` });
+}
+
 /**
  * Builds the keys inside `svg` (E1–G7 by default, the 76 keys of a Genos). Returns
  * { highlight(classesByMidi) }. With `onKey`, a key answers the mouse and the touchscreen: it
@@ -51,17 +74,19 @@ export function createKeyboard(svg, { from = 28, to = 103, onKey = null } = {}) 
       const x = whiteIndex * WHITE_W - BLACK_W / 2;
       const rect = el('rect', { x, y: 0, width: BLACK_W, height: BLACK_H, rx: 2 });
       const mark = markOf('black', x, BLACK_W, BLACK_H, BLACK_H - 11);
+      const glyph = glyphOf('black', x, BLACK_W, BLACK_H - 11);
       blacks.push(rect);
-      marks.black.push(mark);
-      keys.set(midi, { rect, base: 'key black', mark });
+      marks.black.push(mark, glyph);
+      keys.set(midi, { rect, base: 'key black', mark, glyph });
     } else {
       const x = whiteIndex * WHITE_W;
       const rect = el('rect', { x, y: 0, width: WHITE_W, height: WHITE_H, rx: 3 });
       // The dot sits below where the black keys end and above the C label.
       const mark = markOf('white', x, WHITE_W, WHITE_H, WHITE_H - 22);
+      const glyph = glyphOf('white', x, WHITE_W, WHITE_H - 22);
       whites.push(rect);
-      marks.white.push(mark);
-      keys.set(midi, { rect, base: 'key white', mark });
+      marks.white.push(mark, glyph);
+      keys.set(midi, { rect, base: 'key white', mark, glyph });
       if (pc === 0) {
         const text = el('text', { x: whiteIndex * WHITE_W + WHITE_W / 2, y: WHITE_H - 6, 'text-anchor': 'middle', class: 'key-label' });
         text.textContent = midiToName(midi);
@@ -88,10 +113,12 @@ export function createKeyboard(svg, { from = 28, to = 103, onKey = null } = {}) 
   }
 
   function highlight(classesByMidi) {
-    for (const [midi, { rect, base, mark }] of keys) {
+    for (const [midi, { rect, base, mark, glyph }] of keys) {
       const extra = classesByMidi[midi];
       rect.setAttribute('class', extra ? `${base} ${extra}` : base);
       mark.classList.toggle('armed', extra?.split(' ').includes('armed') ?? false);
+      glyph.textContent = keyGlyph(extra);
+      for (const role of Object.keys(GLYPHS)) glyph.classList.toggle(role, role === glyphRole(extra));
     }
   }
 

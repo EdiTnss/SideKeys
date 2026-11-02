@@ -565,6 +565,12 @@ cu culoarea clapei (45% pe albă, 55% pe neagră), cu contur verde punctat, și 
 nu în contur. Rămâne mai palidă decât o notă cântată, deci nu se confundă cu una apăsată.
 **Doar în joc**: Laboratorul (`styles.css`) păstrează conturul gri, cu regula lui scrisă acolo.
 
+**Semnele pe clapă** (review 2026-10-30, #26, Edi: „mereu”): nota greșită poartă un ×,
+cea de evitat un !, în locul unde clapa armată are punctul; alb pe roșu, închis pe
+chihlimbar. Verdictul de pe clapă se citește așa și fără să deosebești roșul de verde.
+Celelalte roluri nu au semn. Le alege `keyGlyph` din `ui/keyboard.js`, deci apar și în
+Laborator.
+
 **Literele**: rămân ținute împreună, ca pe pian (BUG-03, Edi a mers pe recomandare). Textul de sub
 clapă o spune acum: „hold letters down together, like a chord: A D G is C E G. Z and X move the
 letters an octave.”
