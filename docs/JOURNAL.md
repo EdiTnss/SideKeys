@@ -865,3 +865,10 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   măsură ar trage ochiul de pe următorul); „, anticipated” trece în textul cărții. Văzut în browser
   doar ca stare finală (corect și greșit): panoul era ascuns, deci mișcarea n-a văzut-o nimeni.
   Tot 483 de teste, `npm run check` curat. Neîmpins.
+- **2026-11-02 (#28: fără stare tehnică în nivel)** — Edi: „scoate-l”. Sub clapă nu mai apare
+  „· piano samples” / „· browser synth”, nici „MIDI in: Digital Keyboard-1” (numele clapei e deja în
+  antet și în Setări). Rândul rămâne doar pentru ce folosește jucătorului: cum se cântă pe clapa de
+  ecran și avertismentele (nicio intrare MIDI, MIDI refuzat). Cheile `game.piano` și `game.synth`
+  au ieșit din ambele dicționare. „Loading the piano…” din propunere nu există: synth-ul răspunde
+  din primul click, iar pianul îl înlocuiește în tăcere când s-a încărcat, deci nu era nimic de
+  arătat. Văzut în browser fără clapă; cu o clapă reală, neîncercat. Tot 483 de teste. Neîmpins.

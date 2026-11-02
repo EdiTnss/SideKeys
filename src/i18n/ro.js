@@ -269,8 +269,6 @@ export default {
   'game.skip': 'Sari peste',
   'game.done': 'Gata',
   'game.octave': 'literele încep de la {note}',
-  'game.piano': 'sample-uri de pian',
-  'game.synth': 'synth-ul browserului',
   'game.close': 'Închide',
   'game.showNotes': 'Arată notele',
   'game.hideNotes': 'Ascunde notele',

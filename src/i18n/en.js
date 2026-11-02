@@ -279,8 +279,6 @@ export default {
   'game.skip': 'Skip',
   'game.done': 'Done',
   'game.octave': 'letters start at {note}',
-  'game.piano': 'piano samples',
-  'game.synth': 'browser synth',
   'game.close': 'Close',
   'game.showNotes': 'Show the notes',
   'game.hideNotes': 'Hide the notes',

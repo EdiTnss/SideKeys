@@ -672,10 +672,14 @@
       {/if}
     </div>
 
-    <p class="status {instrument.status.level}">
-      {t(touch && instrument.status.key === 'status.idle' ? 'status.idleTouch' : instrument.status.key, instrument.status.params)}
-      <span class="sound">· {instrument.sound === 'piano' ? t('game.piano') : t('game.synth')}</span>
-    </p>
+    <!-- How to play the drawn keys, or what went wrong. Not the device that is connected, nor what
+         the keys sound through: the header and Settings say that, and here it meant nothing to a
+         player (review 2026-10-30, #28). -->
+    {#if instrument.status.level !== 'ok'}
+      <p class="status {instrument.status.level}">
+        {t(touch && instrument.status.key === 'status.idle' ? 'status.idleTouch' : instrument.status.key, instrument.status.params)}
+      </p>
+    {/if}
   </section>
 {/if}
 
@@ -788,7 +792,5 @@
   }
   .octave { font-size: 13px; color: var(--ink-muted); display: inline-flex; align-items: center; gap: 5px; }
   .status { margin: 16px 0 0; font-size: 13px; color: var(--ink-muted); }
-  .status.ok { color: var(--chord-tone); }
   .status.warn { color: var(--avoid); }
-  .sound { color: #5c646b; }
 </style>

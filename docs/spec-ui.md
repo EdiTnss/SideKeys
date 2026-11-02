@@ -35,6 +35,8 @@ nu înțelegi de unde s-o iei”).
    ecran le păstrează.
    În engleză butonul se numește „Check” din 2026-11-02 (review 2026-10-30, #22): „Play” e deja
    ușa, butonul de pe „Continue” și „Play it on the clock”. În română rămâne „Cântă”.
+   Sub clapă nu stă nicio stare tehnică (review 2026-10-30, #28): nici clapa conectată, nici
+   prin ce sună tastele. Rândul de acolo e doar ajutorul clapei de ecran sau un avertisment.
 7. **Antetul vechi se împarte.** Starea clapei și seria stau în navigare. Comutatorul „Sound in
    the app”, limba, formularul de noutăți și legătura spre Laborator trec în **Settings / Setări**,
    la care duce rotița din navigare. Prima vizită are comutatorul de limbă pe ecran, pentru că
