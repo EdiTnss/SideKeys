@@ -856,3 +856,12 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   verdict pentru acordul de pe ecran. **Decizie a lui Claude**: ✗ la greșeală, pentru simetrie;
   „, anticipated” rămâne mic, lângă acord. Văzut în browser (corect și greșit). Tot 483 de teste,
   `npm run check` curat. Neîmpins.
+- **2026-11-02 (#27, a doua oară: verdictul ca o carte)** — După commit-ul cu (a), Edi a ales
+  totuși (b). Verdictul e acum o carte: marginea stângă în culoarea verdictului, acordul judecat
+  mare (36 px) cu ✓ verde sau ✗ portocaliu, apoi textul. Acordul cântat zboară din litera mare în
+  carte, iar la un acord corect cel nou intră din dreapta; cartea de dinainte iese spre stânga, iar
+  restul cărții noi apare abia după aceea, ca textele să nu se suprapună. **Decizii ale lui Claude**:
+  pe metronom și cu „reduce motion” cartea apare fără nicio mișcare (un acord care zboară la fiecare
+  măsură ar trage ochiul de pe următorul); „, anticipated” trece în textul cărții. Văzut în browser
+  doar ca stare finală (corect și greșit): panoul era ascuns, deci mișcarea n-a văzut-o nimeni.
+  Tot 483 de teste, `npm run check` curat. Neîmpins.

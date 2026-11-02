@@ -610,10 +610,13 @@ Edi a ales pe 2026-10-30 **R3 (Sparks)** cu **W1 (Shake)**.
   tremuratul rămân. Oprit metronomul în Training, sunetul revine. Laboratorul n-a avut niciodată
   sunetele astea, deci comping-ul cu bas de acolo nu se schimbă. Comping-ul care va veni în joc
   (Gig Mode) merge tot pe metronom, deci regula îl acoperă de la sine.
-- **Acordul judecat deschide rândul** (review 2026-10-30, #27, Edi a ales (a) pe 2026-11-02):
-  „C ✓ Clean — root position”, cu acordul la mărimea verdictului și în albul textului, bifa
-  verde, iar la greșeală „F ✗”, cu ✗ portocaliu. Acordul cerut s-a mutat deja pe următorul
-  când apare verdictul, deci fără nume mare rândul se citea ca verdict pentru acordul nou.
+- **Verdictul e o carte** (review 2026-10-30, #27, Edi a ales (b) pe 2026-11-02): marginea
+  stângă în culoarea verdictului, acordul judecat mare, cu ✓ verde sau ✗ portocaliu, apoi
+  textul. Acordul cerut s-a mutat deja pe următorul când apare verdictul, deci fără nume mare
+  rândul se citea ca verdict pentru acordul nou. Acordul cântat zboară din litera mare în
+  carte (380 ms); la un acord corect, cel nou intră din dreapta; cartea de dinainte iese spre
+  stânga (200 ms), iar restul cărții noi apare după ea. **Pe metronom și cu „reduce motion”,
+  fără mișcare**: cartea doar apare.
 - **Încercat de Edi pe Genos** pe 2026-10-30: „e bine”, cu excepția de mai sus.
 - **Finalul nivelului** (review 2026-10-30, #18; Edi a ales pe 2026-11-02 **S1 Sparks** dintre
   trei variante, pagina din `Claude outputs/stars-fx/`): în Rezultat, stelele trecerii se umplu

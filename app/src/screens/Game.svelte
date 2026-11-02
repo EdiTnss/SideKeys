@@ -84,6 +84,43 @@
   // the praise word, the shake of a miss); `burst` makes the keys throw their sparks.
   let verdicts = $state(0);
   let burst = $state(0);
+
+  // The verdict card (review 2026-10-30, #27, Edi chose (b)). On the clock it simply appears: a
+  // chord flying across the screen on every bar would pull the eye off the next one.
+  let askEl = $state<HTMLParagraphElement | null>(null);
+  const still = () => level.timed || matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /** The judged chord flies out of the big letter into the card; a chord played right also slides
+      the new one in from the right, so the eye sees one leave and the other arrive. */
+  function arrive(node: HTMLElement, advanced: boolean) {
+    if (!askEl || still()) return;
+    const from = askEl.getBoundingClientRect();
+    const to = node.getBoundingClientRect();
+    node.animate([
+      { transform: `translate(${from.left - to.left}px, ${from.bottom - to.bottom}px) scale(${from.height / to.height})` },
+      { transform: 'none' },
+    ], { duration: 380, easing: 'cubic-bezier(.3, .7, .2, 1)' });
+    // The rest of the card waits for the one before to have left, or the two texts overlap.
+    const card = node.parentElement;
+    card?.animate([{ borderColor: 'transparent', backgroundColor: 'transparent' }, { borderColor: 'transparent', backgroundColor: 'transparent', offset: 0.6 }, {}],
+      { duration: 380 });
+    for (const part of card?.children ?? []) {
+      if (part !== node) part.animate([{ opacity: 0 }, { opacity: 0, offset: 0.5 }, { opacity: 1 }], { duration: 400 });
+    }
+    if (advanced) {
+      askEl.animate([{ transform: 'translateX(60px)', opacity: 0 }, { transform: 'none', opacity: 1 }],
+        { duration: 320, delay: 60, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'backwards' });
+    }
+  }
+
+  /** The card before leaves to the left, over the new one's place, as the new one comes in. */
+  function slipOut(node: HTMLElement) {
+    if (still()) return { duration: 0 };
+    const top = node.offsetTop;
+    Object.assign(node.style, { position: 'absolute', top: `${top}px`, left: '0', margin: '0' });
+    return { duration: 200, css: (t: number) => `transform: translateX(${(t - 1) * 70}px); opacity: ${t}` };
+  }
+
   // The word beside a chord played right: an id, said in the language of the moment.
   let praise = $state<string | null>(null);
 
@@ -473,7 +510,7 @@
          what the earlier idea, showing it only inside the anticipation window, was turned down
          for. The count-in used to stand where the first chord is, so even that one came late. -->
     <div class="asks">
-      <p class="ask">{level.ask?.symbol ?? lastAsk}</p>
+      <p class="ask" bind:this={askEl}>{level.ask?.symbol ?? lastAsk}</p>
       {#if level.next}
         <p class="next">
           <span class="then">{t('game.then')}</span>{level.next.symbol}{#if nextShape}<span class="as"><Glossed text={t('game.as', { shape: nextShape })} /></span>{/if}
@@ -524,23 +561,24 @@
       {:else if !analysis}
         <p class="waiting">—</p>
       {:else if star}
-        <!-- The chord judged leads the line, as large as the verdict, so it is not read as one for
-             the chord now on screen (review 2026-10-30, #27). -->
-        <p class="star {star.toLowerCase()}">
-          <span class="judged">{judged}{#if anticipated}<small>{t('game.anticipated')}</small>{/if}<span class="sign">✓</span></span>
-          {star}{#if shape}{' — '}<Glossed text={shape} />{/if}
+        <!-- The verdict is a card that names the chord it judged, so it is not read as one for the
+             chord now on screen (review 2026-10-30, #27, Edi chose (b)): the chord flies out of the
+             big letter into it, and the card before leaves to the left. -->
+        <p class="star slip {star.toLowerCase()}" out:slipOut|global>
+          <span class="judged" use:arrive={true}>{judged}<span class="sign">✓</span></span>
+          <span class="said">{star}{#if shape}{' — '}<Glossed text={shape} />{/if}{#if anticipated}<small>{t('game.anticipated')}</small>{/if}</span>
           {#if praise}<span class="praise">{t(`praise.${praise}`)}</span>{/if}
         </p>
       {:else if shapeMiss}
-        <p class="star none shake">
-          <span class="judged">{judged}<span class="sign">✗</span></span>
-          <Glossed text={t('game.wrongShape', { shape: shapeMiss })} />
+        <p class="star slip none shake" out:slipOut|global>
+          <span class="judged" use:arrive={false}>{judged}<span class="sign">✗</span></span>
+          <span class="said"><Glossed text={t('game.wrongShape', { shape: shapeMiss })} /></span>
           {#if missPage}<button type="button" class="what" onclick={() => ontheory(missPage)}>{t('game.whatAsked')}</button>{/if}
         </p>
       {:else}
-        <p class="star none shake">
-          <span class="judged">{judged}{#if anticipated}<small>{t('game.anticipated')}</small>{/if}<span class="sign">✗</span></span>
-          <Glossed text={sayMessage(warnings[0])} />
+        <p class="star slip none shake" out:slipOut|global>
+          <span class="judged" use:arrive={false}>{judged}<span class="sign">✗</span></span>
+          <span class="said"><Glossed text={sayMessage(warnings[0])} />{#if anticipated}<small>{t('game.anticipated')}</small>{/if}</span>
         </p>
       {/if}
       {/key}
@@ -681,13 +719,19 @@
   .beat { margin-right: 10px; font-family: ui-monospace, monospace; font-size: 22px; font-weight: 600; color: var(--ink); }
   .hint { margin: 0 0 24px; color: var(--ink-muted); font-size: 15px; }
   .jazz { margin: -16px 0 24px; color: var(--ink-muted); font-size: 14px; }
-  .verdict { min-height: 92px; }
+  .verdict { min-height: 92px; position: relative; }
   .star { margin: 0 0 8px; font-size: 24px; font-weight: 600; letter-spacing: -0.02em; }
+  /* The card: the verdict's colour runs down its left edge, the chord it judged leads it. */
+  .slip {
+    display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; max-width: 100%;
+    padding: 10px 16px 10px 12px; border: 1px solid var(--border); border-left: 3px solid currentColor;
+    border-radius: 10px; background: var(--surface); font-size: 20px;
+  }
   .star.clean { color: var(--chord-tone); }
   .star.right { color: var(--ink); }
   .star.none { color: var(--avoid); }
   /* The word beside a star pops in; a miss shakes, with the wrong key under it (app.css). */
-  .praise { display: inline-block; margin-left: 10px; color: var(--ink); animation: praise-pop 300ms ease-out both; }
+  .praise { display: inline-block; color: var(--ink); animation: praise-pop 300ms ease-out both; }
   @keyframes praise-pop { 0% { opacity: 0; transform: scale(1.35); } 60% { opacity: 1; } 100% { transform: none; } }
   .shake { animation: verdict-shake 280ms ease-out; }
   @keyframes verdict-shake {
@@ -695,9 +739,12 @@
     60% { transform: translateX(-2px); } 80% { transform: translateX(1px); }
   }
   @media (prefers-reduced-motion: reduce) { .praise, .shake { animation: none; } }
-  .judged { color: var(--ink); margin-right: 10px; }
-  .judged small { font-size: 15px; font-weight: 400; color: var(--ink-muted); }
-  .sign { margin-left: 8px; }
+  .judged {
+    display: inline-block; font-size: 36px; line-height: 1; letter-spacing: -0.04em; color: var(--ink);
+    transform-origin: 0 100%;
+  }
+  .said small { font-size: 15px; font-weight: 400; color: var(--ink-muted); }
+  .sign { margin-left: 8px; font-size: 28px; }
   .star .sign { color: var(--chord-tone); }
   .star.none .sign { color: var(--avoid); }
   .waiting { margin: 0; font-size: 24px; color: var(--ink-muted); }
