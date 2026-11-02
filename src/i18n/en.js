@@ -216,8 +216,8 @@ export default {
   'common.chords': { one: '{count} chord', other: '{count} chords' },
 
   // The instrument's status line (app/src/lib/instrument.svelte.ts).
-  'status.idle': 'Click the keys to arm them, Enter to play. Or hold letters down together, like a chord: A D G is C E G. Z and X move the letters an octave.',
-  'status.idleTouch': 'Tap the keys to arm them, then Play. The arrows move the keyboard an octave.',
+  'status.idle': 'Click the keys to arm them, Enter to check. Or hold letters down together, like a chord: A D G is C E G. Z and X move the letters an octave.',
+  'status.idleTouch': 'Tap the keys to arm them, then Check. The arrows move the keyboard an octave.',
   'status.midiIn': 'MIDI in: {devices}',
   'status.noInput': 'No MIDI input found. Check the cable, or play the keys below.',
   'status.refused': 'Web MIDI was refused: {message}',
@@ -267,10 +267,12 @@ export default {
   'game.startMetronome': 'Start the metronome · {tempo} bpm',
   'game.stopRun': 'Stop the run',
   'game.startTimed': 'Play it on the clock',
-  'game.playArmed': 'Play',
-  'game.armFirst': 'Nothing armed yet: click the keys of the chord, then Play.',
-  'game.armFirstTouch': 'Nothing armed yet: tap the keys of the chord, then Play.',
-  'game.oneNote': 'One note is not a chord yet. Arm the others, then Play.',
+  // Not "Play": the door, the Continue button and "Play it on the clock" already are (review of
+  // 2026-10-30, #22). The button sends the armed keys to be judged, so it says that.
+  'game.playArmed': 'Check',
+  'game.armFirst': 'Nothing armed yet: click the keys of the chord, then Check.',
+  'game.armFirstTouch': 'Nothing armed yet: tap the keys of the chord, then Check.',
+  'game.oneNote': 'One note is not a chord yet. Arm the others, then Check.',
   'game.octaveDown': 'Keyboard an octave down',
   'game.octaveUp': 'Keyboard an octave up',
   'game.clear': 'Clear',

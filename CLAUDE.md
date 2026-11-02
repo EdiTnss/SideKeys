@@ -372,8 +372,9 @@ Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-c
 #1 (toate tonalitățile), #11 („Continuă” după două stele), #12 (ordinea amestecată la fiecare
 trecere), #13 (80 pe clapa de ecran), #14 (ce cere a treia stea), #15 (treptele de jazz din
 provocare), #16 (timpul pe ecran, măsura fără răspuns) și #18 („Recordul tău rămâne”, stelele
-care se umplu pe rând cu scântei și sunet, „Record nou”) și #19 („Arată notele” ține tot
-nivelul) sunt făcute și neîmpinse. Urmează, în ordinea din fișier, 22, 25….
+care se umplu pe rând cu scântei și sunet, „Record nou”), #19 („Arată notele” ține tot
+nivelul) și #22 („Check” în engleză) sunt făcute și neîmpinse. Urmează, în ordinea din
+fișier, 25, 26….
 
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`
 („Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data

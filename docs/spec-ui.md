@@ -33,6 +33,8 @@ nu înțelegi de unde s-o iei”).
 5. **În nivel nu e nicio navigare**: doar ieșirea (×), progresul, acordul, clapa.
 6. **Cu o clapă MIDI conectată, butoanele Play și Clear dispar**: se cântă pe clapă. Clapa de
    ecran le păstrează.
+   În engleză butonul se numește „Check” din 2026-11-02 (review 2026-10-30, #22): „Play” e deja
+   ușa, butonul de pe „Continue” și „Play it on the clock”. În română rămâne „Cântă”.
 7. **Antetul vechi se împarte.** Starea clapei și seria stau în navigare. Comutatorul „Sound in
    the app”, limba, formularul de noutăți și legătura spre Laborator trec în **Settings / Setări**,
    la care duce rotița din navigare. Prima vizită are comutatorul de limbă pe ecran, pentru că

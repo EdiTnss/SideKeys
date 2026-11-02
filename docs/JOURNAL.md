@@ -829,3 +829,8 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   Claude**: cât e aprins, butonul scrie „Hide the notes” / „Ascunde notele”, fiindcă acum e un
   comutator care ține. Văzut în browser: notele au urmat C, Bb, G, iar butonul le-a ascuns. Tot
   481 de teste (nicio logică nouă în `src/`), `npm run check` curat. Neîmpins.
+- **2026-11-02 (#22: „Check” în loc de „Play”)** — Edi a ales „Check”. În engleză, butonul care
+  trimite clapele armate scrie „Check [Enter]”, iar cele patru texte care îl numesc („then Play.”)
+  și rândul de ajutor („Enter to check”) spun la fel. „Play” rămâne ușa, „Continue” și „Play it on
+  the clock”. Româna rămâne „Cântă”: acolo nu se suprapunea cu nimic. Văzut în browser, în
+  engleză. Tot 481 de teste. Neîmpins.
