@@ -53,7 +53,7 @@ Slightly warm on both sides, so the theory colours stay the only saturated thing
 
 ### Theory tokens — unchanged
 `--chord-tone #2e9e5b` · `--tension #3b82f6` · `--altered #8b5cf6` · `--avoid #f59e0b`
-· `--wrong #ef4444` · `--held #9ca3af` · `--armed #60a5fa`. This brand touches none of them.
+· `--wrong #ef4444` · `--held #9ca3af` · `--armed #0a0b0c`. This brand touches none of them.
 
 ## Type
 Wordmark and interface: **Sora** — 600 for the wordmark and headings at `letter-spacing: -0.03em`,

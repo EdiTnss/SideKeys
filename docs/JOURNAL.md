@@ -834,3 +834,11 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   și rândul de ajutor („Enter to check”) spun la fel. „Play” rămâne ușa, „Continue” și „Play it on
   the clock”. Româna rămâne „Cântă”: acolo nu se suprapunea cu nimic. Văzut în browser, în
   engleză. Tot 481 de teste. Neîmpins.
+- **2026-11-02 (#25: clapa armată nu mai e albastră)** — Edi a ales (a). O clapă armată nu mai
+  primește umplere: poartă un contur gros în interiorul ei și un punct, închise la culoare pe o
+  clapă albă, albe pe una neagră (`--armed` e acum `#0a0b0c`). Umplerea rămâne doar a verdictului,
+  deci albastrul înseamnă iar numai „tensiune”. **Decizie a lui Claude**: marcajul e desenat de
+  `src/ui/keyboard.js` ca element separat, în interiorul clapei, fiindcă un contur gros pe clapa
+  însăși ar fi fost acoperit pe jumătate de vecine; e comun jocului și Laboratorului (`styles.css`
+  are aceleași reguli). Văzut în browser, în joc și în Laborator: marcajul apare la click, iar după
+  verdict nu rămâne niciunul. Tot 481 de teste, `npm run check` curat. Neîmpins.

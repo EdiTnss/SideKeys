@@ -17,7 +17,7 @@
   --avoid: #f59e0b;
   --wrong: #ef4444;
   --held: #9ca3af;
-  --armed: #60a5fa;
+  --armed: #0a0b0c;
 }
 
 * { box-sizing: border-box; }
@@ -57,7 +57,16 @@ body {
 .key.role-avoid { fill: var(--avoid); }
 .key.role-wrong { fill: var(--wrong); }
 .key.caution { stroke: var(--warn, #d97706); stroke-width: 3; }
-.key.armed { fill: var(--armed); }
+/* An armed key wears an outline inside it and a dot, never a fill (review 2026-10-30, #25: the
+   armed blue was the tension blue): a fill on a key is the verdict's. Dark on a white key, white on
+   a black one, so it is the shape that says "armed", not a colour. Drawn by src/ui/keyboard.js. */
+.key-mark { display: none; pointer-events: none; }
+.key-mark.armed { display: inline; }
+.key-mark rect { fill: none; stroke-width: 2.5; }
+.key-mark.white rect { stroke: var(--armed); }
+.key-mark.black rect { stroke: #fff; }
+.key-mark.white circle { fill: var(--armed); }
+.key-mark.black circle { fill: #fff; }
 /* A missing note is a chord tone nobody played: the chord-tone green, paler than a played one and
    dashed, so it reads as "this one" without being mistaken for a note under a finger. A grey
    dashed outline alone all but vanished on a white key (Edi, at the Genos, 2026-10-29). */
@@ -72,7 +81,7 @@ body {
    Everything is transform, opacity or filter, so none of it touches layout. */
 
 /* A key under a finger goes down, like one with a hammer beneath it. */
-.key.held, .key.armed { transform: translateY(1px); }
+.key.held, .key.armed, .key-mark.armed { transform: translateY(1px); }
 
 /* The moment of judgement: the colour blooms once and settles. The marker alternates between
    verdicts (see Game.svelte) because a CSS animation does not restart for a class that was
@@ -127,7 +136,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .key, .key.strike-a, .key.strike-b, .key.white.missing, .key.black.missing, .spark { transition: none; animation: none; }
   .spark { display: none; }
-  .key.held, .key.armed { transform: none; }
+  .key.held, .key.armed, .key-mark.armed { transform: none; }
 }
 .key-label { font-size: 9px; fill: #555; pointer-events: none; }
 .keyboard.playable { cursor: pointer; touch-action: none; }

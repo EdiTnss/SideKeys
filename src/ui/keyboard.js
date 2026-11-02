@@ -15,6 +15,18 @@ function el(tag, attrs) {
   return node;
 }
 
+// What an armed key wears: an outline inside the key and a dot, never a fill. A fill on a key is
+// the verdict's (review 2026-10-30, #25: the armed blue was the tension blue). The outline is drawn
+// inside the key, because a thick stroke on the key itself would be half covered by its neighbours.
+function markOf(colour, x, width, height, dotY) {
+  const mark = el('g', { class: `key-mark ${colour}` });
+  mark.append(
+    el('rect', { x: x + 2.5, y: 2.5, width: width - 5, height: height - 5, rx: 2 }),
+    el('circle', { cx: x + width / 2, cy: dotY, r: colour === 'white' ? 3.5 : 2.5 }),
+  );
+  return mark;
+}
+
 /**
  * Builds the keys inside `svg` (E1–G7 by default, the 76 keys of a Genos). Returns
  * { highlight(classesByMidi) }. With `onKey`, a key answers the mouse and the touchscreen: it
@@ -28,6 +40,7 @@ export function createKeyboard(svg, { from = 28, to = 103, onKey = null } = {}) 
   const keys = new Map();
   const whites = [];
   const blacks = [];
+  const marks = { white: [], black: [] };
   const labels = [];
   let whiteIndex = 0;
 
@@ -35,13 +48,20 @@ export function createKeyboard(svg, { from = 28, to = 103, onKey = null } = {}) 
     const pc = midi % 12;
     if (BLACK_PCS.has(pc)) {
       // A black key sits on the boundary between the previous white key and the next one.
-      const rect = el('rect', { x: whiteIndex * WHITE_W - BLACK_W / 2, y: 0, width: BLACK_W, height: BLACK_H, rx: 2 });
+      const x = whiteIndex * WHITE_W - BLACK_W / 2;
+      const rect = el('rect', { x, y: 0, width: BLACK_W, height: BLACK_H, rx: 2 });
+      const mark = markOf('black', x, BLACK_W, BLACK_H, BLACK_H - 11);
       blacks.push(rect);
-      keys.set(midi, { rect, base: 'key black' });
+      marks.black.push(mark);
+      keys.set(midi, { rect, base: 'key black', mark });
     } else {
-      const rect = el('rect', { x: whiteIndex * WHITE_W, y: 0, width: WHITE_W, height: WHITE_H, rx: 3 });
+      const x = whiteIndex * WHITE_W;
+      const rect = el('rect', { x, y: 0, width: WHITE_W, height: WHITE_H, rx: 3 });
+      // The dot sits below where the black keys end and above the C label.
+      const mark = markOf('white', x, WHITE_W, WHITE_H, WHITE_H - 22);
       whites.push(rect);
-      keys.set(midi, { rect, base: 'key white' });
+      marks.white.push(mark);
+      keys.set(midi, { rect, base: 'key white', mark });
       if (pc === 0) {
         const text = el('text', { x: whiteIndex * WHITE_W + WHITE_W / 2, y: WHITE_H - 6, 'text-anchor': 'middle', class: 'key-label' });
         text.textContent = midiToName(midi);
@@ -52,7 +72,7 @@ export function createKeyboard(svg, { from = 28, to = 103, onKey = null } = {}) 
   }
 
   svg.setAttribute('viewBox', `0 0 ${whiteIndex * WHITE_W} ${WHITE_H}`);
-  svg.replaceChildren(...whites, ...blacks, ...labels);
+  svg.replaceChildren(...whites, ...marks.white, ...blacks, ...marks.black, ...labels);
   highlight({});
 
   if (onKey) {
@@ -68,9 +88,10 @@ export function createKeyboard(svg, { from = 28, to = 103, onKey = null } = {}) 
   }
 
   function highlight(classesByMidi) {
-    for (const [midi, { rect, base }] of keys) {
+    for (const [midi, { rect, base, mark }] of keys) {
       const extra = classesByMidi[midi];
       rect.setAttribute('class', extra ? `${base} ${extra}` : base);
+      mark.classList.toggle('armed', extra?.split(' ').includes('armed') ?? false);
     }
   }
 
