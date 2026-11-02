@@ -281,6 +281,7 @@ export default {
   'rating.jumpy': 'cu salturi',
 
   'result.notYet': 'Încă nu',
+  'result.bestStays': 'Recordul tău rămâne {stars}',
   'result.practiceRun': 'Trecere de exercițiu. Rezultatul pe care îl poți trimite rămâne cel de la prima ta trecere de azi.',
   'result.copyFirst': 'Copiază primul rezultat',
   'result.right': 'corecte ({percent})',

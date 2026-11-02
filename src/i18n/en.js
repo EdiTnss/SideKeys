@@ -290,6 +290,7 @@ export default {
   'rating.jumpy': 'jumpy',
 
   'result.notYet': 'Not yet',
+  'result.bestStays': 'Your best stays {stars}',
   'result.practiceRun': 'Practice run. The result you can share stays the one from your first pass today.',
   'result.copyFirst': 'Copy first result',
   'result.right': 'right ({percent})',

@@ -25,6 +25,9 @@ nu înțelegi de unde s-o iei”).
    după a doua stea; până atunci, a treia stea se cere din Rezultat.
 4. **Fiecare final duce undeva.** Rezultatul arată ce urmează: lucrul de reparat (cu „Exersează
    X” și „Cum se construiește?”), a treia stea în timp, nivelul următor.
+   O trecere sub recordul nivelului spune sub titlu că recordul rămâne („Recordul tău
+   rămâne ★★”): altfel, după un timed ratat, trei stele goale par să fi șters cele două
+   câștigate. Provocarea zilei nu-l arată, fiindcă acolo contează prima trecere a zilei.
 5. **În nivel nu e nicio navigare**: doar ieșirea (×), progresul, acordul, clapa.
 6. **Cu o clapă MIDI conectată, butoanele Play și Clear dispar**: se cântă pe clapă. Clapa de
    ecran le păstrează.

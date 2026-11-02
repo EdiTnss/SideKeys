@@ -51,11 +51,14 @@
   let grid = $state<string[] | null>(null);
   let share = $state<string | null>(null);
   let official = $state(true);
+  // The record before this pass: `best` already holds this pass once it is filed.
+  let before = $state(0);
 
   // One run is recorded once: the effect fires again on every change while the result is up.
   $effect(() => {
     if (level.finished && level.score && !recorded) {
       recorded = true;
+      before = best;
       const filed = onfinish({ stars: level.score.stars, attempts: level.attempts, seconds: level.seconds });
       grid = filed.grid;
       share = filed.share;
@@ -437,7 +440,7 @@
   {@const weak = level.weakness}
   <Result name={title} score={level.score} weakness={weak}
           timed={level.timed} threshold={level.threshold} tempo={clockTempo} grid={grid} share={share}
-          official={official} onagain={level.timed ? againTimed : again}
+          official={official} before={before} onagain={level.timed ? againTimed : again}
           ontimed={!grid && !level.timed && !level.plan.free && level.score.stars === 2 ? againTimed : null}
           onpractise={weak ? () => onweak(weak.key, planTexture, level.plan.tempo) : null}
           onhow={resultPage ? () => ontheory(resultPage) : null}

@@ -804,3 +804,10 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   evitată**: un voicing anticipat răspunde măsurii următoare înainte să înceapă, deci se uită măsura
   care s-a încheiat, nu cea care începe. Văzut în browser, la 80 și la 120. Tot 479 de teste (nicio
   logică nouă în `src/`), `npm run check` curat. Neîmpins.
+- **2026-11-02 (#18, textul: recordul rămâne)** — Edi a spus „Da, ambele”. Când o trecere are mai
+  puține stele decât recordul nivelului, Rezultatul scrie sub titlu „Your best stays ★★” /
+  „Recordul tău rămâne ★★”. `Game.svelte` ține recordul de dinaintea trecerii (`before`), fiindcă
+  `best` îl conține deja pe al ei după ce trecerea e salvată. Provocarea zilei nu-l arată: acolo
+  contează prima trecere a zilei, cu regula ei. Văzut în browser (Triade majore, două stele, o
+  trecere fără niciun acord: „Încă nu” și „Recordul tău rămâne ★★”, recordul salvat tot 2). Tot
+  479 de teste, `npm run check` curat. Animația stelelor urmează, ca pagină cu variante. Neîmpins.

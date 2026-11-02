@@ -9,7 +9,7 @@
   type Weakness = { key: string; problem: string; count: number; kind: string; degree: string | null } | null;
 
   let { name, score, weakness, timed, threshold, tempo, grid = null, share = null,
-        official = true, onagain, ontimed = null, onpractise = null, onhow = null, onnext = null, onexit }: {
+        official = true, before = 0, onagain, ontimed = null, onpractise = null, onhow = null, onnext = null, onexit }: {
     name: string;
     score: Score;
     weakness: Weakness;
@@ -23,6 +23,8 @@
     share?: string | null;
     /** False on a replay of a challenge already played today. */
     official?: boolean;
+    /** The level's stars before this pass. */
+    before?: number;
     onagain: () => void;
     /** The same level on the clock: offered when two stars are in and the third needs it. */
     ontimed?: (() => void) | null;
@@ -63,6 +65,12 @@
   </div>
 
   <h2>{score.label ?? t('result.notYet')}</h2>
+  <!-- A pass below the record says the record stands: three empty stars after a missed run on
+       the clock read as if the two already earned were gone (review of 2026-10-30, #18). The
+       challenge keeps its own rule, the first pass of the day. -->
+  {#if !grid && before > score.stars}
+    <p class="best">{t('result.bestStays', { stars: '★'.repeat(before) })}</p>
+  {/if}
   <p class="sub"><Glossed text={name} /></p>
 
   {#if grid}
@@ -191,6 +199,7 @@
   }
   .stars { display: flex; justify-content: center; gap: 12px; margin-bottom: 22px; }
   h2 { margin: 0 0 6px; font-size: 32px; font-weight: 600; letter-spacing: -0.03em; }
+  .best { margin: 0 0 6px; font-size: 15px; color: var(--ink); }
   .sub { margin: 0 0 30px; color: var(--ink-muted); font-size: 15px; }
   .tiles { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; }
   .tile { flex: 1 1 150px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 16px; }
