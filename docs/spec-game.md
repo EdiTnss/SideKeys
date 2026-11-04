@@ -221,7 +221,9 @@ colorate se albesc numai după un răspuns bun, fiindcă doar atunci se schimbă
 păstrează încercarea, deci o greșeală urmată de Skip ajunge în Review și în „un singur lucru de
 reparat”. Până atunci, Skip scria peste ea un răspuns gol, iar `outcomesFor` și `weakness` sar
 peste un răspuns fără analiză. Un acord sărit fără nicio încercare rămâne un răspuns gol: e ratat
-la stele și nu intră în Review, ca în Training, unde „nothing is held against the one passed over”.
+la stele și nu intră în Review, ca în Training, unde „nothing is held against the one passed over”,
+și ca o măsură necântată pe ceas. **Edi a confirmat pe 2026-11-04** („Nu, rămâne așa”): Review se
+face din ce ai cântat greșit, iar un acord sărit nu spune ce lipsește.
 Pe ecranul de rezultat, cifra de mișcare apare numai după o trecere în timp: a treia stea se
 câștigă acolo, iar o trecere liberă cu acorduri sărite măsoară cel mult doi vecini.
   Asta înseamnă „în timp". O corectură în interiorul celor 300 ms ai capturii e același voicing.
