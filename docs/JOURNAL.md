@@ -772,6 +772,22 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   Provocarea zilei nu se amestecă. Test întâi; 476 → **477 de teste**, `npm run check` și build
   curate. Văzut în browser: trei treceri prin „Triade majore”, trei ordini, iar pe ceas acordul de
   pe ecran și cel următor urmează noua ordine. Neîmpins, neîncercat pe Genos.
+- **2026-10-31 (reel-ul pe interfața nouă)** — Edi a cerut un clip nou, pentru că reel-ul din
+  2026-10-28 arăta interfața veche. Claude a propus un text nou (cârlig „Bet you can't play this
+  chord clean on the first try”, clapa de ecran, Practice / Learn, challenge-ul zilei); **Edi a
+  ales să rămână vocea veche**, deci textul, timpii și sunetul sunt cei din 2026-10-28 și nu s-a
+  generat nimic la ElevenLabs. S-au refăcut imaginile, toate de pe site-ul **publicat**: prima
+  vizită (Welcome → „A MIDI keyboard” → „Where do you start?”), antetul cu clapa conectată, un
+  montaj prin cele trei uși cu ușa activă încercuită, drumul până la ii–V–I, iar verdictul e
+  acum **filmat**, nu fotografiat: scânteile și „Neat!” pe Dm7 și G7, tremuratul și tasta roșie pe
+  C7. **Cum**: `capture.mjs` face două treceri în browsere noi; a doua filmează doar partea de sus
+  a ecranului (acordul, verdictul, clapa), cu capturi una după alta (~12 pe secundă), fiecare cu
+  ora ei, iar `reel.html` arată la fiecare moment ultimul cadru luat până atunci. Timpul virtual
+  (30 fps exacte) s-a încercat și a picat: o captură se blochează cât timpul e oprit; screencast-ul
+  dă doar cadre de 540 px. Un clinchet discret ține locul marimbei jocului pe cele două acorduri
+  corecte. Versiunea veche stă în `Reels/old-2026-10-28/` (ignorat de git). **Observat în
+  treacăt**: pe C7 cântat E-A-B-D, jocul scrie „You played C6/9”, deși B nu e în C6/9; se vede în
+  reel la „The note you missed”.
 - **2026-11-01 (#13: 80 pe clapa de ecran)** — Edi a ales (a), „Da, 80 pe ecran”. O trecere pe
   ceas merge la 80 când clapa de ecran e cântată cu degetul sau cu mouse-ul (`timedTempo` și
   `SCREEN_TEMPO` în `path.js`); literele și o clapă MIDI păstrează 120. Instrumentul ține minte cum
@@ -811,6 +827,27 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   contează prima trecere a zilei, cu regula ei. Văzut în browser (Triade majore, două stele, o
   trecere fără niciun acord: „Încă nu” și „Recordul tău rămâne ★★”, recordul salvat tot 2). Tot
   479 de teste, `npm run check` curat. Animația stelelor urmează, ca pagină cu variante. Neîmpins.
+- **2026-11-02 (reel-ul: clinchetul ascuțit scos)** — Edi a spus întâi „E bun așa”, apoi a auzit
+  un sunet „super ascuțit”, „deranjant pentru ureche”, la „It asks for a chord” și pe cele trei
+  stele. **Cauza, măsurată**: `Reels/audio/chime.mp3` are aproape toată energia peste 8 kHz (un
+  ping la 9,5 kHz), iar reel-ul îl mai și urca: pe Dm7 ajungea la 14 kHz, pe stele la 9,5–12 kHz.
+  Clinchetul era și în reel-ul din 2026-10-28, pe stele. **Acum**: `render.mjs` construiește
+  bătaia de marimba a jocului, la fel ca `src/audio/verdict.js` (fundamentala, al patrulea
+  parțial, un clic de zgomot sub 3 kHz), ca WAV; pe Dm7 și G7 sună fundamentala și cvinta din
+  octava 5, ca în joc, iar stelele urcă pe Bb – D – F/Bb, tonalitatea muzicii de dedesubt.
+  Energia peste 8 kHz: 24% → 0,4% pe Dm7, 66% → 1% pe stele. Doar sunetul s-a remixat
+  (`node Reels/render.mjs mux`), imaginile sunt aceleași; copia web e refăcută (6,0 MB).
+  Neauzit de Claude: verificat numai prin spectru și loudness (−16,3 LUFS). **Edi, după ce l-a
+  ascultat: „E bine acum”** — reel-ul nou e aprobat.
+- **2026-11-02 (reel-ul nou în README)** — La cererea lui Edi, prin Chrome-ul lui (extensia a
+  trebuit întâi conectată), clipul de 6 MB e încărcat în editorul web al README-ului și commis
+  direct pe `main` din GitHub: `14526fc`, „docs: the README reel shows the new interface”, doar
+  linia link-ului (`b52b84ad…` → `c3760400…`). **Capcană găsită**: o primă încărcare, lăsată
+  nesalvată, dădea 404 unui vizitator nelogat; un clip devine public abia când editorul GitHub
+  salvează textul care îl folosește. De aceea commit-ul s-a făcut din web, nu din local, cu
+  acordul lui Edi. Verificat după: un vizitator nelogat primește `video/mp4` de 5.981.608 octeți.
+  **Rămâne**: `main` local are 27 de commit-uri neîmpinse și îi lipsește `14526fc`, deci
+  următorul push cere întâi `git pull --rebase` (fără conflicte: README-ul nu e atins local).
 - **2026-11-02 (#18, animația stelelor)** — Edi a ales **S1 Sparks** dintre trei variante (pagina
   din `Claude outputs/stars-fx/`, în afara repo-ului). În Rezultat, stelele trecerii se umplu una
   câte una (prima la 250 ms, apoi la 300 ms una de alta), fiecare cu un „pop”, șase scântei albe și
@@ -889,3 +926,53 @@ Jurnalul sesiunilor, mutat neschimbat din `CLAUDE.md` pe 2026-09-19. Intrările 
   (`index-DIXtds1B.js`, cache `sidekeys-798228e006c3`) e cel construit local și conține
   răsturnările în română, semnele de pe clape, marcajul clapei armate, cartea verdictului și
   „Check”. Nimic din tur n-a fost încercat pe Genos.
+- **2026-11-03 (pluginul ECC, doar pe mașina lui Edi)** — Edi a cerut ECC („Everything Claude
+  Code”, `affaan-m/ECC`, MIT, v2.2.3) pentru SideKeys. Claude a recomandat doar câteva piese,
+  fără hooks, din cauza hook-urilor de pe fiecare apel de unealtă, a defectelor de pe Windows
+  nativ și a contextului. **Edi a ales pluginul întreg.** L-am instalat cu CLI-ul inclus în
+  aplicație, cu `plugin marketplace add affaan-m/ECC --scope local` și apoi
+  `plugin install ecc@ecc --scope local`. Pluginul stă în `.claude/settings.local.json`, ignorat
+  de git, deci nu ajunge în repo-ul public și nici în alte proiecte. Conține 412 skill-uri, 71 de
+  agenți, hooks pe 8 evenimente și un server MCP (`chrome-devtools`). Hook-urile sunt pornite, pe
+  profilul `standard`, adică valorile implicite. **Costul, după `claude plugin details`: ~33.800 de
+  tokeni în plus la fiecare sesiune.** Pluginul intră în vigoare de la sesiunea următoare, iar
+  nimic din ECC n-a rulat încă. Cum se opresc hook-urile stă în `CLAUDE.md`, la „Cioburi”.
+- **2026-11-04 (analiza cu ECC)** — Edi a cerut „analizează sidekeys cu ECC” și a respins
+  întrebarea cu meniu („CONTINU”). Au rulat `harness-audit` (22/39; scriptului din plugin îi lipsea
+  `@iarna/toml`, instalat în scratchpad, pluginul neatins), AgentShield 1.6.0 (B, 75/100, numai pe
+  configurația agentului) și trei agenți ECC care doar citesc: `security-reviewer`,
+  `typescript-reviewer`, `silent-failure-hunter`. `npm run check` curat, 483 de teste verzi.
+  **Confirmate în cod, de reparat**: (1) `openPage` din `app/sw.js` pune în cache orice răspuns,
+  deci un 404 de la Pages (nu există `404.html`) ia locul jocului offline; (2) `skip()` din
+  `level.svelte.ts` scrie peste o încercare greșită una goală, iar `outcomesFor` și `weakness` sar
+  peste `analysis: null`, deci greșeala nu mai ajunge în Review; (3) `tools/quiet-report.mjs` nu
+  citește codul de ieșire și nici `# fail`, spre deosebire de `guard.mjs`; (4) `loadSound` nu mai
+  încearcă pianul după un eșec, iar `loadPiano` nu spune de ce a eșuat. **Plauzibile, de văzut pe
+  Genos**: o clapă scoasă din priză rămâne „conectată” (`showDevices` nu se uită la `state`), iar
+  notele ținute atunci rămân agățate, posibil BUG-04. **Doar dacă Worker-ul s-ar publica**:
+  primește `system` de la apelant, deci e un proxy Opus general, iar `ALLOWED_ORIGINS` are
+  `localhost:3000`. **Fals pozitive**: „Eval Coverage 0” și „Memory 0” (scriptul caută `evals/`,
+  `tests/`, `.claude/memory.md`), AgentShield pe `git push --force` (e interdicția din
+  `CLAUDE.md`) și cele 11 „prompt defenses” cerute lui `CLAUDE.md`. `npm audit`: nimic în
+  producție; 4 high numai în `wrangler`, unealta de dev din `worker/`. Nimic reparat, nimic commis.
+- **2026-11-04 (reparațiile din analiza ECC)** — Edi: „Da, în ordine”. Trei commit-uri, neîmpinse.
+  `0a12eb7`: `openPage` păstrează drept joc doar pagina de la `./` sau `./index.html`, întreagă și
+  neredirecționată. Pe drum s-a găsit și `/lab` fără bară, pe care Pages îl redirecționează spre
+  banc, care ar fi intrat în cache tot drept joc. Testul rulează worker-ul construit în `node:vm`, cu
+  `fetch` și cache false. `8d57afb`: `skip()` trece prin `counts`, deci o greșeală urmată de Skip
+  rămâne. Văzut în browser: C-E-G pe G, apoi Space, iar Rezultatul spune „missing the 3, once”, cu
+  triada majoră în Review pe 2026-11-05. Shell-ul n-are teste în Node; regula e cea testată din
+  `stars.js`. `ea07220`: `loadPiano` scrie motivul în consolă, iar shell-ul reîncearcă pianul la
+  ecranul următor, de cel mult trei ori. Văzut în browser: 17 înregistrări picate la primul nivel,
+  17 sosite la al doilea. **`quiet-report.mjs` nu s-a schimbat**: o sondă cu patru rulări ciudate
+  (fișier gol, ieșire 1 după un test verde, proces omorât, test agățat) a arătat că runner-ul scrie
+  mereu un `not ok` pe care raportorul îl citește, iar agățarea o prinde timeout-ul. 483 → **487
+  de teste**, `npm run check` curat. Precizarea despre Skip e în `spec-game.md`. **Decizia lui
+  Claude, pe care Edi o poate răsturna**: trei încercări pentru pian. **Decizia lui Edi**: un acord
+  sărit fără nicio încercare nu intră în Review („Nu, rămâne așa”), la fel ca în Training și ca o
+  măsură necântată pe ceas; scrisă în `spec-game.md`. **Împins și publicat** la cererea lui Edi
+  („Da, împinge”), `bd86883..f1e9fda`. Nu a fost nevoie de `git pull --rebase`: `14526fc` era deja
+  în `main` prin merge-ul `bf0871b`, deci nota din `CLAUDE.md` era depășită (corectată). Pe
+  GitHub, `tests` și `pages` au trecut; pachetul servit (`index-DdLdYzXb.js`, cache
+  `sidekeys-180fa39b877e`) e cel construit local, cu `isShell` în `sw.js`. `gh` nu e instalat în
+  sesiune; rulările s-au citit din API-ul public al GitHub-ului. Neîncercat pe Genos.

@@ -181,7 +181,7 @@ pe Edi. Regulile de teorie stau în `docs/spec-*.md`, nu în povestea care le-a 
 ### Ce există și merge
 
 - **Motorul** (`src/theory/`, `src/game/`, `src/midi/`, `src/audio/`): JS pur, fără dependențe,
-  **483 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
+  **487 teste** verzi, CI pe Node 22 și 24. Local, `npm run test:quiet`.
 - **Raportul de comping** (P2, 2026-10-29), în **Laborator**: o trecere timed cu „bass from the
   app” cântă basul aranjamentului în buclă, iar după Stop apare raportul (acorduri, registru,
   voice leading, varietate). Pragurile sunt propuneri, încă necalibrate; timpul nu se arată.
@@ -270,6 +270,15 @@ Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-Bzm-c
 cererea lui Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit
 (`index-DIXtds1B.js`, cache `sidekeys-798228e006c3`) e cel construit local.
 
+**Reel-ul nou e în README din 2026-11-02** (`14526fc`, la cererea lui Edi), commis din editorul
+web al GitHub-ului, nu din local: un clip încărcat devine public abia când îl salvează editorul
+lui (link-ul a dat 404 pentru un vizitator până atunci). Commit-ul e și local, prin merge-ul
+`bf0871b`.
+
+**Reparațiile din analiza ECC (2026-11-04) sunt împinse și publicate** (`f1e9fda`, la cererea
+lui Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit (`index-DdLdYzXb.js`,
+cache `sidekeys-180fa39b877e`) e cel construit local.
+
 ### Ce nu există încă
 
 - **Unitatea Comping** lipsește din drum: cere Gig Mode, care nu e scris.
@@ -317,9 +326,10 @@ cererea lui Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit
 - **Să asculte pianul** și să spună dacă stratul de velocitate (v9 din 16) e potrivit.
 - **Să citească cele opt cuvinte de laudă în română** (verdictul cu sunet e publicat din
   2026-10-30; cuvintele le-a ales Claude).
-- **Să posteze reel-ul** pe TikTok și Instagram (`Reels/out/sidekeys-reel.mp4`, aprobat pe
-  2026-10-28; în README e din aceeași zi, ca video încărcat pe GitHub, în copia comprimată
-  `sidekeys-reel-web.mp4`, sub limita de 10 MB). Postarea cere întâi planul **Starter** la
+- **Să posteze reel-ul** pe TikTok și Instagram: `Reels/out/sidekeys-reel.mp4`, refăcut pe
+  interfața nouă și aprobat de Edi pe 2026-11-02 („E bine acum”, după ce clinchetul ascuțit a
+  devenit marimba jocului). E deja și în README, în copia sub 10 MB (`sidekeys-reel-web.mp4`);
+  versiunea veche stă în `Reels/old-2026-10-28/`. Postarea cere întâi planul **Starter** la
   ElevenLabs: pe gratuit, vocea și muzica nu au licență comercială. Ziua primei postări pornește
   ceasul porții P1.
 - **Să încerce formularul cu adresa lui**, după publicare: Claude nu a trimis nicio adresă de probă.
@@ -372,6 +382,15 @@ cererea lui Edi), cu testele și publicarea trecute pe GitHub. Pachetul servit
 - **Svelte taie spațiul de la începutul unui bloc `{#if}`**: un text care trebuie să înceapă cu
   spațiu se scrie ca expresie, `{' — '}`. Așa lipsea spațiul din „Clean— Rootless A” (reparat pe
   2026-10-28; reel-ul îl arată încă fără).
+- **Pluginul ECC** (`ecc@ecc`, din 2026-11-03, doar pe mașina lui Edi: stă în
+  `.claude/settings.local.json`, ignorat de git) are hooks care rulează la fiecare apel de unealtă.
+  GateGuard refuză prima editare a fiecărui fișier și prima comandă de shell din sesiune și cere
+  întâi o investigație. Un observer scrie fiecare apel într-un jurnal local. Pe Stop, ECC rulează
+  typecheck pe fișierele editate și caută `console.log`, lângă garda noastră. Ca să oprești doar
+  GateGuard, pui `ECC_GATEGUARD=off`; pentru toate hook-urile, `ECC_HOOKS_ENABLED=false` sau
+  opțiunea `hooks_enabled` a pluginului. Pluginul întreg se scoate cu
+  `claude plugin uninstall ecc@ecc --scope local`. Executabilul `claude` nu e în PATH: stă lângă
+  aplicație, în `%LOCALAPPDATA%\Claude-Data\…\claude-code\<versiune>\…\claude.exe`.
 
 ## Următorul pas
 
@@ -385,6 +404,11 @@ nivelul), #22 („Check” în engleză), #25 (clapa armată: contur și punct, 
 stare tehnică sub clapă) și #37 (stare directă, răsturnarea 1–3 în română) sunt făcute,
 împinse și publicate (2026-11-02). Din tur rămân doar lucrurile care sunt feature-uri noi (29, 36, 30, 31, 32, 10) și
 #8; nu se încep fără Edi.
+
+**Analiza ECC din 2026-11-04** (jurnalul): trei reparații împinse și publicate: service worker-ul
+care punea un 404 în cache, Skip care ștergea greșeala din Review, pianul care nu se mai încerca
+după un eșec. `quiet-report.mjs` s-a dovedit în regulă (sonda e în jurnal). Rămâne o clapă
+scoasă din priză care rămâne „conectată”, de văzut pe Genos (posibil BUG-04).
 
 **Întreabă-l pe Edi ce a găsit pe Genos cu lista din `docs/session-log/2026-10-29-1207.md`
 („Rămas deschis”) și dacă a postat reel-ul: fiecare problemă găsită intră întâi ca test, iar data
