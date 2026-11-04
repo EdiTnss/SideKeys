@@ -209,11 +209,17 @@ export function createLevel(plan: LevelPlan): Run {
       return { ...target, texture, analysis, counted };
     },
 
-    /** Free play only: an ask nobody answered still counts, so it is stored as a miss. */
+    /**
+     * Free play only: an ask nobody answered still counts, so it is stored as a miss. One already
+     * tried keeps its try, by the same first-answer rule as `answer`: the wrong voicing is what
+     * Review and the one thing to fix are made of, and an empty miss in its place would erase it.
+     */
     skip() {
       if (finished || timed) return;
-      answers[current] = { symbol: asks[current].symbol, notes: [], analysis: null,
-                           texture: asks[current].texture };
+      if (counts({ timed, answered: answers[current] !== null })) {
+        answers[current] = { symbol: asks[current].symbol, notes: [], analysis: null,
+                             texture: asks[current].texture };
+      }
       if (current + 1 >= asks.length) finish();
       else current += 1;
     },
