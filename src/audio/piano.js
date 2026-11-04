@@ -190,7 +190,10 @@ export async function loadPiano({ baseUrl = 'piano/', fetch: fetchIt = globalThi
     });
     await piano.ready;
     return piano;
-  } catch {
+  } catch (error) {
+    // Recordings that were promised and did not arrive: a broken pack, or the network. Said in
+    // the console, because from the page it sounds the same as having no piano at all.
+    console.warn('SideKeys: staying on the synth —', error.message);
     return null;
   }
 }

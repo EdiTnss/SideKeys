@@ -57,13 +57,20 @@ export function createInstrument({
   let sound = $state<'synth' | 'piano'>('synth');
   // Three megabytes nobody needs on the first screen: the samples are fetched the first time a
   // screen listens, which is the first time a note could sound. That is also a click after the
-  // page opened, so the browser lets the audio start.
+  // page opened, so the browser lets the audio start. A load that fails is tried again by the next
+  // screen that asks, three times at most: one bad moment of network on the first level should not
+  // leave the whole visit on the synth.
   let soundAsked = false;
+  let soundTries = 0;
   function loadSound() {
-    if (soundAsked) return;
+    if (soundAsked || soundTries >= 3) return;
     soundAsked = true;
+    soundTries += 1;
     loadPiano().then(piano => {
-      if (!piano) return;
+      if (!piano) {
+        soundAsked = false;
+        return;
+      }
       voice = piano;
       sound = 'piano';
     });

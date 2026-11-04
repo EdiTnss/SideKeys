@@ -3,7 +3,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { nearestSample, playbackRate, parsePianoManifest, velocityGain } from '../src/audio/piano.js';
+import { nearestSample, playbackRate, parsePianoManifest, velocityGain, loadPiano } from '../src/audio/piano.js';
 
 test('playbackRate: an octave up is twice the speed, the same note is untouched', () => {
   assert.equal(playbackRate(60, 60), 1);
@@ -36,6 +36,32 @@ test('parsePianoManifest: reads what it wrote, and refuses anything else', () =>
   assert.equal(parsePianoManifest({ format: 1, samples: { 999: 'x.ogg' } }), null, 'not a MIDI note');
   assert.equal(parsePianoManifest({ format: 1, samples: { 36: 42 } }), null, 'not a file name');
   assert.equal(parsePianoManifest({ format: 1, samples: {} }), null, 'an empty set is no piano');
+});
+
+test('loadPiano: a recording that does not arrive leaves the synth, and says why', async t => {
+  // Without the reason, a missing pack and a broken one look the same from the page: both are
+  // just a thin synth where a piano should be.
+  const warn = t.mock.method(console, 'warn', () => {});
+  const context = {
+    createGain: () => ({ gain: { value: 0 }, connect() {} }),
+    destination: {},
+    decodeAudioData: async () => ({}),
+  };
+  const manifest = { format: 1, samples: { 36: 'C2.ogg', 48: 'C3.ogg' } };
+  const fetch = async url => url.endsWith('manifest.json')
+    ? { ok: true, json: async () => manifest }
+    : { ok: !url.endsWith('C3.ogg'), arrayBuffer: async () => new ArrayBuffer(8) };
+
+  assert.equal(await loadPiano({ fetch, context }), null);
+  assert.equal(warn.mock.callCount(), 1);
+  assert.match(warn.mock.calls[0].arguments.join(' '), /C3\.ogg/);
+});
+
+test('loadPiano: no recordings published is a plain no, not a warning', async t => {
+  const warn = t.mock.method(console, 'warn', () => {});
+  const fetch = async () => ({ ok: true, json: async () => ({ format: 1, samples: null }) });
+  assert.equal(await loadPiano({ fetch }), null);
+  assert.equal(warn.mock.callCount(), 0);
 });
 
 test('parsePianoManifest: the release time has a sane default and a sane range', () => {
