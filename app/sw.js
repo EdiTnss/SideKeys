@@ -12,6 +12,10 @@ const CACHE = '__CACHE_NAME__';
 const PRECACHE = __PRECACHE__;
 
 const shellUrl = new URL('./index.html', self.location.href).href;
+// The two addresses the game answers at. Any other page a navigation can reach on this host is not
+// the game: GitHub Pages answers a mistyped address with its own 404 page, and /lab with a redirect
+// to the bench.
+const SHELL = new Set([new URL('./', self.location.href).href, shellUrl]);
 
 // Every lookup ignores Vary, and that is not a shortcut — it is the whole reason offline works.
 // A static host answers these files with `Vary: Origin` (vite preview does, and GitHub Pages is
@@ -68,14 +72,29 @@ self.addEventListener('fetch', event => {
 async function openPage(request) {
   try {
     const response = await fetch(request);
-    const cache = await caches.open(CACHE);
-    cache.put(shellUrl, response.clone());
+    if (isShell(request, response)) {
+      const cache = await caches.open(CACHE);
+      cache.put(shellUrl, response.clone());
+    }
     return response;
   } catch {
     const cached = await caches.match(shellUrl, MATCH);
     if (cached) return cached;
     throw new Error('offline, and no page cached yet');
   }
+}
+
+/**
+ * Whether a page that came back is the game, and so may be kept as what an offline visit opens.
+ * Anything else stored under the shell's key would be served in place of the game, on every
+ * route, until the next good navigation replaced it.
+ */
+function isShell(request, response) {
+  if (!response.ok || response.type !== 'basic' || response.redirected) return false;
+  const url = new URL(request.url);
+  url.search = '';
+  url.hash = '';
+  return SHELL.has(url.href);
 }
 
 /**

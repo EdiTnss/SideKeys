@@ -9,6 +9,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import vm from 'node:vm';
 
 const SCRIPT = fileURLToPath(new URL('../app/scripts/build-sw.mjs', import.meta.url));
 
@@ -106,6 +107,77 @@ test('the cache name follows the build, so a new version never serves the old fi
     assert.notEqual(nameOf(build(third)), nameOf(build(first)), 'an unhashed file changed and the name did not');
   } finally {
     for (const dist of [first, second, third]) rmSync(dist, { recursive: true, force: true });
+  }
+});
+
+/**
+ * The built worker, run against a fake host: `fetch` is the network, and the cache is a Map.
+ * Returns a way to navigate and what the cache holds under the shell's key.
+ */
+function runWorker(sw, fetch) {
+  const handlers = {};
+  const stored = new Map();
+  const cache = { put: async (key, response) => { stored.set(key, response); }, addAll: async () => {} };
+  vm.runInNewContext(sw, {
+    self: {
+      location: { href: 'https://sidekeys.app/sw.js', origin: 'https://sidekeys.app' },
+      addEventListener: (type, handler) => { handlers[type] = handler; },
+    },
+    caches: { open: async () => cache, match: async key => stored.get(key) ?? null },
+    fetch,
+    URL,
+  });
+  const navigate = url => {
+    let answer;
+    handlers.fetch({ request: { method: 'GET', url, mode: 'navigate' }, respondWith: promise => { answer = promise; } });
+    return answer;
+  };
+  return { navigate, shell: () => stored.get('https://sidekeys.app/index.html')?.body };
+}
+
+const page = (body, { status = 200, redirected = false } = {}) =>
+  ({ body, status, ok: status >= 200 && status < 300, type: 'basic', redirected, clone() { return this; } });
+
+test('only the game itself is kept as the page an offline visit opens', async () => {
+  // GitHub Pages answers any other address with its own 404 page, and /lab with a redirect to the
+  // bench. Kept under the shell's key, either one would be what opens the next time the network
+  // is off, in place of the game.
+  const dist = fakeDist();
+  try {
+    const answers = {
+      'https://sidekeys.app/': page('game'),
+      'https://sidekeys.app/index.html?midi=virtual': page('game, again'),
+      'https://sidekeys.app/no-such-page': page('Pages 404', { status: 404 }),
+      'https://sidekeys.app/lab': page('the bench', { redirected: true }),
+    };
+    const worker = runWorker(build(dist), async request => answers[request.url]);
+
+    await worker.navigate('https://sidekeys.app/');
+    assert.equal(worker.shell(), 'game');
+    await worker.navigate('https://sidekeys.app/no-such-page');
+    assert.equal(worker.shell(), 'game', 'a 404 replaced the game');
+    await worker.navigate('https://sidekeys.app/lab');
+    assert.equal(worker.shell(), 'game', 'a redirect to the bench replaced the game');
+    await worker.navigate('https://sidekeys.app/index.html?midi=virtual');
+    assert.equal(worker.shell(), 'game, again', 'the page at its other address is the game too');
+  } finally {
+    rmSync(dist, { recursive: true, force: true });
+  }
+});
+
+test('with the network off, a navigation opens the game that was kept', async () => {
+  const dist = fakeDist();
+  try {
+    let online = true;
+    const worker = runWorker(build(dist), async () => {
+      if (!online) throw new TypeError('Failed to fetch');
+      return page('game');
+    });
+    await worker.navigate('https://sidekeys.app/');
+    online = false;
+    assert.equal((await worker.navigate('https://sidekeys.app/anywhere')).body, 'game');
+  } finally {
+    rmSync(dist, { recursive: true, force: true });
   }
 });
 
